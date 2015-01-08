@@ -1,0 +1,10 @@
+
+m3rt_server_run -m
+m3humanoid_shm_test
+roscore
+rosrun shm_humanoid_controller shm_humanoid_controller
+
+m3rt_server_run -m
+m3humanoid_shm_test
+/home/meka/head/help/TeoHead/build/test
+
