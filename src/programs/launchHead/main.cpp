@@ -5,7 +5,7 @@
 using namespace yarp::os;
 using namespace yarp::dev;
 
-YARP_DECLARE_PLUGINS(HeadYarp);
+YARP_DECLARE_PLUGINS(HeadYarp)
 
 int main(int argc, char *argv[]) {
 
@@ -13,9 +13,9 @@ int main(int argc, char *argv[]) {
 
     ResourceFinder rf;
     rf.setVerbose(true);
-    rf.setDefaultContext("launchHead/conf");
+    rf.setDefaultContext("launchHead");
     rf.setDefaultConfigFile("launchHead.ini");
-    rf.configure("CD_ROOT", argc, argv);
+    rf.configure(argc, argv);
 
     CD_INFO("Checking for yarp network...\n");
     Network yarp;
