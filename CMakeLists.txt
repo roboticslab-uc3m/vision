@@ -71,7 +71,7 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/template/HEADConfig.cmake.in
 
 # create a symbolic link to the shared directory (as contains models and may be heavy)
 # If you want a deep copy, you can use the copy_directory command instead of create_symlink.
-add_custom_target(install_applications COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/app ${CMAKE_SOURCE_DIR}/../app)
+#add_custom_target(install_applications COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/app ${CMAKE_SOURCE_DIR}/../app)
 
 #endif(MSVC)
 ##add_custom_target(nuke
@@ -82,7 +82,7 @@ add_custom_target(install_applications COMMAND ${CMAKE_COMMAND} -E create_symlin
 
 # uninstall target
 configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/conf/template/HEADConfigUninstall.cmake.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/template/HEADConfigUninstall.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/HEADConfigUninstall.cmake" IMMEDIATE @ONLY)
 
 add_custom_target(uninstall
