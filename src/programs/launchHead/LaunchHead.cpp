@@ -10,13 +10,6 @@ bool teo::LaunchHead::configure(ResourceFinder &rf) {
 
     printf(BOLDBLUE);
 
-    const char* head_root = ::getenv("HEAD_ROOT");
-    if (head_root!=NULL) {
-        CD_INFO("Using root: %s.\n", head_root );
-    } else {
-        CD_WARNING("No HEAD_ROOT env.\n");
-    }
-
     kinect = rf.check("kinect",Value(DEFAULT_KINECT),"Kinect on or off").asString();
     if( kinect == "on" )
         printf("\t--kinect on (Kinect on or off)\n" );
@@ -24,8 +17,6 @@ bool teo::LaunchHead::configure(ResourceFinder &rf) {
         printf("\t--kinect off (Kinect on or off)\n" );
 
     printf(RESET);
-
-    std::string headIni = std::string(head_root) + "/app/launchHead/conf/launchHead.ini";
 
     if( kinect == "on" )
     {
@@ -42,12 +33,7 @@ bool teo::LaunchHead::configure(ResourceFinder &rf) {
         }
     }
 
-    Property motorOptions;
-    if (! motorOptions.fromConfigFile(headIni) ) {  //-- Put first because defaults to wiping out.
-        CD_ERROR("Could not open %s.\n",headIni.c_str());
-        return false;
-    }
-    CD_SUCCESS("Opened %s.\n",headIni.c_str());
+    Property motorOptions(rf.toString());
     motorOptions.put("name","/teo/head");
     motorOptions.put("device","controlboard");
     motorOptions.put("subdevice","headbot");
