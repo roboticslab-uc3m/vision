@@ -33,7 +33,8 @@ bool teo::LaunchHead::configure(ResourceFinder &rf) {
         }
     }
 
-    Property motorOptions(rf.toString());
+    Property motorOptions;
+    motorOptions.fromString(rf.toString());
     motorOptions.put("name","/teo/head");
     motorOptions.put("device","controlboard");
     motorOptions.put("subdevice","headbot");
