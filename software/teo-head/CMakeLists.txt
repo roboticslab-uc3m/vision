@@ -62,6 +62,7 @@ set(HEAD_LINK_DIRS CACHE INTERNAL "appended link dirs" FORCE)
 set(HEAD_LIBRARIES CACHE INTERNAL "appended libraries" FORCE)
 
 # add main contents
+add_subdirectory(share)
 add_subdirectory(src)
 
 # export our variables to a HEADConfig.cmake creation
