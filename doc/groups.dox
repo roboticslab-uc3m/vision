@@ -1,0 +1,33 @@
+
+/**
+@brief The main, catch-all namespace for TEO programs and libraries.
+ */
+namespace teo {}
+
+/**
+ * \defgroup head_applications TEO Head Applications
+ * @brief TEO head applications (collections of modules).
+ */
+
+/**
+ * \defgroup head_libraries TEO Head Libraries
+ * @brief TEO head libraries.
+ */
+
+/**
+ * @ingroup head_libraries
+ * \defgroup head_yarp TEO Head Yarp Plugins
+ * @brief TEO Head Yarp Plugins.
+ */
+
+/**
+ * 
+ * \defgroup head_programs TEO Head Programs
+ * @brief TEO head programs.
+ */
+
+/**
+ * \defgroup head_examples TEO Head Examples
+ * @brief TEOHead head examples.
+ */
+
