@@ -1,15 +1,15 @@
 /**
   * \mainpage The TEO Software Repository documentation (teo-head)
 
-Welcome to the TEO Software Repository documentation for the main PC (teo-body). <a class=el href="http://robots.uc3m.es" target="_blank">Click here to return to Wiki.</a>
+Welcome to the TEO Software Repository documentation for the head PC. <a class=el href="http://robots.uc3m.es" target="_blank">Click here to return to Wiki.</a>
 
- \li \ref teo_body_install_on_debian_6
+ \li \ref teo_head_install_on_rtai
 
 Other internal links of interest:
- \li \ref teo_programs
- \li \ref teo_libraries
- \li \ref teo_applications
- \li \ref teo_examples
+ \li \ref teo_head_programs
+ \li \ref teo_head_libraries
+ \li \ref teo_head_applications
+ \li \ref teo_head_examples
 
 Even more internal links of interest:
  \li <a class=el href="http://robots.uc3m.es/dox-teo-main/index.html" target="_blank">teo-main</a>
