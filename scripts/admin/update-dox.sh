@@ -9,7 +9,7 @@ echo "Update teo-head..."
 cd $HOME/teo-head
 svn up --username wikirobots
 echo "Doxy teo-head..."
-cd teo-head/doc
+cd doc
 rm -r html
 /usr/local/bin/doxygen
 cd ../..
