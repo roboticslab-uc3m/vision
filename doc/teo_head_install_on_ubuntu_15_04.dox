@@ -6,6 +6,10 @@
 
 First install the depencencies:
 
+\verbatim
+sudo apt-get install libpcl-dev pcl-tools libopenni-sensor-primesense0
+\endverbatim
+
 Our software integrates the previous dependencies. Note that you will be prompted for your password upon using '''sudo''' a couple of times:
 
 \verbatim
