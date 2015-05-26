@@ -14,7 +14,7 @@ IF (ENABLE_HeadYarp)
   include(YarpPlugin)
 
   yarp_begin_plugin_library(HeadYarp)
-    add_subdirectory(headbot)
+#    add_subdirectory(headbot)
   yarp_end_plugin_library(HeadYarp)
 
   install(TARGETS HeadYarp DESTINATION lib)
