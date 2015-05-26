@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.6)
 
 IF (ENABLE_HeadYarp)
 
-  option(ENABLE_testHeadYarp "Choose if you want to compile testHeadYarp" FALSE)
+  option(ENABLE_launchHeadYarp "Choose if you want to compile launchHeadYarp" FALSE)
 
   find_package(YARP REQUIRED)
   include_directories(${YARP_INCLUDE_DIRS})
@@ -19,12 +19,12 @@ IF (ENABLE_HeadYarp)
 
   install(TARGETS HeadYarp DESTINATION lib)
 
-  IF (ENABLE_testHeadYarp)
+  IF (ENABLE_launchHeadYarp)
 
-    yarp_add_plugin_library_executable(testHeadYarp HeadYarp)
-    install(TARGETS testHeadYarp DESTINATION bin)
+    yarp_add_plugin_library_executable(launchHeadYarp HeadYarp)
+    install(TARGETS launchHeadYarp DESTINATION bin)
 
-  ENDIF (ENABLE_testHeadYarp)
+  ENDIF (ENABLE_launchHeadYarp)
 
 ENDIF (ENABLE_HeadYarp)
 
