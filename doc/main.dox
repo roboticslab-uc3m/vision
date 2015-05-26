@@ -3,7 +3,7 @@
 
 Welcome to the TEO Software Repository documentation for the head PC. <a class=el href="http://robots.uc3m.es" target="_blank">Click here to return to Wiki.</a> <a class=el href="https://github.com/roboticslab-uc3m/teo-head" target="_blank">Click here to see teo-head on repo.</a>
 
- \li \ref teo_head_install_on_rtai
+ \li \ref teo_head_install_on_ubuntu_15_04
 
 Other internal links of interest:
  \li \ref teo_head_programs
