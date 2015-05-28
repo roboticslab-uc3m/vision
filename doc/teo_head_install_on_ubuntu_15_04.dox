@@ -7,7 +7,12 @@
 First install the depencencies:
 
 \verbatim
+# PCL, OpenNI and Xtion Pro Live OpenNI driver
 sudo apt-get install libpcl-dev pcl-tools libopenni-sensor-primesense0
+\endverbatim
+
+\verbatim
+# YARP, OpenNI2 and Xtion Pro Live OpenNI2 driver
 \endverbatim
 
 Our software integrates the previous dependencies. Note that you will be prompted for your password upon using '''sudo''' a couple of times:
