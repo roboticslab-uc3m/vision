@@ -13,6 +13,7 @@ sudo apt-get install libpcl-dev pcl-tools libopenni-sensor-primesense0
 
 \verbatim
 # OpenNI2 and Xtion Pro Live OpenNI2 driver
+sudo apt-get install git
 git clone https://github.com/roboticslab-uc3m/OpenNI2.git  # Fork with working copy of Xtion Pro Live OpenNI2 driver.
 \endverbatim
 
