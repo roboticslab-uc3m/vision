@@ -12,7 +12,12 @@ sudo apt-get install libpcl-dev pcl-tools libopenni-sensor-primesense0
 \endverbatim
 
 \verbatim
-# YARP, OpenNI2 and Xtion Pro Live OpenNI2 driver
+# OpenNI2 and Xtion Pro Live OpenNI2 driver
+git clone https://github.com/roboticslab-uc3m/OpenNI2.git  # Fork with working copy of Xtion Pro Live OpenNI2 driver.
+\endverbatim
+
+\verbatim
+# YARP
 \endverbatim
 
 Our software integrates the previous dependencies. Note that you will be prompted for your password upon using '''sudo''' a couple of times:
