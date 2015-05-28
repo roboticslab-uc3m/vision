@@ -12,10 +12,11 @@ sudo apt-get install libpcl-dev pcl-tools libopenni-sensor-primesense0
 \endverbatim
 
 \verbatim
-# OpenNI2 and Xtion Pro Live OpenNI2 driver
+# OpenNI2 and Xtion Pro Live OpenNI2 driver, and NiTE2.2
 sudo apt-get install git libusb-1.0-0-dev libudev-dev
 git clone https://github.com/roboticslab-uc3m/OpenNI2.git  # Fork with working copy of Xtion Pro Live OpenNI2 driver.
 cd OpenNI2 && make
+wget http://ilab.usc.edu/packages/forall/ubuntu-13.10/NiTE-Linux-x64-2.2.tar.bz2
 \endverbatim
 
 \verbatim
