@@ -37,6 +37,9 @@ sudo apt-get install libjpeg8-dev   # Needed for mjpeg_carrier
 git clone https://github.com/robotology/yarp
 cd yarp && mkdir build && cd build
 cmake .. -DCREATE_SHARED_LIBRARY=OFF -DCREATE_LIB_MATH=ON -DCREATE_GUIS=ON -DCREATE_OPTIONAL_CARRIERS=ON -DENABLE_yarpcar_mjpeg_carrier=ON -DCREATE_DEVICE_LIBRARY_MODULES=ON -DENABLE_yarpmod_OpenNI2DeviceServer=ON -DOPENNI2_INCLUDE_LOCAL=/YOUR_PATH_TO/OpenNI2/Include/ -DOPENNI2_LIBRARY=/usr/local/lib/libOpenNI2.so -DNITE2_INCLUDE_LOCAL=/YOUR_PATH_TO/NiTE-Linux-x64-2.2/Include/ -DNITE2_LIBRARY=/usr/local/lib/libNiTE2.so
+make
+sudo make install
+sudo ldconfig
 \endverbatim
 
 Our software integrates the previous dependencies. Note that you will be prompted for your password upon using '''sudo''' a couple of times:
