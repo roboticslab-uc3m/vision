@@ -17,6 +17,7 @@ sudo apt-get install git libusb-1.0-0-dev libudev-dev
 git clone https://github.com/roboticslab-uc3m/OpenNI2.git  # Fork with working copy of Xtion Pro Live OpenNI2 driver.
 cd OpenNI2 && make
 sudo ln -s /YOUR_PATH_TO/OpenNI2/Bin/x64-Release/libOpenNI2.so /usr/local/lib/
+sudo ln -s /YOUR_PATH_TO/OpenNI2/Bin/x64-Release/OpenNI2/ /usr/local/lib/
 sudo ldconfig
 \endverbatim
 
