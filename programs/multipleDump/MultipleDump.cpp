@@ -7,6 +7,12 @@ bool MultipleDump::configure(ResourceFinder &rf) {
 
     watchdog = DEFAULT_WATCHDOG;  // double
 
+    multipleDumpThread.setIn1(&in1);
+    multipleDumpThread.setIn2(&in2);
+    in1.open("/in1");
+    in2.open("/in2");
+
+    multipleDumpThread.start();
     return true;
 }
 
