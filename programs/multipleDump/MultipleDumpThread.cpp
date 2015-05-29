@@ -16,7 +16,7 @@ void MultipleDumpThread::run() {
         //printf("No b2 yet...\n");
         return;
     }
-    printf("Got: %s %s\n",b1->toString().c_str(),b2->toString().c_str());
+    printf("%f %s %s\n",Time::now(),b1->toString().c_str(),b2->toString().c_str());
 
 }
 
