@@ -29,6 +29,15 @@
         <from>/red/cv1/img:o</from>
         <to>/red/yarpview/img:i</to>
     </connection>
+    <module>
+        <name>yarpdatadumper</name>
+        <parameters>--name /red</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/red/cv1/state:o</from>
+        <to>/red</to>
+    </connection>
 
     <module>
         <name>cv1</name>
@@ -43,6 +52,15 @@
     <connection>
         <from>/green/cv1/img:o</from>
         <to>/green/yarpview/img:i</to>
+    </connection>
+    <module>
+        <name>yarpdatadumper</name>
+        <parameters>--name /green</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/green/cv1/state:o</from>
+        <to>/green</to>
     </connection>
 
 </application>
