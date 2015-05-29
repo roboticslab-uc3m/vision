@@ -6,12 +6,21 @@
         <node>localhost</node>
     </module>
 
-        <module>
-
+    <module>
         <name>cv1</name>
-            <parameters>--kinectDevice OpenNI2DeviceClient</parameters>
-            <node>localhost</node>
-        </module>
+        <parameters>--kinectDevice OpenNI2DeviceClient</parameters>
+        <prefix>/one</prefix>
+        <node>localhost</node>
+    </module>
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /one/yarpview/img:i</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/one/cv1/img:o</from>
+        <to>/one/yarpview/img:i</to>
+    </connection>
 
 </application>
 
