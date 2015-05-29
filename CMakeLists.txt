@@ -18,6 +18,7 @@ option(ENABLE_HeadYarp "Choose if you want to compile HeadYarp" TRUE)
 
 ### options: cpp modules
 option(ENABLE_cv1 "Choose if you want to compile cv1" TRUE)
+option(ENABLE_multipleDump "Choose if you want to compile multipleDump" TRUE)
 
 if(MSVC)
   MESSAGE(STATUS "Running on windows")    

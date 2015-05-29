@@ -2,4 +2,5 @@
 # Authors: Juan G. Victores
 
 add_subdirectory(cv1)
+add_subdirectory(multipleDump)
 
