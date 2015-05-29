@@ -3,10 +3,11 @@
 #ifndef __MULTIPLE_DUMP_HPP__
 #define __MULTIPLE_DUMP_HPP__
 
+#include <sstream>
+
 #include "MultipleDumpThread.hpp"
 
 #define DEFAULT_WATCHDOG    2       // [s]
-#define DEFAULT_FILE_NAME "MultipleDump.txt"
 
 using namespace yarp::os;
 

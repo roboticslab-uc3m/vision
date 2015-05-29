@@ -47,6 +47,7 @@
 
     <module>
         <name>multipleDump</name>
+        <parameters>--file move</parameters>
         <node>localhost</node>
     </module>
     <connection>
