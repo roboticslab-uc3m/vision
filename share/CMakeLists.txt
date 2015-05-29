@@ -10,5 +10,5 @@ yarp_configure_external_installation(teo-head)
 
 ### Go through single applications
 
-add_subdirectory(launchHead)
+add_subdirectory(cv1)
 
