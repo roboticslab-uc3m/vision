@@ -6,7 +6,7 @@
 #include "SegmentorThread.hpp"
 
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
-#define DEFAULT_KINECT_DEVICE "KinectDeviceLocal"
+#define DEFAULT_KINECT_DEVICE "OpenNI2DeviceServer"
 #define DEFAULT_KINECT_LOCAL "/visionDepth"
 #define DEFAULT_KINECT_REMOTE "/kinect"
 #define DEFAULT_WATCHDOG    2       // [s]
