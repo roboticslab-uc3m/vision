@@ -60,11 +60,11 @@ bool Cv1::configure(ResourceFinder &rf) {
     segmentorThread.init(rf);
 
     //-----------------OPEN LOCAL PORTS------------//
-    outImg.open("/visionDepth/img:o");
-    outPort.open("/visionDepth/state:o");
+    outImg.open(strKinectLocal + "/img:o");
+    outPort.open(strKinectLocal + "/state:o");
     if(cropSelector != 0) {
-        outCropSelectorImg.open("/visionDepth/cropSelector/img:o");
-        inCropSelectorPort.open("/visionDepth/cropSelector/state:i");
+        outCropSelectorImg.open(strKinectLocal + "/cropSelector/img:o");
+        inCropSelectorPort.open(strKinectLocal + "/cropSelector/state:i");
     }
     return true;
 }

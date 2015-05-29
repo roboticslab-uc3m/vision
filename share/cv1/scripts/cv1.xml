@@ -8,8 +8,7 @@
 
     <module>
         <name>cv1</name>
-        <parameters>--kinectDevice OpenNI2DeviceClient</parameters>
-        <prefix>/one</prefix>
+        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /one/cv1</parameters>
         <node>localhost</node>
     </module>
     <module>
