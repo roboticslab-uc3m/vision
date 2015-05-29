@@ -24,7 +24,7 @@ foreach(header_file ${folder_header})
 endforeach(header_file ${folder_header})
 
 # Inclue any directories needed for YARP
-include_directories(${YARP_INCLUDE_DIRS})
+include_directories(${YARP_INCLUDE_DIRS} /home/teo/src/NiTE-Linux-x64-2.2/Include /home/teo/git/OpenNI2/Include)
 
 # Set up our main executable.
 if (folder_source)
