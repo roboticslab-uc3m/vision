@@ -17,7 +17,7 @@
 
     <module>
         <name>cv1</name>
-        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /red/cv1 --maxNumBlobs 1 --algorithm redMinusGreen</parameters>
+        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /red/cv1 --maxNumBlobs 1 --algorithm redMinusGreen --outFeaturesFormat 1</parameters>
         <node>localhost</node>
     </module>
     <module>
@@ -32,7 +32,7 @@
 
     <module>
         <name>cv1</name>
-        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /green/cv1 --maxNumBlobs 1 --algorithm greenMinusRed</parameters>
+        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /green/cv1 --maxNumBlobs 1 --algorithm greenMinusRed --outFeaturesFormat 1</parameters>
         <node>localhost</node>
     </module>
     <module>
