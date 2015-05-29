@@ -6,28 +6,30 @@
 void MultipleDumpThread::run() {
     // printf("[MultipleDumpThread] run()\n");
 
-    /*ImageOf<PixelRgb> *inYarpImg = pInImg->read(false);
-    ImageOf<PixelFloat> *depth = pInDepth->read(false);
-    if (inYarpImg==NULL) {
-        //printf("No img yet...\n");
+    Bottle* b1 = in1->read(false);
+    if (b1 == NULL) {
+        //printf("No b1 yet...\n");
         return;
-    };
-    if (depth==NULL) {
-        //printf("No depth yet...\n");
+    }
+    Bottle* b2 = in2->read(false);
+    if (b2 == NULL) {
+        //printf("No b2 yet...\n");
         return;
-    };*/
-
-    /*ImageOf<PixelRgb> inYarpImg = kinect->getImageFrame();
-    if (inYarpImg.height()<10) {
-        //printf("No img yet...\n");
-        return;
-    };
-    ImageOf<PixelMono16> depth = kinect->getDepthFrame();
-    if (depth.height()<10) {
-        //printf("No depth yet...\n");
-        return;
-    };*/
-
+    }
+    printf("Got: %s %s\n",b1->toString().c_str(),b2->toString().c_str());
 
 }
 
+/************************************************************************/
+
+void MultipleDumpThread::setIn1(BufferedPort<Bottle> *value) {
+    in1 = value;
+}
+
+/************************************************************************/
+
+void MultipleDumpThread::setIn2(BufferedPort<Bottle> *value) {
+    in2 = value;
+}
+
+/************************************************************************/

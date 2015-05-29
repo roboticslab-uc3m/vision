@@ -18,6 +18,9 @@ class MultipleDump : public RFModule {
     bool updateModule();
     double watchdog;
 
+    BufferedPort<Bottle> in1;
+    BufferedPort<Bottle> in2;
+
   public:
     bool configure(ResourceFinder &rf);
 };

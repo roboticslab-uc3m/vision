@@ -16,10 +16,19 @@ using namespace yarp::os;
 
 class MultipleDumpThread : public RateThread {
 
-    virtual void run();
+    public:
 
-public:
-    MultipleDumpThread() : RateThread(DEFAULT_RATE_MS) {}
+        MultipleDumpThread() : RateThread(DEFAULT_RATE_MS) {}
+
+        virtual void run();
+
+        void setIn1(BufferedPort<Bottle> *value);
+        void setIn2(BufferedPort<Bottle> *value);
+
+protected:
+
+        BufferedPort<Bottle>* in1;
+        BufferedPort<Bottle>* in2;
 
 };
 
