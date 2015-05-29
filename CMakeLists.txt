@@ -17,7 +17,7 @@ project(head)
 option(ENABLE_HeadYarp "Choose if you want to compile HeadYarp" TRUE)
 
 ### options: cpp modules
-option(ENABLE_launchHead "Choose if you want to compile launchHead" TRUE)
+option(ENABLE_cv1 "Choose if you want to compile cv1" TRUE)
 
 if(MSVC)
   MESSAGE(STATUS "Running on windows")    
