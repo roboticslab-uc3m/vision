@@ -6,8 +6,8 @@ int main(int argc, char** argv) {
 
     ResourceFinder rf;
     rf.setVerbose(true);
-    rf.setDefaultContext("Cv1");
-    rf.setDefaultConfigFile("Cv1.ini");
+    rf.setDefaultContext("cv1");
+    rf.setDefaultConfigFile("cv1.ini");
     rf.configure(argc, argv);
 
     Cv1 mod;
