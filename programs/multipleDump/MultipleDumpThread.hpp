@@ -22,11 +22,13 @@ class MultipleDumpThread : public RateThread {
 
         virtual void run();
 
+        void setFilePtr(FILE *value);
         void setIn1(BufferedPort<Bottle> *value);
         void setIn2(BufferedPort<Bottle> *value);
 
 protected:
 
+        FILE * filePtr;
         BufferedPort<Bottle>* in1;
         BufferedPort<Bottle>* in2;
 

@@ -16,8 +16,15 @@ void MultipleDumpThread::run() {
         //printf("No b2 yet...\n");
         return;
     }
-    printf("%f %s %s\n",Time::now(),b1->toString().c_str(),b2->toString().c_str());
+    //printf("%f %s %s\n",Time::now(),b1->toString().c_str(),b2->toString().c_str());
+    fprintf(filePtr,"%f %s %s\n",Time::now(),b1->toString().c_str(),b2->toString().c_str());
 
+}
+
+/************************************************************************/
+
+void MultipleDumpThread::setFilePtr(FILE *value) {
+    filePtr = value;
 }
 
 /************************************************************************/
