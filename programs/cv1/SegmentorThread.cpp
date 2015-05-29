@@ -3,7 +3,7 @@
 #include "SegmentorThread.hpp"
 
 /************************************************************************/
-void SegmentorThread::setIKinectDeviceDriver(IKinectDeviceDriver * _kinect) {
+void SegmentorThread::setIKinectDeviceDriver(IOpenNI2DeviceDriver *_kinect) {
     kinect = _kinect;
 }
 
@@ -177,12 +177,12 @@ void SegmentorThread::run() {
         return;
     };*/
 
-    ImageOf<PixelRgb> inYarpImg = kinect->getImageMap();
+    ImageOf<PixelRgb> inYarpImg = kinect->getImageFrame();
     if (inYarpImg.height()<10) {
         //printf("No img yet...\n");
         return;
     };
-    ImageOf<PixelInt> depth = kinect->getDepthMap();
+    ImageOf<PixelMono16> depth = kinect->getDepthFrame();
     if (depth.height()<10) {
         //printf("No depth yet...\n");
         return;

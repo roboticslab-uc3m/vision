@@ -11,6 +11,7 @@
 #include <yarp/os/RateThread.h>
 
 #include <yarp/dev/all.h>
+#include <yarp/dev/IOpenNI2DeviceDriver.h>
 
 #include <yarp/sig/all.h>
 
@@ -101,7 +102,7 @@ public:
 
 class SegmentorThread : public RateThread {
 private:
-    IKinectDeviceDriver *kinect;
+    IOpenNI2DeviceDriver *kinect;
     BufferedPort<ImageOf<PixelRgb> > *pOutImg;  // for testing
     Port *pOutPort;
     //
@@ -131,7 +132,7 @@ private:
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
 
-    void setIKinectDeviceDriver(IKinectDeviceDriver * _kinect);
+    void setIKinectDeviceDriver(IOpenNI2DeviceDriver * _kinect);
     void setOutImg(BufferedPort<ImageOf<PixelRgb> > * _pOutImg);
     void setOutPort(Port *_pOutPort);
     void init(ResourceFinder &rf);

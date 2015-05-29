@@ -19,7 +19,7 @@ class Cv1 : public RFModule {
     SegmentorThread segmentorThread;
     //
     PolyDriver dd;
-    IKinectDeviceDriver *kinect;
+    IOpenNI2DeviceDriver *kinect;
 
     BufferedPort<ImageOf<PixelRgb> > outImg;
     Port outPort;
