@@ -6,23 +6,27 @@
 #include "MultipleDumpThread.hpp"
 
 #define DEFAULT_WATCHDOG    2       // [s]
+#define DEFAULT_FILE_NAME "MultipleDump.txt"
 
 using namespace yarp::os;
 
 class MultipleDump : public RFModule {
-  private:
-    MultipleDumpThread multipleDumpThread;
 
-    bool interruptModule();
-    double getPeriod();
-    bool updateModule();
-    double watchdog;
+    public:
+        bool configure(ResourceFinder &rf);
 
-    BufferedPort<Bottle> in1;
-    BufferedPort<Bottle> in2;
+    protected:
+        MultipleDumpThread multipleDumpThread;
 
-  public:
-    bool configure(ResourceFinder &rf);
+        bool interruptModule();
+        double getPeriod();
+        bool updateModule();
+        double watchdog;
+
+        BufferedPort<Bottle> in1;
+        BufferedPort<Bottle> in2;
+
+        FILE * filePtr;
 };
 
 #endif  // __MULTIPLE_DUMP_HPP__
