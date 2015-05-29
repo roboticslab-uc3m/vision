@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __CV1_HPP__
-#define __CV1_HPP__
+#ifndef __MULTIPLE_DUMP_HPP__
+#define __MULTIPLE_DUMP_HPP__
 
 #include "MultipleDumpThread.hpp"
 
@@ -22,5 +22,5 @@ class MultipleDump : public RFModule {
     bool configure(ResourceFinder &rf);
 };
 
-#endif  // __CV1_HPP__
+#endif  // __MULTIPLE_DUMP_HPP__
 
