@@ -2,9 +2,9 @@
 
 cmake_minimum_required(VERSION 2.6)
 
-IF (ENABLE_2015humanoidsCv1)
+IF (ENABLE_cv1)
 
-set(KEYWORD "2015humanoidsCv1")
+set(KEYWORD "cv1")
 
 # Find OpenCV.
 find_package(OpenCV REQUIRED)
@@ -35,5 +35,5 @@ else (folder_source)
   message(FATAL_ERROR "No source code files found. Please add something")
 endif (folder_source)
 
-ENDIF (ENABLE_2015humanoidsCv1)
+ENDIF (ENABLE_cv1)
 
