@@ -35,8 +35,8 @@ bool Cv1::configure(ResourceFinder &rf) {
     if (!rf.check("help")) {
         Property options;
         options.put("device",strKinectDevice);
-        options.put("localPortPrefix",strKinectLocal);  //
-        options.put("remotePortPrefix",strKinectRemote);  //
+        options.put("localName",strKinectLocal);  //
+        options.put("remoteName",strKinectRemote);  //
         if(rf.check("noMirror")) options.put("noMirror",1);
         while(!dd.open(options)) {
             printf("Waiting for kinectDevice \"%s\"...\n",strKinectDevice.c_str());

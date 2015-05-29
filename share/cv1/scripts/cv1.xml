@@ -1,9 +1,16 @@
 <application>
 <name>cv1 App</name>
+    <module>
+        <name>yarpdev</name>
+        <parameters>--device OpenNI2DeviceServer --noMirror --portPrefix /kinect</parameters>
+        <node>localhost</node>
+    </module>
+
         <module>
-                <name>yarpdev</name>
-                <parameters>--device OpenNI2DeviceServer --noMirror</parameters>
-                <node>localhost</node>
+
+        <name>cv1</name>
+            <parameters>--kinectDevice OpenNI2DeviceClient</parameters>
+            <node>localhost</node>
         </module>
 
 </application>
