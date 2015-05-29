@@ -1,0 +1,10 @@
+<application>
+<name>cv1 App</name>
+        <module>
+                <name>yarpdev</name>
+                <parameters>--device OpenNI2DeviceServer --noMirror</parameters>
+                <node>localhost</node>
+        </module>
+
+</application>
+
