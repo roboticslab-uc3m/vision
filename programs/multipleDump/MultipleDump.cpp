@@ -11,27 +11,14 @@ bool MultipleDump::configure(ResourceFinder &rf) {
     std::string filePrefix("dump");
     if(rf.check("file"))
         filePrefix = rf.find("file").asString();
-    // [thanks] http://www.tutorialspoint.com/cplusplus/cpp_date_time.htm
+    // [thanks] http://www.cplusplus.com/reference/ctime/strftime/
     time_t now = time(0);
     tm *ltm = localtime(&now);
     std::stringstream fileName;
     fileName << filePrefix;
-    fileName << "_";
-    fileName << (ltm->tm_mday);
-    fileName << ".";
-    //fileName << 1 + ltm->tm_mon;
-    char buffer [4];  // 'M' 'a' 'y' '\0'
-    strftime (buffer,4,"%b",ltm);
+    char buffer [80];  // At least: 20.Mar.2015_03:26:26.csv
+    strftime (buffer,80,"_%d.%b.%Y_%H:%M:%S.csv",ltm);
     fileName << buffer;
-    fileName << ".";
-    fileName << 1900 + ltm->tm_year;
-    fileName << "_";
-    fileName << ltm->tm_hour;  // not +1 as in tutorial
-    fileName << ":";
-    fileName << ltm->tm_min;  // not +1 as in tutorial
-    fileName << ":";
-    fileName << ltm->tm_sec;  // not +1 as in tutorial
-    fileName << ".csv";
     filePtr = ::fopen (fileName.str().c_str(),"w");
     if( ! filePtr ) {
         printf("Could not open file: %s\n",fileName.str().c_str());
