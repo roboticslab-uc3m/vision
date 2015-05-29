@@ -5,20 +5,44 @@
         <parameters>--device OpenNI2DeviceServer --noMirror</parameters>
         <node>localhost</node>
     </module>
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /rgb/yarpview/img:i</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/OpenNI2/imageFrame:o</from>
+        <to>/rgb/yarpview/img:i</to>
+    </connection>
 
     <module>
         <name>cv1</name>
-        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /one/cv1</parameters>
+        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /red/cv1 --maxNumBlobs 1 --algorithm redMinusGreen</parameters>
         <node>localhost</node>
     </module>
     <module>
         <name>yarpview</name>
-        <parameters>--name /one/yarpview/img:i</parameters>
+        <parameters>--name /red/yarpview/img:i</parameters>
         <node>localhost</node>
     </module>
     <connection>
-        <from>/one/cv1/img:o</from>
-        <to>/one/yarpview/img:i</to>
+        <from>/red/cv1/img:o</from>
+        <to>/red/yarpview/img:i</to>
+    </connection>
+
+    <module>
+        <name>cv1</name>
+        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /green/cv1 --maxNumBlobs 1 --algorithm greenMinusRed</parameters>
+        <node>localhost</node>
+    </module>
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /green/yarpview/img:i</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/green/cv1/img:o</from>
+        <to>/green/yarpview/img:i</to>
     </connection>
 
 </application>
