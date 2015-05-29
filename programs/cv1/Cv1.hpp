@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __VISION_DEPTH_HPP__
-#define __VISION_DEPTH_HPP__
+#ifndef __CV1_HPP__
+#define __CV1_HPP__
 
 #include "SegmentorThread.hpp"
 
@@ -37,5 +37,5 @@ class Cv1 : public RFModule {
     bool configure(ResourceFinder &rf);
 };
 
-#endif  // __VISION_DEPTH_HPP__
+#endif  // __CV1_HPP__
 
