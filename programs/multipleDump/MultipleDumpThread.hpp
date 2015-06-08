@@ -3,6 +3,8 @@
 #ifndef __MULTIPLE_DUMP_THREAD_HPP__
 #define __MULTIPLE_DUMP_THREAD_HPP__
 
+//#include <math.h>  // fabs
+
 #include <yarp/os/RFModule.h>
 #include <yarp/os/Module.h>
 #include <yarp/os/Network.h>
@@ -18,7 +20,7 @@ class MultipleDumpThread : public RateThread {
 
     public:
 
-        MultipleDumpThread() : RateThread(DEFAULT_RATE_MS) {}
+        MultipleDumpThread() : RateThread(DEFAULT_RATE_MS), firstTimeTaken(false) {}
 
         virtual void run();
 
@@ -31,6 +33,8 @@ protected:
         FILE * filePtr;
         BufferedPort<Bottle>* in1;
         BufferedPort<Bottle>* in2;
+        double firstTime;
+        bool firstTimeTaken;
 
 };
 

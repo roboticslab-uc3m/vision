@@ -16,8 +16,18 @@ void MultipleDumpThread::run() {
         //printf("No b2 yet...\n");
         return;
     }
+    if(!firstTimeTaken){
+        firstTimeTaken = true;
+        firstTime = Time::now();
+    }
+
     //printf("%f %s %s\n",Time::now(),b1->toString().c_str(),b2->toString().c_str());
-    fprintf(filePtr,"%f %s %s\n",Time::now(),b1->toString().c_str(),b2->toString().c_str());
+    fprintf(filePtr,"%f %s %s %f %f %f\n",Time::now()-firstTime,
+            b1->toString().c_str(),b2->toString().c_str(),
+            b1->get(0).asDouble()-b2->get(0).asDouble(),
+            b1->get(1).asDouble()-b2->get(1).asDouble(),
+            b1->get(2).asDouble()-b2->get(2).asDouble()
+            );
 
 }
 
