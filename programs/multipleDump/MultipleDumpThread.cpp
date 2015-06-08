@@ -21,12 +21,19 @@ void MultipleDumpThread::run() {
         firstTime = Time::now();
     }
 
+    double x1 = b1->get(0).asDouble();
+    double y1 = b1->get(1).asDouble();
+    double z1 = b1->get(2).asDouble();
+    double x2 = b2->get(0).asDouble();
+    double y2 = b2->get(1).asDouble();
+    double z2 = b2->get(2).asDouble();
+
     //printf("%f %s %s\n",Time::now(),b1->toString().c_str(),b2->toString().c_str());
-    fprintf(filePtr,"%f %s %s %f %f %f\n",Time::now()-firstTime,
+    fprintf(filePtr,"%f %s %s %f %f %f %f %f %f %f\n",Time::now()-firstTime,
             b1->toString().c_str(),b2->toString().c_str(),
-            b1->get(0).asDouble()-b2->get(0).asDouble(),
-            b1->get(1).asDouble()-b2->get(1).asDouble(),
-            b1->get(2).asDouble()-b2->get(2).asDouble()
+            x1-x2, y1-y2, z1-z2,
+            fabs(x1-x2), fabs(y1-y2), fabs(z1-z2),
+            sqrt( pow((x1-x2),2) + pow((y1-y2),2) + pow((z1-z2),2) )
             );
 
 }
