@@ -3,7 +3,7 @@
 #ifndef __MULTIPLE_DUMP_THREAD_HPP__
 #define __MULTIPLE_DUMP_THREAD_HPP__
 
-//#include <math.h>  // fabs
+#include <math.h>  // fabs
 
 #include <yarp/os/RFModule.h>
 #include <yarp/os/Module.h>
