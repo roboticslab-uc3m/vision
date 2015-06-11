@@ -29,10 +29,6 @@ void SegmentorThread::init(ResourceFinder &rf) {
     cx_rgb = DEFAULT_CX_RGB;
     cy_rgb = DEFAULT_CY_RGB;
 
-    height = DEFAULT_HEIGHT;
-    pan = DEFAULT_PAN;
-    tilt = DEFAULT_TILT;
-
     algorithm = DEFAULT_ALGORITHM;
     locate = DEFAULT_LOCATE;
     maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
@@ -59,10 +55,6 @@ void SegmentorThread::init(ResourceFinder &rf) {
         printf("\t--cx_rgb (default: \"%f\")\n",cx_rgb);
         printf("\t--cy_rgb (default: \"%f\")\n",cy_rgb);
 
-        printf("\t--pan (default: \"%f\")\n",pan);
-        printf("\t--tilt (default: \"%f\")\n",tilt);
-        printf("\t--height (default: \"%f\")\n",height);
-
         printf("\t--algorithm (default: \"%s\")\n",algorithm.c_str());
         printf("\t--locate (centroid or bottom; default: \"%s\")\n",locate.c_str());
         printf("\t--maxNumBlobs (default: \"%d\")\n",maxNumBlobs);
@@ -87,9 +79,6 @@ void SegmentorThread::init(ResourceFinder &rf) {
     if (rf.check("fy_rgb")) fy_rgb = rf.find("fy_rgb").asDouble();
     if (rf.check("cx_rgb")) cx_rgb = rf.find("cx_rgb").asDouble();
     if (rf.check("cy_rgb")) cy_rgb = rf.find("cy_rgb").asDouble();
-    if (rf.check("pan")) pan = rf.find("pan").asDouble();
-    if (rf.check("tilt")) tilt = rf.find("tilt").asDouble();
-    if (rf.check("height")) height = rf.find("height").asDouble();
     if (rf.check("algorithm")) algorithm = rf.find("algorithm").asString();
     if (rf.check("locate")) locate = rf.find("locate").asString();
     if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt();
@@ -101,8 +90,6 @@ void SegmentorThread::init(ResourceFinder &rf) {
         fx_d,fy_d,cx_d,cy_d);
     printf("SegmentorThread using fx_rgb: %f, fy_rgb: %f, cx_rgb: %f, cy_rgb: %f.\n",
         fx_rgb,fy_rgb,cx_rgb,cy_rgb);
-    printf("SegmentorThread using pan: %f, tilt: %f, height: %f.\n",
-        pan,tilt,height);
     printf("SegmentorThread using algorithm: %s, locate: %s.\n",
         algorithm.c_str(),locate.c_str());
     printf("SegmentorThread using maxNumBlobs: %d, morphClosing: %.2f, outFeaturesFormat: %d.\n",
@@ -124,33 +111,6 @@ void SegmentorThread::init(ResourceFinder &rf) {
     if(rf.check("help")) {
         ::exit(1);
     }
-
-    yarp::sig::Matrix H_0_c = rotZ(-90+pan);
-    H_0_c.resize(4,4);
-    H_0_c(0,3)=0;
-    H_0_c(1,3)=0;
-    H_0_c(2,3)=0;
-    H_0_c(3,0)=0;
-    H_0_c(3,1)=0;
-    H_0_c(3,2)=0;
-    H_0_c(3,3)=1;
-    printf("*** H_0_c *** \n(%s)\n\n", H_0_c.toString().c_str());
-
-    yarp::sig::Matrix H_c_k = rotX(-90.0+tilt);
-    H_c_k.resize(4,4);
-    //
-    H_c_k(0,3)=0;
-    H_c_k(1,3)=0;
-    H_c_k(2,3)=0;
-    H_c_k(3,0)=0;
-    H_c_k(3,1)=0;
-    H_c_k(3,2)=0;
-    //
-    H_c_k(2,3)=height;
-    H_c_k(3,3)=1;
-    printf("*** H_c_k *** \n(%s)\n\n", H_c_k.toString().c_str());
-
-    H_0_k = H_0_c * H_c_k;
 
     if(cropSelector != 0) {
         processor.reset();
@@ -244,7 +204,6 @@ void SegmentorThread::run() {
     outYarpImg.wrapIplImage(&outIplImage);
     PixelRgb blue(0,0,255);
     vector<double> mmX, mmY, mmZ;
-    vector<double> mmX_0, mmY_0, mmZ_0;
     if(blobsXY.size() < 1) {
         fprintf(stderr,"[warning] SegmentorThread run(): blobsXY.size() < 1.\n");
         //return;
@@ -263,27 +222,19 @@ void SegmentorThread::run() {
         }
         // double mmZ_tmp = depth->pixel(int(blobsXY[i].x +cx_d-cx_rgb),int(blobsXY[i].y +cy_d-cy_rgb));
         double mmZ_tmp = depth.pixel(int(blobsXY[i].x),int(blobsXY[i].y));
+
+        if (mmZ_tmp < 0.001) {
+            fprintf(stderr,"[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n",i);
+            return;
+        }
+
         double mmX_tmp = 1000.0 * ( (blobsXY[i].x - cx_d) * mmZ_tmp/1000.0 ) / fx_d;
         double mmY_tmp = 1000.0 * ( (blobsXY[i].y - cy_d) * mmZ_tmp/1000.0 ) / fy_d;
+
         mmZ.push_back( mmZ_tmp );
         mmX.push_back( mmX_tmp );
         mmY.push_back( mmY_tmp );
 
-        yarp::sig::Matrix X_k_P(4,1);
-        X_k_P(0,0)=mmX_tmp;
-        X_k_P(1,0)=mmY_tmp;
-        X_k_P(2,0)=mmZ_tmp;
-        X_k_P(3,0)=1;
-
-        yarp::sig::Matrix X_0_P = H_0_k * X_k_P;
-        if (mmZ_tmp < 0.001) {
-            X_0_P(0,0) = -99999999999;
-            X_0_P(1,0) = -99999999999;
-            X_0_P(2,0) = -99999999999;
-        }
-        mmX_0.push_back( X_0_P(0,0) );
-        mmY_0.push_back( X_0_P(1,0) );
-        mmZ_0.push_back( X_0_P(2,0) );
     }
 
     pOutImg->prepare() = outYarpImg;
@@ -323,61 +274,7 @@ void SegmentorThread::run() {
                     locZs.addDouble(mmZ[i]);
                 output.addList() = locZs;
             }
-        } else if ( outFeatures.get(elem).asString() == "mmX0" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmX_0[0]);
-            } else {
-                Bottle locXs;
-                for (int i = 0; i < blobsXY.size(); i++)
-                    locXs.addDouble(mmX_0[i]);
-                output.addList() = locXs;
-            }
-        } else if ( outFeatures.get(elem).asString() == "mmY0" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmY_0[0]);
-            } else {
-                Bottle locYs;
-                for (int i = 0; i < blobsXY.size(); i++)
-                    locYs.addDouble(mmY_0[i]);
-                output.addList() = locYs;
-            }
-        } else if ( outFeatures.get(elem).asString() == "mmZ0" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmZ_0[0]);
-            } else {
-                Bottle locZs;
-                for (int i = 0; i < blobsXY.size(); i++)
-                    locZs.addDouble(mmZ_0[i]);
-                output.addList() = locZs;
-            }
-         }else if ( outFeatures.get(elem).asString() == "mX0" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmX_0[0]/1000.0);
-            } else {
-                Bottle locXs;
-                for (int i = 0; i < blobsXY.size(); i++)
-                    locXs.addDouble(mmX_0[i]/1000.0);
-                output.addList() = locXs;
-            }
-        } else if ( outFeatures.get(elem).asString() == "mY0" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmY_0[0]/1000.0);
-            } else {
-                Bottle locYs;
-                for (int i = 0; i < blobsXY.size(); i++)
-                    locYs.addDouble(mmY_0[i]/1000.0);
-                output.addList() = locYs;
-            }
-        } else if ( outFeatures.get(elem).asString() == "mZ0" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmZ_0[0]/1000.0);
-            } else {
-                Bottle locZs;
-                for (int i = 0; i < blobsXY.size(); i++)
-                    locZs.addDouble(mmZ_0[i]/1000.0);
-                output.addList() = locZs;
-            }
-         } else if ( outFeatures.get(elem).asString() == "pxXpos" ) {
+        } else if ( outFeatures.get(elem).asString() == "pxXpos" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsXY[0].x);
             } else {
@@ -429,15 +326,6 @@ void SegmentorThread::run() {
                 Bottle areas;
                 for (int i = 0; i < blobsArea.size(); i++)
                     areas.addDouble(blobsArea[i]);
-                output.addList() = areas;
-            }
-        } else if ( outFeatures.get(elem).asString() == "realArea" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(  sqrt(blobsArea[0]) * mmX_0[0]/1000.0 );
-            } else {
-                Bottle areas;
-                for (int i = 0; i < blobsArea.size(); i++)
-                    areas.addDouble(  sqrt(blobsArea[i]) * mmX_0[i]/1000.0 );
                 output.addList() = areas;
             }
         } else if ( outFeatures.get(elem).asString() == "aspectRatio" ) {
@@ -548,7 +436,10 @@ void SegmentorThread::run() {
                     times.addDouble(Time::now());
                 output.addList() = times;
             }
-        } else fprintf(stderr,"[SegmentorThread] warning: bogus outFeatures.\n");
+        } else {
+            fprintf(stderr,"[SegmentorThread] error: bogus outFeatures.\n");
+            return;
+        }
     }
     pOutPort->write(output);
 

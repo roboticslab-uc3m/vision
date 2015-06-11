@@ -15,8 +15,6 @@
 
 #include <yarp/sig/all.h>
 
-#include <yarp/math/Math.h>
-
 #include "cv.h"
 //#include "highgui.h" // to show windows
 
@@ -25,7 +23,6 @@
 #include "opencv2/imgproc/imgproc.hpp"
 
 #include "TravisLib.hpp"
-#include "TinyMath.hpp"
 
 // thanks! https://web.stanford.edu/~qianyizh/projects/scenedata.html
 #define DEFAULT_FX_D          525.0  // 640x480
@@ -36,10 +33,6 @@
 #define DEFAULT_FY_RGB        525.0  //
 #define DEFAULT_CX_RGB        319.5  //
 #define DEFAULT_CY_RGB        239.5  //
-
-#define DEFAULT_HEIGHT         512     // Base TransZ [mm]
-#define DEFAULT_PAN            0     // Base RotZ [deg]
-#define DEFAULT_TILT           -42     // Extra RotY [deg], neg looks down as in OpenNI, -42 goes good with real -50
 
 #define DEFAULT_ALGORITHM "blueMinusRed"
 #define DEFAULT_LOCATE "centroid"
@@ -118,11 +111,7 @@ private:
     //
     double fx_d,fy_d,cx_d,cy_d,fx_rgb,fy_rgb,cx_rgb,cy_rgb;
     //
-    double height, pan, tilt;
-    //
     Bottle outFeatures;
-    //
-    yarp::sig::Matrix H_0_k;
     //
     int cropSelector;
     BufferedPort<ImageOf<PixelRgb> >* outCropSelectorImg;
