@@ -9,6 +9,8 @@
 #include <yarp/os/BufferedPort.h>
 
 #include <kdl/frames.hpp>
+#include <kdl/chain.hpp>
+#include <kdl/chainfksolverpos_recursive.hpp>
 
 using namespace yarp::os;
 

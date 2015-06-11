@@ -16,12 +16,21 @@ void PremultPorts::onRead(Bottle& b) {
         exit(1);  // case: other --> still not implemented
     }
 
+    double l0 = 191.7;
     double l1 = 305;
     double l3 = 59.742;
     double l14 = 18;
 
     //-- H_root_hip (TRUNK) --
+    KDL::Chain trunkChain;
+    trunkChain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ),
+                                       KDL::Frame().DH(0,-M_PI/2.0,l0,0)));  // A, alpha, D, off.
+    trunkChain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ),
+                                       KDL::Frame().DH(0,0,0,0)));  // A, alpha, D, off.
+    KDL::ChainFkSolverPos_recursive trunkFksolver = KDL::ChainFkSolverPos_recursive(trunkChain);
+    KDL::JntArray qTrunkInRad = KDL::JntArray(2);
     KDL::Frame H_root_hip;
+    trunkFksolver.JntToCart(qTrunkInRad,H_root_hip);
 
     //-- H_hip_neck (fixed) --
     KDL::Frame H_hip_neck_m1;
@@ -33,7 +42,15 @@ void PremultPorts::onRead(Bottle& b) {
     KDL::Frame H_hip_neck = H_hip_neck_m1 * H_hip_neck_m2;
 
     //-- H_neck_head (HEAD) --
+    KDL::Chain headChain;
+    headChain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ),
+                                       KDL::Frame().DH(0,M_PI/2.0,0,0)));  // A, alpha, D, off.
+    headChain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ),
+                                       KDL::Frame().DH(0,0,0,0)));  // A, alpha, D, off.
+    KDL::ChainFkSolverPos_recursive headFksolver = KDL::ChainFkSolverPos_recursive(headChain);
+    KDL::JntArray qHeadInRad = KDL::JntArray(2);
     KDL::Frame H_neck_head;
+    headFksolver.JntToCart(qHeadInRad,H_neck_head);
 
     //-- H_head_rgb (fixed) --
     KDL::Frame H_head_rgb_m1;
