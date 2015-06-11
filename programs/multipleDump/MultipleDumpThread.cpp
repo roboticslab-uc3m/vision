@@ -27,6 +27,8 @@ void MultipleDumpThread::run() {
     double x2 = b2->get(0).asDouble();
     double y2 = b2->get(1).asDouble();
     double z2 = b2->get(2).asDouble();
+    if (z1 < -999999 ) return;
+    if (z2 < -999999 ) return;
 
     //printf("%f %s %s\n",Time::now(),b1->toString().c_str(),b2->toString().c_str());
     fprintf(filePtr,"%f %s %s %f %f %f %f %f %f %f\n",Time::now()-firstTime,
