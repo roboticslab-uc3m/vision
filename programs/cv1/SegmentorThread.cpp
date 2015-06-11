@@ -231,9 +231,9 @@ void SegmentorThread::run() {
         double mmX_tmp = 1000.0 * ( (blobsXY[i].x - cx_d) * mmZ_tmp/1000.0 ) / fx_d;
         double mmY_tmp = 1000.0 * ( (blobsXY[i].y - cy_d) * mmZ_tmp/1000.0 ) / fy_d;
 
-        mmZ.push_back( mmZ_tmp );
-        mmX.push_back( mmX_tmp );
-        mmY.push_back( mmY_tmp );
+        mmX.push_back( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
+        mmY.push_back( mmY_tmp );    // Points down.
+        mmZ.push_back( mmZ_tmp );    // oints forward.
 
     }
 
