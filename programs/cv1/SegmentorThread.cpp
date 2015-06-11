@@ -60,9 +60,9 @@ void SegmentorThread::init(ResourceFinder &rf) {
         printf("\t--maxNumBlobs (default: \"%d\")\n",maxNumBlobs);
         printf("\t--morphClosing (percentage, 2 or 4 okay; default: \"%f\")\n",morphClosing);
         printf("\t--morphOpening (percentage, 2 or 4 okay; default: \"%f\")\n",morphOpening);
-        printf("\t--outFeatures (rawX,rawY,locX,locY,locZ,locX0,locY0,locZ0,angle,area,aspectRatio,axisFirst,axisSecond,\n \
-                solidity,rectangularty,hue,sat,val,hueStdDev,satStdDev,valStdDev;\n \
-                default: \"(%s)\")\n",outFeatures.toString().c_str());
+        printf("\t--outFeatures (mmX,mmY,mmZ,pxXpos,pxYpos,pxX,pxY,angle,area,aspectRatio,rectangularity,axisFirst,axisSecond \
+solidity,hue,sat,val,hueStdDev,satStdDev,valStdDev,time; \
+default: \"(%s)\")\n",outFeatures.toString().c_str());
         printf("\t--outFeaturesFormat (0=bottled,1=minimal; default: \"%d\")\n",outFeaturesFormat);
         printf("\t--outImage (0=rgb,1=bin; default: \"%d\")\n",outImage);
         printf("\t--rateMs (default: \"%d\")\n",rateMs);
@@ -437,8 +437,9 @@ void SegmentorThread::run() {
                 output.addList() = times;
             }
         } else {
-            fprintf(stderr,"[SegmentorThread] error: bogus outFeatures.\n");
-            return;
+            fprintf(stderr,"[SegmentorThread] [error] bogus outFeatures: %s\n",
+                    outFeatures.get(elem).asString().c_str());
+            exit(0);
         }
     }
     pOutPort->write(output);
