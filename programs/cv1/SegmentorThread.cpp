@@ -194,12 +194,12 @@ void SegmentorThread::run() {
     cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2BGR);
     Mat inCvMat(inIplImage);
 
-    PixelRgb green(0,255,0);
     // publish the original yarp img if crop selector invoked.
     if(cropSelector != 0) {
         //printf("1 x: %d, y: %d, w: %d, h: %d.\n",processor.x,processor.y,processor.w,processor.h);
         if( (processor.w!=0)&&(processor.h!=0)) {
             travisCrop(processor.x,processor.y,processor.w,processor.h,inCvMat);
+            PixelRgb green(0,255,0);
             addRectangleOutline(inYarpImg,green,processor.x+processor.w/2.0,processor.y+processor.h/2.0,processor.w/2.0,processor.h/2.0);
         }
         outCropSelectorImg->prepare() = inYarpImg;
