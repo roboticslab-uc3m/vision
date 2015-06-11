@@ -16,29 +16,49 @@ void PremultPorts::onRead(Bottle& b) {
         exit(1);  // case: other --> still not implemented
     }
 
-    yarp::sig::Matrix H_root_hip(4,4);  // TRUNK
-    H_root_hip.eye();
+    double l1 = 305;
+    double l3 = 59.742;
+    double l14 = 18;
 
-    yarp::sig::Matrix H_hip_neck(4,4);  // fixed
-    H_hip_neck.eye();
+    //-- H_root_hip (TRUNK) --
+    KDL::Frame H_root_hip;
 
-    yarp::sig::Matrix H_neck_head(4,4);  // HEAD
-    H_neck_head.eye();
+    //-- H_hip_neck (fixed) --
+    KDL::Frame H_hip_neck_m1;
+    H_hip_neck_m1.p.data[1] = -l1;
 
-    yarp::sig::Matrix H_head_rgb(4,4);  // fixed
-    H_head_rgb.eye();
+    KDL::Frame H_hip_neck_m2;
+    H_hip_neck_m2.M = KDL::Rotation::RotX(M_PI);
 
-    yarp::sig::Matrix P_rgb(4,1);
-    P_rgb(0,1) = b.get(0).asDouble();
-    P_rgb(1,1) = b.get(1).asDouble();
-    P_rgb(2,1) = b.get(2).asDouble();
-    P_rgb(3,1) = 1.0;
+    KDL::Frame H_hip_neck = H_hip_neck_m1 * H_hip_neck_m2;
 
-    yarp::sig::Matrix P_root = H_root_hip * H_hip_neck * H_neck_head * H_head_rgb * P_rgb;  // Needs all elems
+    //-- H_neck_head (HEAD) --
+    KDL::Frame H_neck_head;
+
+    //-- H_head_rgb (fixed) --
+    KDL::Frame H_head_rgb_m1;
+    H_head_rgb_m1.p.data[2] = -l14;
+    H_head_rgb_m1.p.data[1] = l3;
+
+    KDL::Frame H_head_rgb_m2;
+    H_head_rgb_m2.M = KDL::Rotation::RotY(M_PI/2.0);
+
+    KDL::Frame H_head_rgb_m3;
+    H_head_rgb_m2.M = KDL::Rotation::RotZ(M_PI);
+
+    KDL::Frame H_head_rgb = H_head_rgb_m1 * H_head_rgb_m2 * H_head_rgb_m3;
+
+    //--
+    KDL::Frame H_rgb;
+    H_rgb.p.data[0] = b.get(0).asDouble();
+    H_rgb.p.data[1] = b.get(1).asDouble();
+    H_rgb.p.data[2] = b.get(2).asDouble();
+
+    KDL::Frame H_root = H_root_hip * H_hip_neck * H_neck_head * H_head_rgb * H_rgb;
     Bottle outB;
-    outB.addDouble(P_root(0,1));
-    outB.addDouble(P_root(1,1));
-    outB.addDouble(P_root(2,1));
+    outB.addDouble(H_root.p.x());
+    outB.addDouble(H_root.p.y());
+    outB.addDouble(H_root.p.z());
     outPort->write(outB);
 }
 
