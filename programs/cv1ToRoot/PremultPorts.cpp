@@ -29,6 +29,8 @@ void PremultPorts::onRead(Bottle& b) {
                                        KDL::Frame().DH(0,0,0,0)));  // A, alpha, D, off.
     KDL::ChainFkSolverPos_recursive trunkFksolver = KDL::ChainFkSolverPos_recursive(trunkChain);
     KDL::JntArray qTrunkInRad = KDL::JntArray(2);
+    qTrunkInRad(0) = 0.0;
+    qTrunkInRad(1) = 0.0;
     KDL::Frame H_root_hip;
     trunkFksolver.JntToCart(qTrunkInRad,H_root_hip);
 
@@ -37,7 +39,7 @@ void PremultPorts::onRead(Bottle& b) {
     H_hip_neck_m1.p.data[1] = -l1;
 
     KDL::Frame H_hip_neck_m2;
-    H_hip_neck_m2.M = KDL::Rotation::RotX(M_PI);
+    H_hip_neck_m2.M = KDL::Rotation::RotX(M_PI/2.0);
 
     KDL::Frame H_hip_neck = H_hip_neck_m1 * H_hip_neck_m2;
 
@@ -49,6 +51,8 @@ void PremultPorts::onRead(Bottle& b) {
                                        KDL::Frame().DH(0,0,0,0)));  // A, alpha, D, off.
     KDL::ChainFkSolverPos_recursive headFksolver = KDL::ChainFkSolverPos_recursive(headChain);
     KDL::JntArray qHeadInRad = KDL::JntArray(2);
+    qHeadInRad(0) = 0.0;
+    qHeadInRad(1) = 0.0;
     KDL::Frame H_neck_head;
     headFksolver.JntToCart(qHeadInRad,H_neck_head);
 
