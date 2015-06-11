@@ -3,15 +3,14 @@
 #ifndef __PREMULT_PORTS__
 #define __PREMULT_PORTS__
 
-//#include <math.h>
+#include <stdlib.h>
 
 #include <yarp/os/Port.h>
 #include <yarp/os/BufferedPort.h>
-#include <yarp/sig/Matrix.h>
-#include <yarp/math/Math.h>
+
+#include <kdl/frames.hpp>
 
 using namespace yarp::os;
-using namespace yarp::math;
 
 /**
  * @ingroup PremultPorts
