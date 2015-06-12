@@ -18,6 +18,7 @@ void PremultPorts::onRead(Bottle& b) {
 
     double l0 = 191.7;
     double l1 = 305;
+    double l2 = 161.3;
     double l3 = 59.742;
     double l14 = 18;
 
@@ -36,10 +37,10 @@ void PremultPorts::onRead(Bottle& b) {
 
     //-- H_hip_neck (fixed) --
     KDL::Frame H_hip_neck_m1;
-    H_hip_neck_m1.p.data[1] = -l1;
+    H_hip_neck_m1.M = KDL::Rotation::RotX(M_PI/2.0);
 
     KDL::Frame H_hip_neck_m2;
-    H_hip_neck_m2.M = KDL::Rotation::RotX(M_PI/2.0);
+    H_hip_neck_m2.p.data[2] = l1+l2;
 
     KDL::Frame H_hip_neck = H_hip_neck_m1 * H_hip_neck_m2;
 
@@ -65,7 +66,7 @@ void PremultPorts::onRead(Bottle& b) {
     H_head_rgb_m2.M = KDL::Rotation::RotY(M_PI/2.0);
 
     KDL::Frame H_head_rgb_m3;
-    H_head_rgb_m2.M = KDL::Rotation::RotZ(M_PI);
+    H_head_rgb_m3.M = KDL::Rotation::RotZ(M_PI);
 
     KDL::Frame H_head_rgb = H_head_rgb_m1 * H_head_rgb_m2 * H_head_rgb_m3;
 
