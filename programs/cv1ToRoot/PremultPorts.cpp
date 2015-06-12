@@ -53,7 +53,7 @@ void PremultPorts::onRead(Bottle& b) {
     KDL::ChainFkSolverPos_recursive headFksolver = KDL::ChainFkSolverPos_recursive(headChain);
     KDL::JntArray qHeadInRad = KDL::JntArray(2);
     qHeadInRad(0) = 0.0;
-    qHeadInRad(1) = M_PI/4.0;
+    qHeadInRad(1) = -M_PI/4.0;
     KDL::Frame H_neck_head;
     headFksolver.JntToCart(qHeadInRad,H_neck_head);
 
