@@ -225,6 +225,8 @@ void SegmentorThread::run() {
 
         if (mmZ_tmp < 0.001) {
             fprintf(stderr,"[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n",i);
+            cvReleaseImage( &inIplImage );  // release the memory for the image
+            outCvMat.release();
             return;
         }
 
