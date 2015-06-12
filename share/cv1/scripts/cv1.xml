@@ -46,16 +46,36 @@
     </connection>
 
     <module>
+        <name>cv1ToRoot</name>
+        <prefix>/red</prefix>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/red/cv1/state:o</from>
+        <to>/red/in</to>
+    </connection>
+
+    <module>
+        <name>cv1ToRoot</name>
+        <prefix>/green</prefix>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/green/cv1/state:o</from>
+        <to>/green/in</to>
+    </connection>
+
+    <module>
         <name>multipleDump</name>
         <parameters>--file move</parameters>
         <node>localhost</node>
     </module>
     <connection>
-        <from>/red/cv1/state:o</from>
+        <from>/red/out</from>
         <to>/in1</to>
     </connection>
     <connection>
-        <from>/green/cv1/state:o</from>
+        <from>/green/out</from>
         <to>/in2</to>
     </connection>
 
