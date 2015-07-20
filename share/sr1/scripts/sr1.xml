@@ -1,0 +1,13 @@
+<application>
+<name>sr1 App</name>
+    <module>
+        <name>sr1</name>
+        <node>/head</node>
+    </module>
+
+    <module>
+        <name>iSpeak</name>
+        <node>/head</node>
+    </module>
+</application>
+
