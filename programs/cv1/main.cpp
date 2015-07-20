@@ -1,5 +1,11 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
+/**
+ *
+ * @ingroup teo_head_programs
+ * \defgroup cv1 cv1
+ */
+
 #include "Cv1.hpp"
 
 int main(int argc, char** argv) {
