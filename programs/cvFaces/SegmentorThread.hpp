@@ -49,6 +49,8 @@ using namespace yarp::dev;
 using namespace yarp::sig;
 using namespace yarp::sig::draw;
 
+using namespace cv;
+
 class DataProcessor : public PortReader {
     virtual bool read(ConnectionReader& connection) {
         Bottle b;
