@@ -30,7 +30,7 @@ class DemoApp(object):
 	rf.setDefaultContext('sr1')
 	rf.setDefaultConfigFile('sr1.ini')
         self.my_lm = rf.findFileByName('words-20150720.lm')
-        self.my_dict = rf.findFileByName('words-20150720.dict')
+        self.my_dic = rf.findFileByName('words-20150720.dic')
         self.outPort = yarp.Port()
         self.outPort.open('/asr:o')
         self.init_gst()
@@ -43,7 +43,7 @@ class DemoApp(object):
         asr = self.pipeline.get_by_name('asr')
         asr.connect('result', self.asr_result)
         asr.set_property('lm', self.my_lm )
-        asr.set_property('dict', self.my_dict )
+        asr.set_property('dict', self.my_dic )
         asr.set_property('configured', True)
 
         bus = self.pipeline.get_bus()
