@@ -13,4 +13,5 @@ yarp_install(FILES ymanager.ini DESTINATION ${TEO-HEAD_DATA_INSTALL_DIR})  # Cle
 ### Go through single applications
 
 add_subdirectory(cv1)
+add_subdirectory(sr1)
 
