@@ -2,7 +2,7 @@
 /**
  * \page teo_head_install_on_ubuntu_15_04 Installation from Source Code (Ubuntu 15.04)
 
- * @section install_teo_body Install the Software
+ * @section install_teo_body_vision Install the Software (Vision)
 
 First install the depencencies:
 
@@ -54,6 +54,17 @@ sudo make install  # Install :-)
 \endverbatim
 
 For additional TEO options use ccmake instead of cmake.
+
+ * @section install_teo_body_vision Install the Software (Extra)
+
+KDL for transformations to root.
+
+ * @section install_teo_body_vision Install the Software (TTS)
+
+We currently use iSpeak from https://github.com/robotology/speech
+Install festival (sudo apt-get install festival) and https://github.com/robotology/icub-contrib-common first.
+To force festival to spanish, from http://ubuntulinuxafondo.blogspot.com.es/2012/09/instalar-festival-con-voz-en-espanol-en.html we have:
+wget http://forja.guadalinex.org/frs/download.php/154/festvox-sflpc16k_1.0-1_all.deb && dpkg -i festvox-sflpc16k_1.0-1_all.deb
 
 Done! You are now probably interested in one of the following links:
   \li \ref teo_head_post_install
