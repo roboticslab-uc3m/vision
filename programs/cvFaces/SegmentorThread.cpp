@@ -112,6 +112,13 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
         ::exit(1);
     }
 
+    std::string cascade = rf.findFileByName("haarcascade_frontalface_alt.xml");
+    if( ! face_cascade.load( cascade ) ) {
+        printf("[error] no cascade!\n");
+        ::exit(1);
+    }
+
+
     if(cropSelector != 0) {
         processor.reset();
         inCropSelectorPort->setReader(processor);
@@ -154,14 +161,29 @@ void SegmentorThread::run() {
     cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2GRAY);
     Mat inCvMat(inIplImage);
 
+    std::vector<Rect> faces;
+    face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0, Size(70, 70));
+    for( int i = 0; i < faces.size(); i++ ){
+    //    rectangle(frame,faces[i],ORANGE,2);
+    }
 
+    cv::Mat outChannels[3];
+    outChannels[0] = inIplImage;
+    outChannels[1] = inIplImage;
+    outChannels[2] = inIplImage;
+    cv::Mat outCvMat;
+    cv::merge(outChannels, 3, outCvMat);
+    ImageOf<PixelRgb> outYarpImg;
 
-/*    pOutImg->prepare() = outYarpImg;
+    pOutImg->prepare() = outYarpImg;
     pOutImg->write();
     cvReleaseImage( &inIplImage );  // release the memory for the image
+    outChannels[0].release();
+    outChannels[1].release();
+    outChannels[2].release();
     outCvMat.release();  // cvReleaseImage( &outIplImage );  // release the memory for the image
 
-    pOutPort->write(output);*/
+    //pOutPort->write(output);
 
 }
 

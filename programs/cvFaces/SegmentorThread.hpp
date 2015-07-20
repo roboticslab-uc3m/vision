@@ -118,6 +118,8 @@ private:
     Port* inCropSelectorPort;
     DataProcessor processor;
 
+    CascadeClassifier face_cascade;
+
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
 
