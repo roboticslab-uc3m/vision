@@ -25,7 +25,12 @@ class DemoApp(object):
     """GStreamer/PocketSphinx Demo Application"""
     def __init__(self):
         """Initialize a DemoApp object"""
-        self.models_dir = os.path.join(os.environ['TEO_HEAD_ROOT'],'app','asr','models','default')
+	rf = yarp.ResourceFinder()
+	rf.setVerbose(True)
+	rf.setDefaultContext('sr1')
+	rf.setDefaultConfigFile('sr1.ini')
+        self.my_lm = rf.findFileByName('words-20150720.lm')
+        self.my_dict = rf.findFileByName('words-20150720.dict')
         self.outPort = yarp.Port()
         self.outPort.open('/asr:o')
         self.init_gst()
@@ -37,8 +42,8 @@ class DemoApp(object):
                                          + '! pocketsphinx name=asr ! fakesink')
         asr = self.pipeline.get_by_name('asr')
         asr.connect('result', self.asr_result)
-        asr.set_property('lm', os.path.join(self.models_dir,'model5.lm') )
-        asr.set_property('dict', os.path.join(self.models_dir,'dict5.dic') )
+        asr.set_property('lm', self.my_lm )
+        asr.set_property('dict', self.my_dict )
         asr.set_property('configured', True)
 
         bus = self.pipeline.get_bus()
