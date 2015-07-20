@@ -167,18 +167,23 @@ void SegmentorThread::run() {
 
     ImageOf<PixelRgb> outYarpImg = inYarpImg;
     PixelRgb red(255,0,0);
+    Bottle output;
     for( int i = 0; i < faces.size(); i++ ){
         //    rectangle(frame,faces[i],ORANGE,2);
-        addCircle(outYarpImg,red,faces[i].x,faces[i].y,3);
-        printf("face %d: %d %d\n",i,faces[i].x,faces[i].y);
-    }
+        addRectangleOutline(outYarpImg,red,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
+                            faces[i].width/2,faces[i].height/2);
 
+        //printf("face %d: %d %d\n",i,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2);
+        output.addDouble( faces[i].x+faces[i].width/2 );
+        output.addDouble( faces[i].y+faces[i].height/2 );
+    }
 
     pOutImg->prepare() = outYarpImg;
     pOutImg->write();
     cvReleaseImage( &inIplImage );  // release the memory for the image
 
-    //pOutPort->write(output);
+    if (output.size() > 0)
+        pOutPort->write(output);
 
 }
 
