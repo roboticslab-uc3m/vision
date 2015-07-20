@@ -173,7 +173,12 @@ void SegmentorThread::run() {
     outChannels[2] = inIplImage;
     cv::Mat outCvMat;
     cv::merge(outChannels, 3, outCvMat);
+    IplImage outIplImage = outCvMat;
+    cvCvtColor(&outIplImage,&outIplImage, CV_BGR2RGB);
+    char sequence[] = "RGB";
+    strcpy (outIplImage.channelSeq,sequence);
     ImageOf<PixelRgb> outYarpImg;
+    outYarpImg.wrapIplImage(&outIplImage);
 
     pOutImg->prepare() = outYarpImg;
     pOutImg->write();
