@@ -162,31 +162,21 @@ void SegmentorThread::run() {
     Mat inCvMat(inIplImage);
 
     std::vector<Rect> faces;
-    face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0, Size(70, 70));
+    //face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0, Size(70, 70));
+    face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+
+    ImageOf<PixelRgb> outYarpImg = inYarpImg;
+    PixelRgb red(255,0,0);
     for( int i = 0; i < faces.size(); i++ ){
-    //    rectangle(frame,faces[i],ORANGE,2);
+        //    rectangle(frame,faces[i],ORANGE,2);
+        addCircle(outYarpImg,red,faces[i].x,faces[i].y,3);
+        printf("face %d: %d %d\n",i,faces[i].x,faces[i].y);
     }
 
-    cv::Mat outChannels[3];
-    outChannels[0] = inIplImage;
-    outChannels[1] = inIplImage;
-    outChannels[2] = inIplImage;
-    cv::Mat outCvMat;
-    cv::merge(outChannels, 3, outCvMat);
-    IplImage outIplImage = outCvMat;
-    cvCvtColor(&outIplImage,&outIplImage, CV_BGR2RGB);
-    char sequence[] = "RGB";
-    strcpy (outIplImage.channelSeq,sequence);
-    ImageOf<PixelRgb> outYarpImg;
-    outYarpImg.wrapIplImage(&outIplImage);
 
     pOutImg->prepare() = outYarpImg;
     pOutImg->write();
     cvReleaseImage( &inIplImage );  // release the memory for the image
-    outChannels[0].release();
-    outChannels[1].release();
-    outChannels[2].release();
-    outCvMat.release();  // cvReleaseImage( &outIplImage );  // release the memory for the image
 
     //pOutPort->write(output);
 
