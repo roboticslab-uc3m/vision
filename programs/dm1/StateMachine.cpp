@@ -46,7 +46,7 @@ void StateMachine::run() {
         } else if (_machineState==3) {
             ConstString words( _inStrState1.substr( _inStrState1.find("this is a ")+10, _inStrState1.length()) );
             Bottle bWords(words);
-            _outTextPort->write(bWords);
+            outTextPort->write(bWords);
             ConstString outStr("Okay, perfect. I've grounded this information on");
             for(int i=0;i<bWords.size();i++) {
                 outStr += " ";
@@ -67,12 +67,12 @@ void StateMachine::run() {
             cmd.addInt(1);
             cmd.addInt(2);
             cmd.addInt(3);
-            _fittingClient->write(cmd,response);
+            //_fittingClient->write(cmd,response);
             cmd.clear();
             response.clear();
             cmd.addVocab(VOCAB_FIT);
             cmd.append(bWords);
-            _fittingClient->write(cmd,response);
+            //_fittingClient->write(cmd,response);
             ConstString outStr("That would be somewhere around coordinates ");
             outStr += response.toString();
             outStr += ", i believe.";
@@ -90,13 +90,13 @@ void StateMachine::run() {
             cmd.addInt(4);
             cmd.addInt(5);
             //cmd.addInt(6);  // for real
-            bool ok = _fittingClient->write(cmd,response);
-            if (!ok) printf("[WARNING] fitting failed!!!\n");
+            //bool ok = _fittingClient->write(cmd,response);
+            //if (!ok) printf("[WARNING] fitting failed!!!\n");
             cmd.clear();
             response.clear();
             cmd.addVocab(VOCAB_FIT);
             cmd.append(bWords);
-            _fittingClient->write(cmd,response);
+            //_fittingClient->write(cmd,response);
 
             printf("Fit returned: %s.\n",response.toString().c_str());
             
@@ -104,7 +104,7 @@ void StateMachine::run() {
             vector< vector <double> > objFeats;
             for(int scene=0; scene<iters; scene++) {
 
-                Bottle* allFeatsBottle = _inFeaturesPort->read(true);  //true->blocking
+                Bottle* allFeatsBottle = inCvPort->read(true);  //true->blocking
                 size_t numFeatures = allFeatsBottle->size();
 
                 Bottle* tmpFeatBottle = allFeatsBottle->get(0).asList();
@@ -137,7 +137,7 @@ void StateMachine::run() {
                     Bottle responseG;
                     cmdG.addVocab(VOCAB_MAX);
                     cmdG.addInt(featIdx+1);
-                    if (! _groundingClient->write(cmdG,responseG) ) printf("[WARNING] grounding failed!!!\n");
+                    //if (! _groundingClient->write(cmdG,responseG) ) printf("[WARNING] grounding failed!!!\n");
                     double numMax = responseG.get(0).asDouble();  // get(0):min, get(1):max
                     printf("* Feature: %d ",featIdx+1);
                     double target = response.get(featIdx).asDouble();
@@ -193,7 +193,7 @@ void StateMachine::run() {
 
             outPoints.addInt(int(objFeats[minDistIdxS][5]));
             outPoints.addInt(int(objFeats[minDistIdxS][6]));
-            _outPointsPort->write(outPoints);
+            outPointsPort->write(outPoints);
             
 			if( _inStrState1 == "touch a red large circle") {
 				system("redLargeCircle.py");
@@ -239,14 +239,14 @@ void StateMachine::run() {
 void StateMachine::ttsSay(const ConstString& sayConstString) {
     Bottle bOut;
     bOut.addString(sayConstString);
-    _outTtsPort->write(bOut);
+    outTtsPort->write(bOut);
     printf("[StateMachine] Said: %s\n", sayConstString.c_str());
 }
 
 /************************************************************************/
 
 ConstString StateMachine::asrListen() {
-    Bottle* bIn = _inAsrPort->read(true);  // shouldWait
+    Bottle* bIn = inSrPort->read(true);  // shouldWait
     printf("[StateMachine] Listened: %s\n", bIn->toString().c_str());
     return bIn->get(0).asString();
 }
@@ -259,51 +259,26 @@ int StateMachine::getMachineState() {
 
 /************************************************************************/
 
-void StateMachine::setInAsrPort(yarp::os::BufferedPort<yarp::os::Bottle>* inAsrPort) {
-    _inAsrPort = inAsrPort;
+void StateMachine::setInSrPort(yarp::os::BufferedPort<yarp::os::Bottle>* inSrPort) {
+    this->inSrPort = inSrPort;
 }
 
 /************************************************************************/
 
-void StateMachine::setInFeaturesPort(yarp::os::BufferedPort<yarp::os::Bottle>* inFeaturesPort) {
-    _inFeaturesPort = inFeaturesPort;
+void StateMachine::setInCvPort(yarp::os::BufferedPort<yarp::os::Bottle>* inCvPort) {
+    this->inCvPort = inCvPort;
 }
 
 /************************************************************************/
 
 void StateMachine::setOutPointsPort(yarp::os::Port* outPointsPort) {
-    _outPointsPort = outPointsPort;
-}
-
-/************************************************************************/
-
-void StateMachine::setOutTextPort(yarp::os::Port* outTextPort) {
-    _outTextPort = outTextPort;
+    this->outPointsPort = outPointsPort;
 }
 
 /************************************************************************/
 
 void StateMachine::setOutTtsPort(yarp::os::Port* outTtsPort) {
-    _outTtsPort = outTtsPort;
+    this->outTtsPort = outTtsPort;
 }
 
 /************************************************************************/
-
-void StateMachine::setFittingClient(yarp::os::RpcClient* fittingClient) {
-    _fittingClient = fittingClient;
-}
-
-/************************************************************************/
-
-void StateMachine::setGroundingClient(yarp::os::RpcClient* groundingClient) {
-    _groundingClient = groundingClient;
-}
-
-/************************************************************************/
-
-void StateMachine::setSolverClient(yarp::os::RpcClient* solverClient) {
-    _solverClient = solverClient;
-}
-
-/************************************************************************/
-

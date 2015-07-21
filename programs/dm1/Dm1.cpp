@@ -23,28 +23,20 @@ bool Dm1::configure(ResourceFinder &rf) {
     }
 
     //-----------------OPEN LOCAL PORTS------------//
-    _outPointsPort.open("/dm1/points:o");
-    _outTextPort.open("/dm1/text:o");
-    _outTtsPort.open("/dm1/tts:o");
-    _inAsrPort.open("/dm1/asr:i");
-    _inFeaturesPort.open("/dm1/features:i");
-    _fittingClient.open("/dm1/fitting/rpc:o");
-    _groundingClient.open("/dm1/grounding/rpc:o");
-    _solverClient.open("/dm1/solver/rpc:o");
-    _stateMachine.setOutPointsPort(&_outPointsPort);
-    _stateMachine.setOutTextPort(&_outTextPort);
-    _stateMachine.setInFeaturesPort(&_inFeaturesPort);
-    _stateMachine.setOutTtsPort(&_outTtsPort);
-    _stateMachine.setInAsrPort(&_inAsrPort);
-    _stateMachine.setFittingClient(&_fittingClient);
-    _stateMachine.setGroundingClient(&_groundingClient);
-    _stateMachine.setSolverClient(&_solverClient);
+    outPointsPort.open("/dm1/points:o");
+    outTtsPort.open("/dm1/tts:o");
+    inSrPort.open("/dm1/sr:i");
+    inCvPort.open("/dm1/cv:i");
+    stateMachine.setOutPointsPort(&outPointsPort);
+    stateMachine.setInCvPort(&inCvPort);
+    stateMachine.setOutTtsPort(&outTtsPort);
+    stateMachine.setInSrPort(&inSrPort);
     while(1){
-        if(_outTtsPort.getOutputCount() > 0) break;
+        if(outTtsPort.getOutputCount() > 0) break;
         printf("Waiting for \"/dm1/tts:o\" to be connected to something...\n");
         Time::delay(0.5);
     }    
-    _stateMachine.start();
+    stateMachine.start();
     return true;
 }
 
@@ -55,7 +47,7 @@ double Dm1::getPeriod() {
 
 /************************************************************************/
 bool Dm1::updateModule() {
-    printf("StateMachine in state [%d]. Dm1 alive...\n", _stateMachine.getMachineState());
+    printf("StateMachine in state [%d]. Dm1 alive...\n", stateMachine.getMachineState());
     return true;
 }
 
@@ -63,16 +55,11 @@ bool Dm1::updateModule() {
 
 bool Dm1::interruptModule() {
     printf("Dm1 closing...\n");
-    _inAsrPort.interrupt();
-    _outTtsPort.interrupt();
-    _fittingClient.interrupt();
-    _groundingClient.interrupt();
-    _solverClient.interrupt();
-    _stateMachine.stop();
-    _inAsrPort.close();
-    _outTtsPort.close();
-    _fittingClient.close();
-    _solverClient.close();
+    inSrPort.interrupt();
+    outTtsPort.interrupt();
+    stateMachine.stop();
+    inSrPort.close();
+    outTtsPort.close();
     return true;
 }
 
