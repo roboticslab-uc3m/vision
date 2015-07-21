@@ -4,6 +4,7 @@
 add_subdirectory(cv1)
 add_subdirectory(cvFaces)
 add_subdirectory(cv1ToRoot)
+add_subdirectory(dm1)
 add_subdirectory(multipleDump)
 add_subdirectory(sr1)
 
