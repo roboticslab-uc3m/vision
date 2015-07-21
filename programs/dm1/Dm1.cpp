@@ -23,7 +23,7 @@ bool Dm1::configure(ResourceFinder &rf) {
     }
 
     //-----------------OPEN LOCAL PORTS------------//
-    outCmdPort.open("/dm1/points:o");
+    outCmdPort.open("/dm1/cmd:o");
     outTtsPort.open("/dm1/tts:o");
     inSrPort.open("/dm1/sr:i");
     inCvPort.open("/dm1/cv:i");
