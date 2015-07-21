@@ -28,13 +28,20 @@ void StateMachine::run() {
             else _machineState=-1;
         } else if (_machineState==2) {
             ttsSay( ConstString("Okay, I will follow you.") );
+            Bottle cmd;
+            cmd.addVocab(VOCAB_FOLLOW_ME);
+            outCmdPort->write(cmd);
             _machineState=0;
         } else if (_machineState==3) {
             ttsSay( ConstString("Okay, I will stop following you") );
-        } else {
+            Bottle cmd;
+            cmd.addVocab(VOCAB_STOP_FOLLOWING);
+            outCmdPort->write(cmd);
             _machineState=0;
+        } else {
             ttsSay( ConstString("ANOMALY") );
-        }         
+            _machineState=0;
+        }
     }
 }
 
