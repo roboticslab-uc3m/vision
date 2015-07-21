@@ -14,15 +14,11 @@ using namespace yarp::os;
 
 class Dm1 : public RFModule {
   private:
-    StateMachine _stateMachine;
-    BufferedPort<Bottle> _inAsrPort;
-    BufferedPort<Bottle> _inFeaturesPort;
-    Port _outPointsPort;
-    Port _outTextPort;
-    Port _outTtsPort;
-    RpcClient _fittingClient;
-    RpcClient _groundingClient;
-    RpcClient _solverClient;
+    StateMachine stateMachine;
+    BufferedPort<Bottle> inSrPort;
+    BufferedPort<Bottle> inCvPort;
+    Port outTtsPort;
+    Port outPointsPort;
 
     bool interruptModule();
     double getPeriod();

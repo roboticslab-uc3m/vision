@@ -52,14 +52,11 @@ using std::vector;
 class StateMachine : public Thread {
 protected:
 
-    yarp::os::BufferedPort<yarp::os::Bottle> *_inAsrPort;
-    yarp::os::BufferedPort<yarp::os::Bottle> *_inFeaturesPort;
-    yarp::os::Port *_outPointsPort;
-    yarp::os::Port *_outTextPort;
-    yarp::os::Port *_outTtsPort;
-    yarp::os::RpcClient *_fittingClient;
-    yarp::os::RpcClient *_groundingClient;
-    yarp::os::RpcClient *_solverClient;
+    yarp::os::BufferedPort<yarp::os::Bottle> *inSrPort;
+    yarp::os::BufferedPort<yarp::os::Bottle> *inCvPort;
+    yarp::os::Port *outPointsPort;
+    yarp::os::Port *outTextPort;
+    yarp::os::Port *outTtsPort;
 
     int _machineState;
 
@@ -94,28 +91,16 @@ public:
     int getMachineState();
 
     /** Register an input callback port for asr. */
-    void setInAsrPort(yarp::os::BufferedPort<yarp::os::Bottle>* inAsrPort);
+    void setInSrPort(yarp::os::BufferedPort<yarp::os::Bottle>* inSrPort);
 
     /** Register an input callback port for features. */
-    void setInFeaturesPort(yarp::os::BufferedPort<yarp::os::Bottle>* inFeaturesPort);
+    void setInCvPort(yarp::os::BufferedPort<yarp::os::Bottle>* inCvPort);
 
     /** Register an output Port for points. */
     void setOutPointsPort(yarp::os::Port* outPointsPort);
 
-    /** Register an output Port for text. */
-    void setOutTextPort(yarp::os::Port* outTextPort);
-
     /** Register an output Port for tts. */
     void setOutTtsPort(yarp::os::Port* outTtsPort);
-
-    /** Register an rpc client for tts. */
-    void setFittingClient(yarp::os::RpcClient* fittingClient);
-
-    /** Register an rpc client for g. */
-    void setGroundingClient(yarp::os::RpcClient* groundingClient);
-
-    /** Register an rpc client for the solver. */
-    void setSolverClient(yarp::os::RpcClient* solverClient);
 
 };
 
