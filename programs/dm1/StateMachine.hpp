@@ -21,21 +21,8 @@
 #include <algorithm>
 #include <limits>
 
-#define VOCAB_FIT VOCAB3('f','i','t')
-#define VOCAB_MAX VOCAB3('m','a','x')
-
-#define VOCAB_MY_STOP VOCAB4('s','t','o','p')
-
-#define VOCAB_STAT VOCAB4('s','t','a','t')
-#define VOCAB_MOVL VOCAB4('m','o','v','l')
-#define VOCAB_MOVJ VOCAB4('m','o','v','j')
-#define VOCAB_INV VOCAB3('i','n','v')
-
-#define VOCAB_FWD VOCAB3('f','w','d')
-#define VOCAB_BKWD VOCAB4('b','k','w','d')
-#define VOCAB_POSE VOCAB4('p','o','s','e')
-#define VOCAB_ROT VOCAB3('r','o','t')
-#define VOCAB_VMOS VOCAB4('v','m','o','s')
+#define VOCAB_FOLLOW_ME VOCAB4('f','o','l','l')
+#define VOCAB_STOP_FOLLOWING VOCAB4('s','f','o','l')
 
 using namespace yarp::os;
 using namespace yarp::dev;
@@ -54,8 +41,7 @@ protected:
 
     yarp::os::BufferedPort<yarp::os::Bottle> *inSrPort;
     yarp::os::BufferedPort<yarp::os::Bottle> *inCvPort;
-    yarp::os::Port *outPointsPort;
-    yarp::os::Port *outTextPort;
+    yarp::os::Port *outCmdPort;
     yarp::os::Port *outTtsPort;
 
     int _machineState;
@@ -97,7 +83,7 @@ public:
     void setInCvPort(yarp::os::BufferedPort<yarp::os::Bottle>* inCvPort);
 
     /** Register an output Port for points. */
-    void setOutPointsPort(yarp::os::Port* outPointsPort);
+    void setOutCmdPort(yarp::os::Port* outCmdPort);
 
     /** Register an output Port for tts. */
     void setOutTtsPort(yarp::os::Port* outTtsPort);

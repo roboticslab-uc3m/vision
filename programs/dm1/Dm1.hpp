@@ -18,7 +18,7 @@ class Dm1 : public RFModule {
     BufferedPort<Bottle> inSrPort;
     BufferedPort<Bottle> inCvPort;
     Port outTtsPort;
-    Port outPointsPort;
+    Port outCmdPort;
 
     bool interruptModule();
     double getPeriod();
