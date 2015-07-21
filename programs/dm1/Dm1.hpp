@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __CONTEXT_ASR_HPP__
-#define __CONTEXT_ASR_HPP__
+#ifndef __DM1_HPP__
+#define __DM1_HPP__
 
 #include <yarp/os/all.h>
 #include <stdlib.h>
@@ -32,5 +32,4 @@ class Dm1 : public RFModule {
     bool configure(ResourceFinder &rf);
 };
 
-#endif  // __CONTEXT_ASR_HPP__
-
+#endif  // __DM1_HPP__
