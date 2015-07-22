@@ -21,6 +21,7 @@ option(ENABLE_cv1 "Choose if you want to compile cv1" TRUE)
 option(ENABLE_cvFaces "Choose if you want to compile cvFaces" TRUE)
 option(ENABLE_cv1ToRoot "Choose if you want to compile cv1ToRoot" TRUE)
 option(ENABLE_dm1 "Choose if you want to compile dm1" TRUE)
+option(ENABLE_ec1 "Choose if you want to compile ec1" TRUE)
 option(ENABLE_multipleDump "Choose if you want to compile multipleDump" TRUE)
 option(ENABLE_sr1 "Choose if you want to install sr1" TRUE)
 
