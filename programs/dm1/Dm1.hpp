@@ -19,7 +19,6 @@ class Dm1 : public RFModule {
   private:
     StateMachine stateMachine;
     BufferedPort<Bottle> inSrPort;
-    BufferedPort<Bottle> inCvPort;
     Port outTtsPort;
     Port outCmdPort;
 

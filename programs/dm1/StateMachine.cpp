@@ -76,12 +76,6 @@ void StateMachine::setInSrPort(yarp::os::BufferedPort<yarp::os::Bottle>* inSrPor
 
 /************************************************************************/
 
-void StateMachine::setInCvPort(yarp::os::BufferedPort<yarp::os::Bottle>* inCvPort) {
-    this->inCvPort = inCvPort;
-}
-
-/************************************************************************/
-
 void StateMachine::setOutCmdPort(yarp::os::Port* outCmdPort) {
     this->outCmdPort = outCmdPort;
 }

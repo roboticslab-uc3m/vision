@@ -40,7 +40,6 @@ class StateMachine : public Thread {
 protected:
 
     yarp::os::BufferedPort<yarp::os::Bottle> *inSrPort;
-    yarp::os::BufferedPort<yarp::os::Bottle> *inCvPort;
     yarp::os::Port *outCmdPort;
     yarp::os::Port *outTtsPort;
 
@@ -79,10 +78,7 @@ public:
     /** Register an input callback port for asr. */
     void setInSrPort(yarp::os::BufferedPort<yarp::os::Bottle>* inSrPort);
 
-    /** Register an input callback port for features. */
-    void setInCvPort(yarp::os::BufferedPort<yarp::os::Bottle>* inCvPort);
-
-    /** Register an output Port for points. */
+    /** Register an output Port for commands. */
     void setOutCmdPort(yarp::os::Port* outCmdPort);
 
     /** Register an output Port for tts. */
