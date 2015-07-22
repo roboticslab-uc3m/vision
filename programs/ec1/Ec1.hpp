@@ -23,6 +23,7 @@ class InCvPort : public BufferedPort<Bottle> {
             double x = b.get(0).asDouble();
             double y = b.get(1).asDouble();
             double z = b.get(2).asDouble();
+            printf("%f %f %f\n",x,y,z);
             iPositionControl->positionMove(0,0.0);
             iPositionControl->positionMove(1,0.0);
         }
@@ -40,9 +41,11 @@ class InSrPort : public BufferedPort<Bottle> {
             switch ( b.get(0).asVocab() ) {
                 case VOCAB_FOLLOW_ME:
                     inCvPortPtr->useCallback();
+                    printf("callback enabled\n");
                     break;
                 case VOCAB_STOP_FOLLOWING:
                     inCvPortPtr->disableCallback();
+                    printf("callback disabled\n");
                     break;
                 default:
                     break;
