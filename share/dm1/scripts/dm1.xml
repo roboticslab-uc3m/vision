@@ -1,0 +1,26 @@
+<application>
+<name>dm1 App</name>
+    <module>
+        <name>yarpdev</name>
+        <parameters>--device OpenNI2DeviceServer --noMirror --depthVideoMode 4 --colorVideoMode 9</parameters>
+        <node>/head</node>
+    </module>
+
+    <module>
+        <name>cvFaces</name>
+        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /cvFaces</parameters>
+        <node>/head</node>
+    </module>
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /faces/yarpview/img:i</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/cvFaces/img:o</from>
+        <to>/faces/yarpview/img:i</to>
+    </connection>
+
+
+</application>
+
