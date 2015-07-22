@@ -32,6 +32,11 @@ bool Ec1::configure(ResourceFinder &rf) {
         printf("head remote_controlboard instantiation not worked.\n");
         return false;
     }
+    if( ! headDevice.view(iPositionControl) ) {
+        printf("view(iPositionControl) not worked.\n");
+        return false;
+    }
+    inCvPort.setIPositionControl(iPositionControl);
 
     //-----------------OPEN LOCAL PORTS------------//
     inCvPort.useCallback();
@@ -67,4 +72,3 @@ bool Ec1::interruptModule() {
 }
 
 /************************************************************************/
-
