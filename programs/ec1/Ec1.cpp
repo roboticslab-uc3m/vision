@@ -41,8 +41,8 @@ bool Ec1::configure(ResourceFinder &rf) {
     //-----------------OPEN LOCAL PORTS------------//
     //-- inCvPort.useCallback();  // wait for inSrPort to call it
     inSrPort.useCallback();
-    inSrPort.open("/ec1/sr:i");
-    inCvPort.open("/ec1/cv:i");
+    inSrPort.open("/ec1/dm/command:i");
+    inCvPort.open("/ec1/cv/state:i");
 
     return true;
 }
