@@ -45,7 +45,8 @@
     </connection>
 
     <module>
-        <name>sr1</name>
+        <name>/sbin/runuser</name>
+        <parameters>-l teo -c sr1</parameters>
         <node>/head</node>
     </module>
     <connection>
