@@ -10,12 +10,6 @@
 
 using namespace yarp::os;
 
-class InSrPort : public BufferedPort<Bottle> {
-        virtual void onRead(Bottle& b) {
-            // process data in b
-        }
-};
-
 class InCvPort : public BufferedPort<Bottle> {
     public:
         void setIPositionControl(yarp::dev::IPositionControl *iPositionControl) {
@@ -31,6 +25,19 @@ class InCvPort : public BufferedPort<Bottle> {
             iPositionControl->positionMove(1,0.0);
         }
         yarp::dev::IPositionControl *iPositionControl;
+};
+
+class InSrPort : public BufferedPort<Bottle> {
+    public:
+        void setInCvPortPtr(BufferedPort<Bottle> *inCvPortPtr) {
+            this->inCvPortPtr = inCvPortPtr;
+        }
+
+    protected:
+        virtual void onRead(Bottle& b) {
+            // process data in b
+        }
+        BufferedPort<Bottle>* inCvPortPtr;
 };
 
 class Ec1 : public RFModule {
