@@ -3,13 +3,13 @@
     <module>
         <name>yarpdev</name>
         <parameters>--device OpenNI2DeviceServer --noMirror --depthVideoMode 4 --colorVideoMode 9</parameters>
-        <node>localhost</node>
+        <node>/head</node>
     </module>
 
     <module>
         <name>cvFaces</name>
         <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /cvFaces</parameters>
-        <node>localhost</node>
+        <node>/head</node>
     </module>
     <module>
         <name>yarpview</name>
