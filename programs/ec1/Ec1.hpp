@@ -7,6 +7,8 @@
 #include <yarp/dev/all.h>
 #include <stdlib.h>
 
+#define VOCAB_FOLLOW_ME VOCAB4('f','o','l','l')
+#define VOCAB_STOP_FOLLOWING VOCAB4('s','f','o','l')
 
 using namespace yarp::os;
 
@@ -35,7 +37,16 @@ class InSrPort : public BufferedPort<Bottle> {
 
     protected:
         virtual void onRead(Bottle& b) {
-            // process data in b
+            switch ( b.get(0).asVocab() ) {
+                case VOCAB_FOLLOW_ME:
+                    inCvPortPtr->useCallback();
+                    break;
+                case VOCAB_STOP_FOLLOWING:
+                    inCvPortPtr->disableCallback();
+                    break;
+                default:
+                    break;
+            }
         }
         BufferedPort<Bottle>* inCvPortPtr;
 };
