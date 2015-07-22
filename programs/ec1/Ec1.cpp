@@ -25,7 +25,7 @@ bool Ec1::configure(ResourceFinder &rf) {
     //
     Property headOptions;
     headOptions.put("device","remote_controlboard");
-    headOptions.put("local","/ec1");
+    headOptions.put("local","/ec1/head");
     headOptions.put("remote","/teo/head");
     headDevice.open(headOptions);
     if( ! headDevice.isValid() ) {
