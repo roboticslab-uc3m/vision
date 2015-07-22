@@ -20,6 +20,7 @@ class InCvPort : public BufferedPort<Bottle> {
 
     protected:
         virtual void onRead(Bottle& b) {
+            if (b.size() < 3) return;
             double x = b.get(0).asDouble();
             double y = b.get(1).asDouble();
             double z = b.get(2).asDouble();
@@ -40,12 +41,12 @@ class InSrPort : public BufferedPort<Bottle> {
         virtual void onRead(Bottle& b) {
             switch ( b.get(0).asVocab() ) {
                 case VOCAB_FOLLOW_ME:
+                    printf("enabling callback\n");
                     inCvPortPtr->useCallback();
-                    printf("callback enabled\n");
                     break;
                 case VOCAB_STOP_FOLLOWING:
+                    printf("disabling callback\n");
                     inCvPortPtr->disableCallback();
-                    printf("callback disabled\n");
                     break;
                 default:
                     break;
