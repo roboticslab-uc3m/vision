@@ -22,6 +22,16 @@
     </connection>
 
     <module>
+        <name>sr1</name>
+        <node>/head</node>
+    </module>
+
+    <module>
+        <name>iSpeak</name>
+        <node>/head</node>
+    </module>
+
+    <module>
         <name>launchManipulation</name>
         <parameters>--from launchManipulation-fakeArms.ini</parameters>
         <node>/manipulation</node>
