@@ -21,6 +21,15 @@
         <to>/faces/yarpview/img:i</to>
     </connection>
 
+    <module>
+        <name>launchManipulation</name>
+        <parameters>--from launchManipulation-fakeArms.ini</parameters>
+        <node>/manipulation</node>
+    </module>
+    <module>
+        <name>ec1</name>
+        <node>/manipulation</node>
+    </module>
 
 </application>
 
