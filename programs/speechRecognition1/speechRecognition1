@@ -25,10 +25,10 @@ class DemoApp(object):
     """GStreamer/PocketSphinx Demo Application"""
     def __init__(self):
         """Initialize a DemoApp object"""
-	rf = yarp.ResourceFinder()
-	rf.setVerbose(True)
-	rf.setDefaultContext('sr1')
-	rf.setDefaultConfigFile('sr1.ini')
+        rf = yarp.ResourceFinder()
+        rf.setVerbose(True)
+        rf.setDefaultContext('speechRecognition1')
+        rf.setDefaultConfigFile('speechRecognition1.ini')
         self.my_lm = rf.findFileByName('words-20150720.lm')
         self.my_dic = rf.findFileByName('words-20150720.dic')
         self.outPort = yarp.Port()
