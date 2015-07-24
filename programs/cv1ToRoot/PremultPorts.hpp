@@ -14,6 +14,9 @@
 
 using namespace yarp::os;
 
+namespace teo
+{
+
 /**
  * @ingroup PremultPorts
  *
@@ -32,6 +35,8 @@ public:
     PremultPorts() {}
     void setOutPort(Port* _outPort);
 };
+
+}  // namespace teo
 
 #endif
 

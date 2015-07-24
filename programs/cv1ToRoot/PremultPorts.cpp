@@ -1,6 +1,9 @@
 
 #include "PremultPorts.hpp"
 
+namespace teo
+{
+
 /************************************************************************/
 
 void PremultPorts::setOutPort(Port* _outPort) {
@@ -86,3 +89,4 @@ void PremultPorts::onRead(Bottle& b) {
 
 /************************************************************************/
 
+}  // namespace teo
