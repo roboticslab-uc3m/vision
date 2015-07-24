@@ -23,6 +23,9 @@
 
 using namespace yarp::os;
 
+namespace teo
+{
+
 class Cv1ToRoot : public RFModule {
     protected:
         bool updateModule();
@@ -36,6 +39,8 @@ class Cv1ToRoot : public RFModule {
     public:
         bool configure(ResourceFinder &rf);
 };
+
+}  // namespace teo
 
 #endif  // __PREMULT_H_HPP__
 

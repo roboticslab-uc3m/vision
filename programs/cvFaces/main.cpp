@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     rf.setDefaultConfigFile("cvFaces.ini");
     rf.configure(argc, argv);
 
-    CvFaces mod;
+    teo::CvFaces mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

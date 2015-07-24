@@ -3,7 +3,10 @@
 /**
  *
  * @ingroup teo_head_programs
+ *
  * \defgroup cv1 cv1
+ *
+ * @brief Creates an instance teo::Cv1.
  */
 
 #include "Cv1.hpp"
@@ -16,7 +19,7 @@ int main(int argc, char** argv) {
     rf.setDefaultConfigFile("cv1.ini");
     rf.configure(argc, argv);
 
-    Cv1 mod;
+    teo::Cv1 mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

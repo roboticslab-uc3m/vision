@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     rf.setDefaultConfigFile("multipleDump.ini");
     rf.configure(argc, argv);
 
-    MultipleDump mod;
+    teo::MultipleDump mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

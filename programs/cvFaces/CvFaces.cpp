@@ -2,6 +2,9 @@
 
 #include "CvFaces.hpp"
 
+namespace teo
+{
+
 /************************************************************************/
 bool CvFaces::configure(ResourceFinder &rf) {
 
@@ -104,3 +107,4 @@ bool CvFaces::interruptModule() {
 
 /************************************************************************/
 
+}  // namespace teo
