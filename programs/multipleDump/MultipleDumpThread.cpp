@@ -2,6 +2,9 @@
 
 #include "MultipleDumpThread.hpp"
 
+namespace teo
+{
+
 /************************************************************************/
 void MultipleDumpThread::run() {
     // printf("[MultipleDumpThread] run()\n");
@@ -57,3 +60,5 @@ void MultipleDumpThread::setIn2(BufferedPort<Bottle> *value) {
 }
 
 /************************************************************************/
+
+}  // namespace teo
