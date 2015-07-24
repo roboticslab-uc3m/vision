@@ -2,6 +2,9 @@
 
 #include "SegmentorThread.hpp"
 
+namespace teo
+{
+
 /************************************************************************/
 void SegmentorThread::setIKinectDeviceDriver(IOpenNI2DeviceDriver *_kinect) {
     kinect = _kinect;
@@ -448,3 +451,4 @@ void SegmentorThread::run() {
 
 }
 
+}  // namespace teo

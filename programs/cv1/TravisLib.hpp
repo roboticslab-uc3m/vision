@@ -13,18 +13,11 @@
 using namespace std;
 using namespace cv;
 
-/**
- * @ingroup travis_libraries
- *
- * \defgroup travis_library TravisLib
- *
- * @brief Contains a single class, called Travis.
- *
- * Contains a single class, called Travis.
- */
+namespace teo
+{
 
 /*
- * @ingroup travis_library
+ * @ingroup cv1
  *
  * @brief The Travis class implements all the algorithms on a single image.
  */
@@ -287,6 +280,8 @@ void calcArcLength(float& arc, const vector <Point> biggestCont );
  * This function calculates the circle.
  */
 void calcCircle(float& radius, const vector <Point> biggestCont );
+
+}  // namespace teo
 
 #endif  // __TRAVIS_LIB_HPP__
 

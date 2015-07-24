@@ -2,6 +2,9 @@
 
 #include "TravisLib.hpp"
 
+namespace teo
+{
+
 /************************************************************************/
 
 bool Travis::setCvMat(const cv::Mat& image) {
@@ -731,4 +734,5 @@ void calcCircle(float& radius, const vector <Point> biggestCont ){
     radius=rad;
 }
 
+}  // namespace teo
 

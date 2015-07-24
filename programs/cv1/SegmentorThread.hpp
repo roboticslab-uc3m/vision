@@ -51,6 +51,9 @@ using namespace yarp::dev;
 using namespace yarp::sig;
 using namespace yarp::sig::draw;
 
+namespace teo
+{
+
 class DataProcessor : public PortReader {
     virtual bool read(ConnectionReader& connection) {
         Bottle b;
@@ -132,6 +135,8 @@ public:
     void setInCropSelectorPort(Port* inCropSelectorPort) { this->inCropSelectorPort = inCropSelectorPort; }
     
 };
+
+}  // namespace teo
 
 #endif  // __SEGMENTOR_THREAD_HPP__
 
