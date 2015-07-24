@@ -1,5 +1,5 @@
 <application>
-<name>cvFaces App</name>
+<name>example cvFaces App</name>
     <module>
         <name>yarpdev</name>
         <parameters>--device OpenNI2DeviceServer --noMirror --depthVideoMode 4 --colorVideoMode 9</parameters>
