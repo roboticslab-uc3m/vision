@@ -3,7 +3,10 @@
 /**
  *
  * @ingroup teo_head_programs
+ *
  * \defgroup multipleDump multipleDump
+ *
+ * @brief Creates an instance of teo::MultipleDump.
  */
 
 #include "MultipleDump.hpp"

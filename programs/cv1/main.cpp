@@ -6,7 +6,7 @@
  *
  * \defgroup cv1 cv1
  *
- * @brief Creates an instance teo::Cv1.
+ * @brief Creates an instance of teo::Cv1.
  */
 
 #include "Cv1.hpp"

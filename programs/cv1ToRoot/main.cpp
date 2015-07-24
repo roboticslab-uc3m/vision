@@ -6,7 +6,7 @@
  *
  * \defgroup cv1ToRoot cv1ToRoot
  *
- * @brief Creates an instance Cv1ToRoot.
+ * @brief Creates an instance of teo::Cv1ToRoot.
  */
 
 #include "Cv1ToRoot.hpp"
