@@ -1,13 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-/**
-  * Copyright 2012 UC3M
-  * This file is part of Robot Devastation Game: ECRO Version
-  * Author: Juan G. Victores
-  */
-
-#ifndef __PREMULT_H_HPP__
-#define __PREMULT_H_HPP__
+#ifndef __CV1_TO_ROOT_HPP__
+#define __CV1_TO_ROOT_HPP__
 
 #include <yarp/os/RFModule.h>
 #include <yarp/os/Module.h>
@@ -26,6 +20,11 @@ using namespace yarp::os;
 namespace teo
 {
 
+/**
+ * @ingroup cv1ToRoot
+ *
+ * @brief Transform Computer Vision values to root frame.
+ */
 class Cv1ToRoot : public RFModule {
     protected:
         bool updateModule();

@@ -19,6 +19,11 @@ using namespace yarp::os;
 namespace teo
 {
 
+/**
+ * @ingroup multipleDump
+ *
+ * @brief Implements multipleDump RateThread.
+ */
 class MultipleDumpThread : public RateThread {
 
     public:

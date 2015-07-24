@@ -14,6 +14,11 @@ using namespace yarp::os;
 namespace teo
 {
 
+/**
+ * @ingroup multipleDump
+ *
+ * @brief Dump from multiple sources.
+ */
 class MultipleDump : public RFModule {
 
     public:

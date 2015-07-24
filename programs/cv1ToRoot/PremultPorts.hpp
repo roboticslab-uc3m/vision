@@ -18,9 +18,9 @@ namespace teo
 {
 
 /**
- * @ingroup PremultPorts
+ * @ingroup cv1ToRoot
  *
- * PremultPorts class implements a port with x callbacks.
+ * @brief Implements a port with x callbacks.
  */
 class PremultPorts : public BufferedPort<Bottle> {
 protected:
