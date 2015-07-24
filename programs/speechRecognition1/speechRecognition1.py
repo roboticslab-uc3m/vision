@@ -37,7 +37,7 @@ class SpeechRecognition1(object):
         self.my_lm = rf.findFileByName('words-20150720.lm')
         self.my_dic = rf.findFileByName('words-20150720.dic')
         self.outPort = yarp.Port()
-        self.outPort.open('/sr1:o')
+        self.outPort.open('/speechRecognition1:o')
         self.init_gst()
 
     def init_gst(self):
