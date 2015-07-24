@@ -66,6 +66,13 @@ class SpeechRecognition1(object):
         if text != "":
             self.outPort.write(b)
 
+##
+#
+# @ingroup teo_head_programs
+#
+# \defgroup speechRecognition1 speechRecognition1
+#
+# @brief Creates an instance.
 yarp.Network.init()
 if yarp.Network.checkNetwork() != True:
     print '[asr] error: found no yarp network (try running "yarpserver &"), bye!'
