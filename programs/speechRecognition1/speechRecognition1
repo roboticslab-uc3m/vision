@@ -21,10 +21,10 @@ import gst
 import yarp
 import os.path
 
-class DemoApp(object):
+class SpeechRecognition1(object):
     """GStreamer/PocketSphinx Demo Application"""
     def __init__(self):
-        """Initialize a DemoApp object"""
+        """Initialize a SpeechRecognition1 object"""
         rf = yarp.ResourceFinder()
         rf.setVerbose(True)
         rf.setDefaultContext('speechRecognition1')
@@ -71,5 +71,5 @@ if yarp.Network.checkNetwork() != True:
     print '[asr] error: found no yarp network (try running "yarpserver &"), bye!'
     quit()
 
-app = DemoApp()
+app = SpeechRecognition1()
 gtk.main()
