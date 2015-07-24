@@ -54,6 +54,11 @@ using namespace yarp::sig::draw;
 namespace teo
 {
 
+/**
+ * @ingroup cv1
+ *
+ * @brief Implements callback on Bottle.
+ */
 class DataProcessor : public PortReader {
     virtual bool read(ConnectionReader& connection) {
         Bottle b;
@@ -96,6 +101,11 @@ public:
     bool waitForFirst;
 };
 
+/**
+ * @ingroup cv1
+ *
+ * @brief Implements RateThread.
+ */
 class SegmentorThread : public RateThread {
 private:
     IOpenNI2DeviceDriver *kinect;

@@ -17,6 +17,11 @@ using namespace yarp::sig;
 namespace teo
 {
 
+/**
+ * @ingroup cv1
+ *
+ * @brief Computer Vision 1.
+ */
 class Cv1 : public RFModule {
   private:
     SegmentorThread segmentorThread;
