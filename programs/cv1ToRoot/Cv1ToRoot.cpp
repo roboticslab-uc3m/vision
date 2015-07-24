@@ -2,6 +2,9 @@
 
 #include "Cv1ToRoot.hpp"
 
+namespace teo
+{
+
 /************************************************************************/
 bool Cv1ToRoot::updateModule() {
     printf("Cv1ToRoot alive...\n");
@@ -49,3 +52,4 @@ bool Cv1ToRoot::interruptModule() {
 
 /************************************************************************/
 
+}  // namespace teo

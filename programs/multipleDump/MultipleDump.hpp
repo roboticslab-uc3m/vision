@@ -11,6 +11,9 @@
 
 using namespace yarp::os;
 
+namespace teo
+{
+
 class MultipleDump : public RFModule {
 
     public:
@@ -29,6 +32,8 @@ class MultipleDump : public RFModule {
 
         FILE * filePtr;
 };
+
+}  // namespace teo
 
 #endif  // __MULTIPLE_DUMP_HPP__
 

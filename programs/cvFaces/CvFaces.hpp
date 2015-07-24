@@ -14,6 +14,9 @@
 using namespace yarp::os;
 using namespace yarp::sig;
 
+namespace teo
+{
+
 class CvFaces : public RFModule {
   private:
     SegmentorThread segmentorThread;
@@ -36,6 +39,8 @@ class CvFaces : public RFModule {
   public:
     bool configure(ResourceFinder &rf);
 };
+
+}  // namespace teo
 
 #endif  // __CV_FACES_HPP__
 

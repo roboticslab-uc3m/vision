@@ -3,7 +3,10 @@
 /**
  *
  * @ingroup teo_head_programs
+ *
  * \defgroup cv1ToRoot cv1ToRoot
+ *
+ * @brief Creates an instance Cv1ToRoot.
  */
 
 #include "Cv1ToRoot.hpp"
@@ -16,7 +19,7 @@ int main(int argc, char *argv[]) {
     rf.setDefaultConfigFile("cv1ToRoot.ini");
     rf.configure(argc, argv);
 
-    Cv1ToRoot mod;
+    teo::Cv1ToRoot mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

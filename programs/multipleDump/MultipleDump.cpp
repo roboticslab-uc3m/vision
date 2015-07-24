@@ -2,6 +2,9 @@
 
 #include "MultipleDump.hpp"
 
+namespace teo
+{
+
 /************************************************************************/
 bool MultipleDump::configure(ResourceFinder &rf) {
 
@@ -65,3 +68,4 @@ bool MultipleDump::interruptModule() {
 
 /************************************************************************/
 
+}  // namespace teo

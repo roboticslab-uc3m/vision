@@ -2,6 +2,9 @@
 
 #include "Cv1.hpp"
 
+namespace teo
+{
+
 /************************************************************************/
 bool Cv1::configure(ResourceFinder &rf) {
 
@@ -104,3 +107,4 @@ bool Cv1::interruptModule() {
 
 /************************************************************************/
 
+}  // namespace teo
