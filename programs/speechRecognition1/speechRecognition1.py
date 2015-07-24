@@ -21,8 +21,13 @@ import gst
 import yarp
 import os.path
 
+##
+#
+# @ingroup speechRecognition1
+#
+# @brief Speech Recognition 1.
 class SpeechRecognition1(object):
-    """GStreamer/PocketSphinx Demo Application"""
+    """Based on GStreamer/PocketSphinx Demo Application"""
     def __init__(self):
         """Initialize a SpeechRecognition1 object"""
         rf = yarp.ResourceFinder()
@@ -70,9 +75,9 @@ class SpeechRecognition1(object):
 #
 # @ingroup teo_head_programs
 #
-# \defgroup speechRecognition1 speechRecognition1
+# \defgroup speechRecognition1 speechRecognition1.py
 #
-# @brief Creates an instance.
+# @brief Creates an instance of SpeechRecognition1.
 yarp.Network.init()
 if yarp.Network.checkNetwork() != True:
     print '[asr] error: found no yarp network (try running "yarpserver &"), bye!'
