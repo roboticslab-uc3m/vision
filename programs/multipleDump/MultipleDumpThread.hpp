@@ -16,6 +16,9 @@
 
 using namespace yarp::os;
 
+namespace teo
+{
+
 class MultipleDumpThread : public RateThread {
 
     public:
@@ -37,6 +40,8 @@ protected:
         bool firstTimeTaken;
 
 };
+
+}  // namespace teo
 
 #endif  // __MULTIPLE_DUMP_THREAD_HPP__
 
