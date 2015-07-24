@@ -1,5 +1,5 @@
 <application>
-<name>sr1 App</name>
+<name>example sr1 App</name>
     <module>
         <name>sr1</name>
         <node>/head</node>
