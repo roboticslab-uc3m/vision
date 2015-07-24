@@ -1,13 +1,9 @@
 <application>
-<name>example sr1 App</name>
+<name>example speechRecognition1 App</name>
     <module>
-        <name>sr1</name>
+        <name>speechRecognition1</name>
         <node>/head</node>
     </module>
 
-    <module>
-        <name>iSpeak</name>
-        <node>/head</node>
-    </module>
 </application>
 
