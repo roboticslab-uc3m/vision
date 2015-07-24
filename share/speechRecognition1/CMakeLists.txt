@@ -2,7 +2,7 @@
 # Author: Juan G Victores
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
-set(appname sr1)
+set(appname speechRecognition1)
 
 
 file(GLOB conf ${CMAKE_CURRENT_SOURCE_DIR}/conf/*.ini)
