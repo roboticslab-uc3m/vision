@@ -170,21 +170,39 @@ void SegmentorThread::run() {
 
     ImageOf<PixelRgb> outYarpImg = inYarpImg;
     PixelRgb red(255,0,0);
+    PixelRgb green(0,255,0);
     Bottle output;
-    for( int i = 0; i < faces.size(); i++ ){
-        //    rectangle(frame,faces[i],ORANGE,2);
-        addRectangleOutline(outYarpImg,red,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
-                            faces[i].width/2,faces[i].height/2);
 
-        //printf("face %d: %d %d\n",i,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2);
-
-        // double mmZ_tmp = depth->pixel(int(blobsXY[i].x +cx_d-cx_rgb),int(blobsXY[i].y +cy_d-cy_rgb));
+    double minZ = 999999;
+    int closestFace = 999999;
+    for( int i = 0; i < faces.size(); i++ )
+    {
         int pxX = faces[i].x+faces[i].width/2;
         int pxY = faces[i].y+faces[i].height/2;
-
         double mmZ_tmp = depth.pixel(pxX,pxY);
 
-        if (mmZ_tmp < 0.001) {
+        if (mmZ_tmp < 0.001)
+        {
+            fprintf(stderr,"[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n",i);
+            cvReleaseImage( &inIplImage );  // release the memory for the image
+            return;
+        }
+
+        if (mmZ_tmp < minZ) {
+            minZ = mmZ_tmp;
+            closestFace = i;
+        }
+    }
+
+    for( int i = 0; i < faces.size(); i++ )
+    {
+
+        int pxX = faces[i].x+faces[i].width/2;
+        int pxY = faces[i].y+faces[i].height/2;
+        double mmZ_tmp = depth.pixel(pxX,pxY);
+
+        if (mmZ_tmp < 0.001)
+        {
             fprintf(stderr,"[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n",i);
             cvReleaseImage( &inIplImage );  // release the memory for the image
             return;
@@ -193,9 +211,20 @@ void SegmentorThread::run() {
         double mmX_tmp = 1000.0 * ( (pxX - cx_d) * mmZ_tmp/1000.0 ) / fx_d;
         double mmY_tmp = 1000.0 * ( (pxY - cy_d) * mmZ_tmp/1000.0 ) / fy_d;
 
-        output.addDouble( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
-        output.addDouble( mmY_tmp );    // Points down.
-        output.addDouble( mmZ_tmp );    // oints forward.
+        if( i == closestFace )
+        {
+            addRectangleOutline(outYarpImg,green,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
+                                faces[i].width/2,faces[i].height/2);
+
+            output.addDouble( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
+            output.addDouble( mmY_tmp );    // Points down.
+            output.addDouble( mmZ_tmp );    // oints forward.
+        }
+        else
+        {
+            addRectangleOutline(outYarpImg,red,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
+                                faces[i].width/2,faces[i].height/2);
+        }
     }
 
     pOutImg->prepare() = outYarpImg;
