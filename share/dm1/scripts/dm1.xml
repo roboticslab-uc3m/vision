@@ -1,5 +1,5 @@
 <application>
-<name>dm1 App</name>
+<name>followMe App</name>
     <module>
         <name>dm1</name>
         <node>/head</node>
