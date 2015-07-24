@@ -17,6 +17,11 @@ using namespace yarp::sig;
 namespace teo
 {
 
+/**
+ * @ingroup cvFaces
+ *
+ * @brief Computer Vision segment faces.
+ */
 class CvFaces : public RFModule {
   private:
     SegmentorThread segmentorThread;

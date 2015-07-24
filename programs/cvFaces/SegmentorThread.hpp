@@ -54,6 +54,11 @@ using namespace cv;
 namespace teo
 {
 
+/**
+ * @ingroup cvFaces
+ *
+ * @brief Implements cvFaces callback on Bottle.
+ */
 class DataProcessor : public PortReader {
     virtual bool read(ConnectionReader& connection) {
         Bottle b;
@@ -96,6 +101,11 @@ public:
     bool waitForFirst;
 };
 
+/**
+ * @ingroup cvFaces
+ *
+ * @brief Implements cvFaces RateThread.
+ */
 class SegmentorThread : public RateThread {
 private:
     IOpenNI2DeviceDriver *kinect;
