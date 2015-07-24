@@ -3,7 +3,10 @@
 /**
  *
  * @ingroup teo_head_programs
+ *
  * \defgroup cvFaces cvFaces
+ *
+ * @brief Creates an instance of teo::CvFaces.
  */
 
 #include "CvFaces.hpp"
