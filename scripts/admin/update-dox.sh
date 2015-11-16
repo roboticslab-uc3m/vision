@@ -11,6 +11,6 @@ git pull
 echo "Doxy teo-head..."
 cd doc
 rm -r html
-/usr/local/bin/doxygen
+/usr/bin/doxygen
 cd ../..
 
