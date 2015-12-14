@@ -55,6 +55,7 @@ sudo ldconfig
 Our software integrates the previous dependencies. Note that you will be prompted for your password upon using '''sudo''' a couple of times:
 
 \verbatim
+sudo apt-get install libcv-dev
 git clone https://github.com/roboticslab-uc3m/teo-head.git  # Download teo-head software from the repository
 cd teo-head; mkdir build; cd build; cmake ..  # Configure the teo-head software
 make  # Compile
