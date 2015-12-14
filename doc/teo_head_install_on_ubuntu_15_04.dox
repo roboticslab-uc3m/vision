@@ -10,7 +10,7 @@ First install the depencencies:
 # PCL, OpenNI and Xtion Pro Live OpenNI driver
 sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
 sudo apt-get update
-sudo apt-get install libpcl-all-dev libopenni-sensor-primesense0
+sudo apt-get install libpcl-dev libopenni-sensor-primesense0  # libpcl-dev instead of libpcl-all-dev as of Dic/2015
 \endverbatim
 
 \verbatim
