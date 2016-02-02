@@ -22,6 +22,7 @@ option(ENABLE_cvFaces "Choose if you want to compile cvFaces" TRUE)
 option(ENABLE_cv1ToRoot "Choose if you want to compile cv1ToRoot" TRUE)
 option(ENABLE_multipleDump "Choose if you want to compile multipleDump" TRUE)
 option(ENABLE_speechRecognition1 "Choose if you want to install speechRecognition1" TRUE)
+option(ENABLE_textToSpeech "Choose if you want to install textToSpeech" FALSE)
 
 if(MSVC)
   MESSAGE(STATUS "Running on windows")
