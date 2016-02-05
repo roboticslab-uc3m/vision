@@ -444,7 +444,7 @@ void SegmentorThread::run() {
         } else {
             fprintf(stderr,"[SegmentorThread] [error] bogus outFeatures: %s\n",
                     outFeatures.get(elem).asString().c_str());
-            exit(0);
+            ::exit(0);
         }
     }
     pOutPort->write(output);
