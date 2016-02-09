@@ -6,13 +6,13 @@ namespace teo
 
 /************************************************************************/
 
-void PremultPorts::setOutPort(Port* _outPort) {
+void PremultPorts::setOutPort(yarp::os::Port* _outPort) {
     outPort = _outPort;
 }
 
 /************************************************************************/
 
-void PremultPorts::onRead(Bottle& b) {
+void PremultPorts::onRead(yarp::os::Bottle& b) {
     //printf("[PremultPorts] Got %s\n", b.toString().c_str());
     if(b.size() != 3) {
         fprintf(stderr,"[error] for now only parsing 3-double lists\n");
@@ -80,7 +80,7 @@ void PremultPorts::onRead(Bottle& b) {
     H_rgb.p.data[2] = b.get(2).asDouble();
 
     KDL::Frame H_root = H_root_hip * H_hip_neck * H_neck_head * H_head_rgb * H_rgb;
-    Bottle outB;
+    yarp::os::Bottle outB;
     outB.addDouble(H_root.p.x());
     outB.addDouble(H_root.p.y());
     outB.addDouble(H_root.p.z());

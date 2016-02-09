@@ -12,7 +12,6 @@
 #include <kdl/chain.hpp>
 #include <kdl/chainfksolverpos_recursive.hpp>
 
-using namespace yarp::os;
 
 namespace teo
 {
@@ -22,18 +21,18 @@ namespace teo
  *
  * @brief Implements a port with x callbacks.
  */
-class PremultPorts : public BufferedPort<Bottle> {
+class PremultPorts : public yarp::os::BufferedPort<yarp::os::Bottle> {
 protected:
     /**
     * Implement the actual callback.
     */
-    void onRead(Bottle& b);
-    Port* outPort;
+    void onRead(yarp::os::Bottle& b);
+    yarp::os::Port* outPort;
 
 public:
 
     PremultPorts() {}
-    void setOutPort(Port* _outPort);
+    void setOutPort(yarp::os::Port* _outPort);
 };
 
 }  // namespace teo
