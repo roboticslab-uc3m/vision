@@ -18,7 +18,7 @@ double Cv1ToRoot::getPeriod() {
 
 /************************************************************************/
 
-bool Cv1ToRoot::configure(ResourceFinder &rf) {
+bool Cv1ToRoot::configure(yarp::os::ResourceFinder &rf) {
     watchdog = DEFAULT_WATCHDOG;  // double
 
     fprintf(stdout,"--------------------------------------------------------------\n");
