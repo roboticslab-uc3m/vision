@@ -44,9 +44,6 @@
 #define DEFAULT_SEE_BOUNDING 3
 #define DEFAULT_THRESHOLD 55
 
-using namespace yarp::sig::draw;
-
-using namespace cv;
 
 namespace teo
 {
@@ -128,7 +125,7 @@ private:
     yarp::os::Port* inCropSelectorPort;
     DataProcessor processor;
 
-    CascadeClassifier face_cascade;
+    cv::CascadeClassifier face_cascade;
 
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
