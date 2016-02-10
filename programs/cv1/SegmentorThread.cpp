@@ -181,11 +181,11 @@ void SegmentorThread::run() {
     //travis.morphOpening( morphOpening );
     //travis.morphClosing( morphClosing );
     travis.blobize(maxNumBlobs);
-    cv::vector<cv::Point> blobsXY;
+    std::vector<cv::Point> blobsXY;
     travis.getBlobsXY(blobsXY);
-    cv::vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond;
-    cv::vector<double> blobsRectangularity,blobsSolidity;
-    cv::vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
+    std::vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond;
+    std::vector<double> blobsRectangularity,blobsSolidity;
+    std::vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
     travis.getBlobsArea(blobsArea);
     travis.getBlobsSolidity(blobsSolidity);
     travis.getBlobsHSV(blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev);
@@ -206,7 +206,7 @@ void SegmentorThread::run() {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
     outYarpImg.wrapIplImage(&outIplImage);
     yarp::sig::PixelRgb blue(0,0,255);
-    cv::vector<double> mmX, mmY, mmZ;
+    std::vector<double> mmX, mmY, mmZ;
     if(blobsXY.size() < 1) {
         fprintf(stderr,"[warning] SegmentorThread run(): blobsXY.size() < 1.\n");
         //return;
