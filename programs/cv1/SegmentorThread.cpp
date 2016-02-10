@@ -155,7 +155,7 @@ void SegmentorThread::run() {
     IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
                                          IPL_DEPTH_8U, 3 );
     cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2BGR);
-    Mat inCvMat(inIplImage);
+    cv::Mat inCvMat(inIplImage);
 
     // publish the original yarp img if crop selector invoked.
     if(cropSelector != 0) {
@@ -163,7 +163,7 @@ void SegmentorThread::run() {
         if( (processor.w!=0)&&(processor.h!=0)) {
             travisCrop(processor.x,processor.y,processor.w,processor.h,inCvMat);
             yarp::sig::PixelRgb green(0,255,0);
-            addRectangleOutline(inYarpImg,green,processor.x+processor.w/2.0,processor.y+processor.h/2.0,processor.w/2.0,processor.h/2.0);
+            yarp::sig::draw::addRectangleOutline(inYarpImg,green,processor.x+processor.w/2.0,processor.y+processor.h/2.0,processor.w/2.0,processor.h/2.0);
         }
         outCropSelectorImg->prepare() = inYarpImg;
         outCropSelectorImg->write();
@@ -181,11 +181,11 @@ void SegmentorThread::run() {
     //travis.morphOpening( morphOpening );
     //travis.morphClosing( morphClosing );
     travis.blobize(maxNumBlobs);
-    vector<cv::Point> blobsXY;
+    cv::vector<cv::Point> blobsXY;
     travis.getBlobsXY(blobsXY);
-    vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond;
-    vector<double> blobsRectangularity,blobsSolidity;
-    vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
+    cv::vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond;
+    cv::vector<double> blobsRectangularity,blobsSolidity;
+    cv::vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
     travis.getBlobsArea(blobsArea);
     travis.getBlobsSolidity(blobsSolidity);
     travis.getBlobsHSV(blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev);
@@ -196,7 +196,7 @@ void SegmentorThread::run() {
     }
     travis.getBlobsAspectRatio(blobsAspectRatio,blobsAxisFirst,blobsAxisSecond);  // must be called after getBlobsAngle!!!!
     travis.getBlobsRectangularity(blobsRectangularity);  // must be called after getBlobsAngle!!!!
-    Mat outCvMat = travis.getCvMat(outImage,seeBounding);
+    cv::Mat outCvMat = travis.getCvMat(outImage,seeBounding);
     travis.release();
     // { openCv Mat Bgr -> yarp ImageOf Rgb}
     IplImage outIplImage = outCvMat;
@@ -206,13 +206,13 @@ void SegmentorThread::run() {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
     outYarpImg.wrapIplImage(&outIplImage);
     yarp::sig::PixelRgb blue(0,0,255);
-    vector<double> mmX, mmY, mmZ;
+    cv::vector<double> mmX, mmY, mmZ;
     if(blobsXY.size() < 1) {
         fprintf(stderr,"[warning] SegmentorThread run(): blobsXY.size() < 1.\n");
         //return;
     }
     for( int i = 0; i < blobsXY.size(); i++) {
-        addCircle(outYarpImg,blue,blobsXY[i].x,blobsXY[i].y,3);
+        yarp::sig::draw::addCircle(outYarpImg,blue,blobsXY[i].x,blobsXY[i].y,3);
         if (blobsXY[i].x<0) {
             fprintf(stderr,"[warning] SegmentorThread run(): blobsXY[%d].x < 0.\n",i);
             //return;

@@ -162,11 +162,11 @@ void SegmentorThread::run() {
     IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
                                          IPL_DEPTH_8U, 1 );
     cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2GRAY);
-    Mat inCvMat(inIplImage);
+    cv::Mat inCvMat(inIplImage);
 
-    std::vector<Rect> faces;
+    std::vector<cv::Rect> faces;
     //face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0, Size(70, 70));
-    face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+    face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(30, 30) );
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
     yarp::sig::PixelRgb red(255,0,0);
@@ -213,7 +213,7 @@ void SegmentorThread::run() {
 
         if( i == closestFace )
         {
-            addRectangleOutline(outYarpImg,green,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
+            yarp::sig::draw::addRectangleOutline(outYarpImg,green,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
                                 faces[i].width/2,faces[i].height/2);
 
             output.addDouble( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
@@ -222,7 +222,7 @@ void SegmentorThread::run() {
         }
         else
         {
-            addRectangleOutline(outYarpImg,red,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
+            yarp::sig::draw::addRectangleOutline(outYarpImg,red,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
                                 faces[i].width/2,faces[i].height/2);
         }
     }

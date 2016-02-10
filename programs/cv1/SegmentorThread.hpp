@@ -46,9 +46,6 @@
 #define DEFAULT_SEE_BOUNDING 3
 #define DEFAULT_THRESHOLD 55
 
-using namespace yarp::sig::draw;
-
-using namespace cv;
 
 namespace teo
 {
