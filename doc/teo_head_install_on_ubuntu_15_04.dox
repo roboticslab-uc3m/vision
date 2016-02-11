@@ -57,6 +57,7 @@ sudo ldconfig
 \endverbatim
 
 \verbatim
+# KDL
 sudo apt-get install libeigen3-dev
 cd  # go home
 mkdir -p repos; cd repos  # make $HOME/repos if it doesn't exist; then, enter it
