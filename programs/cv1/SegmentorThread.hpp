@@ -46,10 +46,6 @@
 #define DEFAULT_SEE_BOUNDING 3
 #define DEFAULT_THRESHOLD 55
 
-using namespace yarp::os;
-using namespace yarp::dev;
-using namespace yarp::sig;
-using namespace yarp::sig::draw;
 
 namespace teo
 {
@@ -59,9 +55,9 @@ namespace teo
  *
  * @brief Implements cv1 callback on Bottle.
  */
-class DataProcessor : public PortReader {
-    virtual bool read(ConnectionReader& connection) {
-        Bottle b;
+class DataProcessor : public yarp::os::PortReader {
+    virtual bool read(yarp::os::ConnectionReader& connection) {
+        yarp::os::Bottle b;
         b.read(connection);
         // process data in b
         printf("Got %s\n", b.toString().c_str());
@@ -106,14 +102,14 @@ public:
  *
  * @brief Implements cv1 RateThread.
  */
-class SegmentorThread : public RateThread {
+class SegmentorThread : public yarp::os::RateThread {
 private:
-    IOpenNI2DeviceDriver *kinect;
-    BufferedPort<ImageOf<PixelRgb> > *pOutImg;  // for testing
-    Port *pOutPort;
+    yarp::dev::IOpenNI2DeviceDriver *kinect;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
+    yarp::os::Port *pOutPort;
     //
-    ConstString algorithm;
-    ConstString locate;
+    yarp::os::ConstString algorithm;
+    yarp::os::ConstString locate;
     int maxNumBlobs;
     double morphClosing;
     double morphOpening;
@@ -124,25 +120,25 @@ private:
     //
     double fx_d,fy_d,cx_d,cy_d,fx_rgb,fy_rgb,cx_rgb,cy_rgb;
     //
-    Bottle outFeatures;
+    yarp::os::Bottle outFeatures;
     //
     int cropSelector;
-    BufferedPort<ImageOf<PixelRgb> >* outCropSelectorImg;
-    Port* inCropSelectorPort;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg;
+    yarp::os::Port* inCropSelectorPort;
     DataProcessor processor;
 
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
 
-    void setIKinectDeviceDriver(IOpenNI2DeviceDriver * _kinect);
-    void setOutImg(BufferedPort<ImageOf<PixelRgb> > * _pOutImg);
-    void setOutPort(Port *_pOutPort);
-    void init(ResourceFinder &rf);
+    void setIKinectDeviceDriver(yarp::dev::IOpenNI2DeviceDriver * _kinect);
+    void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
+    void setOutPort(yarp::os::Port *_pOutPort);
+    void init(yarp::os::ResourceFinder &rf);
     void run();  // The periodical function
 
     void setCropSelector(int cropSelector) { this->cropSelector = cropSelector; }
-    void setOutCropSelectorImg(BufferedPort<ImageOf<PixelRgb> >* outCropSelectorImg) { this->outCropSelectorImg = outCropSelectorImg; }
-    void setInCropSelectorPort(Port* inCropSelectorPort) { this->inCropSelectorPort = inCropSelectorPort; }
+    void setOutCropSelectorImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg) { this->outCropSelectorImg = outCropSelectorImg; }
+    void setInCropSelectorPort(yarp::os::Port* inCropSelectorPort) { this->inCropSelectorPort = inCropSelectorPort; }
     
 };
 
