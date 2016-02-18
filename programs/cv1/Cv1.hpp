@@ -11,8 +11,6 @@
 #define DEFAULT_KINECT_REMOTE "/OpenNI2"
 #define DEFAULT_WATCHDOG    2       // [s]
 
-using namespace yarp::os;
-using namespace yarp::sig;
 
 namespace teo
 {
@@ -22,19 +20,19 @@ namespace teo
  *
  * @brief Computer Vision 1.
  */
-class Cv1 : public RFModule {
+class Cv1 : public yarp::os::RFModule {
   private:
     SegmentorThread segmentorThread;
     //
-    PolyDriver dd;
-    IOpenNI2DeviceDriver *kinect;
+    yarp::dev::PolyDriver dd;
+    yarp::dev::IOpenNI2DeviceDriver *kinect;
 
-    BufferedPort<ImageOf<PixelRgb> > outImg;
-    Port outPort;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outImg;
+    yarp::os::Port outPort;
 
     int cropSelector;
-    BufferedPort<ImageOf<PixelRgb> > outCropSelectorImg;
-    Port inCropSelectorPort;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outCropSelectorImg;
+    yarp::os::Port inCropSelectorPort;
 
     bool interruptModule();
     double getPeriod();
@@ -42,7 +40,7 @@ class Cv1 : public RFModule {
     double watchdog;
 
   public:
-    bool configure(ResourceFinder &rf);
+    bool configure(yarp::os::ResourceFinder &rf);
 };
 
 }  // namespace teo

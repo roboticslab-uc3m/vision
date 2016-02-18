@@ -6,12 +6,12 @@ namespace teo
 {
 
 /************************************************************************/
-bool CvFaces::configure(ResourceFinder &rf) {
+bool CvFaces::configure(yarp::os::ResourceFinder &rf) {
 
     cropSelector = DEFAULT_CROP_SELECTOR;
-    ConstString strKinectDevice = DEFAULT_KINECT_DEVICE;
-    ConstString strKinectLocal = DEFAULT_KINECT_LOCAL;
-    ConstString strKinectRemote = DEFAULT_KINECT_REMOTE;
+    yarp::os::ConstString strKinectDevice = DEFAULT_KINECT_DEVICE;
+    yarp::os::ConstString strKinectLocal = DEFAULT_KINECT_LOCAL;
+    yarp::os::ConstString strKinectRemote = DEFAULT_KINECT_REMOTE;
     watchdog = DEFAULT_WATCHDOG;  // double
 
     fprintf(stdout,"--------------------------------------------------------------\n");
@@ -36,14 +36,14 @@ bool CvFaces::configure(ResourceFinder &rf) {
     printf("CvFaces using watchdog: %f.\n",watchdog);
 
     if (!rf.check("help")) {
-        Property options;
+        yarp::os::Property options;
         options.put("device",strKinectDevice);
         options.put("localName",strKinectLocal);  //
         options.put("remoteName",strKinectRemote);  //
         if(rf.check("noMirror")) options.put("noMirror",1);
         while(!dd.open(options)) {
             printf("Waiting for kinectDevice \"%s\"...\n",strKinectDevice.c_str());
-            Time::delay(1);
+            yarp::os::Time::delay(1);
         }
         printf("[CvFaces] success: kinectDevice available.\n");
         if (! dd.view(kinect) ) fprintf(stderr,"[CvFaces] warning: kinectDevice bad view.\n");

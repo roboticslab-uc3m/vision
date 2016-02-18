@@ -9,7 +9,6 @@
 
 #define DEFAULT_WATCHDOG    2       // [s]
 
-using namespace yarp::os;
 
 namespace teo
 {
@@ -19,10 +18,10 @@ namespace teo
  *
  * @brief Dump from multiple sources.
  */
-class MultipleDump : public RFModule {
+class MultipleDump : public yarp::os::RFModule {
 
     public:
-        bool configure(ResourceFinder &rf);
+        bool configure(yarp::os::ResourceFinder &rf);
 
     protected:
         MultipleDumpThread multipleDumpThread;
@@ -32,8 +31,8 @@ class MultipleDump : public RFModule {
         bool updateModule();
         double watchdog;
 
-        BufferedPort<Bottle> in1;
-        BufferedPort<Bottle> in2;
+        yarp::os::BufferedPort<yarp::os::Bottle> in1;
+        yarp::os::BufferedPort<yarp::os::Bottle> in2;
 
         FILE * filePtr;
 };
