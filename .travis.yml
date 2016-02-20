@@ -14,7 +14,15 @@ before_install:
 
 install:
   #-- Install opencv
-  - sudo apt-get install libopencv-dev
+  #- sudo apt-get install libopencv-dev
+  - git clone https://github.com/Itseez/opencv.git
+  - cd opencv
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make -j4
+  - sudo make -j4 install
+  - cd ../..
   #-- Install openni
   - sudo apt-get install git libusb-1.0-0-dev libudev-dev
   - sudo apt-get install openjdk-6-jdk  # if not using other java version
