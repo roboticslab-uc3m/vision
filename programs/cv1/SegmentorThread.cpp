@@ -155,7 +155,7 @@ void SegmentorThread::run() {
     IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
                                          IPL_DEPTH_8U, 3 );
     cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2BGR);
-    cv::Mat inCvMat(inIplImage);
+    cv::Mat inCvMat(cv::cvarrToMat(inIplImage));
 
     // publish the original yarp img if crop selector invoked.
     if(cropSelector != 0) {
