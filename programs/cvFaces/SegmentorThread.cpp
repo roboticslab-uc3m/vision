@@ -162,7 +162,7 @@ void SegmentorThread::run() {
     IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
                                          IPL_DEPTH_8U, 1 );
     cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2GRAY);
-    cv::Mat inCvMat(inIplImage);
+    cv::Mat inCvMat( cv::cvarrToMat(inIplImage) );
 
     std::vector<cv::Rect> faces;
     //face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0, Size(70, 70));
