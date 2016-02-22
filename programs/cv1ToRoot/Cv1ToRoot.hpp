@@ -15,7 +15,6 @@
 
 #define DEFAULT_WATCHDOG    5       // [s]
 
-using namespace yarp::os;
 
 namespace teo
 {
@@ -25,18 +24,18 @@ namespace teo
  *
  * @brief Transform Computer Vision values to root frame.
  */
-class Cv1ToRoot : public RFModule {
+class Cv1ToRoot : public yarp::os::RFModule {
     protected:
         bool updateModule();
         bool interruptModule();
         double getPeriod();
         double watchdog; // [s]
 
-        Port outPort;
+        yarp::os::Port outPort;
         PremultPorts premultPorts;
 
     public:
-        bool configure(ResourceFinder &rf);
+        bool configure(yarp::os::ResourceFinder &rf);
 };
 
 }  // namespace teo

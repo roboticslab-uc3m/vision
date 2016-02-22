@@ -14,7 +14,6 @@
 
 #define DEFAULT_RATE_MS 20
 
-using namespace yarp::os;
 
 namespace teo
 {
@@ -24,7 +23,7 @@ namespace teo
  *
  * @brief Implements multipleDump RateThread.
  */
-class MultipleDumpThread : public RateThread {
+class MultipleDumpThread : public yarp::os::RateThread {
 
     public:
 
@@ -33,14 +32,14 @@ class MultipleDumpThread : public RateThread {
         virtual void run();
 
         void setFilePtr(FILE *value);
-        void setIn1(BufferedPort<Bottle> *value);
-        void setIn2(BufferedPort<Bottle> *value);
+        void setIn1(yarp::os::BufferedPort<yarp::os::Bottle> *value);
+        void setIn2(yarp::os::BufferedPort<yarp::os::Bottle> *value);
 
 protected:
 
         FILE * filePtr;
-        BufferedPort<Bottle>* in1;
-        BufferedPort<Bottle>* in2;
+        yarp::os::BufferedPort<yarp::os::Bottle>* in1;
+        yarp::os::BufferedPort<yarp::os::Bottle>* in2;
         double firstTime;
         bool firstTimeTaken;
 

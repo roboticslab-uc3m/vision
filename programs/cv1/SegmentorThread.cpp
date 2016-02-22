@@ -6,22 +6,22 @@ namespace teo
 {
 
 /************************************************************************/
-void SegmentorThread::setIKinectDeviceDriver(IOpenNI2DeviceDriver *_kinect) {
+void SegmentorThread::setIKinectDeviceDriver(yarp::dev::IOpenNI2DeviceDriver *_kinect) {
     kinect = _kinect;
 }
 
 /************************************************************************/
-void SegmentorThread::setOutImg(BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg) {
+void SegmentorThread::setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg) {
     pOutImg = _pOutImg;
 }
 
 /************************************************************************/
-void SegmentorThread::setOutPort(Port * _pOutPort) {
+void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort) {
     pOutPort = _pOutPort;
 }
 
 /************************************************************************/
-void SegmentorThread::init(ResourceFinder &rf) {
+void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
 
     fx_d = DEFAULT_FX_D;
     fy_d = DEFAULT_FY_D;
@@ -140,12 +140,12 @@ void SegmentorThread::run() {
         return;
     };*/
 
-    ImageOf<PixelRgb> inYarpImg = kinect->getImageFrame();
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg = kinect->getImageFrame();
     if (inYarpImg.height()<10) {
         //printf("No img yet...\n");
         return;
     };
-    ImageOf<PixelMono16> depth = kinect->getDepthFrame();
+    yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
     if (depth.height()<10) {
         //printf("No depth yet...\n");
         return;
@@ -155,15 +155,15 @@ void SegmentorThread::run() {
     IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
                                          IPL_DEPTH_8U, 3 );
     cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2BGR);
-    Mat inCvMat(inIplImage);
+    cv::Mat inCvMat( cv::cvarrToMat(inIplImage) );
 
     // publish the original yarp img if crop selector invoked.
     if(cropSelector != 0) {
         //printf("1 x: %d, y: %d, w: %d, h: %d.\n",processor.x,processor.y,processor.w,processor.h);
         if( (processor.w!=0)&&(processor.h!=0)) {
             travisCrop(processor.x,processor.y,processor.w,processor.h,inCvMat);
-            PixelRgb green(0,255,0);
-            addRectangleOutline(inYarpImg,green,processor.x+processor.w/2.0,processor.y+processor.h/2.0,processor.w/2.0,processor.h/2.0);
+            yarp::sig::PixelRgb green(0,255,0);
+            yarp::sig::draw::addRectangleOutline(inYarpImg,green,processor.x+processor.w/2.0,processor.y+processor.h/2.0,processor.w/2.0,processor.h/2.0);
         }
         outCropSelectorImg->prepare() = inYarpImg;
         outCropSelectorImg->write();
@@ -181,11 +181,11 @@ void SegmentorThread::run() {
     //travis.morphOpening( morphOpening );
     //travis.morphClosing( morphClosing );
     travis.blobize(maxNumBlobs);
-    vector<cv::Point> blobsXY;
+    std::vector<cv::Point> blobsXY;
     travis.getBlobsXY(blobsXY);
-    vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond;
-    vector<double> blobsRectangularity,blobsSolidity;
-    vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
+    std::vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond;
+    std::vector<double> blobsRectangularity,blobsSolidity;
+    std::vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
     travis.getBlobsArea(blobsArea);
     travis.getBlobsSolidity(blobsSolidity);
     travis.getBlobsHSV(blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev);
@@ -196,23 +196,23 @@ void SegmentorThread::run() {
     }
     travis.getBlobsAspectRatio(blobsAspectRatio,blobsAxisFirst,blobsAxisSecond);  // must be called after getBlobsAngle!!!!
     travis.getBlobsRectangularity(blobsRectangularity);  // must be called after getBlobsAngle!!!!
-    Mat outCvMat = travis.getCvMat(outImage,seeBounding);
+    cv::Mat outCvMat = travis.getCvMat(outImage,seeBounding);
     travis.release();
     // { openCv Mat Bgr -> yarp ImageOf Rgb}
     IplImage outIplImage = outCvMat;
     cvCvtColor(&outIplImage,&outIplImage, CV_BGR2RGB);
     char sequence[] = "RGB";
     strcpy (outIplImage.channelSeq,sequence);
-    ImageOf<PixelRgb> outYarpImg;
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
     outYarpImg.wrapIplImage(&outIplImage);
-    PixelRgb blue(0,0,255);
-    vector<double> mmX, mmY, mmZ;
+    yarp::sig::PixelRgb blue(0,0,255);
+    std::vector<double> mmX, mmY, mmZ;
     if(blobsXY.size() < 1) {
         fprintf(stderr,"[warning] SegmentorThread run(): blobsXY.size() < 1.\n");
         //return;
     }
     for( int i = 0; i < blobsXY.size(); i++) {
-        addCircle(outYarpImg,blue,blobsXY[i].x,blobsXY[i].y,3);
+        yarp::sig::draw::addCircle(outYarpImg,blue,blobsXY[i].x,blobsXY[i].y,3);
         if (blobsXY[i].x<0) {
             fprintf(stderr,"[warning] SegmentorThread run(): blobsXY[%d].x < 0.\n",i);
             //return;
@@ -250,13 +250,13 @@ void SegmentorThread::run() {
     if ( ( blobsXY.size() < 1) && ( outFeaturesFormat == 1 ) ) return;
 
     // Take advantage we have the travis object and get features for text output
-    Bottle output;
+    yarp::os::Bottle output;
     for (int elem = 0; elem < outFeatures.size() ; elem++) {
         if ( outFeatures.get(elem).asString() == "mmX" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(mmX[0]);
             } else {
-                Bottle locXs;
+                yarp::os::Bottle locXs;
                 for (int i = 0; i < blobsXY.size(); i++)
                     locXs.addDouble(mmX[i]);
                 output.addList() = locXs;
@@ -265,7 +265,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(mmY[0]);
             } else {
-                Bottle locYs;
+                yarp::os::Bottle locYs;
                 for (int i = 0; i < blobsXY.size(); i++)
                     locYs.addDouble(mmY[i]);
                 output.addList() = locYs;
@@ -274,7 +274,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(mmZ[0]);
             } else {
-                Bottle locZs;
+                yarp::os::Bottle locZs;
                 for (int i = 0; i < blobsXY.size(); i++)
                     locZs.addDouble(mmZ[i]);
                 output.addList() = locZs;
@@ -283,7 +283,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsXY[0].x);
             } else {
-                Bottle locXs;
+                yarp::os::Bottle locXs;
                 for (int i = 0; i < blobsXY.size(); i++)
                     locXs.addDouble(blobsXY[i].x);
                 output.addList() = locXs;
@@ -292,7 +292,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsXY[0].y);
             } else {
-                Bottle locYs;
+                yarp::os::Bottle locYs;
                 for (int i = 0; i < blobsXY.size(); i++)
                     locYs.addDouble(blobsXY[i].y);
                 output.addList() = locYs;
@@ -301,7 +301,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsXY[0].x - cx_d);
             } else {
-                Bottle locXs;
+                yarp::os::Bottle locXs;
                 for (int i = 0; i < blobsXY.size(); i++)
                     locXs.addDouble(blobsXY[i].x - cx_d);
                 output.addList() = locXs;
@@ -310,7 +310,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsXY[0].y - cy_d);
             } else {
-                Bottle locYs;
+                yarp::os::Bottle locYs;
                 for (int i = 0; i < blobsXY.size(); i++)
                     locYs.addDouble(blobsXY[i].y - cy_d);
                 output.addList() = locYs;
@@ -319,7 +319,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsAngle[0]);
             } else {
-                Bottle angles;
+                yarp::os::Bottle angles;
                 for (int i = 0; i < blobsAngle.size(); i++)
                     angles.addDouble(blobsAngle[i]);
                 output.addList() = angles;
@@ -328,7 +328,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsArea[0]);
             } else {
-                Bottle areas;
+                yarp::os::Bottle areas;
                 for (int i = 0; i < blobsArea.size(); i++)
                     areas.addDouble(blobsArea[i]);
                 output.addList() = areas;
@@ -337,7 +337,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsAspectRatio[0]);
             } else {
-                Bottle aspectRatios;
+                yarp::os::Bottle aspectRatios;
                 for (int i = 0; i < blobsAspectRatio.size(); i++)
                     aspectRatios.addDouble(blobsAspectRatio[i]);
                 output.addList() = aspectRatios;
@@ -346,7 +346,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsRectangularity[0]);
             } else {
-                Bottle rectangularities;
+                yarp::os::Bottle rectangularities;
                 for (int i = 0; i < blobsRectangularity.size(); i++)
                     rectangularities.addDouble(blobsRectangularity[i]);
                 output.addList() = rectangularities;
@@ -355,7 +355,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsAxisFirst[0]);
             } else {
-                Bottle axisFirsts;
+                yarp::os::Bottle axisFirsts;
                 for (int i = 0; i < blobsAxisFirst.size(); i++)
                     axisFirsts.addDouble(blobsAxisFirst[i]);
                 output.addList() = axisFirsts;
@@ -364,7 +364,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsAxisSecond[0]);
             } else {
-                Bottle axisSeconds;
+                yarp::os::Bottle axisSeconds;
                 for (int i = 0; i < blobsAxisSecond.size(); i++)
                     axisSeconds.addDouble(blobsAxisSecond[i]);
                 output.addList() = axisSeconds;
@@ -373,7 +373,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsSolidity[0]);
             } else {
-                Bottle solidities;
+                yarp::os::Bottle solidities;
                 for (int i = 0; i < blobsSolidity.size(); i++)
                     solidities.addDouble(blobsSolidity[i]);
                 output.addList() = solidities;
@@ -382,7 +382,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsHue[0]);
             } else {
-                Bottle hues;
+                yarp::os::Bottle hues;
                 for (int i = 0; i < blobsHue.size(); i++)
                     hues.addDouble(blobsHue[i]);
                 output.addList() = hues;
@@ -391,7 +391,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsSat[0]);
             } else {
-                Bottle sats;
+                yarp::os::Bottle sats;
                 for (int i = 0; i < blobsSat.size(); i++)
                     sats.addDouble(blobsSat[i]);
                 output.addList() = sats;
@@ -400,7 +400,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsVal[0]);
             } else {
-                Bottle vals;
+                yarp::os::Bottle vals;
                 for (int i = 0; i < blobsVal.size(); i++)
                     vals.addDouble(blobsVal[i]);
                 output.addList() = vals;
@@ -409,7 +409,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsHueStdDev[0]);
             } else {
-                Bottle hueStdDevs;
+                yarp::os::Bottle hueStdDevs;
                 for (int i = 0; i < blobsHueStdDev.size(); i++)
                     hueStdDevs.addDouble(blobsHueStdDev[i]);
                 output.addList() = hueStdDevs;
@@ -418,7 +418,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsSatStdDev[0]);
             } else {
-                Bottle satStdDevs;
+                yarp::os::Bottle satStdDevs;
                 for (int i = 0; i < blobsSatStdDev.size(); i++)
                     satStdDevs.addDouble(blobsSatStdDev[i]);
                 output.addList() = satStdDevs;
@@ -427,18 +427,18 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsValStdDev[0]);
             } else {
-                Bottle valStdDevs;
+                yarp::os::Bottle valStdDevs;
                 for (int i = 0; i < blobsValStdDev.size(); i++)
                     valStdDevs.addDouble(blobsValStdDev[i]);
                 output.addList() = valStdDevs;
             }
         } else if ( outFeatures.get(elem).asString() == "time" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(Time::now());
+                output.addDouble(yarp::os::Time::now());
             } else {
-                Bottle times;
+                yarp::os::Bottle times;
                 for (int i = 0; i < blobsArea.size(); i++)
-                    times.addDouble(Time::now());
+                    times.addDouble(yarp::os::Time::now());
                 output.addList() = times;
             }
         } else {

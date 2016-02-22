@@ -6,7 +6,7 @@ namespace teo
 {
 
 /************************************************************************/
-bool MultipleDump::configure(ResourceFinder &rf) {
+bool MultipleDump::configure(yarp::os::ResourceFinder &rf) {
 
     watchdog = DEFAULT_WATCHDOG;  // double
 
