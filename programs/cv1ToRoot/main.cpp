@@ -13,7 +13,7 @@
 
 int main(int argc, char *argv[]) {
 
-    ResourceFinder rf;
+    yarp::os::ResourceFinder rf;
     rf.setVerbose(true);
     rf.setDefaultContext("cv1ToRoot");
     rf.setDefaultConfigFile("cv1ToRoot.ini");
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     printf("Run \"cv1ToRoot --help\" for options.\n");
     printf("premultH checking for yarp network... ");
     fflush(stdout);
-    Network yarp;
+    yarp::os::Network yarp;
     if (!yarp.checkNetwork()) {
         fprintf(stderr, "[fail]\ncv1ToRoot found no yarp network (try running \"yarpserver &\"), bye!\n");
         return -1;
