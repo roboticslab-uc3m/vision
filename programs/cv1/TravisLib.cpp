@@ -379,7 +379,7 @@ bool Travis::getBlobsHSV(std::vector <double>& hues, std::vector <double>& vals,
 cv::Mat& Travis::getCvMat(const int& image, const int& vizualization) {
     if (!_quiet) printf("[Travis] in: getCvMat(%d,%d)\n",image,vizualization);
 
-    if (( vizualization == 1 )||( vizualization == 3 )) {  // Contour
+    if (( vizualization == 2 )||( vizualization == 3 )) {  // Contour
         cv::RNG rng(12345);
         for( int i = 0; i < _contours.size(); i++ ) {
             cv::Scalar color = cv::Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
@@ -390,7 +390,7 @@ cv::Mat& Travis::getCvMat(const int& image, const int& vizualization) {
         }
     }
 
-    if (( vizualization == 2 )||( vizualization == 3 )) {  // Box, computed in getBlobsAngle
+    if (( vizualization == 1 )||( vizualization == 3 )) {  // Box, computed in getBlobsAngle
         for(int i=0;i<_minRotatedRects.size();i++) {
             cv::Point2f vertices[4];
             _minRotatedRects[i].points(vertices);
