@@ -1,7 +1,7 @@
 /**
   * \mainpage The TEO Software Repository documentation (teo-head)
 
-Welcome to the TEO Software Repository documentation for the head PC. <a class=el href="http://robots.uc3m.es" target="_blank">Click here to return to Wiki.</a> <a class=el href="https://github.com/roboticslab-uc3m/teo-head" target="_blank">Click here to see teo-head on repo.</a>
+Welcome to the TEO Software Repository documentation for the head PC. <a class=el href="http://robots.uc3m.es">Click here to return to Wiki.</a> <a class=el href="https://github.com/roboticslab-uc3m/teo-head">Click here to see teo-head on repo.</a>
 
  \li \ref teo_head_install_on_ubuntu_15_04
 
@@ -12,13 +12,13 @@ Other internal links of interest:
  \li \ref teo_head_examples
 
 Even more internal links of interest:
- \li <a class=el href="http://robots.uc3m.es/dox-teo-main/index.html" target="_blank">teo-main</a>
- \li <a class=el href="http://robots.uc3m.es/dox-teo-body/index.html" target="_blank">teo-body</a>
+ \li <a class=el href="http://robots.uc3m.es/dox-teo-main/index.html">teo-main</a>
+ \li <a class=el href="http://robots.uc3m.es/dox-teo-body/index.html">teo-body</a>
 
 External links (related projects):
- \li <a class=el href="http://eris.liralab.it/yarpdoc/index.html" target="_blank">YARP doc</a> / <a class=el href="https://github.com/robotology/yarp" target="_blank">YARP github</a>
- \li <a class=el href="http://eris.liralab.it/iCub/main/dox/html/index.html" target="_blank">iCub Software Repository Documentation</a>
- \li <a class=el href="http://roboticslab.sourceforge.net/asibot" target="_blank">ASIBOT</a>
+ \li <a class=el href="http://eris.liralab.it/yarpdoc/index.html">YARP doc</a> / <a class=el href="https://github.com/robotology/yarp">YARP github</a>
+ \li <a class=el href="http://eris.liralab.it/iCub/main/dox/html/index.html">iCub Software Repository Documentation</a>
+ \li <a class=el href="http://roboticslab.sourceforge.net/asibot">ASIBOT</a>
 
 <hr>
 
