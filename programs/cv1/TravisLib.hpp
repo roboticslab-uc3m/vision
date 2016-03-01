@@ -142,7 +142,7 @@ public:
     /**
      * Get the image in cv::Mat format.
      * @param image
-     * @param vizualization param, 0=None, 1=Contour.
+     * @param vizualization param, 0=None,1=Box,2=Contour,3=Both.
      * @return the image, in cv::Mat format.
      */
     cv::Mat& getCvMat(const int& image, const int& vizualization);
