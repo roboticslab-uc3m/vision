@@ -114,8 +114,6 @@ private:
     //
     double fx_d,fy_d,cx_d,cy_d,fx_rgb,fy_rgb,cx_rgb,cy_rgb;
     //
-    yarp::os::Bottle outFeatures;
-    //
     int cropSelector;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg;
     yarp::os::Port* inCropSelectorPort;
