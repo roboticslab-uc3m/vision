@@ -32,7 +32,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     cx_rgb = DEFAULT_CX_RGB;
     cy_rgb = DEFAULT_CY_RGB;
 
-    locate = DEFAULT_LOCATE;
     maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
     morphClosing = DEFAULT_MORPH_CLOSING;
     morphOpening = DEFAULT_MORPH_OPENING;
@@ -57,7 +56,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
         printf("\t--cx_rgb (default: \"%f\")\n",cx_rgb);
         printf("\t--cy_rgb (default: \"%f\")\n",cy_rgb);
 
-        printf("\t--locate (centroid or bottom; default: \"%s\")\n",locate.c_str());
         printf("\t--maxNumBlobs (default: \"%d\")\n",maxNumBlobs);
         printf("\t--morphClosing (percentage, 2 or 4 okay; default: \"%f\")\n",morphClosing);
         printf("\t--morphOpening (percentage, 2 or 4 okay; default: \"%f\")\n",morphOpening);
@@ -80,7 +78,6 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
     if (rf.check("fy_rgb")) fy_rgb = rf.find("fy_rgb").asDouble();
     if (rf.check("cx_rgb")) cx_rgb = rf.find("cx_rgb").asDouble();
     if (rf.check("cy_rgb")) cy_rgb = rf.find("cy_rgb").asDouble();
-    if (rf.check("locate")) locate = rf.find("locate").asString();
     if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt();
     if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asDouble();
     if (rf.check("morphOpening")) morphOpening = rf.find("morphOpening").asDouble();
