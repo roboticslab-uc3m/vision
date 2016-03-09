@@ -35,7 +35,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     morphOpening = DEFAULT_MORPH_OPENING;
     outImage = DEFAULT_OUT_IMAGE;
     outFeatures.fromString(DEFAULT_OUT_FEATURES);  // it's a bottle!!
-    outFeaturesFormat = DEFAULT_OUT_FEATURES_FORMAT;
     int rateMs = DEFAULT_RATE_MS;
     seeBounding = DEFAULT_SEE_BOUNDING;
     threshold = DEFAULT_THRESHOLD;
@@ -58,7 +57,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
         printf("\t--outFeatures (mmX,mmY,mmZ,pxXpos,pxYpos,pxX,pxY,angle,area,aspectRatio,rectangularity,axisFirst,axisSecond \
 solidity,hue,sat,val,hueStdDev,satStdDev,valStdDev,time; \
 default: \"(%s)\")\n",outFeatures.toString().c_str());
-        printf("\t--outFeaturesFormat (0=bottled,1=minimal; default: \"%d\")\n",outFeaturesFormat);
         printf("\t--outImage (0=rgb,1=bin; default: \"%d\")\n",outImage);
         printf("\t--rateMs (default: \"%d\")\n",rateMs);
         printf("\t--seeBounding (0=none,1=box,2=contour,3=both; default: \"%d\")\n",seeBounding);
@@ -74,7 +72,6 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
     if (rf.check("fy_rgb")) fy_rgb = rf.find("fy_rgb").asDouble();
     if (rf.check("cx_rgb")) cx_rgb = rf.find("cx_rgb").asDouble();
     if (rf.check("cy_rgb")) cy_rgb = rf.find("cy_rgb").asDouble();
-    if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt();
 
     printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
         fx_d,fy_d,cx_d,cy_d);
