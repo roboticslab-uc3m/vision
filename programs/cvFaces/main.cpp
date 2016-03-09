@@ -32,21 +32,7 @@
  * |fy_d                |                                       |525.000000            |
  * |cx_d                |                                       |319.500000            |
  * |cy_d                |                                       |239.500000            |
- * |fx_rgb              |                                       |525.000000            |
- * |fy_rgb              |                                       |525.000000            |
- * |cx_rgb              |                                       |319.500000            |
- * |cy_rgb              |                                       |239.500000            |
- * |algorithm           |                                       |blueMinusRed          |
- * |locate              |centroid or bottom                     |centroid              |
- * |maxNumBlobs         |                                       |2                     |
- * |morphClosing        |percentage, 2 or 4                     |2.000000              |
- * |morphOpening        |percentage, 2 or 4 okay                |0.000000              |
- * |outFeatures         |(mmX, mmY, mmZ, pxXpos, pxYpos, pxX, pxY, angle, area, aspectRatio, rectangularity, axisFirst, axisSecond solidity, hue, sat, val, hueStdDev, satStdDev, valStdDev, time |(mmX mmY mmZ)|
- * |outFeaturesFormat   |0=bottled,1=minimal                    |0                     |
- * |outImage            |0=rgb,1=bin                            |1                     |
  * |rateMs              |                                       |20                    |
- * |seeBounding         |0=none,1=box,2=contour,3=both          |3                     |
- * |threshold           |                                       |55                    |
  *
  *
  *
