@@ -108,7 +108,6 @@ private:
     yarp::os::Port *pOutPort;
     //
     double morphOpening;
-    int seeBounding;
     //
     double fx_d,fy_d,cx_d,cy_d,fx_rgb,fy_rgb,cx_rgb,cy_rgb;
     //
