@@ -27,7 +27,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     fy_d = DEFAULT_FY_D;
     cx_d = DEFAULT_CX_D;
     cy_d = DEFAULT_CY_D;
-    fx_rgb = DEFAULT_FX_RGB;
     fy_rgb = DEFAULT_FY_RGB;
     cx_rgb = DEFAULT_CX_RGB;
     cy_rgb = DEFAULT_CY_RGB;
@@ -43,7 +42,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
         printf("\t--fy_d (default: \"%f\")\n",fy_d);
         printf("\t--cx_d (default: \"%f\")\n",cx_d);
         printf("\t--cy_d (default: \"%f\")\n",cy_d);
-        printf("\t--fx_rgb (default: \"%f\")\n",fx_rgb);
         printf("\t--fy_rgb (default: \"%f\")\n",fy_rgb);
         printf("\t--cx_rgb (default: \"%f\")\n",cx_rgb);
         printf("\t--cy_rgb (default: \"%f\")\n",cy_rgb);
@@ -56,15 +54,13 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     if (rf.check("fy_d")) fy_d = rf.find("fy_d").asDouble();
     if (rf.check("cx_d")) cx_d = rf.find("cx_d").asDouble();
     if (rf.check("cy_d")) cy_d = rf.find("cy_d").asDouble();
-    if (rf.check("fx_rgb")) fx_rgb = rf.find("fx_rgb").asDouble();
     if (rf.check("fy_rgb")) fy_rgb = rf.find("fy_rgb").asDouble();
     if (rf.check("cx_rgb")) cx_rgb = rf.find("cx_rgb").asDouble();
     if (rf.check("cy_rgb")) cy_rgb = rf.find("cy_rgb").asDouble();
 
     printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
         fx_d,fy_d,cx_d,cy_d);
-    printf("SegmentorThread using fx_rgb: %f, fy_rgb: %f, cx_rgb: %f, cy_rgb: %f.\n",
-        fx_rgb,fy_rgb,cx_rgb,cy_rgb);   
+
 
 
     if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt();    
