@@ -34,8 +34,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
 
     morphOpening = DEFAULT_MORPH_OPENING;    
     int rateMs = DEFAULT_RATE_MS;
-    seeBounding = DEFAULT_SEE_BOUNDING;
-    threshold = DEFAULT_THRESHOLD;
+    seeBounding = DEFAULT_SEE_BOUNDING;    
 
     printf("--------------------------------------------------------------\n");
     if (rf.check("help")) {
@@ -53,8 +52,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
 
         printf("\t--morphOpening (percentage, 2 or 4 okay; default: \"%f\")\n",morphOpening);                
         printf("\t--rateMs (default: \"%d\")\n",rateMs);
-        printf("\t--seeBounding (0=none,1=box,2=contour,3=both; default: \"%d\")\n",seeBounding);
-        printf("\t--threshold (default: \"%d\")\n",threshold);
+        printf("\t--seeBounding (0=none,1=box,2=contour,3=both; default: \"%d\")\n",seeBounding);        
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
 
@@ -73,8 +71,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
         fx_rgb,fy_rgb,cx_rgb,cy_rgb);   
 
 
-    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt();
-    if (rf.check("threshold")) threshold = rf.find("threshold").asInt();
+    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt();    
     if (rf.check("seeBounding")) seeBounding = rf.find("seeBounding").asInt();
 
     printf("--------------------------------------------------------------\n");
