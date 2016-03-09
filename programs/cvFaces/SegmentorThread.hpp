@@ -107,8 +107,6 @@ private:
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
     //
-    double morphOpening;
-    //
     double fx_d,fy_d,cx_d,cy_d,fx_rgb,fy_rgb,cx_rgb,cy_rgb;
     //
     int cropSelector;
