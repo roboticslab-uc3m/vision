@@ -107,7 +107,6 @@ private:
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
     //
-    yarp::os::ConstString algorithm;
     yarp::os::ConstString locate;
     int maxNumBlobs;
     double morphClosing;
