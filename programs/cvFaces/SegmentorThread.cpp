@@ -32,7 +32,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     cx_rgb = DEFAULT_CX_RGB;
     cy_rgb = DEFAULT_CY_RGB;
 
-    morphOpening = DEFAULT_MORPH_OPENING;    
     int rateMs = DEFAULT_RATE_MS;    
 
     printf("--------------------------------------------------------------\n");
@@ -49,7 +48,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
         printf("\t--cx_rgb (default: \"%f\")\n",cx_rgb);
         printf("\t--cy_rgb (default: \"%f\")\n",cy_rgb);
 
-        printf("\t--morphOpening (percentage, 2 or 4 okay; default: \"%f\")\n",morphOpening);                
         printf("\t--rateMs (default: \"%d\")\n",rateMs);        
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
