@@ -32,7 +32,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     cx_rgb = DEFAULT_CX_RGB;
     cy_rgb = DEFAULT_CY_RGB;
 
-    maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
     morphClosing = DEFAULT_MORPH_CLOSING;
     morphOpening = DEFAULT_MORPH_OPENING;
     outImage = DEFAULT_OUT_IMAGE;
@@ -56,7 +55,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
         printf("\t--cx_rgb (default: \"%f\")\n",cx_rgb);
         printf("\t--cy_rgb (default: \"%f\")\n",cy_rgb);
 
-        printf("\t--maxNumBlobs (default: \"%d\")\n",maxNumBlobs);
         printf("\t--morphClosing (percentage, 2 or 4 okay; default: \"%f\")\n",morphClosing);
         printf("\t--morphOpening (percentage, 2 or 4 okay; default: \"%f\")\n",morphOpening);
         printf("\t--outFeatures (mmX,mmY,mmZ,pxXpos,pxYpos,pxX,pxY,angle,area,aspectRatio,rectangularity,axisFirst,axisSecond \
@@ -77,8 +75,7 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
     if (rf.check("fx_rgb")) fx_rgb = rf.find("fx_rgb").asDouble();
     if (rf.check("fy_rgb")) fy_rgb = rf.find("fy_rgb").asDouble();
     if (rf.check("cx_rgb")) cx_rgb = rf.find("cx_rgb").asDouble();
-    if (rf.check("cy_rgb")) cy_rgb = rf.find("cy_rgb").asDouble();
-    if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt();
+    if (rf.check("cy_rgb")) cy_rgb = rf.find("cy_rgb").asDouble();    
     if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asDouble();
     if (rf.check("morphOpening")) morphOpening = rf.find("morphOpening").asDouble();
     if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt();
@@ -86,9 +83,7 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
     printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
         fx_d,fy_d,cx_d,cy_d);
     printf("SegmentorThread using fx_rgb: %f, fy_rgb: %f, cx_rgb: %f, cy_rgb: %f.\n",
-        fx_rgb,fy_rgb,cx_rgb,cy_rgb);
-    printf("SegmentorThread using maxNumBlobs: %d, morphClosing: %.2f, outFeaturesFormat: %d.\n",
-        maxNumBlobs,morphClosing,outFeaturesFormat);
+        fx_rgb,fy_rgb,cx_rgb,cy_rgb);   
 
     if (rf.check("outFeatures")) {
         outFeatures = *(rf.find("outFeatures").asList());  // simple overrride
