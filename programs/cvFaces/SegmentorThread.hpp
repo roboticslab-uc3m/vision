@@ -107,7 +107,6 @@ private:
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
     //
-    double morphClosing;
     double morphOpening;
     int outFeaturesFormat;
     int outImage;
