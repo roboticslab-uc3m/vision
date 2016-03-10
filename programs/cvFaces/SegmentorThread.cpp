@@ -28,7 +28,9 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     cx_d = DEFAULT_CX_D;
     cy_d = DEFAULT_CY_D;    
 
-    int rateMs = DEFAULT_RATE_MS;    
+    int rateMs = DEFAULT_RATE_MS;
+
+    std::string xmlCascade = DEFAULT_XMLCASCADE;
 
     printf("--------------------------------------------------------------\n");
     if (rf.check("help")) {
@@ -40,7 +42,8 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
         printf("\t--cx_d (default: \"%f\")\n",cx_d);
         printf("\t--cy_d (default: \"%f\")\n",cy_d);
 
-        printf("\t--rateMs (default: \"%d\")\n",rateMs);        
+        printf("\t--rateMs (default: \"%d\")\n",rateMs);
+        printf("\t--xmlCascade (default: \"%s\")\n", xmlCascade.c_str());
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
 
@@ -54,14 +57,16 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
 
 
 
-    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt();    
+    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt();
+    if (rf.check("xmlCascade")) xmlCascade = rf.find("xmlCascade").asString();
 
     printf("--------------------------------------------------------------\n");
     if(rf.check("help")) {
         ::exit(1);
     }
 
-    std::string cascade = rf.findFileByName("haarcascade_frontalface_alt.xml");
+    //std::string cascade = rf.findFileByName("haarcascade_frontalface_alt.xml");
+    std::string cascade = xmlCascade;
     if( ! face_cascade.load( cascade ) ) {
         printf("[error] no cascade!\n");
         ::exit(1);
