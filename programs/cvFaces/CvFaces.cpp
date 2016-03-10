@@ -31,6 +31,7 @@ bool CvFaces::configure(yarp::os::ResourceFinder &rf) {
     if(rf.check("kinectLocal")) strKinectLocal = rf.find("kinectLocal").asString();
     if(rf.check("kinectRemote")) strKinectRemote = rf.find("kinectRemote").asString();
     if(rf.check("watchdog")) watchdog = rf.find("watchdog").asDouble();
+
     printf("CvFaces using kinectDevice: %s, kinectLocal: %s, kinectRemote: %s.\n",
         strKinectDevice.c_str(), strKinectLocal.c_str(), strKinectRemote.c_str());
     printf("CvFaces using watchdog: %f.\n",watchdog);

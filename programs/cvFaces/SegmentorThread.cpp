@@ -40,7 +40,8 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
         printf("\t--cx_d (default: \"%f\")\n",cx_d);
         printf("\t--cy_d (default: \"%f\")\n",cy_d);
 
-        printf("\t--rateMs (default: \"%d\")\n",rateMs);        
+        printf("\t--rateMs (default: \"%d\")\n",rateMs);
+
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
 
