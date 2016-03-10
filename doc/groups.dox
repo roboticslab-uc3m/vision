@@ -5,7 +5,7 @@
 namespace teo {}
 
 /**
- * \defgroup teo_head_applications teo-head Applications
+ * \defgroup teo_head_applications teo-head Applications (Collections of Programs)
  * @brief teo-head applications (collections of programs).
  */
 
