@@ -5,19 +5,19 @@
 namespace teo {}
 
 /**
- * \defgroup teo_head_applications TEO Head Applications
- * @brief TEO head applications (collections of programs).
+ * \defgroup teo_head_applications teo-head Applications
+ * @brief teo-head applications (collections of programs).
  */
 
 /**
- * \defgroup teo_head_libraries TEO Head Libraries
- * @brief TEO head libraries.
+ * \defgroup teo_head_libraries teo-head Libraries
+ * @brief teo-head libraries.
  */
 
 /**
  * @ingroup teo_head_libraries
  * \defgroup HeadYarp HeadYarp
- * @brief Contains TEO head libraries that implement YARP device interfaces
+ * @brief Contains teo-head libraries that implement YARP device interfaces
  * and therefore can be invoked as YARP plugins.
  * @section HeadYarp_install Installation
  *
@@ -26,12 +26,12 @@ namespace teo {}
 
 /**
  * 
- * \defgroup teo_head_programs TEO Head Programs
- * @brief TEO head programs.
+ * \defgroup teo_head_programs teo-head Programs
+ * @brief teo-head programs.
  */
 
 /**
- * \defgroup teo_head_examples TEO Head Examples
- * @brief TEO head examples.
+ * \defgroup teo_head_examples teo-head Examples
+ * @brief teo-head examples.
  */
 
