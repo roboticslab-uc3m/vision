@@ -28,22 +28,8 @@
 #define DEFAULT_FY_D          525.0  //
 #define DEFAULT_CX_D          319.5  //
 #define DEFAULT_CY_D          239.5  //
-#define DEFAULT_FX_RGB        525.0  //
-#define DEFAULT_FY_RGB        525.0  //
-#define DEFAULT_CX_RGB        319.5  //
-#define DEFAULT_CY_RGB        239.5  //
 
-#define DEFAULT_ALGORITHM "blueMinusRed"
-#define DEFAULT_LOCATE "centroid"
-#define DEFAULT_MAX_NUM_BLOBS 2
-#define DEFAULT_MORPH_CLOSING 2
-#define DEFAULT_MORPH_OPENING 0
-#define DEFAULT_OUT_FEATURES "mmX mmY mmZ"  // it's a bottle!!
-#define DEFAULT_OUT_FEATURES_FORMAT 0  // 0=bottled,1=minimal
-#define DEFAULT_OUT_IMAGE 1
 #define DEFAULT_RATE_MS 20
-#define DEFAULT_SEE_BOUNDING 3
-#define DEFAULT_THRESHOLD 55
 
 
 namespace teo
@@ -115,6 +101,7 @@ private:
     DataProcessor processor;
 
     cv::CascadeClassifier face_cascade;
+
 
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
