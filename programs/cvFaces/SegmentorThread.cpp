@@ -43,7 +43,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
         printf("\t--cy_d (default: \"%f\")\n",cy_d);
 
         printf("\t--rateMs (default: \"%d\")\n",rateMs);
-        printf("\t--xmlCascade (default: \"%s\")\n", xmlCascade.c_str());
+        printf("\t--xmlCascade [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
 
