@@ -65,8 +65,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
         ::exit(1);
     }
 
-    //std::string cascade = rf.findFileByName("haarcascade_frontalface_alt.xml");
-    std::string cascade = xmlCascade;
+    std::string cascade = rf.findFileByName(xmlCascade);
     if( ! face_cascade.load( cascade ) ) {
         printf("[error] no cascade!\n");
         ::exit(1);
