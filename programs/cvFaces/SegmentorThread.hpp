@@ -30,6 +30,9 @@
 #define DEFAULT_CY_D          239.5  //
 
 #define DEFAULT_RATE_MS 20
+#define DEFAULT_SEE_BOUNDING 3
+#define DEFAULT_THRESHOLD 55
+#define DEFAULT_XMLCASCADE  "haarcascade_frontalface_alt.xml"
 
 
 namespace teo
