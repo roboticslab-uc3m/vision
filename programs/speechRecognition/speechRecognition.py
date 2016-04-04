@@ -23,7 +23,7 @@ import os.path
 
 ##
 #
-# @ingroup speechRecognition1
+# @ingroup speechRecognition
 #
 # @brief Speech Recognition 1.
 class SpeechRecognition1(object):
@@ -32,12 +32,12 @@ class SpeechRecognition1(object):
         """Initialize a SpeechRecognition1 object"""
         rf = yarp.ResourceFinder()
         rf.setVerbose(True)
-        rf.setDefaultContext('speechRecognition1')
-        rf.setDefaultConfigFile('speechRecognition1.ini')
+        rf.setDefaultContext('speechRecognition')
+        rf.setDefaultConfigFile('speechRecognition.ini')
         self.my_lm = rf.findFileByName('words-20150720.lm')
         self.my_dic = rf.findFileByName('words-20150720.dic')
         self.outPort = yarp.Port()
-        self.outPort.open('/speechRecognition1:o')
+        self.outPort.open('/speechRecognition:o')
         self.init_gst()
 
     def init_gst(self):
@@ -75,7 +75,7 @@ class SpeechRecognition1(object):
 #
 # @ingroup teo_head_programs
 #
-# \defgroup speechRecognition1 speechRecognition1.py
+# \defgroup speechRecognition speechRecognition.py
 #
 # @brief Creates an instance of SpeechRecognition1.
 yarp.Network.init()
