@@ -1,13 +1,13 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __CV_FACES_HPP__
-#define __CV_FACES_HPP__
+#ifndef __HAAR_DETECTION_HPP__
+#define __HAAR_DETECTION_HPP__
 
 #include "SegmentorThread.hpp"
 
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
 #define DEFAULT_KINECT_DEVICE "OpenNI2DeviceServer"
-#define DEFAULT_KINECT_LOCAL "/cvFaces"
+#define DEFAULT_KINECT_LOCAL "/haarDetection"
 #define DEFAULT_KINECT_REMOTE "/OpenNI2"
 #define DEFAULT_WATCHDOG    2       // [s]
 
@@ -16,11 +16,11 @@ namespace teo
 {
 
 /**
- * @ingroup cvFaces
+ * @ingroup haarDetection
  *
  * @brief Computer Vision segment faces.
  */
-class CvFaces : public yarp::os::RFModule {
+class HaarDetection : public yarp::os::RFModule {
   private:
     SegmentorThread segmentorThread;
     //
@@ -45,5 +45,5 @@ class CvFaces : public yarp::os::RFModule {
 
 }  // namespace teo
 
-#endif  // __CV_FACES_HPP__
+#endif  // __HAAR_DETECTION_HPP__
 
