@@ -19,7 +19,7 @@ install:
   - cd opencv
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake .. -DBUILD_opencv_python2=OFF
   - make -j4
   - sudo make -j4 install
   - cd ../..
