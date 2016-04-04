@@ -39,9 +39,9 @@ namespace teo
 {
 
 /**
- * @ingroup cvFaces
+ * @ingroup haarDetection
  *
- * @brief Implements cvFaces callback on Bottle.
+ * @brief Implements haarDetection callback on Bottle.
  */
 class DataProcessor : public yarp::os::PortReader {
     virtual bool read(yarp::os::ConnectionReader& connection) {
@@ -86,9 +86,9 @@ public:
 };
 
 /**
- * @ingroup cvFaces
+ * @ingroup haarDetection
  *
- * @brief Implements cvFaces RateThread.
+ * @brief Implements haarDetection RateThread.
  */
 class SegmentorThread : public yarp::os::RateThread {
 private:

@@ -1,12 +1,12 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "CvFaces.hpp"
+#include "HaarDetection.hpp"
 
 namespace teo
 {
 
 /************************************************************************/
-bool CvFaces::configure(yarp::os::ResourceFinder &rf) {
+bool HaarDetection::configure(yarp::os::ResourceFinder &rf) {
 
     cropSelector = DEFAULT_CROP_SELECTOR;
     yarp::os::ConstString strKinectDevice = DEFAULT_KINECT_DEVICE;
@@ -16,7 +16,7 @@ bool CvFaces::configure(yarp::os::ResourceFinder &rf) {
 
     fprintf(stdout,"--------------------------------------------------------------\n");
     if (rf.check("help")) {
-        printf("CvFaces options:\n");
+        printf("HaarDetection options:\n");
         printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
         printf("\t--cropSelector (default: \"%d\")\n",cropSelector);
         printf("\t--kinectDevice (device we create, default: \"%s\")\n",strKinectDevice.c_str());
@@ -26,15 +26,15 @@ bool CvFaces::configure(yarp::os::ResourceFinder &rf) {
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
     if(rf.check("cropSelector")) cropSelector = rf.find("cropSelector").asInt();
-    printf("CvFaces using cropSelector: %d.\n",cropSelector);
+    printf("HaarDetection using cropSelector: %d.\n",cropSelector);
     if(rf.check("kinectDevice")) strKinectDevice = rf.find("kinectDevice").asString();
     if(rf.check("kinectLocal")) strKinectLocal = rf.find("kinectLocal").asString();
     if(rf.check("kinectRemote")) strKinectRemote = rf.find("kinectRemote").asString();
     if(rf.check("watchdog")) watchdog = rf.find("watchdog").asDouble();
 
-    printf("CvFaces using kinectDevice: %s, kinectLocal: %s, kinectRemote: %s.\n",
+    printf("HaarDetection using kinectDevice: %s, kinectLocal: %s, kinectRemote: %s.\n",
         strKinectDevice.c_str(), strKinectLocal.c_str(), strKinectRemote.c_str());
-    printf("CvFaces using watchdog: %f.\n",watchdog);
+    printf("HaarDetection using watchdog: %f.\n",watchdog);
 
     if (!rf.check("help")) {
         yarp::os::Property options;
@@ -46,9 +46,9 @@ bool CvFaces::configure(yarp::os::ResourceFinder &rf) {
             printf("Waiting for kinectDevice \"%s\"...\n",strKinectDevice.c_str());
             yarp::os::Time::delay(1);
         }
-        printf("[CvFaces] success: kinectDevice available.\n");
-        if (! dd.view(kinect) ) fprintf(stderr,"[CvFaces] warning: kinectDevice bad view.\n");
-        else printf("[CvFaces] success: kinectDevice ok view.\n");
+        printf("[HaarDetection] success: kinectDevice available.\n");
+        if (! dd.view(kinect) ) fprintf(stderr,"[HaarDetection] warning: kinectDevice bad view.\n");
+        else printf("[HaarDetection] success: kinectDevice ok view.\n");
 
         segmentorThread.setIKinectDeviceDriver(kinect);
         segmentorThread.setOutImg(&outImg);
@@ -74,21 +74,21 @@ bool CvFaces::configure(yarp::os::ResourceFinder &rf) {
 }
 
 /*****************************************************************/
-double CvFaces::getPeriod() {
+double HaarDetection::getPeriod() {
     return watchdog;  // [s]
 }
 
 /************************************************************************/
 
-bool CvFaces::updateModule() {
-    printf("CvFaces alive...\n");
+bool HaarDetection::updateModule() {
+    printf("HaarDetection alive...\n");
     return true;
 }
 
 /************************************************************************/
 
-bool CvFaces::interruptModule() {
-    printf("CvFaces closing...\n");
+bool HaarDetection::interruptModule() {
+    printf("HaarDetection closing...\n");
     segmentorThread.stop();
     outImg.interrupt();
     outPort.interrupt();

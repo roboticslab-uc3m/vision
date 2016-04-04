@@ -4,11 +4,11 @@
  *
  * @ingroup teo_head_programs
  *
- * \defgroup cvFaces cvFaces
+ * \defgroup haarDetection haarDetection
  *
- * @brief Creates an instance of teo::CvFaces.
+ * @brief Creates an instance of teo::HaarDetection.
  *
- * @section cvfaces_options CvFaces options:
+ * @section cvfaces_options HaarDetection options:
  *
  * |PROPERTY            | DESCRIPTION                           | DEFAULT              |
  * |--------------------|---------------------------------------|----------------------|
@@ -17,7 +17,7 @@
  * |context             |path                                   |                      |
  * |cropSelector        |                                       |0                     |
  * |kinectDevice        |device we create                       |OpenNI2DeviceServer   |
- * |kinectLocal         |if accesing remote, local port name    |/cvFaces              |
+ * |kinectLocal         |if accesing remote, local port name    |/haarDetection              |
  * |kinectRemote        |if accesing remote, remote port name   |/OpenNI2              |
  * |watchdog            |                                       |2.000000              |
  *
@@ -41,17 +41,17 @@
 
 */
 
-#include "CvFaces.hpp"
+#include "HaarDetection.hpp"
 
 int main(int argc, char** argv) {
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(true);
-    rf.setDefaultContext("cvFaces");
-    rf.setDefaultConfigFile("cvFaces.ini");
+    rf.setDefaultContext("haarDetection");
+    rf.setDefaultConfigFile("haarDetection.ini");
     rf.configure(argc, argv);
 
-    teo::CvFaces mod;
+    teo::HaarDetection mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }
