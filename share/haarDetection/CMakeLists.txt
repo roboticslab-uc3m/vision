@@ -2,7 +2,7 @@
 # Author: Juan G Victores
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
-set(appname cvFaces)
+set(appname haarDetection)
 
 
 file(GLOB conf ${CMAKE_CURRENT_SOURCE_DIR}/conf/*.ini)
