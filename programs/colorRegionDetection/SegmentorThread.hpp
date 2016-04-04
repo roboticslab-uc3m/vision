@@ -51,9 +51,9 @@ namespace teo
 {
 
 /**
- * @ingroup cv1
+ * @ingroup colorRegionDetection
  *
- * @brief Implements cv1 callback on Bottle.
+ * @brief Implements colorRegionDetection callback on Bottle.
  */
 class DataProcessor : public yarp::os::PortReader {
     virtual bool read(yarp::os::ConnectionReader& connection) {
@@ -98,9 +98,9 @@ public:
 };
 
 /**
- * @ingroup cv1
+ * @ingroup colorRegionDetection
  *
- * @brief Implements cv1 RateThread.
+ * @brief Implements colorRegionDetection RateThread.
  */
 class SegmentorThread : public yarp::os::RateThread {
 private:

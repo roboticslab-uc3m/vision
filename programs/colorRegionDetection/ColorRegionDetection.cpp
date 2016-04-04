@@ -1,12 +1,12 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "Cv1.hpp"
+#include "ColorRegionDetection.hpp"
 
 namespace teo
 {
 
 /************************************************************************/
-bool Cv1::configure(yarp::os::ResourceFinder &rf) {
+bool ColorRegionDetection::configure(yarp::os::ResourceFinder &rf) {
 
     cropSelector = DEFAULT_CROP_SELECTOR;
     yarp::os::ConstString strKinectDevice = DEFAULT_KINECT_DEVICE;
@@ -16,7 +16,7 @@ bool Cv1::configure(yarp::os::ResourceFinder &rf) {
 
     fprintf(stdout,"--------------------------------------------------------------\n");
     if (rf.check("help")) {
-        printf("Cv1 options:\n");
+        printf("ColorRegionDetection options:\n");
         printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
         printf("\t--cropSelector (default: \"%d\")\n",cropSelector);
         printf("\t--kinectDevice (device we create, default: \"%s\")\n",strKinectDevice.c_str());
@@ -26,14 +26,14 @@ bool Cv1::configure(yarp::os::ResourceFinder &rf) {
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
     if(rf.check("cropSelector")) cropSelector = rf.find("cropSelector").asInt();
-    printf("Cv1 using cropSelector: %d.\n",cropSelector);
+    printf("ColorRegionDetection using cropSelector: %d.\n",cropSelector);
     if(rf.check("kinectDevice")) strKinectDevice = rf.find("kinectDevice").asString();
     if(rf.check("kinectLocal")) strKinectLocal = rf.find("kinectLocal").asString();
     if(rf.check("kinectRemote")) strKinectRemote = rf.find("kinectRemote").asString();
     if(rf.check("watchdog")) watchdog = rf.find("watchdog").asDouble();
-    printf("Cv1 using kinectDevice: %s, kinectLocal: %s, kinectRemote: %s.\n",
+    printf("ColorRegionDetection using kinectDevice: %s, kinectLocal: %s, kinectRemote: %s.\n",
         strKinectDevice.c_str(), strKinectLocal.c_str(), strKinectRemote.c_str());
-    printf("Cv1 using watchdog: %f.\n",watchdog);
+    printf("ColorRegionDetection using watchdog: %f.\n",watchdog);
 
     if (!rf.check("help")) {
         yarp::os::Property options;
@@ -45,9 +45,9 @@ bool Cv1::configure(yarp::os::ResourceFinder &rf) {
             printf("Waiting for kinectDevice \"%s\"...\n",strKinectDevice.c_str());
             yarp::os::Time::delay(1);
         }
-        printf("[Cv1] success: kinectDevice available.\n");
-        if (! dd.view(kinect) ) fprintf(stderr,"[Cv1] warning: kinectDevice bad view.\n");
-        else printf("[Cv1] success: kinectDevice ok view.\n");
+        printf("[ColorRegionDetection] success: kinectDevice available.\n");
+        if (! dd.view(kinect) ) fprintf(stderr,"[ColorRegionDetection] warning: kinectDevice bad view.\n");
+        else printf("[ColorRegionDetection] success: kinectDevice ok view.\n");
 
         segmentorThread.setIKinectDeviceDriver(kinect);
         segmentorThread.setOutImg(&outImg);
@@ -73,21 +73,21 @@ bool Cv1::configure(yarp::os::ResourceFinder &rf) {
 }
 
 /*****************************************************************/
-double Cv1::getPeriod() {
+double ColorRegionDetection::getPeriod() {
     return watchdog;  // [s]
 }
 
 /************************************************************************/
 
-bool Cv1::updateModule() {
-    printf("Cv1 alive...\n");
+bool ColorRegionDetection::updateModule() {
+    printf("ColorRegionDetection alive...\n");
     return true;
 }
 
 /************************************************************************/
 
-bool Cv1::interruptModule() {
-    printf("Cv1 closing...\n");
+bool ColorRegionDetection::interruptModule() {
+    printf("ColorRegionDetection closing...\n");
     segmentorThread.stop();
     outImg.interrupt();
     outPort.interrupt();

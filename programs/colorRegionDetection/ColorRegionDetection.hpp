@@ -1,13 +1,13 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __CV1_HPP__
-#define __CV1_HPP__
+#ifndef __COLOR_REGION_DETECTION_HPP__
+#define __COLOR_REGION_DETECTION_HPP__
 
 #include "SegmentorThread.hpp"
 
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
 #define DEFAULT_KINECT_DEVICE "OpenNI2DeviceServer"
-#define DEFAULT_KINECT_LOCAL "/cv1"
+#define DEFAULT_KINECT_LOCAL "/colorRegionDetection"
 #define DEFAULT_KINECT_REMOTE "/OpenNI2"
 #define DEFAULT_WATCHDOG    2       // [s]
 
@@ -16,11 +16,11 @@ namespace teo
 {
 
 /**
- * @ingroup cv1
+ * @ingroup colorRegionDetection
  *
  * @brief Computer Vision 1.
  */
-class Cv1 : public yarp::os::RFModule {
+class ColorRegionDetection : public yarp::os::RFModule {
   private:
     SegmentorThread segmentorThread;
     //
@@ -45,5 +45,5 @@ class Cv1 : public yarp::os::RFModule {
 
 }  // namespace teo
 
-#endif  // __CV1_HPP__
+#endif  // __COLOR_REGION_DETECTION_HPP__
 
