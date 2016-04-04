@@ -21,7 +21,7 @@ option(ENABLE_colorRegionDetection "Choose if you want to compile colorRegionDet
 option(ENABLE_haarDetection "Choose if you want to compile haarDetection" TRUE)
 option(ENABLE_colorRegionDetectionToRoot "Choose if you want to compile colorRegionDetectionToRoot" TRUE)
 option(ENABLE_multipleDump "Choose if you want to compile multipleDump" TRUE)
-option(ENABLE_speechRecognition1 "Choose if you want to install speechRecognition1" TRUE)
+option(ENABLE_speechRecognition "Choose if you want to install speechRecognition" TRUE)
 option(ENABLE_textToSpeech "Choose if you want to install textToSpeech" FALSE)
 
 if(MSVC)

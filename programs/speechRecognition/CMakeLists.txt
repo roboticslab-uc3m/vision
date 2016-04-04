@@ -2,11 +2,11 @@
 
 cmake_minimum_required(VERSION 2.6)
 
-IF (ENABLE_speechRecognition1)
+IF (ENABLE_speechRecognition)
 
 file(GLOB python_scripts ${CMAKE_CURRENT_SOURCE_DIR}/*.py)
 
 yarp_install(PROGRAMS ${python_scripts} DESTINATION bin)  # yarp helper copies into build; program sets +x
 
-ENDIF (ENABLE_speechRecognition1)
+ENDIF (ENABLE_speechRecognition)
 
