@@ -15,7 +15,7 @@ namespace teo
 {
 
 /**
- * @ingroup cv1
+ * @ingroup colorRegionDetection
  *
  * @brief The Travis class implements all the algorithms on a single image.
  */

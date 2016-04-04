@@ -4,11 +4,11 @@
  *
  * @ingroup teo_head_programs
  *
- * \defgroup cv1 cv1
+ * \defgroup colorRegionDetection colorRegionDetection
  *
- * @brief Creates an instance ---- of teo::Cv1.
+ * @brief Creates an instance ---- of teo::ColorRegionDetection.
  *
- * @section cv1_options Cv1 options:
+ * @section colorRegionDetection_options ColorRegionDetection options:
  *
  * |PROPERTY     | DESCRIPTION                           | DEFAULT              |
  * |-------------|---------------------------------------|----------------------|
@@ -17,7 +17,7 @@
  * |context      |path                                   |                      |
  * |cropSelector |                                       | 0                    |
  * |kinectDevice |device we create                       | OpenNI2DeviceServer  |
- * |kinectLocal  |if accesing remote, local port name    | /cv1                 |
+ * |kinectLocal  |if accesing remote, local port name    | /colorRegionDetection                 |
  * |kinectRemote |if accesing remote, remote port name   | /OpenNI2             |
  * |watchdog     |                                       | 2.000000             |
  *
@@ -52,17 +52,17 @@
  *
  */
 
-#include "Cv1.hpp"
+#include "ColorRegionDetection.hpp"
 
 int main(int argc, char** argv) {
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(true);
-    rf.setDefaultContext("cv1");
-    rf.setDefaultConfigFile("cv1.ini");
+    rf.setDefaultContext("colorRegionDetection");
+    rf.setDefaultConfigFile("colorRegionDetection.ini");
     rf.configure(argc, argv);
 
-    teo::Cv1 mod;
+    teo::ColorRegionDetection mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

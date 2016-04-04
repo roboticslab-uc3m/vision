@@ -2,9 +2,9 @@
 
 cmake_minimum_required(VERSION 2.6)
 
-IF (ENABLE_cv1)
+IF (ENABLE_colorRegionDetection)
 
-set(KEYWORD "cv1")
+set(KEYWORD "colorRegionDetection")
 
 # Find OpenCV.
 find_package(OpenCV REQUIRED)
@@ -35,5 +35,5 @@ else (folder_source)
   message(FATAL_ERROR "No source code files found. Please add something")
 endif (folder_source)
 
-ENDIF (ENABLE_cv1)
+ENDIF (ENABLE_colorRegionDetection)
 
