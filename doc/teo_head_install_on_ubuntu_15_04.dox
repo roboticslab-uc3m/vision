@@ -72,6 +72,20 @@ make -j3;  sudo make install; sudo ldconfig; cd  # go home
 sudo apt-get install libopencv-dev
 \endverbatim
 
+\verbatim
+# voice
+# Install https://github.com/robotology/icub-contrib-common
+# Install https://github.com/robotology/speech
+sudo apt-get install festival
+wget http://forja.guadalinex.org/frs/download.php/154/festvox-sflpc16k_1.0-1_all.deb  # 
+dpkg -i festvox-sflpc16k_1.0-1_all.deb
+sudo apt-get install festvox-kallpc16k
+festival
+festival> (voice.list)
+festival> (voice_kal_diphone)
+festival> (voice_JuntaDeAndalucia_es_pa_diphone)
+\endverbatim
+
 Our software integrates the previous dependencies. Note that you will be prompted for your password upon using '''sudo''' a couple of times:
 
 \verbatim
@@ -84,17 +98,6 @@ sudo make install  # Install :-)
 \endverbatim
 
 For additional TEO options use ccmake instead of cmake.
-
- * @section install_teo_body_tts Install the Software (TTS)
-
-We currently use iSpeak from https://github.com/robotology/speech
-Install festival (sudo apt-get install festival) and https://github.com/robotology/icub-contrib-common first.
-To force festival to spanish, from http://ubuntulinuxafondo.blogspot.com.es/2012/09/instalar-festival-con-voz-en-espanol-en.html we have:
-wget http://forja.guadalinex.org/frs/download.php/154/festvox-sflpc16k_1.0-1_all.deb && dpkg -i festvox-sflpc16k_1.0-1_all.deb
-
- * @section install_teo_body_extra Install the Software (Extra)
-
-KDL for transformations to root.
 
 Done! You are now probably interested in one of the following links:
   \li \ref teo_head_post_install
