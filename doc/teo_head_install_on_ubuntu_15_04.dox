@@ -75,15 +75,12 @@ sudo apt-get install libopencv-dev
 \verbatim
 # voice
 # Install https://github.com/robotology/icub-contrib-common
-# Install https://github.com/robotology/speech
-sudo apt-get install festival
-wget http://forja.guadalinex.org/frs/download.php/154/festvox-sflpc16k_1.0-1_all.deb  # 
-dpkg -i festvox-sflpc16k_1.0-1_all.deb
-sudo apt-get install festvox-kallpc16k
-festival
-festival> (voice.list)
-festival> (voice_kal_diphone)
-festival> (voice_JuntaDeAndalucia_es_pa_diphone)
+git clone https://github.com/robotology/speech
+cd speech/svox-speech
+mkdir build && cd build
+cmake .. -DENABLE_speech=ON
+make && sudo make install
+# export YARP_DATA_DIRS=$HOME/repos/teo-head/build/share/teo-head:/usr/local/share/speech
 \endverbatim
 
 Our software integrates the previous dependencies. Note that you will be prompted for your password upon using '''sudo''' a couple of times:
