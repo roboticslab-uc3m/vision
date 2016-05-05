@@ -13,12 +13,12 @@
     </module>
     <module>
         <name>yarpview</name>
-        <parameters>--name /faces/yarpview/img:i</parameters>
+        <parameters>--name /haarDetection/yarpview/img:i</parameters>
         <node>localhost</node>
     </module>
     <connection>
         <from>/haarDetection/img:o</from>
-        <to>/faces/yarpview/img:i</to>
+        <to>/haarDetection/yarpview/img:i</to>
     </connection>
 
 
