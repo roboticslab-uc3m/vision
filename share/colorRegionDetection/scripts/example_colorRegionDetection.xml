@@ -46,7 +46,7 @@
     </connection>
 
     <module>
-        <name>colorRegionDetectionToRoot</name>
+        <name>cv1ToRoot</name>
         <prefix>/red</prefix>
         <node>localhost</node>
     </module>
@@ -56,7 +56,7 @@
     </connection>
 
     <module>
-        <name>colorRegionDetectionToRoot</name>
+        <name>cv1ToRoot</name>
         <prefix>/green</prefix>
         <node>localhost</node>
     </module>
