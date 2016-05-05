@@ -1,0 +1,20 @@
+<application>
+<name>example colorRegionDetection local App</name>
+
+    <module>
+        <name>colorRegionDetection</name>
+        <parameters>--kinectDevice OpenNI2DeviceServer --noMirror --maxNumBlobs 1 --algorithm redMinusGreen --outFeaturesFormat 1</parameters>
+        <node>localhost</node>
+    </module>
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /colorRegionDetection/yarpview/img:i</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/colorRegionDetection/img:o</from>
+        <to>/colorRegionDetection/yarpview/img:i</to>
+    </connection>
+
+</application>
+
