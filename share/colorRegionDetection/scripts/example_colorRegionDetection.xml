@@ -1,5 +1,5 @@
 <application>
-<name>example cv1 App</name>
+<name>example colorRegionDetection App</name>
     <module>
         <name>yarpdev</name>
         <parameters>--device OpenNI2DeviceServer --noMirror --depthVideoMode 4 --colorVideoMode 9</parameters>
@@ -16,8 +16,8 @@
     </connection>
 
     <module>
-        <name>cv1</name>
-        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /red/cv1 --maxNumBlobs 1 --algorithm redMinusGreen --outFeaturesFormat 1</parameters>
+        <name>colorRegionDetection</name>
+        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /red/colorRegionDetection --maxNumBlobs 1 --algorithm redMinusGreen --outFeaturesFormat 1</parameters>
         <node>localhost</node>
     </module>
     <module>
@@ -26,13 +26,13 @@
         <node>localhost</node>
     </module>
     <connection>
-        <from>/red/cv1/img:o</from>
+        <from>/red/colorRegionDetection/img:o</from>
         <to>/red/yarpview/img:i</to>
     </connection>
 
     <module>
-        <name>cv1</name>
-        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /green/cv1 --maxNumBlobs 1 --algorithm greenMinusRed --outFeaturesFormat 1</parameters>
+        <name>colorRegionDetection</name>
+        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /green/colorRegionDetection --maxNumBlobs 1 --algorithm greenMinusRed --outFeaturesFormat 1</parameters>
         <node>localhost</node>
     </module>
     <module>
@@ -41,27 +41,27 @@
         <node>localhost</node>
     </module>
     <connection>
-        <from>/green/cv1/img:o</from>
+        <from>/green/colorRegionDetection/img:o</from>
         <to>/green/yarpview/img:i</to>
     </connection>
 
     <module>
-        <name>cv1ToRoot</name>
+        <name>colorRegionDetectionToRoot</name>
         <prefix>/red</prefix>
         <node>localhost</node>
     </module>
     <connection>
-        <from>/red/cv1/state:o</from>
+        <from>/red/colorRegionDetection/state:o</from>
         <to>/red/in</to>
     </connection>
 
     <module>
-        <name>cv1ToRoot</name>
+        <name>colorRegionDetectionToRoot</name>
         <prefix>/green</prefix>
         <node>localhost</node>
     </module>
     <connection>
-        <from>/green/cv1/state:o</from>
+        <from>/green/colorRegionDetection/state:o</from>
         <to>/green/in</to>
     </connection>
 
