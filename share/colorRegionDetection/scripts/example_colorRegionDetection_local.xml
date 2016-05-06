@@ -3,7 +3,7 @@
 
     <module>
         <name>colorRegionDetection</name>
-        <parameters>--kinectDevice OpenNI2DeviceServer --noMirror --depthVideoMode 4 --colorVideoMode 9 --maxNumBlobs 1 --algorithm redMinusGreen --outFeaturesFormat 1</parameters>
+        <parameters>--kinectDevice OpenNI2DeviceServer --depthVideoMode 4 --colorVideoMode 9 --noRGBMirror --noDepthMirror --maxNumBlobs 1 --algorithm redMinusGreen --outFeaturesFormat 1</parameters>
         <node>localhost</node>
     </module>
     <module>
