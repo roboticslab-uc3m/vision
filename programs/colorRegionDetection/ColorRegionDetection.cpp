@@ -37,10 +37,11 @@ bool ColorRegionDetection::configure(yarp::os::ResourceFinder &rf) {
 
     if (!rf.check("help")) {
         yarp::os::Property options;
-        options.put("device",strKinectDevice);
+        options.fromString( rf.toString() );  //-- Should get noMirror, noRGBMirror, noDepthMirror, video modes...
+        options.put("device",strKinectDevice);  //-- Important to override in case there is a "device" in the future
         options.put("localName",strKinectLocal);  //
         options.put("remoteName",strKinectRemote);  //
-        if(rf.check("noMirror")) options.put("noMirror",1);
+        //if(rf.check("noMirror")) options.put("noMirror",1);  //-- Replaced by options.fromString( rf.toString() );
         while(!dd.open(options)) {
             printf("Waiting for kinectDevice \"%s\"...\n",strKinectDevice.c_str());
             yarp::os::Time::delay(1);
