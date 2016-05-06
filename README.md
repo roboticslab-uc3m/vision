@@ -4,6 +4,10 @@ Source code intended for the head PC that the TEO humanoid robot uses.
 
 Link to Doxygen generated documentation: http://robots.uc3m.es/dox-teo-head
 
+## Installation
+
+Installation instructions for installing from source can be found [here](http://robots.uc3m.es/dox-teo-head/teo_head_install_on_ubuntu_15_04.html).
+
 ## Contributing
 
 #### Posting Issues
