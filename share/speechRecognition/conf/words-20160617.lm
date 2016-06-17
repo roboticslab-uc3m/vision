@@ -1,0 +1,61 @@
+Language model created by QuickLM on Fri Jun 17 09:24:13 EDT 2016
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 9 sentences and 11 words
+
+\data\
+ngram 1=11
+ngram 2=18
+ngram 3=9
+
+\1-grams:
+-0.7782 </s> -0.3010
+-0.7782 <s> -0.2218
+-1.7324 FOLLOW -0.2218
+-1.7324 FOLLOWING -0.2218
+-1.7324 GO -0.2218
+-1.7324 HELLO -0.2218
+-1.7324 ME -0.2218
+-1.7324 PLEASE -0.2218
+-1.7324 STOP -0.2218
+-1.7324 TEO -0.2218
+-1.7324 WATER -0.2218
+
+\2-grams:
+-1.2553 <s> FOLLOW 0.0000
+-1.2553 <s> FOLLOWING 0.0000
+-1.2553 <s> GO 0.0000
+-1.2553 <s> HELLO 0.0000
+-1.2553 <s> ME 0.0000
+-1.2553 <s> PLEASE 0.0000
+-1.2553 <s> STOP 0.0000
+-1.2553 <s> TEO 0.0000
+-1.2553 <s> WATER 0.0000
+-0.3010 FOLLOW </s> -0.3010
+-0.3010 FOLLOWING </s> -0.3010
+-0.3010 GO </s> -0.3010
+-0.3010 HELLO </s> -0.3010
+-0.3010 ME </s> -0.3010
+-0.3010 PLEASE </s> -0.3010
+-0.3010 STOP </s> -0.3010
+-0.3010 TEO </s> -0.3010
+-0.3010 WATER </s> -0.3010
+
+\3-grams:
+-0.3010 <s> FOLLOW </s>
+-0.3010 <s> FOLLOWING </s>
+-0.3010 <s> GO </s>
+-0.3010 <s> HELLO </s>
+-0.3010 <s> ME </s>
+-0.3010 <s> PLEASE </s>
+-0.3010 <s> STOP </s>
+-0.3010 <s> TEO </s>
+-0.3010 <s> WATER </s>
+
+\end\
