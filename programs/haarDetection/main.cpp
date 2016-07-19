@@ -8,7 +8,7 @@
  *
  * @brief Creates an instance of teo::HaarDetection.
  *
- * @section cvfaces_options HaarDetection options:
+ * @section haarDetectionOptions HaarDetection options:
  *
  * |PROPERTY            | DESCRIPTION                           | DEFAULT              |
  * |--------------------|---------------------------------------|----------------------|
@@ -17,11 +17,18 @@
  * |context             |path                                   |                      |
  * |cropSelector        |                                       |0                     |
  * |kinectDevice        |device we create                       |OpenNI2DeviceServer   |
- * |kinectLocal         |if accesing remote, local port name    |/haarDetection              |
+ * |kinectLocal         |if accesing remote, local port name    |/haarDetection        |
  * |kinectRemote        |if accesing remote, remote port name   |/OpenNI2              |
  * |watchdog            |                                       |2.000000              |
  *
- * @section cvfaces_options SegmentorThread options:
+ *
+ * @section  haarDetectionPorts HaarDetection output ports:
+ * |OUTPUT PORT            | CONTENT   |
+ * |-----------------------|-----------|
+ * |/haarDetection/img:o   | Output kinect image with face detection using squares  |
+ * |/haarDetection/state:o | xyz coordinates of face detection                      |
+ *
+ * @section segmentorThread SegmentorThread options:
  *
  * |PROPERTY            | DESCRIPTION                           | DEFAULT                       |
  * |--------------------|---------------------------------------|-------------------------------|
@@ -34,6 +41,7 @@
  * |cy_d                |                                       |239.500000                     |
  * |rateMs              |                                       |20                             |
  * |xmlCascade          |file.xml                               |haarcascade_frontalface_alt.xml|
+ *
  *
  *
  *
