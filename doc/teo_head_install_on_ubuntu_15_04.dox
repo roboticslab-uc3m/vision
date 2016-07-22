@@ -73,14 +73,19 @@ sudo apt-get install libopencv-dev
 \endverbatim
 
 \verbatim
-# voice
-# Install https://github.com/robotology/icub-contrib-common
-git clone https://github.com/robotology/speech
-cd speech/svox-speech
-mkdir build && cd build
-cmake .. -DENABLE_speech=ON
-make && sudo make install
-# export YARP_DATA_DIRS=$HOME/repos/teo-head/build/share/teo-head:/usr/local/share/speech
+# voice: Install MBROLA VOICES
+sudo apt-get install espeak
+cd  # go home
+mkdir -p src; cd src  # make $HOME/src if it doesn't exist; then, enter it
+wget https://sourceforge.net/projects/roboticslab/files/External/mbrola/en1.tar.bz2
+wget https://sourceforge.net/projects/roboticslab/files/External/mbrola/es1.tar.bz2
+tar xvf en1.tar.bz2
+tar xvf es1.tar.bz2
+sudo mkdir /usr/share/mbrola
+sudo mkdir /usr/share/mbrola/en1
+sudo mkdir /usr/share/mbrola/es1
+sudo cp en1/en1 /usr/share/mbrola/en1
+sudo cp es1/es1 /usr/share/mbrola/es1
 \endverbatim
 
 Our software integrates the previous dependencies. Note that you will be prompted for your password upon using '''sudo''' a couple of times:
