@@ -33,9 +33,9 @@ class Espeak : public yarp::dev::DeviceDriver {
 
     public:
 
-        Espeak() {}
+        Espeak();
 
-        // -- ??? declarations. Implementation in ???Impl.cpp--
+        bool say(const std::string& text);
 
         // -------- DeviceDriver declarations. Implementation in IDeviceImpl.cpp --------
 
