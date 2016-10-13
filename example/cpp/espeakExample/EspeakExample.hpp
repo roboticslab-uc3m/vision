@@ -6,6 +6,8 @@
 #include <yarp/os/all.h>
 #include <yarp/dev/all.h>
 
+#include "Espeak.hpp"
+
 namespace teo
 {
 
