@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.6)
 
 IF (ENABLE_HeadYarp)
 
-  option(ENABLE_launchHeadYarp "Choose if you want to compile launchHeadYarp" FALSE)
+  option(ENABLE_launchHeadYarp "Choose if you want to compile launchHeadYarp" TRUE)
 
   find_package(YARP REQUIRED)
   include_directories(${YARP_INCLUDE_DIRS})
@@ -14,7 +14,7 @@ IF (ENABLE_HeadYarp)
   include(YarpPlugin)
 
   yarp_begin_plugin_library(HeadYarp)
-#    add_subdirectory(headbot)
+    add_subdirectory(Espeak)
   yarp_end_plugin_library(HeadYarp)
 
   install(TARGETS HeadYarp DESTINATION lib)
