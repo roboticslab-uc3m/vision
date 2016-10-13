@@ -16,8 +16,8 @@ TARGET_LINK_LIBRARIES(Espeak ${YARP_LIBRARIES})
 install(TARGETS Espeak DESTINATION lib)
 
 # Exporting dependencies for TEOConfig.cmake quite manually for now... 
-set(TEO_INCLUDE_DIRS ${TEO_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "appended libraries")
-set(TEO_LIBRARIES ${TEO_LIBRARIES} TeoYarp Espeak CACHE INTERNAL "appended libraries")
+set(TEO_HEAD_INCLUDE_DIRS ${TEO_HEAD_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "appended libraries")
+#set(TEO_HEAD_LIBRARIES ${TEO_HEAD_LIBRARIES} TeoYarp Espeak CACHE INTERNAL "appended libraries")
 
 ENDIF (NOT SKIP_Espeak)
 
