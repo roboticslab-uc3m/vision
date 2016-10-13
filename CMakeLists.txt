@@ -15,8 +15,9 @@ project(head)
 
 ### options: cpp libraries
 option(ENABLE_HeadYarp "Choose if you want to compile HeadYarp" TRUE)
+option(ENABLE_HeadYarp_Espeak "Choose if you want to install HeadYarp_Espeak" TRUE)
 
-### options: cpp modules
+### options: cpp programs
 option(ENABLE_colorRegionDetection "Choose if you want to compile colorRegionDetection" TRUE)
 option(ENABLE_haarDetection "Choose if you want to compile haarDetection" TRUE)
 option(ENABLE_cv1ToRoot "Choose if you want to compile cv1ToRoot" TRUE)
