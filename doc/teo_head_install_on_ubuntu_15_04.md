@@ -97,6 +97,11 @@ make  # Compile
 sudo make install  # Install :-)
 ```
 
+You may want to (from the same build dir):
+```bash
+echo "export TEO_HEAD_DIR=`pwd`" >> .bashrc
+```
+
 For additional TEO options use ccmake instead of cmake.
 
 Done! You are now probably interested in one of the following links:
