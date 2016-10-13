@@ -26,16 +26,16 @@ bool EspeakExample::run()
       return 1;
     }
 
-    /*bool ok = dd.view(pos); // connect 'pos' interface to 'dd' device
+    teo::Espeak* espeak;
+    bool ok = dd.view(espeak); // connect interface to 'dd' device
     if (!ok)
     {
-        printf("[warning] Problems acquiring robot interface\n");
+        printf("[warning] Problems acquiring interface\n");
         return false;
     }
-    else
-        printf("[success] testAsibot acquired robot interface\n");
-    */
+    printf("[success] testAsibot acquired robot interface\n");
 
+    espeak->say("hello");
     //yarp::os::Time::delay(5);
 
     dd.close();

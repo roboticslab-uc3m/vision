@@ -23,7 +23,7 @@ foreach(header_file ${folder_header})
   include_directories(${p})
 endforeach(header_file ${folder_header})
 
-include_directories(${YARP_INCLUDE_DIRS})
+include_directories(${YARP_INCLUDE_DIRS} ${TEO_HEAD_INCLUDE_DIRS})
 
 link_directories(${TEO_HEAD_LINK_DIRS})
 
