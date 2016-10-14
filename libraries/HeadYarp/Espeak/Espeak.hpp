@@ -10,6 +10,8 @@
 
 #include <iostream> // only windows
 
+#include <speak_lib.h>
+
 #include "ColorDebug.hpp"
 
 //#define DEFAULT_NUM_LINKS 1  // int
