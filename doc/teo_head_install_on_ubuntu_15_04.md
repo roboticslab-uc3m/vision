@@ -72,7 +72,7 @@ sudo apt-get install libopencv-dev
 
 ```bash
 # voice: Install MBROLA VOICES
-sudo apt-get install espeak
+sudo apt-get install libespeak-dev espeak
 cd  # go home
 mkdir -p src; cd src  # make $HOME/src if it doesn't exist; then, enter it
 wget https://sourceforge.net/projects/roboticslab/files/External/mbrola/en1.tar.bz2
