@@ -58,6 +58,8 @@ mark_as_advanced(CMAKE_BACKWARDS_COMPATIBILITY)
 
 # Pick up our cmake modules - they are all in the cmake subdirectory
 set(TEO_HEAD_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+# let cmake use them
+list(APPEND CMAKE_MODULE_PATH ${TEO_HEAD_MODULE_PATH})
 
 #set_property(GLOBAL PROPERTY TEO_HEAD_INCLUDE_DIRS)
 #set_property(GLOBAL PROPERTY TEO_HEAD_LINK_DIRS)
