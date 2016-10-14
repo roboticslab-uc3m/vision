@@ -30,7 +30,7 @@ link_directories(${TEO_HEAD_LINK_DIRS})
 # Set up our main executable.
 if (folder_source)
   add_executable(${KEYWORD} ${folder_source} ${folder_header})
-  target_link_libraries(${KEYWORD} ${YARP_LIBRARIES} HeadYarp Espeak)
+  target_link_libraries(${KEYWORD} ${YARP_LIBRARIES} ${TEO_HEAD_LIBRARIES})
   install(TARGETS ${KEYWORD} DESTINATION bin )
 else (folder_source)
   message(FATAL_ERROR "No source code files found. Please add something")
