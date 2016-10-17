@@ -35,8 +35,11 @@ bool EspeakExample::run()
     }
     printf("[success] testAsibot acquired robot interface\n");
 
-    espeak->say("Hello, my name is Teo. I want to follow you. Please, tell me. Ok, I will follow you. Ok, I will stop following you.");
-    //yarp::os::Time::delay(5);
+    espeak->setSpeed(150);  // Values 80 to 450.
+    espeak->setPitch(60);   // 50 = normal
+    printf("Running with (%i) of speed\n", espeak->getSpeed());
+    printf("Running with (%i) of spitch\n", espeak->getPitch());
+    espeak->say("Hello, my name is Teo. I want to follow you. Please, tell me. Ok, I will follow you. Ok, I will stop following you.");    
 
     dd.close();
 
