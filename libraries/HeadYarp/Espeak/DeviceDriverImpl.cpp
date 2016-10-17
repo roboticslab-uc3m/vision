@@ -10,8 +10,11 @@ teo::Espeak::Espeak()
     buflength = 500;
     options = 0;
     position = 0;
+    position_type = POS_CHARACTER;
     end_position = 0;
     flags = espeakCHARS_AUTO | espeakENDPAUSE;
+    unique_identifier = NULL;
+    user_data = NULL;
     output = AUDIO_OUTPUT_PLAYBACK;
     espeak_Initialize(output, buflength, path, options);
     voice = "default"; //-- mbrola voices (mb-en1) / "default"
@@ -21,9 +24,8 @@ teo::Espeak::Espeak()
 bool teo::Espeak::say(const std::string& text)
 {
     espeak_SetVoiceByName(voice);   
-    size = strlen(text.c_str())+1;
-    printf("Going to say: %s\n", text.c_str());
-    espeak_Synth( text.c_str(), size, position, position_type, end_position, flags, unique_identifier, user_data );
+
+    espeak_Synth( static_cast<const void*>(text.c_str()), text.length(), position, position_type, end_position, flags, unique_identifier, user_data );
     espeak_Synchronize();
 
     return true;
@@ -33,10 +35,12 @@ bool teo::Espeak::say(const std::string& text)
 
 bool teo::Espeak::setSpeed(const int16_t speed)
 {
-    bool result = false;
     espeak_ERROR error = espeak_SetParameter(espeakRATE, speed, 0); // -- EE_OK=0, EE_INTERNAL_ERROR=-1, EE_BUFFER_FULL=1, EE_NOT_FOUND=2
     if (error == 0 )
-        result = true;
+    {
+        CD_SUCCESS("setSpeed(%d)\n",speed);
+        return true;
+    }
     if (error == -1)
         CD_ERROR("EE_INTERNAL_ERROR\n");
     if (error == 1)
@@ -44,7 +48,7 @@ bool teo::Espeak::setSpeed(const int16_t speed)
     if (error == 2)
         CD_ERROR("EE_NOT_FOUND\n");
 
-    return result;
+    return false;
 }
 
 // -----------------------------------------------------------------------------
@@ -108,7 +112,16 @@ bool teo::Espeak::setSpeed(const int16_t speed)
 
 bool teo::Espeak::open(yarp::os::Searchable& config)
 {
-    //numLinks = config.check("numLinks",yarp::os::Value(DEFAULT_NUM_LINKS),"chain number of segments").asInt();
+    std::string name = config.check("name",yarp::os::Value(DEFAULT_NAME),"port /name (auto append of /rpc:s)").asString();
+    name += "/rpc:s";
+
+    this->yarp().attachAsServer(rpcPort);
+
+    if( ! rpcPort.open(name.c_str()) )
+    {
+          CD_ERROR("Cannot open port %s\n",name.c_str());
+          return false;
+    }
 
     return true;
 }
