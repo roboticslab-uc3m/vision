@@ -12,9 +12,11 @@
 
 #include <speak_lib.h>
 
+#include <Speech_IDL.h>
+
 #include "ColorDebug.hpp"
 
-//#define DEFAULT_NUM_LINKS 1  // int
+#define DEFAULT_NAME "/espeak"
 
 namespace teo
 {
@@ -31,25 +33,25 @@ namespace teo
  * @brief The Espeak class implements...
  */
 
-class Espeak : public yarp::dev::DeviceDriver {
+class Espeak : public yarp::dev::DeviceDriver, public Speech_IDL {
 
     public:
 
         Espeak();
 
-        bool say(const std::string& text);
+        virtual bool say(const std::string& text);
 
-        bool setSpeed(const int16_t speed);
+        virtual bool setSpeed(const int16_t speed);
 
-        bool setPitch(const int16_t pitch);
+        virtual bool setPitch(const int16_t pitch);
 
-        int16_t getSpeed();
+        virtual int16_t getSpeed();
 
-        int16_t getPitch();
+        virtual int16_t getPitch();
 
-        bool play();
+        virtual bool play();
 
-        bool stop();
+        virtual bool stop();
 
         // -------- DeviceDriver declarations. Implementation in IDeviceImpl.cpp --------
 
@@ -139,6 +141,9 @@ class Espeak : public yarp::dev::DeviceDriver {
         espeak_PARAMETER Param;
         unsigned int size, position, end_position, flags, *unique_identifier;
         const char* voice;
+
+        // YARP
+        yarp::os::RpcServer rpcPort;
 };
 
 }  // namespace teo
