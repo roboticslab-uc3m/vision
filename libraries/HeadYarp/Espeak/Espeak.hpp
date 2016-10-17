@@ -17,6 +17,7 @@
 #include "ColorDebug.hpp"
 
 #define DEFAULT_NAME "/espeak"
+#define DEFAULT_VOICE "mb-en1"
 
 namespace teo
 {
@@ -39,6 +40,10 @@ class Espeak : public yarp::dev::DeviceDriver, public Speech_IDL {
 
         Espeak();
 
+        virtual bool setLanguage(const std::string& language);
+
+        virtual std::vector<std::string> getSupportedLang();
+
         virtual bool say(const std::string& text);
 
         virtual bool setSpeed(const int16_t speed);
@@ -52,6 +57,11 @@ class Espeak : public yarp::dev::DeviceDriver, public Speech_IDL {
         virtual bool play();
 
         virtual bool stop();
+
+        virtual bool pause()
+        {
+            return false;
+        }
 
         // -------- DeviceDriver declarations. Implementation in IDeviceImpl.cpp --------
 
@@ -140,7 +150,6 @@ class Espeak : public yarp::dev::DeviceDriver, public Speech_IDL {
         t_espeak_callback *synthCallback;
         espeak_PARAMETER Param;
         unsigned int size, position, end_position, flags, *unique_identifier;
-        const char* voice;
 
         // YARP
         yarp::os::RpcServer rpcPort;
