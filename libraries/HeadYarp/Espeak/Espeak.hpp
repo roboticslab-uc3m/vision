@@ -39,6 +39,14 @@ class Espeak : public yarp::dev::DeviceDriver {
 
         bool say(const std::string& text);
 
+        bool setSpeed(const int16_t speed);
+
+        bool setPitch(const int16_t pitch);
+
+        int16_t getSpeed();
+
+        int16_t getPitch();
+
         // -------- DeviceDriver declarations. Implementation in IDeviceImpl.cpp --------
 
         /**
