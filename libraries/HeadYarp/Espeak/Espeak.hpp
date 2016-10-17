@@ -39,6 +39,18 @@ class Espeak : public yarp::dev::DeviceDriver {
 
         bool say(const std::string& text);
 
+        bool setSpeed(const int16_t speed);
+
+        bool setPitch(const int16_t pitch);
+
+        int16_t getSpeed();
+
+        int16_t getPitch();
+
+        bool play();
+
+        bool stop();
+
         // -------- DeviceDriver declarations. Implementation in IDeviceImpl.cpp --------
 
         /**
@@ -121,11 +133,11 @@ class Espeak : public yarp::dev::DeviceDriver {
         espeak_POSITION_TYPE position_type;
         espeak_AUDIO_OUTPUT output;
         char *path;
-        int Buflength, Options;
+        int buflength, options;
         void* user_data;
-        t_espeak_callback *SynthCallback;
+        t_espeak_callback *synthCallback;
         espeak_PARAMETER Param;
-        unsigned int Size, position, end_position, flags, *unique_identifier;
+        unsigned int size, position, end_position, flags, *unique_identifier;
         const char* voice;
 };
 
