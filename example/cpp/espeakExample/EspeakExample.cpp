@@ -35,7 +35,7 @@ bool EspeakExample::run()
     }
     printf("[success] testAsibot acquired robot interface\n");
 
-    espeak->say("hello");
+    espeak->say("Hello, my name is Teo. I want to follow you. Please, tell me. Ok, I will follow you. Ok, I will stop following you.");
     //yarp::os::Time::delay(5);
 
     dd.close();
