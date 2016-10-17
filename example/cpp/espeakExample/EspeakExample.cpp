@@ -30,10 +30,10 @@ bool EspeakExample::run()
     bool ok = dd.view(espeak); // connect interface to 'dd' device
     if (!ok)
     {
-        printf("[warning] Problems acquiring interface\n");
+        printf("[warning] Problems acquiring espeak interface\n");
         return false;
     }
-    printf("[success] testAsibot acquired robot interface\n");
+    printf("[success] EspeakExample acquired espeak interface\n");
 
     espeak->setSpeed(150);  // Values 80 to 450.
     espeak->setPitch(60);   // 50 = normal
