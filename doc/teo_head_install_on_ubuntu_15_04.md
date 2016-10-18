@@ -72,7 +72,7 @@ sudo apt-get install libopencv-dev
 
 ```bash
 # voice: Install MBROLA VOICES
-sudo apt-get install espeak
+sudo apt-get install espeak libespeak-dev
 sudo apt-get install mbrola-en1
 sudo apt-get install mbrola-es1
 ```
