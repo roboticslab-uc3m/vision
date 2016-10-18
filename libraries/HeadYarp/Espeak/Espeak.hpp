@@ -63,7 +63,7 @@ class Espeak : public yarp::dev::DeviceDriver, public Speech_IDL {
             return false;
         }
 
-        // -------- DeviceDriver declarations. Implementation in IDeviceImpl.cpp --------
+        // -------- DeviceDriver declarations.  --------
 
         /**
         * Open the DeviceDriver.
