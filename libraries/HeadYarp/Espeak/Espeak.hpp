@@ -86,7 +86,7 @@ class Espeak : public yarp::dev::DeviceDriver, public Speech_IDL {
         */
         virtual bool close();
 
-    protected:
+    private:
 
         void printError(espeak_ERROR code);
 
