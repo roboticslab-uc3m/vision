@@ -49,21 +49,35 @@ bool teo::Espeak::setLanguage(const std::string& language)
 
 std::vector<std::string> teo::Espeak::getSupportedLang()
 {
-    const espeak_VOICE** list = espeak_ListVoices(NULL);
     std::vector<std::string> supportedLang;
+
+    //-- Does not show mbrola
+    /* const espeak_VOICE** list = espeak_ListVoices(NULL);
     int i = 0;
     while (list[i] != NULL)
     {
-        CD_DEBUG("%s\n",list[i]->name);
-        supportedLang.push_back(list[i]->name);
+        CD_DEBUG("%s\n",list[i]->languages);
+        supportedLang.push_back(list[i]->languages);
         i++;
-    }
+    }*/
+
+    //-- Not working, attempt to show mbrola
+    /*espeak_VOICE test;
+    test.languages = "mb";
+    const espeak_VOICE** list = espeak_ListVoices(&test);
+    int i = 0;
+    while (list[i] != NULL)
+    {
+        CD_DEBUG("%s\n",list[i]->languages);
+        supportedLang.push_back(list[i]->languages);
+        i++;
+    }*/
 
     //-- Hard-coded for now
-    /*std::string mb_en1("mb-en1");
+    std::string mb_en1("mb-en1");
     supportedLang.push_back(mb_en1);
     std::string mb_es1("mb-es1");
-    supportedLang.push_back(mb_es1);*/
+    supportedLang.push_back(mb_es1);
 
     return supportedLang;
 }
