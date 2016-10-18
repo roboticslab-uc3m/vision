@@ -12,9 +12,12 @@
 
 #include <speak_lib.h>
 
+#include <Speech_IDL.h>
+
 #include "ColorDebug.hpp"
 
-//#define DEFAULT_NUM_LINKS 1  // int
+#define DEFAULT_NAME "/espeak"
+#define DEFAULT_VOICE "mb-en1"
 
 namespace teo
 {
@@ -31,25 +34,34 @@ namespace teo
  * @brief The Espeak class implements...
  */
 
-class Espeak : public yarp::dev::DeviceDriver {
+class Espeak : public yarp::dev::DeviceDriver, public Speech_IDL {
 
     public:
 
         Espeak();
 
-        bool say(const std::string& text);
+        virtual bool setLanguage(const std::string& language);
 
-        bool setSpeed(const int16_t speed);
+        virtual std::vector<std::string> getSupportedLang();
 
-        bool setPitch(const int16_t pitch);
+        virtual bool say(const std::string& text);
 
-        int16_t getSpeed();
+        virtual bool setSpeed(const int16_t speed);
 
-        int16_t getPitch();
+        virtual bool setPitch(const int16_t pitch);
 
-        bool play();
+        virtual int16_t getSpeed();
 
-        bool stop();
+        virtual int16_t getPitch();
+
+        virtual bool play();
+
+        virtual bool stop();
+
+        virtual bool pause()
+        {
+            return false;
+        }
 
         // -------- DeviceDriver declarations. Implementation in IDeviceImpl.cpp --------
 
@@ -138,7 +150,9 @@ class Espeak : public yarp::dev::DeviceDriver {
         t_espeak_callback *synthCallback;
         espeak_PARAMETER Param;
         unsigned int size, position, end_position, flags, *unique_identifier;
-        const char* voice;
+
+        // YARP
+        yarp::os::RpcServer rpcPort;
 };
 
 }  // namespace teo
