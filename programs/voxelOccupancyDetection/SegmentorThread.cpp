@@ -129,22 +129,12 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 void SegmentorThread::run() {
     // printf("[SegmentorThread] run()\n");
 
-    /*ImageOf<PixelRgb> *inYarpImg = pInImg->read(false);
-    ImageOf<PixelFloat> *depth = pInDepth->read(false);
-    if (inYarpImg==NULL) {
-        //printf("No img yet...\n");
-        return;
-    };
+    /*    ImageOf<PixelFloat> *depth = pInDepth->read(false);
     if (depth==NULL) {
         //printf("No depth yet...\n");
         return;
     };*/
 
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg = kinect->getImageFrame();
-    if (inYarpImg.height()<10) {
-        //printf("No img yet...\n");
-        return;
-    };
     yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
     if (depth.height()<10) {
         //printf("No depth yet...\n");
