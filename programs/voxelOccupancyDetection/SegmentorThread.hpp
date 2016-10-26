@@ -22,8 +22,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "TravisLib.hpp"
-
 // thanks! https://web.stanford.edu/~qianyizh/projects/scenedata.html
 #define DEFAULT_FX_D          525.0  // 640x480
 #define DEFAULT_FY_D          525.0  //
