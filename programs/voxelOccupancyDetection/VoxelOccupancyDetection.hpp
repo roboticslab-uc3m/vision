@@ -27,7 +27,7 @@ class VoxelOccupancyDetection : public yarp::os::RFModule {
     yarp::dev::PolyDriver dd;
     yarp::dev::IOpenNI2DeviceDriver *kinect;
 
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outImg;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono16> > outImg;
     yarp::os::Port outPort;
 
     int cropSelector;

@@ -15,13 +15,6 @@
 
 #include <yarp/sig/all.h>
 
-#include <cv.h>
-//#include <highgui.h> // to show windows
-
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-
 // thanks! https://web.stanford.edu/~qianyizh/projects/scenedata.html
 #define DEFAULT_FX_D          525.0  // 640x480
 #define DEFAULT_FY_D          525.0  //
@@ -103,7 +96,7 @@ public:
 class SegmentorThread : public yarp::os::RateThread {
 private:
     yarp::dev::IOpenNI2DeviceDriver *kinect;
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono16> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
     //
     yarp::os::ConstString algorithm;
@@ -129,7 +122,7 @@ public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
 
     void setIKinectDeviceDriver(yarp::dev::IOpenNI2DeviceDriver * _kinect);
-    void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
+    void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono16> > * _pOutImg);
     void setOutPort(yarp::os::Port *_pOutPort);
     void init(yarp::os::ResourceFinder &rf);
     void run();  // The periodical function
