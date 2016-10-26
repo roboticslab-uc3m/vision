@@ -150,6 +150,9 @@ void SegmentorThread::run() {
 
     // Take advantage we have the travis object and get features for text output
     yarp::os::Bottle output;
+    output.addDouble(34.3);
+    output.addDouble(34.3);
+    output.addDouble(34.3);
     pOutPort->write(output);
 
 }
