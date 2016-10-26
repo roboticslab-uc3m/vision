@@ -141,17 +141,18 @@ void SegmentorThread::run() {
         return;
     };
 
+    printf("%d\n", depth.pixel(5,5) );
 
+    /*yarp::sig::ImageOf<yarp::sig::PixelMono16> depth
 
-    //pOutImg->prepare() = outYarpImg;
-    //pOutImg->write();
+    pOutImg->prepare() = outYarpImg;
+    pOutImg->write();*/
 
-    //if ( ( blobsXY.size() < 1) && ( outFeaturesFormat == 1 ) ) return;
+    //The area pixels are (60cm from kinect) H:107 (20cm 2/5 Height) H:130 (25cm 1/2Height) Weidth:all (320 pix, 68cm).
 
-    // Take advantage we have the travis object and get features for text output
     yarp::os::Bottle output;
-    output.addDouble(34.3);
-    output.addDouble(34.3);
+    output.addInt(depth.pixel(5,5));
+    output.addInt(depth.pixel(5,6));
     output.addDouble(34.3);
     pOutPort->write(output);
 
