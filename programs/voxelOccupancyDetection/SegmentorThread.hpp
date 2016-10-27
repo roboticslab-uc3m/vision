@@ -118,6 +118,10 @@ private:
     yarp::os::Port* inCropSelectorPort;
     DataProcessor processor;
 
+    //DEBUG
+    std::vector< std::vector <int> > filter_list;
+    int calibrate=1;
+
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
 
