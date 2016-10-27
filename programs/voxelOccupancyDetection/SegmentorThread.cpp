@@ -44,6 +44,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     seeBounding = DEFAULT_SEE_BOUNDING;
     threshold = DEFAULT_THRESHOLD;
 
+
     printf("--------------------------------------------------------------\n");
     if (rf.check("help")) {
         printf("SegmentorThread options:\n");
@@ -120,6 +121,26 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
         inCropSelectorPort->setReader(processor);
     }
 
+    /***********************Filter List Initialization*****************************************/
+    yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
+    if (depth.height()<10) {
+        //printf("No depth yet...\n");
+        return;
+    };
+
+    int H=depth.height(); //Height resolution
+    int W=depth.width();
+
+    std::vector<int> col(W,0);
+
+    for(int i=0; i<H;i++)
+    {
+        filter_list.push_back(col);
+    }
+
+//    printf("Calibrating..................");
+    /***********************************************************************************/
+
     this->setRate(rateMs);
     this->start();
 
@@ -141,20 +162,89 @@ void SegmentorThread::run() {
         return;
     };
 
-    printf("%d\n", depth.pixel(5,5) );
+    int H=depth.height(); //Height resolution
+    int W=depth.width();
+//    std::cout<<"The H is"<<H<<std::endl;
+//    std::cout<<"The W is"<<W<<std::endl;
 
-    /*yarp::sig::ImageOf<yarp::sig::PixelMono16> depth
+    //printf(" The depth of the low pixel is %d\n", depth.pixel(0, floor(0.45*H))); //107 for 240
+    //printf(" The depth of the low pixel is %d\n", depth.pixel(0, ceil(0.54*H))); //130 for 240
+    //int filter_list[W][H]={0};
 
-    pOutImg->prepare() = outYarpImg;
-    pOutImg->write();*/
+    //std::vector< std::vector <int> > filter_list(H, std::vector<int>(W, 0));
 
-    //The area pixels are (60cm from kinect) H:107 (20cm 2/5 Height) H:130 (25cm 1/2Height) Weidth:all (320 pix, 68cm).
+    //std::cout<<"SIZE FILTER LIST"<<filter_list.size()<<std::endl;
 
-    yarp::os::Bottle output;
-    output.addInt(depth.pixel(5,5));
-    output.addInt(depth.pixel(5,6));
-    output.addDouble(34.3);
-    pOutPort->write(output);
+
+    //First we calibrate to delete all the zero (noisy) pixels in the area
+//    if(calibrate){
+
+//        //Lets check all the pixels in the area (THIS COULD BE A FUNCTION)
+//        for(int i=0; i<W;i++)
+//        {
+//            //printf(" The depth of the low pixel is %d\n", depth.pixel(H/10,W/10));
+//            for(int j=floor(0.45*H); j<ceil(0.54*H); j++){
+//                //printf("%d\n", depth.pixel(i,j));
+//                if(depth.pixel(i,j)==0){
+//                    //std::cout<<"The x pixel is"<<i<<std::endl;
+//                    //std::cout<<"The y pixel is"<<j<<std::endl;
+//                    filter_list[j][i]++;
+//                }
+//            }
+//        }
+
+//        for(int i=0; i<W;i++)
+//        {
+//            for(int j=0; j<H; j++){
+//                if (filter_list.at(j).at(i)==25){
+//                    printf("Finished calibrating! :D");
+//                    calibrate=0;
+//                    return;
+//                }
+//            }
+//        }
+//    calibrate++;
+//    }
+//    else{
+
+        //Lets check all the pixels in the area
+        for(int i=0; i<W;i++)
+        {
+            //printf(" The depth of the low pixel is %d\n", depth.pixel(H/10,W/10));
+            for(int j=floor(0.45*H); j<ceil(0.54*H); j++){
+                //printf("%d\n", depth.pixel(i,j));
+                if(depth.pixel(i,j)==0){
+                    std::cout<<"The x pixel is"<<i<<std::endl;
+                    std::cout<<"The y pixel is"<<j<<std::endl;
+                    filter_list[j][i]++;
+                }
+            }
+        }
+
+        //Print array filter_list array
+        std::cout<<"**************************************************************************************************************************"<<std::endl;
+        for(int i=0; i<W;i++)
+        {
+            for(int j=floor(0.45*H); j<ceil(0.54*H); j++){
+                std::cout<<"Pixel number "<<i<<"  "<<j<<" Value "<< filter_list.at(j).at(i)<<std::endl;
+            }
+        }
+        std::cout<<"**************************************************************************************************************************"<<std::endl;
+
+
+        /*yarp::sig::ImageOf<yarp::sig::PixelMono16> depth
+
+        pOutImg->prepare() = outYarpImg;
+        pOutImg->write();*/
+
+        //The area pixels are (60cm from kinect) H:107 (20cm 2/5 Height) H:130 (25cm 1/2Height) Weidth:all (320 pix, 68cm).
+
+        yarp::os::Bottle output;
+        output.addInt(depth.pixel(5,5));
+        output.addInt(depth.pixel(5,6));
+        output.addDouble(34.3);
+        pOutPort->write(output);
+//    }
 
 }
 
