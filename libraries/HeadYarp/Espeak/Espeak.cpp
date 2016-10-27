@@ -85,14 +85,20 @@ std::vector<std::string> teo::Espeak::getSupportedLang()
 // -----------------------------------------------------------------------------
 bool teo::Espeak::say(const std::string& text)
 {
-    espeak_ERROR ret = espeak_Synth( static_cast<const void*>(text.c_str()), text.length(), position, position_type, end_position, flags, unique_identifier, user_data );
+    int s = text.length();
+    const char* c = text.c_str();
+    for(int i=0;i<s+1;i++)
+    {
+        printf("i[%d] char[%c] int[%d]\n",i,c[i],(int)c[i]);
+    }
+    espeak_ERROR ret = espeak_Synth( text.c_str(), text.length()+1, position, position_type, end_position, flags, unique_identifier, user_data );
     if ( ret != EE_OK)
     {
         CD_ERROR("%s\n", text.c_str());
         printError(ret);
         return false;
     }
-    //espeak_Synchronize();  //-- Just for blocking
+    espeak_Synchronize();  //-- Just for blocking
 
     CD_SUCCESS("%s\n", text.c_str());
     return true;
