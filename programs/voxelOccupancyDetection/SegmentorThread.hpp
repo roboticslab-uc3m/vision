@@ -37,6 +37,12 @@
 #define DEFAULT_SEE_BOUNDING 3
 #define DEFAULT_THRESHOLD 55
 
+//VoxelOccupancy Constants
+#define DEFAULT_SEARCH_AREA_DILATATION 10
+#define DEFAULT_AREA_LOW_THRESHOLD 1000
+#define DEFAULT_AREA_HIGH_THRESHOLD 5000
+#define DEFAULT_OCCUPANCY_THRESHOLD 50
+
 
 namespace teo
 {
@@ -118,9 +124,12 @@ private:
     yarp::os::Port* inCropSelectorPort;
     DataProcessor processor;
 
-    //DEBUG
-    std::vector< std::vector <int> > filter_list;
-    int calibrate=1;
+    //VoxelOccupancy specific variables
+    int searchAreaDilatation;
+    int areaLowThreshold;
+    int areaHighThreshold;
+    int occupancyThreshold;
+
 
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
