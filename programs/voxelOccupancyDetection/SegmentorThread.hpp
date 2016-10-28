@@ -39,9 +39,14 @@
 
 //VoxelOccupancy Constants
 #define DEFAULT_SEARCH_AREA_DILATATION 10
-#define DEFAULT_AREA_LOW_THRESHOLD 1000
-#define DEFAULT_AREA_HIGH_THRESHOLD 5000
+#define DEFAULT_AREA_LOW_THRESHOLD 600 //mm
+#define DEFAULT_AREA_HIGH_THRESHOLD 1400 //mm
 #define DEFAULT_OCCUPANCY_THRESHOLD 50
+#define DEFAULT_CALIBRATION_VALUE_KINECT 0.001923 //This is an approximation (for better results a calibration may be needed)
+#define DEFAULT_LOW_Y_BOX_VALUE -15
+#define DEFAULT_HIGH_Y_BOX_VALUE 11
+#define DEFAULT_LOW_X_BOX_VALUE -184
+#define DEFAULT_HIGH_X_BOX_VALUE 184
 
 
 namespace teo
@@ -129,7 +134,11 @@ private:
     int areaLowThreshold;
     int areaHighThreshold;
     int occupancyThreshold;
-
+    double kinectCalibrationValue;
+    int lowXBox;
+    int highXBox;
+    int lowYBox;
+    int highYBox;
 
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
