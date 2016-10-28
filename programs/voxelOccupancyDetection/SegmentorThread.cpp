@@ -43,6 +43,13 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     int rateMs = DEFAULT_RATE_MS;
     seeBounding = DEFAULT_SEE_BOUNDING;
     threshold = DEFAULT_THRESHOLD;
+    //VoxelOccupancy
+    searchAreaDilatation=DEFAULT_SEARCH_AREA_DILATATION;
+    areaLowThreshold=DEFAULT_AREA_LOW_THRESHOLD;
+    areaHighThreshold=DEFAULT_AREA_HIGH_THRESHOLD;
+    occupancyThreshold=DEFAULT_OCCUPANCY_THRESHOLD;
+
+
 
 
     printf("--------------------------------------------------------------\n");
@@ -95,7 +102,7 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
     printf("SegmentorThread using fx_rgb: %f, fy_rgb: %f, cx_rgb: %f, cy_rgb: %f.\n",
         fx_rgb,fy_rgb,cx_rgb,cy_rgb);
     printf("SegmentorThread using algorithm: %s, locate: %s.\n",
-        algorithm.c_str(),locate.c_str());
+        algorithm.c_sDEFAULT_AREA_HIGH_THRESHOLDtr(),locate.c_str());
     printf("SegmentorThread using maxNumBlobs: %d, morphClosing: %.2f, outFeaturesFormat: %d.\n",
         maxNumBlobs,morphClosing,outFeaturesFormat);
 
@@ -150,12 +157,6 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 void SegmentorThread::run() {
     // printf("[SegmentorThread] run()\n");
 
-    /*    ImageOf<PixelFloat> *depth = pInDepth->read(false);
-    if (depth==NULL) {
-        //printf("No depth yet...\n");
-        return;
-    };*/
-
     yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
     if (depth.height()<10) {
         //printf("No depth yet...\n");
@@ -164,88 +165,190 @@ void SegmentorThread::run() {
 
     int H=depth.height(); //Height resolution
     int W=depth.width();
-//    std::cout<<"The H is"<<H<<std::endl;
-//    std::cout<<"The W is"<<W<<std::endl;
 
     //printf(" The depth of the low pixel is %d\n", depth.pixel(0, floor(0.45*H))); //107 for 240
     //printf(" The depth of the low pixel is %d\n", depth.pixel(0, ceil(0.54*H))); //130 for 240
     //int filter_list[W][H]={0};
 
-    //std::vector< std::vector <int> > filter_list(H, std::vector<int>(W, 0));
+    std::vector<int> occupancy_indices;
 
-    //std::cout<<"SIZE FILTER LIST"<<filter_list.size()<<std::endl;
-
-
-    //First we calibrate to delete all the zero (noisy) pixels in the area
-//    if(calibrate){
-
-//        //Lets check all the pixels in the area (THIS COULD BE A FUNCTION)
-//        for(int i=0; i<W;i++)
-//        {
-//            //printf(" The depth of the low pixel is %d\n", depth.pixel(H/10,W/10));
-//            for(int j=floor(0.45*H); j<ceil(0.54*H); j++){
-//                //printf("%d\n", depth.pixel(i,j));
-//                if(depth.pixel(i,j)==0){
-//                    //std::cout<<"The x pixel is"<<i<<std::endl;
-//                    //std::cout<<"The y pixel is"<<j<<std::endl;
-//                    filter_list[j][i]++;
-//                }
-//            }
-//        }
-
-//        for(int i=0; i<W;i++)
-//        {
-//            for(int j=0; j<H; j++){
-//                if (filter_list.at(j).at(i)==25){
-//                    printf("Finished calibrating! :D");
-//                    calibrate=0;
-//                    return;
-//                }
-//            }
-//        }
-//    calibrate++;
-//    }
-//    else{
-
-        //Lets check all the pixels in the area
-        for(int i=0; i<W;i++)
-        {
-            //printf(" The depth of the low pixel is %d\n", depth.pixel(H/10,W/10));
-            for(int j=floor(0.45*H); j<ceil(0.54*H); j++){
-                //printf("%d\n", depth.pixel(i,j));
-                if(depth.pixel(i,j)==0){
-                    std::cout<<"The x pixel is"<<i<<std::endl;
-                    std::cout<<"The y pixel is"<<j<<std::endl;
-                    filter_list[j][i]++;
+    //"Explore" loop
+    for(int i=floor(0.45*H); i<ceil(0.54*H); i++){
+        for(int j=0; j<W;j++){
+            //Find pixels with a depth inside the interest area (occupancy pixels)
+            if(depth.pixel(i,j)<areaHighThreshold && depth.pixel(i,j)>areaLowThreshold){
+                //Calculate the number of occupancy pixels around that pixel
+                int numberOccupancyIndices=0;
+                int l_limit=j-searchAreaDilatation;
+                int r_limit=j+searchAreaDilatation;
+                if(l_limit<0){
+                    l_limit=0;
                 }
+                if(r_limit>W){
+                    r_limit=W;
+                }
+                for(int k=floor(0.45*H); k<ceil(0.54*H); k++){
+                    for(int l=l_limit; l<r_limit;l++){
+                        if(depth.pixel(i,j)<areaHighThreshold && depth.pixel(i,j)>areaLowThreshold){
+                            numberOccupancyIndices++;
+                        }
+                    }
+
+                }
+                //Yarp Bottle
+                yarp::os::Bottle output;
+                //If we have more occupancy pixels than the threshold, that voxel is considered occupied.
+                int areaRegion=areaHighThreshold-areaLowThreshold;
+                if(numberOccupancyIndices>occupancyThreshold){
+                    if(j<W/4){ //Voxel_row_1
+                        if(j<(areaRegion/4+areaLowThreshold)){ //Voxel_col_1
+                            output.addInt(depth.pixel(0,0));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<(areaRegion/2+areaLowThreshold)){ //Voxel_col_2
+                            output.addInt(depth.pixel(0,1));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<(3*areaRegion/4+areaLowThreshold)){ //Voxel_col_3
+                            output.addInt(depth.pixel(0,2));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<areaRegion+areaLowThreshold){ //Voxel_col_4
+                            output.addInt(depth.pixel(0,3));
+                            pOutPort->write(output);
+                            return;
+                        }
+                    }
+                    else if(j<W/2){ //Voxel_row_2
+                        if(j<(areaRegion/4+areaLowThreshold)){ //Voxel_col_1
+                            output.addInt(depth.pixel(1,0));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<(areaRegion/2+areaLowThreshold)){ //Voxel_col_2
+                            output.addInt(depth.pixel(1,1));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<(3*areaRegion/4+areaLowThreshold)){ //Voxel_col_3
+                            output.addInt(depth.pixel(1,2));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<areaRegion+areaLowThreshold){ //Voxel_col_4
+                            output.addInt(depth.pixel(1,3));
+                            pOutPort->write(output);
+                            return;
+                        }
+
+                    }
+                    else if(j<(3*W/4)){ //Voxel_row_3
+                        if(j<(areaRegion/4+areaLowThreshold)){ //Voxel_col_1
+                            output.addInt(depth.pixel(2,0));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<(areaRegion/2+areaLowThreshold)){ //Voxel_col_2
+                            output.addInt(depth.pixel(2,1));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<(3*areaRegion/4+areaLowThreshold)){ //Voxel_col_3
+                            output.addInt(depth.pixel(2,2));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<areaRegion+areaLowThreshold){ //Voxel_col_4
+                            output.addInt(depth.pixel(2,3));
+                            pOutPort->write(output);
+                            return;
+                        }
+
+                    }
+                    else if(j<W){ //Voxel_row_4
+                        if(j<(areaRegion/4+areaLowThreshold)){ //Voxel_col_1
+                            output.addInt(depth.pixel(3,0));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<(areaRegion/2+areaLowThreshold)){ //Voxel_col_2
+                            output.addInt(depth.pixel(3,1));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<(3*areaRegion/4+areaLowThreshold)){ //Voxel_col_3
+                            output.addInt(depth.pixel(3,2));
+                            pOutPort->write(output);
+                            return;
+                        }
+                        else if(j<areaRegion+areaLowThreshold){ //Voxel_col_4
+                            output.addInt(depth.pixel(3,3));
+                            pOutPort->write(output);
+                            return;
+                        }
+
+                    }
+                    else{
+                        printf("***ERROR***DETECTED PIXEL OUT OF LIMITS");
+                    }
+
+                }
+                //If not enough occupancy pixels. The region is saved for later removal of search area.
+                else{
+                    occupancy_indices.push_back(i);
+                    occupancy_indices.push_back(j);
+                }
+
             }
+
         }
 
-        //Print array filter_list array
-        std::cout<<"**************************************************************************************************************************"<<std::endl;
-        for(int i=0; i<W;i++)
-        {
-            for(int j=floor(0.45*H); j<ceil(0.54*H); j++){
-                std::cout<<"Pixel number "<<i<<"  "<<j<<" Value "<< filter_list.at(j).at(i)<<std::endl;
+        //Delete the area pixels that have already been searched without succes
+        //DO THIS HERE
+
+    }
+
+    //Lets check all the pixels in the area
+    for(int i=0; i<W;i++)
+    {
+        //printf(" The depth of the low pixel is %d\n", depth.pixel(H/10,W/10));
+        for(int j=floor(0.45*H); j<ceil(0.54*H); j++){
+        //printf("%d\n", depth.pixel(i,j));
+        if(depth.pixel(i,j)==0){
+            std::cout<<"The x pixel is"<<i<<std::endl;
+            std::cout<<"The y pixel is"<<j<<std::endl;
+            filter_list[j][i]++;
             }
+         }
+    }
+
+
+     //Print array filter_list array
+     std::cout<<"**************************************************************************************************************************"<<std::endl;
+     for(int i=0; i<W;i++)
+     {
+        for(int j=floor(0.45*H); j<ceil(0.54*H); j++){
+            std::cout<<"Pixel number "<<i<<"  "<<j<<" Value "<< filter_list.at(j).at(i)<<std::endl;
         }
-        std::cout<<"**************************************************************************************************************************"<<std::endl;
+      }
+      std::cout<<"**************************************************************************************************************************"<<std::endl;
 
 
-        /*yarp::sig::ImageOf<yarp::sig::PixelMono16> depth
+      /*yarp::sig::ImageOf<yarp::sig::PixelMono16> depth
 
-        pOutImg->prepare() = outYarpImg;
-        pOutImg->write();*/
+      pOutImg->prepare() = outYarpImg;
+      pOutImg->write();*/
 
-        //The area pixels are (60cm from kinect) H:107 (20cm 2/5 Height) H:130 (25cm 1/2Height) Weidth:all (320 pix, 68cm).
+      //The area pixels are (60cm from kinect) H:107 (20cm 2/5 Height) H:130 (25cm 1/2Height) Weidth:all (320 pix, 68cm).
 
-        yarp::os::Bottle output;
-        output.addInt(depth.pixel(5,5));
-        output.addInt(depth.pixel(5,6));
-        output.addDouble(34.3);
-        pOutPort->write(output);
-//    }
-
-}
+      yarp::os::Bottle output;
+      //output.addInt(depth.pixel(5,5));
+      //output.addInt(depth.pixel(5,6));
+      //output.addDouble(34.3);
+      pOutPort->write(output);
+    }
 
 }  // namespace teo
