@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# 2013 (c) edits by Santiago Morante and Juan G Victores, 
+# 2016 (c) edits by Santiago Morante, Juan G Victores and Raul de Santos. 
 
 # Copyright (c) 2008 Carnegie Mellon University.
 #
@@ -8,15 +8,22 @@
 # the CMU Sphinx system.  See
 # http://cmusphinx.sourceforge.net/html/LICENSE for more information.
 
-import pygtk
-pygtk.require('2.0')
-import gtk
+from gi import pygtkcompat
+import gi
 
-import gobject
-import pygst
-pygst.require('0.10')
-gobject.threads_init()
-import gst
+gi.require_version('Gst', '1.0')
+from gi.repository import GObject, Gst
+GObject.threads_init()
+Gst.init(None)
+    
+gst = Gst
+    
+print("Using pygtkcompat and Gst from gi")
+
+pygtkcompat.enable() 
+pygtkcompat.enable_gtk(version='3.0')
+
+import gtk
 
 import yarp
 import os.path
@@ -42,9 +49,13 @@ class SpeechRecognition(object):
 
     def init_gst(self):
         """Initialize the speech components"""
-        self.pipeline = gst.parse_launch('gconfaudiosrc ! audioconvert ! audioresample '
-                                         + '! vader name=vad auto-threshold=true '
-                                         + '! pocketsphinx name=asr ! fakesink')
+#        self.pipeline = gst.parse_launch('gconfaudiosrc ! audioconvert ! audioresample '
+#                                        + '! vader name=vad auto-threshold=true '
+#                                        + '! pocketsphinx name=asr ! fakesink')
+
+	""" Configuring the decoder and improving accuracy """
+        self.pipeline = gst.parse_launch('autoaudiosrc ! audioconvert ! audioresample '
+                                        + '! pocketsphinx name=asr beam=1e-20 ! fakesink')
         asr = self.pipeline.get_by_name('asr')
         asr.connect('result', self.asr_result)
         asr.set_property('lm', self.my_lm )
