@@ -1,0 +1,9 @@
+<application>
+<name>example speechRecognition App</name>
+    <module>
+        <name>speechRecognition</name>
+        <node>/head</node>
+    </module>
+
+</application>
+

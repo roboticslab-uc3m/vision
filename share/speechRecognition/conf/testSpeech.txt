@@ -1,0 +1,4 @@
+Hi
+food
+people
+exit
