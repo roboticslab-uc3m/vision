@@ -51,10 +51,10 @@ class DataProcessor(yarp.PortReader):
                 if bottleIn.get(1).asString() == "follow-me":
 			if bottleIn.get(2).asString() == "english":
 				print("follow-me demo configured in english")
-				self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+				self.refToFather.setDictionary('words-20150720.lm','words-20150720.dic')
 			elif bottleIn.get(2).asString() == "spanish":
 				print("follow-me demo configured in spanish")
-                                self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+                                self.refToFather.setDictionary('words-20150720.lm','words-20150720.dic')
 
                         # Aqui hay que llamar al setDictionary o bien llamar al asr.set_property (son hermanos!!) @@ 
                         # ademas de hacer las tipicas comprobaciones de errores, devolver fail si mal, etc...
@@ -90,12 +90,12 @@ class SpeechRecognition(object):
     """Based on GStreamer/PocketSphinx Demo Application"""
     def __init__(self):
         """Initialize a SpeechRecognition object"""
-        rf = yarp.ResourceFinder()
-        rf.setVerbose(True)
-        rf.setDefaultContext('speechRecognition')
-        rf.setDefaultConfigFile('speechRecognition.ini')
-        self.my_lm = rf.findFileByName('words-20150720.lm')
-        self.my_dic = rf.findFileByName('words-20150720.dic')
+        self.rf = yarp.ResourceFinder()
+        self.rf.setVerbose(True)
+        self.rf.setDefaultContext('speechRecognition')
+        self.rf.setDefaultConfigFile('speechRecognition.ini')
+        self.my_lm = self.rf.findFileByName('words-20150720.lm')
+        self.my_dic = self.rf.findFileByName('words-20150720.dic')
         self.outPort = yarp.Port()
         self.configPort = yarp.RpcServer()  # Use Port() if not Python wrapper not existent!
         self.dataProcessor = DataProcessor() 
@@ -104,6 +104,19 @@ class SpeechRecognition(object):
         self.outPort.open('/speechRecognition:o')
         self.configPort.open('/speechRecognition/rpc:s')
         self.init_gst()
+
+    def setDictionary(self, lm, dic):
+        print "Changing Dictionary...."
+        self.my_lm = self.rf.findFileByName(lm)
+        self.my_dic = self.rf.findFileByName(dic)
+                      
+        self.pipeline = gst.parse_launch('autoaudiosrc ! audioconvert ! audioresample '
+                                         + '! pocketsphinx name=asr beam=1e-20 ! fakesink')
+
+        asr = pipeline.get_by_name('asr')
+	asr.set_property('lm', self.my_lm)
+	asr.set_property('dict', self.my_dic)
+        print("Dictionary changed successfully (%s) (%s)"%(self.my_lm,self.my_dic))
 
     def init_gst(self):
         """Initialize the speech components"""
@@ -141,17 +154,6 @@ class SpeechRecognition(object):
         b.addString(text)
         if text != "":
             self.outPort.write(b)
-
-    def setDictionary(self, lm, dic):
-        my_lm = self.rf.findFileByName(lm)
-        my_dic = self.rf.findFileByName(dic)      
-        self.pipeline = gst.parse_launch('autoaudiosrc ! audioconvert ! audioresample '
-                                         + '! pocketsphinx name=asr beam=1e-20 ! fakesink')
-
-        asr = pipeline.get_by_name('asr')
-	asr.set_property('lm',my_lm)
-	asr.set_property('dict', my_dic)
-        print("Dictionary changed successfully (%s) (%s)"%(my_lm,my_dic))
 
 ##
 #
