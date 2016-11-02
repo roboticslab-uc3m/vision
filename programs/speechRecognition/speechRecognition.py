@@ -11,6 +11,8 @@
 from gi import pygtkcompat
 import gi
 
+import gobject
+
 gi.require_version('Gst', '1.0')
 from gi.repository import GObject, Gst
 GObject.threads_init()
@@ -43,9 +45,6 @@ class SpeechRecognition(object):
         rf.setDefaultConfigFile('speechRecognition1.ini')
         self.my_lm = rf.findFileByName('words-20150720.lm')
         self.my_dic = rf.findFileByName('words-20150720.dic')
-        self.textbuf = gtk.TextBuffer() # new
-        self.text = gtk.TextView(buffer=self.textbuf) # new
-        self.text.set_wrap_mode(gtk.WRAP_WORD) # new
         self.outPort = yarp.Port()
         self.outPort.open('/speechRecognition:o')
         self.init_gst()
@@ -60,10 +59,10 @@ class SpeechRecognition(object):
         self.pipeline = gst.parse_launch('autoaudiosrc ! audioconvert ! audioresample '
                                         + '! pocketsphinx name=asr beam=1e-20 ! fakesink') #
         asr = self.pipeline.get_by_name('asr')
-        # asr.connect('result', self.asr_result)
+        # asr.connect('result', self.asr_result) (it's not running with Gstreamer 1.0)
         asr.set_property('lm', self.my_lm )
         asr.set_property('dict', self.my_dic )
-        # asr.set_property('configured', True)      
+        #asr.set_property('configured', "true")      
 
         bus = self.pipeline.get_bus()
         bus.add_signal_watch()
@@ -73,7 +72,8 @@ class SpeechRecognition(object):
 
     def element_message(self, bus, msg):
         """Receive element messages from the bus."""
-        print("Running element_message...")
+        print "---"
+        b = yarp.Bottle()
         msgtype = msg.get_structure().get_name()
         print msgtype # pocketsphinx 
         
@@ -81,23 +81,10 @@ class SpeechRecognition(object):
             return
 
         print "hypothesis= '%s'  confidence=%s final=%s\n" % (msg.get_structure().get_value('hypothesis'), msg.get_structure().get_value('confidence'), msg.get_structure().get_value('final'))
-          
-"""
-    def asr_result(self, asr, text, uttid):
-        # Forward result signals on the bus to the main thread.
-        print '---'
-        b = yarp.Bottle()
-        #s = text.lower().split()
-        #for elem in s:
-        #    b.addString(elem)
-        #    print elem
-        #if b.size() != 0:
-        #    self.outPort.write(b)
-        print text.lower()
-        b.addString(text.lower())
+        text = msg.get_structure().get_value('hypothesis')        
+        b.addString(text)
         if text != "":
             self.outPort.write(b)
-"""
 
 ##
 #
@@ -112,4 +99,6 @@ if yarp.Network.checkNetwork() != True:
     quit()
 
 app = SpeechRecognition()
-gtk.main()
+# enter into a mainloop
+loop = GObject.MainLoop()
+loop.run()
