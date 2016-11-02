@@ -91,7 +91,12 @@ class SpeechRecognition(object):
         self.my_lm = rf.findFileByName('words-20150720.lm')
         self.my_dic = rf.findFileByName('words-20150720.dic')
         self.outPort = yarp.Port()
+        self.configPort = yarp.RpcServer()  # Use Port() if not Python wrapper not existent!
+        self.dataProcessor = DataProcessor() 
+        self.dataProcessor.setRefToFather(self) # it pass reference to DataProcessor 
+        self.configPort.setReader(self.dataProcessor)       
         self.outPort.open('/speechRecognition:o')
+        self.configPort.open('/speechRecognition/rpc:s')
         self.init_gst()
 
     def init_gst(self):
