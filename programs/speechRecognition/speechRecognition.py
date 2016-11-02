@@ -30,6 +30,51 @@ import gtk
 import yarp
 import os.path
 
+class DataProcessor(yarp.PortReader):
+    def setRefToFather(self,value):
+        self.refToFather = value
+    def read(self,connection):
+        print("in DataProcessor.read")
+        if not(connection.isValid()):
+            print("Connection shutting down")
+            return False
+        bottleIn = yarp.Bottle()
+        bOut = yarp.Bottle() 
+        print("Trying to read from connection")
+        ok = bottleIn.read(connection)
+        if not(ok):
+            print("Failed to read input")
+            return False
+        # Code goes here :-)
+        print("Received [%s]"%bottleIn.toString())
+        if bottleIn.get(0).asString() == "setDictionary":
+                if bottleIn.get(1).asString() == "follow-me":
+			if bottleIn.get(2).asString() == "english":
+				print("follow-me demo configured in english")
+				self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+			elif bottleIn.get(2).asString() == "spanish":
+				print("follow-me demo configured in spanish")
+                                self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+
+                        # Aqui hay que llamar al setDictionary o bien llamar al asr.set_property (son hermanos!!) @@ 
+                        # ademas de hacer las tipicas comprobaciones de errores, devolver fail si mal, etc...
+                elif bottleIn.get(1).asString() == "waiter":
+  			if bottleIn.get(2).asString() == "english":
+                                print("waiter demo configured in english")
+				self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+                       	elif bottleIn.get(2).asString() == "spanish":
+                                print("follow-me demo configured in spanish")
+				self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+                        # Aqui hay que llamar al setDictionary o bien llamar al asr.set_property (son hermanos!!) @@
+                        # ademas de hacer las tipicas comprobaciones de errores, devolver fail si mal, etc...
+        bOut.addString("ok")
+        writer = connection.getWriter()
+        if writer==None:
+            print("No one to reply to")
+            return True
+        return bOut.write(writer)
+
+
 ##
 #
 # @ingroup speechRecognition
