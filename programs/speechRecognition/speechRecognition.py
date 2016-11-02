@@ -43,6 +43,9 @@ class SpeechRecognition(object):
         rf.setDefaultConfigFile('speechRecognition1.ini')
         self.my_lm = rf.findFileByName('words-20150720.lm')
         self.my_dic = rf.findFileByName('words-20150720.dic')
+        self.textbuf = gtk.TextBuffer() # new
+        self.text = gtk.TextView(buffer=self.textbuf) # new
+        self.text.set_wrap_mode(gtk.WRAP_WORD) # new
         self.outPort = yarp.Port()
         self.outPort.open('/speechRecognition:o')
         self.init_gst()
@@ -55,20 +58,33 @@ class SpeechRecognition(object):
 
 	""" Configuring the decoder and improving accuracy """
         self.pipeline = gst.parse_launch('autoaudiosrc ! audioconvert ! audioresample '
-                                        + '! pocketsphinx name=asr beam=1e-20 ! fakesink')
+                                        + '! pocketsphinx name=asr beam=1e-20 ! fakesink') #
         asr = self.pipeline.get_by_name('asr')
-        asr.connect('result', self.asr_result)
+        # asr.connect('result', self.asr_result)
         asr.set_property('lm', self.my_lm )
         asr.set_property('dict', self.my_dic )
-        asr.set_property('configured', True)
+        # asr.set_property('configured', True)      
 
         bus = self.pipeline.get_bus()
         bus.add_signal_watch()
+        bus.connect('message::element', self.element_message) # new
 
-        self.pipeline.set_state(gst.STATE_PLAYING)
+        self.pipeline.set_state(gst.State.PLAYING)
 
+    def element_message(self, bus, msg):
+        """Receive element messages from the bus."""
+        print("Running element_message...")
+        msgtype = msg.get_structure().get_name()
+        print msgtype # pocketsphinx 
+        
+        if msgtype != 'pocketsphinx':
+            return
+
+        print "hypothesis= '%s'  confidence=%s final=%s\n" % (msg.get_structure().get_value('hypothesis'), msg.get_structure().get_value('confidence'), msg.get_structure().get_value('final'))
+          
+"""
     def asr_result(self, asr, text, uttid):
-        """Forward result signals on the bus to the main thread."""
+        # Forward result signals on the bus to the main thread.
         print '---'
         b = yarp.Bottle()
         #s = text.lower().split()
@@ -81,6 +97,7 @@ class SpeechRecognition(object):
         b.addString(text.lower())
         if text != "":
             self.outPort.write(b)
+"""
 
 ##
 #
