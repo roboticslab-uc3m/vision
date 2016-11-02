@@ -65,8 +65,14 @@ class DataProcessor(yarp.PortReader):
                        	elif bottleIn.get(2).asString() == "spanish":
                                 print("follow-me demo configured in spanish")
 				self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+
                         # Aqui hay que llamar al setDictionary o bien llamar al asr.set_property (son hermanos!!) @@
                         # ademas de hacer las tipicas comprobaciones de errores, devolver fail si mal, etc...
+                elif bottleIn.get(1).asString() == "test":
+                                print("Running test... You can say: Hi, food, people, exit")
+				self.refToFather.setDictionary('testSpeech.lm','testSpeech.dic')
+
+
         bOut.addString("ok")
         writer = connection.getWriter()
         if writer==None:
@@ -87,7 +93,7 @@ class SpeechRecognition(object):
         rf = yarp.ResourceFinder()
         rf.setVerbose(True)
         rf.setDefaultContext('speechRecognition')
-        rf.setDefaultConfigFile('speechRecognition1.ini')
+        rf.setDefaultConfigFile('speechRecognition.ini')
         self.my_lm = rf.findFileByName('words-20150720.lm')
         self.my_dic = rf.findFileByName('words-20150720.dic')
         self.outPort = yarp.Port()
@@ -140,7 +146,7 @@ class SpeechRecognition(object):
         my_lm = self.rf.findFileByName(lm)
         my_dic = self.rf.findFileByName(dic)      
         self.pipeline = gst.parse_launch('autoaudiosrc ! audioconvert ! audioresample '
-                                        + '! pocketsphinx name=asr beam=1e-20 ! fakesink')
+                                         + '! pocketsphinx name=asr beam=1e-20 ! fakesink')
 
         asr = pipeline.get_by_name('asr')
 	asr.set_property('lm',my_lm)
