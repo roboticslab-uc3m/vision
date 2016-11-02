@@ -107,7 +107,7 @@ class SpeechRecognition(object):
 
 	""" Configuring the decoder and improving accuracy """
         self.pipeline = gst.parse_launch('autoaudiosrc ! audioconvert ! audioresample '
-                                        + '! pocketsphinx name=asr beam=1e-20 ! fakesink') #
+                                        + '! pocketsphinx name=asr beam=1e-20 ! fakesink')
         asr = self.pipeline.get_by_name('asr')
         # asr.connect('result', self.asr_result) (it's not running with Gstreamer 1.0)
         asr.set_property('lm', self.my_lm )
@@ -135,6 +135,17 @@ class SpeechRecognition(object):
         b.addString(text)
         if text != "":
             self.outPort.write(b)
+
+    def setDictionary(self, lm, dic):
+        my_lm = self.rf.findFileByName(lm)
+        my_dic = self.rf.findFileByName(dic)      
+        self.pipeline = gst.parse_launch('autoaudiosrc ! audioconvert ! audioresample '
+                                        + '! pocketsphinx name=asr beam=1e-20 ! fakesink')
+
+        asr = pipeline.get_by_name('asr')
+	asr.set_property('lm',my_lm)
+	asr.set_property('dict', my_dic)
+        print("Dictionary changed successfully (%s) (%s)"%(my_lm,my_dic))
 
 ##
 #
