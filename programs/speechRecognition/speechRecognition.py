@@ -53,22 +53,24 @@ class DataProcessor(yarp.PortReader):
                         # follow-me english
 			if bottleIn.get(2).asString() == "english":
 				print("follow-me demo configured in english")
-				self.refToFather.setDictionary('words-20150720.lm','words-20150720.dic')
+				self.refToFather.setDictionary('follow-me-20150720.lm','follow-me-20150720.dic')
                         # follow-me spanish
 			elif bottleIn.get(2).asString() == "spanish":
 				print("follow-me demo configured in spanish")
-                                self.refToFather.setDictionary('words-20150720.lm','words-20150720.dic')
+                                print("dictionary not found")
+                                # self.refToFather.setDictionary('words-20150720.lm','words-20150720.dic')
                 
                 # waiter dictionary:
                 elif bottleIn.get(1).asString() == "waiter":
                         # waiter english:
   			if bottleIn.get(2).asString() == "english":
                                 print("waiter demo configured in english")
-				self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+				self.refToFather.setDictionary('waiter-20161103.lm','waiter-20161103.dic')
                         # waiter spanish:
                        	elif bottleIn.get(2).asString() == "spanish":
                                 print("follow-me demo configured in spanish")
-				self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+                                print("dictionary not found")
+				# self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
                 # test:
                 elif bottleIn.get(1).asString() == "test":
                                 print("Running test... You can say: Hi, food, people, exit")
