@@ -142,10 +142,11 @@ class SpeechRecognition(object):
             return
 
         print "hypothesis= '%s'  confidence=%s final=%s\n" % (msg.get_structure().get_value('hypothesis'), msg.get_structure().get_value('confidence'), msg.get_structure().get_value('final'))
-        text = msg.get_structure().get_value('hypothesis')        
-        b.addString(text)
-        if text != "":
-            self.outPort.write(b)
+        if msg.get_structure().get_value('final') is True:       
+                text = msg.get_structure().get_value('hypothesis')        
+                b.addString(text)
+                if text != "":
+                        self.outPort.write(b)
 
     def setDictionary(self, lm, dic):
         print "Changing Dictionary...."
