@@ -30,6 +30,59 @@ import gtk
 import yarp
 import os.path
 
+class DataProcessor(yarp.PortReader):
+    def setRefToFather(self,value):
+        self.refToFather = value
+    def read(self,connection):
+        print("in DataProcessor.read")
+        if not(connection.isValid()):
+            print("Connection shutting down")
+            return False
+        bottleIn = yarp.Bottle()
+        bOut = yarp.Bottle() 
+        print("Trying to read from connection")
+        ok = bottleIn.read(connection)
+        if not(ok):
+            print("Failed to read input")
+            return False
+        # Code goes here :-)
+        print("Received [%s]"%bottleIn.toString())
+        if bottleIn.get(0).asString() == "setDictionary":
+                # follow-me dictionary:
+                if bottleIn.get(1).asString() == "follow-me":
+                        # follow-me english
+			if bottleIn.get(2).asString() == "english":
+				print("follow-me demo configured in english")
+				self.refToFather.setDictionary('words-20150720.lm','words-20150720.dic')
+                        # follow-me spanish
+			elif bottleIn.get(2).asString() == "spanish":
+				print("follow-me demo configured in spanish")
+                                self.refToFather.setDictionary('words-20150720.lm','words-20150720.dic')
+                
+                # waiter dictionary:
+                elif bottleIn.get(1).asString() == "waiter":
+                        # waiter english:
+  			if bottleIn.get(2).asString() == "english":
+                                print("waiter demo configured in english")
+				self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+                        # waiter spanish:
+                       	elif bottleIn.get(2).asString() == "spanish":
+                                print("follow-me demo configured in spanish")
+				self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+                # test:
+                elif bottleIn.get(1).asString() == "test":
+                                print("Running test... You can say: Hi, food, people, exit")
+				self.refToFather.setDictionary('testSpeech.lm','testSpeech.dic')
+
+
+        bOut.addString("ok")
+        writer = connection.getWriter()
+        if writer==None:
+            print("No one to reply to")
+            return True
+        return bOut.write(writer)
+
+
 ##
 #
 # @ingroup speechRecognition
@@ -39,15 +92,21 @@ class SpeechRecognition(object):
     """Based on GStreamer/PocketSphinx Demo Application"""
     def __init__(self):
         """Initialize a SpeechRecognition object"""
-        rf = yarp.ResourceFinder()
-        rf.setVerbose(True)
-        rf.setDefaultContext('speechRecognition')
-        rf.setDefaultConfigFile('speechRecognition1.ini')
-        self.my_lm = rf.findFileByName('words-20150720.lm')
-        self.my_dic = rf.findFileByName('words-20150720.dic')
+        self.rf = yarp.ResourceFinder()
+        self.rf.setVerbose(True)
+        self.rf.setDefaultContext('speechRecognition')
+        self.rf.setDefaultConfigFile('speechRecognition.ini')
+        self.my_lm = self.rf.findFileByName('words-20150720.lm')
+        self.my_dic = self.rf.findFileByName('words-20150720.dic')
         self.outPort = yarp.Port()
+        self.configPort = yarp.RpcServer()  # Use Port() if not Python wrapper not existent!
+        self.dataProcessor = DataProcessor() 
+        self.dataProcessor.setRefToFather(self) # it pass reference to DataProcessor 
+        self.configPort.setReader(self.dataProcessor)       
         self.outPort.open('/speechRecognition:o')
+        self.configPort.open('/speechRecognition/rpc:s')
         self.init_gst()
+        
 
     def init_gst(self):
         """Initialize the speech components"""
@@ -57,7 +116,7 @@ class SpeechRecognition(object):
 
 	""" Configuring the decoder and improving accuracy """
         self.pipeline = gst.parse_launch('autoaudiosrc ! audioconvert ! audioresample '
-                                        + '! pocketsphinx name=asr beam=1e-20 ! fakesink') #
+                                        + '! pocketsphinx name=asr beam=1e-20 ! fakesink')
         asr = self.pipeline.get_by_name('asr')
         # asr.connect('result', self.asr_result) (it's not running with Gstreamer 1.0)
         asr.set_property('lm', self.my_lm )
@@ -85,6 +144,26 @@ class SpeechRecognition(object):
         b.addString(text)
         if text != "":
             self.outPort.write(b)
+
+    def setDictionary(self, lm, dic):
+        print "Changing Dictionary...."
+        self.my_lm = self.rf.findFileByName(lm)
+        self.my_dic = self.rf.findFileByName(dic)
+        
+        self.pipeline.set_state(gst.State.NULL)
+        self.pipeline = gst.parse_launch('autoaudiosrc ! audioconvert ! audioresample '
+                                         + '! pocketsphinx name=asr beam=1e-20 ! fakesink')
+
+        asr = self.pipeline.get_by_name('asr')
+	asr.set_property('lm', self.my_lm)
+	asr.set_property('dict', self.my_dic)
+        print("Dictionary changed successfully (%s) (%s)"%(self.my_lm,self.my_dic))
+
+        bus = self.pipeline.get_bus()
+        bus.add_signal_watch()
+        bus.connect('message::element', self.element_message)
+
+        self.pipeline.set_state(gst.State.PLAYING)
 
 ##
 #
