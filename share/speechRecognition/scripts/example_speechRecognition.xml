@@ -1,7 +1,7 @@
 <application>
 <name>example speechRecognition App</name>
     <module>
-        <name>speechRecognition</name>
+        <name>speechRecognition.py</name>
         <node>localhost</node>
         <!--node>/head</node-->
     </module>
