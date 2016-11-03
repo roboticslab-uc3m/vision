@@ -72,19 +72,9 @@ sudo apt-get install libopencv-dev
 
 ```bash
 # voice: Install MBROLA VOICES
-sudo apt-get install libespeak-dev espeak
+sudo apt-get install espeak libespeak-dev
 sudo apt-get install mbrola-en1
-cd  # go home
-mkdir -p src; cd src  # make $HOME/src if it doesn't exist; then, enter it
-wget https://sourceforge.net/projects/roboticslab/files/External/mbrola/en1.tar.bz2
-wget https://sourceforge.net/projects/roboticslab/files/External/mbrola/es1.tar.bz2
-tar xvf en1.tar.bz2
-tar xvf es1.tar.bz2
-sudo mkdir /usr/share/mbrola
-sudo mkdir /usr/share/mbrola/en1
-sudo mkdir /usr/share/mbrola/es1
-sudo cp en1/en1 /usr/share/mbrola/en1
-sudo cp es1/es1 /usr/share/mbrola/es1
+sudo apt-get install mbrola-es1
 ```
 
 Our software integrates the previous dependencies. Note that you will be prompted for your password upon using '''sudo''' a couple of times:
