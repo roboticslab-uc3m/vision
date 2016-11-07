@@ -98,8 +98,8 @@ class SpeechRecognition(object):
         self.rf.setVerbose(True)
         self.rf.setDefaultContext('speechRecognition')
         self.rf.setDefaultConfigFile('speechRecognition.ini')
-        self.my_lm = self.rf.findFileByName('words-20150720.lm')
-        self.my_dic = self.rf.findFileByName('words-20150720.dic')
+        self.my_lm = self.rf.findFileByName('follow-me-20150720.lm')
+        self.my_dic = self.rf.findFileByName('follow-me-20150720.dic')
         self.outPort = yarp.Port()
         self.configPort = yarp.RpcServer()  # Use Port() if not Python wrapper not existent!
         self.dataProcessor = DataProcessor() 
