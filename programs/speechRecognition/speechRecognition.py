@@ -144,7 +144,8 @@ class SpeechRecognition(object):
         print "hypothesis= '%s'  confidence=%s final=%s\n" % (msg.get_structure().get_value('hypothesis'), msg.get_structure().get_value('confidence'), msg.get_structure().get_value('final'))
         if msg.get_structure().get_value('final') is True:       
                 text = msg.get_structure().get_value('hypothesis')        
-                b.addString(text)
+                print text.lower()
+                b.addString(text.lower())
                 if text != "":
                         self.outPort.write(b)
 
