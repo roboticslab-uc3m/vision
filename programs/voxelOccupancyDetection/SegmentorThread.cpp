@@ -193,7 +193,9 @@ void SegmentorThread::run() {
             //First convert to REAL WORLD coordinates to use the real area
             double x = (j-W/2)*depth.pixel(j,i)*kinectCalibrationValue;
             double y = (i-H/2)*depth.pixel(j,i)*kinectCalibrationValue;
-            //if(depth.pixel(j,i)<areaHighThreshold && depth.pixel(j,i)>areaLowThreshold){
+            int ix=(highXBox-lowXBox)/4;
+            int areaRegion=areaHighThreshold-areaLowThreshold;
+            //if(depth.pixel(j,i)<areaHighThreshold && depth.pixel(j,i)>areaLowThreshold)
             if(lowXBox<x && x<highXBox && lowYBox<y && y<highYBox && areaLowThreshold<depth.pixel(j,i) && depth.pixel(j,i)<areaHighThreshold){
                 //Calculate the number of occupancy pixels around that pixel
                 //std::cout<<"Detecté Pixel dentro del área de interés"<<std::endl;
@@ -220,14 +222,12 @@ void SegmentorThread::run() {
                     }
                 }
                 //If we have more occupancy pixels than the threshold, that voxel is considered occupied.
-                int areaRegion=areaHighThreshold-areaLowThreshold;
 //                std::cout<<"THE NUMBER OF OCCUPANCY INDICES IS"<< numberOccupancyIndices<<std::endl;
                 if(numberOccupancyIndices>occupancyThreshold){
                     //Yarp Bottle
                     yarp::os::Bottle output;
 //                    std::cout<<" REAL X ES "<<areaLowThreshold<<std::endl;
 //                    std::cout<<" REAL Y ES "<<areaHighThreshold<<std::endl;
-                    int ix=(highXBox-lowXBox)/4;
                     std::cout<<" X "<<x<<std::endl;
                     std::cout<<" Y "<<y<<std::endl;
                     std::cout<<" Z "<<depth.pixel(j,i)<<std::endl;
@@ -364,8 +364,19 @@ void SegmentorThread::run() {
                     //occupancy_indices.push_back(i);
                     occupancy_indices.push_back(j);
                 }
-
             }
+
+            if(lowXBox<x && x<(lowXBox+ix) && lowYBox<y && y<highYBox){ //CLEAN VOXEL
+                if((5*areaRegion/4+areaLowThreshold)<depth.pixel(j,i) && depth.pixel(j,i)<(6*areaRegion/4+areaLowThreshold)){
+                    yarp::os::Bottle output;
+                    output.addInt(4);
+                    output.addInt(4);
+                    std::cout<<" ENTRE EN EL VOXEL"<<4<<" "<<4<<std::endl;
+                    std::cout<<"BORRANDO PANTALLA"<<std::endl;
+                    pOutPort->write(output);
+                    return;
+                }
+            }     
 
         }
 
@@ -417,11 +428,12 @@ void SegmentorThread::run() {
 
       //The area pixels are (60cm from kinect) H:107 (20cm 2/5 Height) H:130 (25cm 1/2Height) Weidth:all (320 pix, 68cm).
 
-      yarp::os::Bottle output;
-      //output.addInt(depth.pixel(5,5));
-      //output.addInt(depth.pixel(5,6));
-      //output.addDouble(34.3);
-      pOutPort->write(output);
+//      yarp::os::Bottle output;
+//      output.clear();
+//      //output.addInt(depth.pixel(5,5));
+//      //output.addInt(depth.pixel(5,6));
+//      //output.addDouble(34.3);
+//      pOutPort->write(output);
     }
 
 }  // namespace teo
