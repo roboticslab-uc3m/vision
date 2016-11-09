@@ -65,7 +65,7 @@ class DataProcessor(yarp.PortReader):
                         # waiter english:
   			if bottleIn.get(2).asString() == "english":
                                 print("waiter demo configured in english")
-				self.refToFather.setDictionary('waiter-20161103.lm','waiter-20161103.dic')
+				self.refToFather.setDictionary('waiter-english.lm','waiter-english.dic')
                         # waiter spanish:
                        	elif bottleIn.get(2).asString() == "spanish":
                                 print("follow-me demo configured in spanish")
