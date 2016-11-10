@@ -53,7 +53,7 @@ class DataProcessor(yarp.PortReader):
                         # follow-me english
 			if bottleIn.get(2).asString() == "english":
 				print("follow-me demo configured in english")
-				self.refToFather.setDictionary('follow-me-20150720.lm','follow-me-20150720.dic')
+				self.refToFather.setDictionary('follow-me-english','follow-me-english.dic')
                         # follow-me spanish
 			elif bottleIn.get(2).asString() == "spanish":
 				print("follow-me demo configured in spanish")
@@ -68,13 +68,9 @@ class DataProcessor(yarp.PortReader):
 				self.refToFather.setDictionary('waiter-english.lm','waiter-english.dic')
                         # waiter spanish:
                        	elif bottleIn.get(2).asString() == "spanish":
-                                print("follow-me demo configured in spanish")
+                                print("waiter demo configured in spanish")
                                 print("dictionary not found")
 				# self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
-                # test:
-                elif bottleIn.get(1).asString() == "test":
-                                print("Running test... You can say: Hi, food, people, exit")
-				self.refToFather.setDictionary('testSpeech.lm','testSpeech.dic')
 
 
         bOut.addString("ok")
@@ -98,8 +94,8 @@ class SpeechRecognition(object):
         self.rf.setVerbose(True)
         self.rf.setDefaultContext('speechRecognition')
         self.rf.setDefaultConfigFile('speechRecognition.ini')
-        self.my_lm = self.rf.findFileByName('follow-me-20150720.lm')
-        self.my_dic = self.rf.findFileByName('follow-me-20150720.dic')
+        self.my_lm = self.rf.findFileByName('follow-me-english.lm')
+        self.my_dic = self.rf.findFileByName('follow-me-english.dic')
         self.outPort = yarp.Port()
         self.configPort = yarp.RpcServer()  # Use Port() if not Python wrapper not existent!
         self.dataProcessor = DataProcessor() 
