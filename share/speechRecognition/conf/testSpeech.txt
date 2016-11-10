@@ -1,4 +1,0 @@
-Hi
-food
-people
-exit

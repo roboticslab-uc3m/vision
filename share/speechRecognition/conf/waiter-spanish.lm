@@ -1,0 +1,56 @@
+Language model created by QuickLM on Wed Nov  9 10:49:53 EST 2016
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 4 sentences and 11 words
+
+\data\
+ngram 1=11
+ngram 2=13
+ngram 3=9
+
+\1-grams:
+-0.9294 </s> -0.3010
+-0.9294 <s> -0.2467
+-1.5315 AGUA -0.2467
+-1.5315 DAME -0.2881
+-1.5315 FAVOR -0.2467
+-1.5315 GRACIAS -0.2467
+-1.5315 HOLA -0.2881
+-1.5315 MUCHAS -0.2881
+-1.5315 PARA -0.2881
+-1.5315 POR -0.2881
+-1.5315 TEO -0.2467
+
+\2-grams:
+-0.9031 <s> DAME 0.0000
+-0.9031 <s> HOLA 0.0000
+-0.9031 <s> MUCHAS 0.0000
+-0.9031 <s> PARA 0.0000
+-0.3010 AGUA </s> -0.3010
+-0.3010 DAME AGUA 0.0000
+-0.3010 FAVOR </s> -0.3010
+-0.3010 GRACIAS </s> -0.3010
+-0.3010 HOLA TEO 0.0000
+-0.3010 MUCHAS GRACIAS 0.0000
+-0.3010 PARA POR 0.0000
+-0.3010 POR FAVOR 0.0000
+-0.3010 TEO </s> -0.3010
+
+\3-grams:
+-0.3010 <s> DAME AGUA
+-0.3010 <s> HOLA TEO
+-0.3010 <s> MUCHAS GRACIAS
+-0.3010 <s> PARA POR
+-0.3010 DAME AGUA </s>
+-0.3010 HOLA TEO </s>
+-0.3010 MUCHAS GRACIAS </s>
+-0.3010 PARA POR FAVOR
+-0.3010 POR FAVOR </s>
+
+\end\
