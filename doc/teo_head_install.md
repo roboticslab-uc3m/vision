@@ -1,8 +1,6 @@
-## Installation from Source Code (Ubuntu 15.04)
+## Installation from Source Code
 
-### Install the Software (Vision)
-
-First install the depencencies:
+### Install the Software depencencies:
 
 - [Install PCL](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_pcl.md)
 - [Install OpenNI2 & NiTE2](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_openni_nite.md)
@@ -11,6 +9,8 @@ First install the depencencies:
 - [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_opencv.md)
 - [Install MBROLA VOICES](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_mbrola.md)
 - [Install Speech Recognition](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_speech_recognition.md)
+
+### Install the Software on Ubuntu (working on all tested versions)
 
 Our software integrates the previous dependencies. Note that you will be prompted for your password upon using '''sudo''' a couple of times:
 
