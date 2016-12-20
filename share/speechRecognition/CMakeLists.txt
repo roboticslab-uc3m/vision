@@ -1,5 +1,5 @@
-# Copyright: 2015 UC3M
-# Author: Juan G Victores
+# Copyright: 2016 UC3M
+# Authors: Juan G Victores & Raul de Santos Rico
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
 set(appname speechRecognition)
