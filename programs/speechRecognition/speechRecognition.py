@@ -72,6 +72,11 @@ class DataProcessor(yarp.PortReader):
                                 print("dictionary not found")
 				# self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
 
+		# spanish dictionary:
+                elif bottleIn.get(1).asString() == "spanish":
+                	print("Spanish Model Language running...")
+			self.refToFather.setDictionary('es-20k.lm','es-20k.dic')
+
 
         bOut.addString("ok")
         writer = connection.getWriter()
