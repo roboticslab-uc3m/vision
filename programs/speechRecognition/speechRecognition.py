@@ -75,7 +75,7 @@ class DataProcessor(yarp.PortReader):
 		# spanish dictionary:
                 elif bottleIn.get(1).asString() == "spanish":
                 	print("Spanish Model Language running...")
-			self.refToFather.setDictionary('es-20k.lm','es-20k.dic')
+			self.refToFather.setDictionary('dictionary/test-spanish.lm','dictionary/test-spanish.dic','model/es')
 
 
         bOut.addString("ok")
@@ -99,8 +99,9 @@ class SpeechRecognition(object):
         self.rf.setVerbose(True)
         self.rf.setDefaultContext('speechRecognition')
         self.rf.setDefaultConfigFile('speechRecognition.ini')
-        self.my_lm = self.rf.findFileByName('follow-me-english.lm')
-        self.my_dic = self.rf.findFileByName('follow-me-english.dic')
+        self.my_lm = self.rf.findFileByName('dictionary/follow-me-english.lm')
+        self.my_dic = self.rf.findFileByName('dictionary/follow-me-english.dic')
+	self.my_model = self.rf.findPath('model/en-us/')
         self.outPort = yarp.Port()
         self.configPort = yarp.RpcServer()  # Use Port() if not Python wrapper not existent!
         self.dataProcessor = DataProcessor() 
@@ -124,6 +125,7 @@ class SpeechRecognition(object):
         # asr.connect('result', self.asr_result) (it's not running with Gstreamer 1.0)
         asr.set_property('lm', self.my_lm )
         asr.set_property('dict', self.my_dic )
+	asr.set_property('hmm', self.my_model )
         #asr.set_property('configured', "true")      
 
         bus = self.pipeline.get_bus()
@@ -150,10 +152,11 @@ class SpeechRecognition(object):
                 if text != "":
                         self.outPort.write(b)
 
-    def setDictionary(self, lm, dic):
+    def setDictionary(self, lm, dic, hmm):
         print "Changing Dictionary...."
         self.my_lm = self.rf.findFileByName(lm)
         self.my_dic = self.rf.findFileByName(dic)
+	self.my_model = self.rf.findFileByName(hmm)
         
         self.pipeline.set_state(gst.State.NULL)
         self.pipeline = gst.parse_launch('autoaudiosrc ! audioconvert ! audioresample '
@@ -162,7 +165,8 @@ class SpeechRecognition(object):
         asr = self.pipeline.get_by_name('asr')
 	asr.set_property('lm', self.my_lm)
 	asr.set_property('dict', self.my_dic)
-        print("Dictionary changed successfully (%s) (%s)"%(self.my_lm,self.my_dic))
+	asr.set_property('hmm', self.my_model )
+        print("Dictionary changed successfully (%s) (%s) (%s)"%(self.my_lm,self.my_dic,self.my_model))
 
         bus = self.pipeline.get_bus()
         bus.add_signal_watch()
