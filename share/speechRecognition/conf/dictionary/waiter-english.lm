@@ -1,0 +1,56 @@
+Language model created by QuickLM on Wed Nov  9 09:56:39 EST 2016
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 4 sentences and 11 words
+
+\data\
+ngram 1=11
+ngram 2=13
+ngram 3=9
+
+\1-grams:
+-0.9294 </s> -0.3010
+-0.9294 <s> -0.2467
+-1.5315 GIVE -0.2881
+-1.5315 HI -0.2881
+-1.5315 ME -0.2881
+-1.5315 PLEASE -0.2467
+-1.5315 STOP -0.2881
+-1.5315 TEO -0.2467
+-1.5315 THANK -0.2881
+-1.5315 WATER -0.2467
+-1.5315 YOU -0.2467
+
+\2-grams:
+-0.9031 <s> GIVE 0.0000
+-0.9031 <s> HI 0.0000
+-0.9031 <s> STOP 0.0000
+-0.9031 <s> THANK 0.0000
+-0.3010 GIVE ME 0.0000
+-0.3010 HI TEO 0.0000
+-0.3010 ME WATER 0.0000
+-0.3010 PLEASE </s> -0.3010
+-0.3010 STOP PLEASE 0.0000
+-0.3010 TEO </s> -0.3010
+-0.3010 THANK YOU 0.0000
+-0.3010 WATER </s> -0.3010
+-0.3010 YOU </s> -0.3010
+
+\3-grams:
+-0.3010 <s> GIVE ME
+-0.3010 <s> HI TEO
+-0.3010 <s> STOP PLEASE
+-0.3010 <s> THANK YOU
+-0.3010 GIVE ME WATER
+-0.3010 HI TEO </s>
+-0.3010 ME WATER </s>
+-0.3010 STOP PLEASE </s>
+-0.3010 THANK YOU </s>
+
+\end\
