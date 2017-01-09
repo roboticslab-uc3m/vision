@@ -53,12 +53,12 @@ class DataProcessor(yarp.PortReader):
                         # follow-me english
 			if bottleIn.get(2).asString() == "english":
 				print("follow-me demo configured in english")
-				self.refToFather.setDictionary('follow-me-english.lm','follow-me-english.dic')
+				self.refToFather.setDictionary('dictionary/follow-me-english.lm','dictionary/follow-me-english.dic', 'model/en-us')
                         # follow-me spanish
 			elif bottleIn.get(2).asString() == "spanish":
 				print("follow-me demo configured in spanish")
                                 print("dictionary not found")
-                                # self.refToFather.setDictionary('words-20150720.lm','words-20150720.dic')
+                                self.refToFather.setDictionary('dictionary/follow-me-spanish.lm','dictionary/follow-me-spanish.dic','model/es')
                 
                 # waiter dictionary:
                 elif bottleIn.get(1).asString() == "waiter":
@@ -71,11 +71,6 @@ class DataProcessor(yarp.PortReader):
                                 print("waiter demo configured in spanish")
                                 print("dictionary not found")
 				# self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
-
-		# spanish dictionary:
-                elif bottleIn.get(1).asString() == "spanish":
-                	print("Spanish Model Language running...")
-			self.refToFather.setDictionary('dictionary/test-spanish.lm','dictionary/test-spanish.dic','model/es')
 
 
         bOut.addString("ok")
