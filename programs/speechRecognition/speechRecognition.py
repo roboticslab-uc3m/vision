@@ -70,7 +70,7 @@ class DataProcessor(yarp.PortReader):
                        	elif bottleIn.get(2).asString() == "spanish":
                                 print("waiter demo configured in spanish")
                                 print("dictionary not found")
-				# self.refToFather.setDictionary('words-20160617.lm','words-20160617.dic')
+				self.refToFather.setDictionary('dictionary/waiter-spanish.lm','dictionary/waiter-spanish.dic','model/es')
 
 
         bOut.addString("ok")
