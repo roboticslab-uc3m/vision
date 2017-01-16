@@ -1,4 +1,4 @@
-Language model created by QuickLM on Thu Nov 10 07:12:02 EST 2016
+Language model created by QuickLM on Mon Jan 16 09:07:19 EST 2017
 Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
 
 The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
@@ -7,41 +7,48 @@ The code that was used to produce this language model is available in Open Sourc
 Please visit http://www.speech.cs.cmu.edu/tools/ for more information
 
 The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
-This model based on a corpus of 3 sentences and 9 words
+This model based on a corpus of 4 sentences and 11 words
 
 \data\
-ngram 1=9
-ngram 2=10
-ngram 3=7
+ngram 1=11
+ngram 2=13
+ngram 3=9
 
 \1-grams:
--0.9379 </s> -0.3010
--0.9379 <s> -0.2478
--1.4150 FOLLOW -0.2840
--1.4150 FOLLOWING -0.2478
--1.4150 IS -0.2478
--1.4150 ME -0.2478
--1.4150 MY -0.2840
--1.4150 NAME -0.2840
--1.4150 STOP -0.2840
+-0.9294 </s> -0.3010
+-0.9294 <s> -0.2467
+-1.5315 FOLLOW -0.2881
+-1.5315 FOLLOWING -0.2467
+-1.5315 HI -0.2881
+-1.5315 IS -0.2467
+-1.5315 ME -0.2467
+-1.5315 MY -0.2881
+-1.5315 NAME -0.2881
+-1.5315 STOP -0.2881
+-1.5315 TEO -0.2467
 
 \2-grams:
--0.7782 <s> FOLLOW 0.0000
--0.7782 <s> MY 0.0000
--0.7782 <s> STOP 0.0000
+-0.9031 <s> FOLLOW 0.0000
+-0.9031 <s> HI 0.0000
+-0.9031 <s> MY 0.0000
+-0.9031 <s> STOP 0.0000
 -0.3010 FOLLOW ME 0.0000
 -0.3010 FOLLOWING </s> -0.3010
+-0.3010 HI TEO 0.0000
 -0.3010 IS </s> -0.3010
 -0.3010 ME </s> -0.3010
 -0.3010 MY NAME 0.0000
 -0.3010 NAME IS 0.0000
 -0.3010 STOP FOLLOWING 0.0000
+-0.3010 TEO </s> -0.3010
 
 \3-grams:
 -0.3010 <s> FOLLOW ME
+-0.3010 <s> HI TEO
 -0.3010 <s> MY NAME
 -0.3010 <s> STOP FOLLOWING
 -0.3010 FOLLOW ME </s>
+-0.3010 HI TEO </s>
 -0.3010 MY NAME IS
 -0.3010 NAME IS </s>
 -0.3010 STOP FOLLOWING </s>
