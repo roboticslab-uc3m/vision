@@ -1,5 +1,8 @@
 ## Building Language Model
 
+### How to add new words for English speech recognition:
+You can use this [Sphinx Knowledge Base Tool -- VERSION 3](http://www.speech.cs.cmu.edu/tools/lmtool-new.html).
+
 ### How to add new words for Spanish speech recognition:
 This will be a quick explanation of how to add new words for Spanish speech recognition. </br>
 First of all, you have to know that you need two files. These are the language model (file.lm) and the lexical model (file.dic) referred to variously as the 'pronouncing dictionary' or simply the ‘dictionary’. </br>
