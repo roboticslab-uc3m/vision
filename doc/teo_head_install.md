@@ -1,6 +1,6 @@
 ## Installation from Source Code
 
-### Install the Software depencencies:
+### Install the Software dependencies:
 
 - [Install PCL](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_pcl.md)
 - [Install OpenNI2 & NiTE2](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_openni_nite.md)
