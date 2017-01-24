@@ -23,6 +23,9 @@ Installation instructions for installing from source can be found [here]( doc/te
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
+#### Manuals
+1. Read [development manual](https://github.com/roboticslab-uc3m/teo-head/blob/develop/doc/teo-head-development-manual.md) if you want to build a new language model
+
 ## Status
 
 [![Build Status (Linux/OSX)](https://img.shields.io/travis/roboticslab-uc3m/teo-head/master.svg?label=Build Status (Linux/OSX))](https://travis-ci.org/roboticslab-uc3m/teo-head)
