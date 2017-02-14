@@ -14,7 +14,7 @@ IF (ENABLE_HeadYarp)
   include(YarpPlugin)
 
 #  yarp_begin_plugin_library(HeadYarp)
-#    add_subdirectory(headbot)
+   add_subdirectory(Espeak)
 #  yarp_end_plugin_library(HeadYarp)
 
 #  install(TARGETS HeadYarp DESTINATION lib)
@@ -27,4 +27,3 @@ IF (ENABLE_HeadYarp)
 #  ENDIF (ENABLE_launchHeadYarp)
 
 ENDIF (ENABLE_HeadYarp)
-
