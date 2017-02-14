@@ -17,7 +17,6 @@ set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "hide this!")
 
 ### options: cpp libraries
 option(ENABLE_HeadYarp "Choose if you want to compile HeadYarp" TRUE)
-option(ENABLE_HeadYarp_Espeak "Choose if you want to install HeadYarp_Espeak" TRUE)
 option(ENABLE_Espeak "Choose if you want to install Espeak" TRUE)
 
 ### options: cpp programs
