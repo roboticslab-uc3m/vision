@@ -1,5 +1,5 @@
-# Copyright: Universidad Carlos III de Madrid (C) 2013;
-# Authors: Juan G. Victores
+# Copyright: Universidad Carlos III de Madrid (C) 2017;
+# Authors: Juan G. Victores & Raul de Santos Rico
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
 # Exploit new cmake 2.6 features (export). 
@@ -13,10 +13,13 @@ endif(COMMAND cmake_policy)
 
 project(head)
 
+set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "hide this!")
+
 ### options: cpp libraries
 option(ENABLE_HeadYarp "Choose if you want to compile HeadYarp" TRUE)
+option(ENABLE_Espeak "Choose if you want to install Espeak" TRUE)
 
-### options: cpp modules
+### options: cpp programs
 option(ENABLE_colorRegionDetection "Choose if you want to compile colorRegionDetection" TRUE)
 option(ENABLE_haarDetection "Choose if you want to compile haarDetection" TRUE)
 option(ENABLE_cv1ToRoot "Choose if you want to compile cv1ToRoot" TRUE)
@@ -57,6 +60,8 @@ mark_as_advanced(CMAKE_BACKWARDS_COMPATIBILITY)
 
 # Pick up our cmake modules - they are all in the cmake subdirectory
 set(TEO_HEAD_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+# let cmake use them
+list(APPEND CMAKE_MODULE_PATH ${TEO_HEAD_MODULE_PATH})
 
 #set_property(GLOBAL PROPERTY TEO_HEAD_INCLUDE_DIRS)
 #set_property(GLOBAL PROPERTY TEO_HEAD_LINK_DIRS)
