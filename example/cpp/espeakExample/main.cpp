@@ -30,11 +30,11 @@ make -j3
 
 #include "EspeakExample.hpp"
 
-YARP_DECLARE_PLUGINS(HeadYarp)
+//YARP_DECLARE_PLUGINS(HeadYarp)
 
 int main(int argc, char **argv)
 {
-    YARP_REGISTER_PLUGINS(HeadYarp);
+    //YARP_REGISTER_PLUGINS(HeadYarp);
 
     teo::EspeakExample mod;
     return mod.run();
