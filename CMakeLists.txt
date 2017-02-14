@@ -1,5 +1,5 @@
-# Copyright: Universidad Carlos III de Madrid (C) 2013;
-# Authors: Juan G. Victores
+# Copyright: Universidad Carlos III de Madrid (C) 2017;
+# Authors: Juan G. Victores & Raul de Santos Rico
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
 # Exploit new cmake 2.6 features (export). 
@@ -18,6 +18,7 @@ set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "hide this!")
 ### options: cpp libraries
 option(ENABLE_HeadYarp "Choose if you want to compile HeadYarp" TRUE)
 option(ENABLE_HeadYarp_Espeak "Choose if you want to install HeadYarp_Espeak" TRUE)
+option(ENABLE_Espeak "Choose if you want to install Espeak" TRUE)
 
 ### options: cpp programs
 option(ENABLE_colorRegionDetection "Choose if you want to compile colorRegionDetection" TRUE)
