@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.6)
 
 IF (ENABLE_HeadYarp)
 
-  option(ENABLE_launchHeadYarp "Choose if you want to compile launchHeadYarp" FALSE)
+  option(ENABLE_launchHeadYarp "Choose if you want to compile launchHeadYarp" TRUE)
 
   find_package(YARP REQUIRED)
   include_directories(${YARP_INCLUDE_DIRS})
