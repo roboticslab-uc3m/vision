@@ -13,6 +13,8 @@ endif(COMMAND cmake_policy)
 
 project(head)
 
+set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "hide this!")
+
 ### options: cpp libraries
 option(ENABLE_HeadYarp "Choose if you want to compile HeadYarp" TRUE)
 
