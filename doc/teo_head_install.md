@@ -4,7 +4,7 @@
 
 - [Install PCL](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_pcl.md)
 - [Install OpenNI2 & NiTE2](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_openni_nite.md)
-- [Install Yarp](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_yarp.md)
+- [Install Yarp and additional YARP device: OpenNI2DeviceServer](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_yarp.md)
 - [Install KDL](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_kdl.md)
 - [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_opencv.md)
 - [Install MBROLA VOICES](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_mbrola.md)
