@@ -17,8 +17,9 @@ set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "hide this!")
 
 ### options: cpp libraries
 option(ENABLE_HeadYarp "Choose if you want to compile HeadYarp" TRUE)
+option(ENABLE_HeadYarp_Espeak "Choose if you want to install HeadYarp_Espeak" TRUE)
 
-### options: cpp modules
+### options: cpp programs
 option(ENABLE_colorRegionDetection "Choose if you want to compile colorRegionDetection" TRUE)
 option(ENABLE_haarDetection "Choose if you want to compile haarDetection" TRUE)
 option(ENABLE_cv1ToRoot "Choose if you want to compile cv1ToRoot" TRUE)
@@ -59,6 +60,8 @@ mark_as_advanced(CMAKE_BACKWARDS_COMPATIBILITY)
 
 # Pick up our cmake modules - they are all in the cmake subdirectory
 set(TEO_HEAD_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+# let cmake use them
+list(APPEND CMAKE_MODULE_PATH ${TEO_HEAD_MODULE_PATH})
 
 #set_property(GLOBAL PROPERTY TEO_HEAD_INCLUDE_DIRS)
 #set_property(GLOBAL PROPERTY TEO_HEAD_LINK_DIRS)
