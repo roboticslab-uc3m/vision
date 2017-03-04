@@ -1,6 +1,6 @@
 
 /**
- * \page teo_head_install_on_ubuntu_15_04 Installation from Source Code (Ubuntu 15.04)
+ * \page vision_install_on_ubuntu_15_04 Installation from Source Code (Ubuntu 15.04)
 
  * @section install_teo_body_vision Install the Software (Vision)
 
@@ -80,7 +80,7 @@ cd speech/svox-speech
 mkdir build && cd build
 cmake .. -DENABLE_speech=ON
 make && sudo make install
-# export YARP_DATA_DIRS=$HOME/repos/teo-head/build/share/teo-head:/usr/local/share/speech
+# export YARP_DATA_DIRS=$HOME/repos/vision/build/share/vision:/usr/local/share/speech
 \endverbatim
 
 Our software integrates the previous dependencies. Note that you will be prompted for your password upon using '''sudo''' a couple of times:
@@ -88,8 +88,8 @@ Our software integrates the previous dependencies. Note that you will be prompte
 \verbatim
 cd  # go home
 mkdir -p repos; cd repos  # make $HOME/repos if it doesn't exist; then, enter it
-git clone https://github.com/roboticslab-uc3m/teo-head.git  # Download teo-head software from the repository
-cd teo-head; mkdir build; cd build; cmake ..  # Configure the teo-head software
+git clone https://github.com/roboticslab-uc3m/vision.git  # Download vision software from the repository
+cd vision; mkdir build; cd build; cmake ..  # Configure the vision software
 make  # Compile
 sudo make install  # Install :-)
 \endverbatim
@@ -97,12 +97,12 @@ sudo make install  # Install :-)
 For additional TEO options use ccmake instead of cmake.
 
 Done! You are now probably interested in one of the following links:
-  \li \ref teo_head_post_install
-  \li \ref teo_head_environment_variables
+  \li \ref vision_post_install
+  \li \ref vision_environment_variables
 
 <hr>
 
-This page can be edited at teo-head/doc/teo_head_install_on_ubuntu_15_04.dox.
+This page can be edited at vision/doc/vision_install_on_ubuntu_15_04.dox.
 
 *
 */
