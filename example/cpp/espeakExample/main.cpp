@@ -16,7 +16,7 @@
  *
  * <b>Building</b>
 \verbatim
-cd $TEO_HEAD_ROOT/example/cpp
+cd $VISION_ROOT/example/cpp
 mkdir build; cd build; cmake ..
 make -j3
 \endverbatim
