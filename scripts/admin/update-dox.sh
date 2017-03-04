@@ -5,10 +5,10 @@
 # crontab -e
 # 30 2 * * * /your/command
 
-echo "Update teo-head..."
-cd $HOME/teo-head
+echo "Update vision..."
+cd $HOME/vision
 git pull
-echo "Doxy teo-head..."
+echo "Doxy vision..."
 cd doc
 rm -r html
 /usr/bin/doxygen

@@ -11,7 +11,7 @@ if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-project(head)
+project(vision)
 
 ### options: cpp libraries
 option(ENABLE_HeadYarp "Choose if you want to compile HeadYarp" TRUE)
@@ -40,7 +40,7 @@ endif(MSVC)
 
 ######################
 
-### this makes everything go in $TEO_HEAD_DIR/lib and $TEO_HEAD_DIR/bin
+### this makes everything go in $VISION_DIR/lib and $VISION_DIR/bin
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 message(STATUS "Libraries go to ${LIBRARY_OUTPUT_PATH}")
@@ -56,25 +56,25 @@ mark_as_advanced(CMAKE_BACKWARDS_COMPATIBILITY)
 ##########################################
 
 # Pick up our cmake modules - they are all in the cmake subdirectory
-set(TEO_HEAD_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+set(VISION_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-#set_property(GLOBAL PROPERTY TEO_HEAD_INCLUDE_DIRS)
-#set_property(GLOBAL PROPERTY TEO_HEAD_LINK_DIRS)
-#set_property(GLOBAL PROPERTY TEO_HEAD_LIBRARIES)
-#set_property(GLOBAL PROPERTY TEO_HEAD_TARGETS)
-set(TEO_HEAD_INCLUDE_DIRS CACHE INTERNAL "appended header dirs" FORCE)
-set(TEO_HEAD_LINK_DIRS CACHE INTERNAL "appended link dirs" FORCE)
-set(TEO_HEAD_LIBRARIES CACHE INTERNAL "appended libraries" FORCE)
+#set_property(GLOBAL PROPERTY VISION_INCLUDE_DIRS)
+#set_property(GLOBAL PROPERTY VISION_LINK_DIRS)
+#set_property(GLOBAL PROPERTY VISION_LIBRARIES)
+#set_property(GLOBAL PROPERTY VISION_TARGETS)
+set(VISION_INCLUDE_DIRS CACHE INTERNAL "appended header dirs" FORCE)
+set(VISION_LINK_DIRS CACHE INTERNAL "appended link dirs" FORCE)
+set(VISION_LIBRARIES CACHE INTERNAL "appended libraries" FORCE)
 
 # add main contents
 add_subdirectory(share)
 add_subdirectory(libraries)
 add_subdirectory(programs)
 
-# export our variables to a TEO_HEADConfig.cmake creation
-set(TEO_HEAD_LINK_DIRS ${TEO_HEAD_LINK_DIRS} ${LIBRARY_OUTPUT_PATH})
-configure_file(${CMAKE_SOURCE_DIR}/cmake/template/TEO_HEADConfig.cmake.in
-               ${CMAKE_BINARY_DIR}/TEO_HEADConfig.cmake @ONLY)
+# export our variables to a VISIONConfig.cmake creation
+set(VISION_LINK_DIRS ${VISION_LINK_DIRS} ${LIBRARY_OUTPUT_PATH})
+configure_file(${CMAKE_SOURCE_DIR}/cmake/template/VISIONConfig.cmake.in
+               ${CMAKE_BINARY_DIR}/VISIONConfig.cmake @ONLY)
 
 # create a symbolic link to the shared directory (as contains models and may be heavy)
 # If you want a deep copy, you can use the copy_directory command instead of create_symlink.
@@ -85,13 +85,13 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/template/TEO_HEADConfig.cmake.in
 ##  "${CMAKE_COMMAND}" -E "remove_directory" "${CMAKE_SOURCE_DIR}/bin" ";"
 ##  "${CMAKE_COMMAND}" -E "remove_directory" "${CMAKE_SOURCE_DIR}/lib")
 
-#MESSAGE("\nDon't forget to set: " ${CMAKE_BINARY_DIR} " as your \${TEO_HEAD_DIR} !!!\n")
+#MESSAGE("\nDon't forget to set: " ${CMAKE_BINARY_DIR} " as your \${VISION_DIR} !!!\n")
 
 # uninstall target
 configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/template/TEO_HEADConfigUninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/TEO_HEADConfigUninstall.cmake" IMMEDIATE @ONLY)
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/template/VISIONConfigUninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/VISIONConfigUninstall.cmake" IMMEDIATE @ONLY)
 
 add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/TEO_HEADConfigUninstall.cmake)
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/VISIONConfigUninstall.cmake)
 
