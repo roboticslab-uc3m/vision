@@ -9,7 +9,7 @@ First of all, you have to know that you need two files. These are the language m
 For more information, you can check this [link](http://cmusphinx.sourceforge.net/wiki/tutoriallm) about how to build a new Language Model.
 If you want to know information about LMs and DIC files and other things, you can check this [link](http://www.speech.cs.cmu.edu/sphinx/doc/sphinx-FAQ.html).
 
-In order to build the dictionary file (dic) you can add the words manually that you need, using this [file]( teo-head/share/speechRecognition/conf/dictionary/es-20k.dic ) as reference.
+In order to build the dictionary file (dic) you can add the words manually that you need, using this [file]( vision/share/speechRecognition/conf/dictionary/es-20k.dic ) as reference.
 You only have to copy the words with the respective secuence of phones to the file .dic that we want to extend.
 A word example: **convocar k o n b o k a r **
 
@@ -40,4 +40,4 @@ cd /home/tools/user/srilm/bin/[your_machine_type]/
 ./ngram-count -wbdiscount -text follow-me-spanish.txt -lm follow-me-spanish.lm
 ```
 Now, you will have the LM file. Remember to copy and replace the old dictionary files located in
- ```/teo-head/share/speechRecognition/conf/dictionary/``` by the newers.
+ ```/vision/share/speechRecognition/conf/dictionary/``` by the newers.

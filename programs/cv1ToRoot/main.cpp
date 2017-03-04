@@ -2,7 +2,7 @@
 
 /**
  *
- * @ingroup teo_head_programs
+ * @ingroup vision_programs
  *
  * \defgroup cv1ToRoot cv1ToRoot
  *
