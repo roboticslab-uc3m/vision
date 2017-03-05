@@ -2,7 +2,7 @@
 
 /**
  *
- * @ingroup teo_head_programs
+ * @ingroup vision_programs
  *
  * \defgroup colorRegionDetection colorRegionDetection
  *
