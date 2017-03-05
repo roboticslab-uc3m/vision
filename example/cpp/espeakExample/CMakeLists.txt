@@ -9,7 +9,7 @@ project(${KEYWORD})
 
 #set(CMAKE_BUILD_TYPE Debug)#RelWithDebInfo)
 FIND_PACKAGE(YARP REQUIRED)
-FIND_PACKAGE(VISION REQUIRED)
+FIND_PACKAGE(ROBOTICSLAB_VISION REQUIRED)
 
 # Search for source code.
 file(GLOB folder_source *.cpp *.cc *.c)
@@ -23,14 +23,14 @@ foreach(header_file ${folder_header})
   include_directories(${p})
 endforeach(header_file ${folder_header})
 
-include_directories(${YARP_INCLUDE_DIRS} ${VISION_INCLUDE_DIRS})
+include_directories(${YARP_INCLUDE_DIRS} ${ROBOTICSLAB_VISION_INCLUDE_DIRS})
 
-link_directories(${VISION_LINK_DIRS})
+link_directories(${ROBOTICSLAB_VISION_LINK_DIRS})
 
 # Set up our main executable.
 if (folder_source)
   add_executable(${KEYWORD} ${folder_source} ${folder_header})
-  target_link_libraries(${KEYWORD} ${YARP_LIBRARIES} ${VISION_LIBRARIES})
+  target_link_libraries(${KEYWORD} ${YARP_LIBRARIES} ${ROBOTICSLAB_VISION_LIBRARIES})
   install(TARGETS ${KEYWORD} DESTINATION bin )
 else (folder_source)
   message(FATAL_ERROR "No source code files found. Please add something")
