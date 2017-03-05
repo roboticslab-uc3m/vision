@@ -25,7 +25,7 @@ sudo make install  # Install :-)
 
 You may want to (from the same build dir):
 ```bash
-echo "export VISION_DIR=`pwd`" >> ~/.bashrc
+echo "export ROBOTICSLAB_VISION_DIR=`pwd`" >> ~/.bashrc
 ```
 
 For additional VISION options use ccmake instead of cmake.

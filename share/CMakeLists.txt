@@ -6,9 +6,9 @@
 find_package(YARP REQUIRED)
 list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
 include(YarpInstallationHelpers)
-yarp_configure_external_installation(vision)
+yarp_configure_external_installation(roboticslab-vision)
 
-yarp_install(FILES ymanager.ini DESTINATION ${VISION_DATA_INSTALL_DIR})  # Cleaner than ${VISION_ROBOTS_INSTALL_DIR}/../ or similar.
+yarp_install(FILES ymanager.ini DESTINATION ${ROBOTICSLAB-VISION_DATA_INSTALL_DIR})  # Cleaner than ${ROBOTICSLAB-VISION_ROBOTS_INSTALL_DIR}/../ or similar.
 
 ### Go through single applications
 
