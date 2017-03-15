@@ -2,13 +2,13 @@
 
 ### Install the Software dependencies:
 
-- [Install PCL](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_pcl.md)
-- [Install OpenNI2 & NiTE2](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_openni_nite.md)
-- [Install Yarp and OpenNI2DeviceServer](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_yarp.md)
-- [Install KDL](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_kdl.md)
-- [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_opencv.md)
-- [Install MBROLA VOICES](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_mbrola.md)
-- [Install Speech Recognition](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install_speech_recognition.md)
+- [Install PCL](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-pcl.md)
+- [Install OpenNI2 & NiTE2](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-openni-nite.md)
+- [Install Yarp and OpenNI2DeviceServer](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-yarp.md)
+- [Install KDL](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-kdl.md)
+- [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-opencv.md)
+- [Install MBROLA VOICES](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-mbrola.md)
+- [Install Speech Recognition](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-speech-recognition.md)
 
 ### Install the Software on Ubuntu (working on all tested versions)
 
