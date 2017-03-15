@@ -6,7 +6,7 @@ Link to Doxygen generated documentation: http://robots.uc3m.es/dox-vision
 
 ## Installation
 
-Installation instructions for installing from source can be found [here]( doc/vision_install.md ).
+Installation instructions for installing from source can be found [here]( doc/vision-install.md ).
 
 ## Contributing
 
