@@ -27,7 +27,7 @@ install:
   - sudo apt-get install git libusb-1.0-0-dev libudev-dev
   - sudo apt-get install openjdk-6-jdk  # if not using other java version
   - sudo apt-get install freeglut3-dev
-  - git clone https://github.com/OpenNI2/OpenNI2.git
+  - git clone https://github.com/occipital/OpenNI2.git
   - cd OpenNI2 && make
   - sudo ln -s $PWD/Bin/x64-Release/libOpenNI2.so /usr/local/lib/
   - sudo ln -s $PWD/Bin/x64-Release/OpenNI2/ /usr/local/lib/
