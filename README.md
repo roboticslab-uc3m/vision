@@ -1,12 +1,12 @@
 [![Vision Homepage](https://img.shields.io/badge/vision-orange.svg)](http://robots.uc3m.es/dox-vision) [![Latest Release](https://img.shields.io/github/tag/roboticslab-uc3m/vision.svg?label=Latest Release)](https://github.com/roboticslab-uc3m/vision/tags)
 
-Source code intended for the head PC that the TEO humanoid robot uses.
+Vision processing.
 
 Link to Doxygen generated documentation: http://robots.uc3m.es/dox-vision
 
 ## Installation
 
-Installation instructions for installing from source can be found [here](http://robots.uc3m.es/dox-vision/vision_install_on_ubuntu_15_04.html).
+Installation instructions for installing from source can be found [here]( doc/vision-install.md ).
 
 ## Contributing
 
@@ -23,10 +23,19 @@ Installation instructions for installing from source can be found [here](http://
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
+#### Manuals
+1. Read [development manual](https://github.com/roboticslab-uc3m/vision/blob/develop/doc/vision-development-manual.md) if you want to build a new language model
+
 ## Status
 
-[![Build Status (Linux/OSX)](https://img.shields.io/travis/roboticslab-uc3m/vision/master.svg?label=Build Status (Linux/OSX))](https://travis-ci.org/roboticslab-uc3m/vision)
+[![Build Status (Linux/OSX)](https://travis-ci.org/roboticslab-uc3m/vision.svg?branch=master)](https://travis-ci.org/roboticslab-uc3m/vision)
 
 [![Coverage Status](https://coveralls.io/repos/roboticslab-uc3m/vision/badge.svg)](https://coveralls.io/r/roboticslab-uc3m/vision)
 
 [![Issues](https://img.shields.io/github/issues/roboticslab-uc3m/vision.svg?label=Issues)](https://github.com/roboticslab-uc3m/vision/issues)
+
+## Links of interest:
+
+* [kinematics-dynamics](https://github.com/roboticslab-uc3m/kinematics-dynamics)
+* [yarp-devices](https://github.com/roboticslab-uc3m/yarp-devices)
+

@@ -1,5 +1,5 @@
-# Copyright: Universidad Carlos III de Madrid (C) 2013;
-# Authors: Juan G. Victores
+# Copyright: Universidad Carlos III de Madrid (C) 2017;
+# Authors: Juan G. Victores & Raul de Santos Rico
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
 # Exploit new cmake 2.6 features (export). 
@@ -13,12 +13,16 @@ endif(COMMAND cmake_policy)
 
 project(roboticslab_vision)
 
+set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "hide this!")
+
 ### options: cpp libraries
 option(ENABLE_HeadYarp "Choose if you want to compile HeadYarp" TRUE)
+option(ENABLE_Espeak "Choose if you want to install Espeak" TRUE)
 
-### options: cpp modules
+### options: cpp programs
 option(ENABLE_colorRegionDetection "Choose if you want to compile colorRegionDetection" TRUE)
 option(ENABLE_haarDetection "Choose if you want to compile haarDetection" TRUE)
+option(ENABLE_voxelOccupancyDetection "Choose if you want to compile voxelOccupancyDetection" TRUE)
 option(ENABLE_cv1ToRoot "Choose if you want to compile cv1ToRoot" TRUE)
 option(ENABLE_multipleDump "Choose if you want to compile multipleDump" TRUE)
 option(ENABLE_speechRecognition "Choose if you want to install speechRecognition" TRUE)
@@ -57,6 +61,8 @@ mark_as_advanced(CMAKE_BACKWARDS_COMPATIBILITY)
 
 # Pick up our cmake modules - they are all in the cmake subdirectory
 set(ROBOTICSLAB_VISION_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+# let cmake use them
+list(APPEND CMAKE_MODULE_PATH ${ROBOTICSLAB_VISION_MODULE_PATH})
 
 #set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_INCLUDE_DIRS)
 #set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_LINK_DIRS)

@@ -167,7 +167,7 @@ void SegmentorThread::run() {
 
             output.addDouble( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
             output.addDouble( mmY_tmp );    // Points down.
-            output.addDouble( mmZ_tmp );    // oints forward.
+            output.addDouble( mmZ_tmp );    // Points forward.
         }
         else
         {

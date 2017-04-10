@@ -2,9 +2,9 @@
 
 cmake_minimum_required(VERSION 2.6)
 
-IF (ENABLE_haarDetection)
+IF (ENABLE_voxelOccupancyDetection)
 
-set(KEYWORD "haarDetection")
+set(KEYWORD "voxelOccupancyDetection")
 
 # Find OpenCV.
 find_package(OpenCV REQUIRED)
@@ -24,7 +24,7 @@ foreach(header_file ${folder_header})
 endforeach(header_file ${folder_header})
 
 # Inclue any directories needed for YARP
-include_directories(${YARP_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} /usr/local/include/NiTE-Linux-x64-2.2 /usr/local/include/OpenNI2)
+include_directories(${YARP_INCLUDE_DIRS} /usr/local/include/NiTE-Linux-x64-2.2 /usr/local/include/OpenNI2)
 
 # Set up our main executable.
 if (folder_source)
@@ -35,5 +35,5 @@ else (folder_source)
   message(FATAL_ERROR "No source code files found. Please add something")
 endif (folder_source)
 
-ENDIF (ENABLE_haarDetection)
+ENDIF (ENABLE_voxelOccupancyDetection)
 

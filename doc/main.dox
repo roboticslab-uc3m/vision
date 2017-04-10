@@ -3,7 +3,7 @@
 
 Welcome to the TEO Software Repository documentation for the head PC. <a class=el href="http://robots.uc3m.es">Click here to return to Wiki.</a> <a class=el href="https://github.com/roboticslab-uc3m/vision">Click here to see vision on repo.</a>
 
- \li \ref vision_install_on_ubuntu_15_04
+ \li <a class=el href="https://github.com/roboticslab-uc3m/vision/blob/develop/doc/vision-install.md">Vision install</a>
 
 Other internal links of interest:
  \li \ref vision_programs
