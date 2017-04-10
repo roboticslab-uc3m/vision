@@ -23,8 +23,10 @@ foreach(header_file ${folder_header})
   include_directories(${p})
 endforeach(header_file ${folder_header})
 
+message("--------.....${OpenCV_INCLUDE_DIRS}---------")
+
 # Inclue any directories needed for YARP
-include_directories(${YARP_INCLUDE_DIRS} /usr/local/include/NiTE-Linux-x64-2.2 /usr/local/include/OpenNI2)
+include_directories(${YARP_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} /usr/local/include/NiTE-Linux-x64-2.2 /usr/local/include/OpenNI2)
 
 # Set up our main executable.
 if (folder_source)
