@@ -1,3 +1,7 @@
+language: cpp
+dist: trusty
+sudo: required
+
 os:
   - linux
 
@@ -9,8 +13,8 @@ compiler:
   - clang
 
 before_install:
-  - sudo add-apt-repository --yes ppa:kalakris/cmake
-  - sudo apt-get update -qq  # -qq No output except for errors
+  #- sudo add-apt-repository --yes ppa:kalakris/cmake
+  #- sudo apt-get update -qq  # -qq No output except for errors
 
 install:
   #-- Install opencv
