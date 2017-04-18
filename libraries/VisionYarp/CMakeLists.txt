@@ -14,7 +14,7 @@ IF (ENABLE_VisionYarp)
   include(YarpPlugin)
 
 #  yarp_begin_plugin_library(VisionYarp)
-   add_subdirectory(Espeak)
+#   add_subdirectory(Espeak)
 #  yarp_end_plugin_library(VisionYarp)
 
 #  install(TARGETS VisionYarp DESTINATION lib)
