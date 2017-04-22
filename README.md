@@ -1,4 +1,4 @@
-[![Vision Homepage](https://img.shields.io/badge/vision-orange.svg)](http://robots.uc3m.es/dox-vision) [![Latest Release](https://img.shields.io/github/tag/roboticslab-uc3m/vision.svg?label=Latest%20Release)](https://github.com/roboticslab-uc3m/vision/tags)
+[![Vision Homepage](https://img.shields.io/badge/roboticslab-vision-orange.svg)](http://robots.uc3m.es/dox-vision) [![Latest Release](https://img.shields.io/github/tag/roboticslab-uc3m/vision.svg?label=Latest%20Release)](https://github.com/roboticslab-uc3m/vision/tags)
 
 Vision processing.
 
@@ -28,7 +28,7 @@ Installation instructions for installing from source can be found [here]( doc/vi
 
 ## Status
 
-[![Build Status (Linux/OSX)](https://travis-ci.org/roboticslab-uc3m/vision.svg?branch=master)](https://travis-ci.org/roboticslab-uc3m/vision)
+[![Build Status (Linux/OSX)](https://travis-ci.org/roboticslab-uc3m/vision.svg?branch=develop)](https://travis-ci.org/roboticslab-uc3m/vision)
 
 [![Coverage Status](https://coveralls.io/repos/roboticslab-uc3m/vision/badge.svg)](https://coveralls.io/r/roboticslab-uc3m/vision)
 
