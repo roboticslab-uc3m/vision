@@ -14,5 +14,5 @@ yarp_install(FILES ymanager.ini DESTINATION ${ROBOTICSLAB-VISION_DATA_INSTALL_DI
 
 add_subdirectory(colorRegionDetection)
 add_subdirectory(haarDetection)
-add_subdirectory(pointAtObject)
+#add_subdirectory(pointAtObject)  # never had a cmake
 
