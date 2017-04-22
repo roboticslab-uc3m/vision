@@ -1,0 +1,25 @@
+<application>
+<name>pointAtObject App</name>
+        <module>
+                <name>pointAtObjectServer</name>
+                <node>localhost</node>
+        </module>
+        <module>
+                <name>premultH</name>
+                <node>localhost</node>
+                <parameters>--context pointAtObject/conf</parameters>
+        </module>
+
+        <connection>
+                <from>/kinect/skeleton</from>
+                <to>/in</to>
+                <protocol>udp</protocol>
+        </connection>
+        <connection>
+                <from>/out</from>
+                <to>/pointAtObject:i</to>
+                <protocol>udp</protocol>
+        </connection>
+
+</application>
+
