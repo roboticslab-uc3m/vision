@@ -16,8 +16,7 @@ project(roboticslab_vision)
 set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "hide this!")
 
 ### options: cpp libraries
-option(ENABLE_HeadYarp "Choose if you want to compile HeadYarp" TRUE)
-option(ENABLE_Espeak "Choose if you want to install Espeak" TRUE)
+option(ENABLE_VisionYarp "Choose if you want to compile HeadYarp" TRUE)
 
 ### options: cpp programs
 option(ENABLE_colorRegionDetection "Choose if you want to compile colorRegionDetection" TRUE)
@@ -26,7 +25,6 @@ option(ENABLE_voxelOccupancyDetection "Choose if you want to compile voxelOccupa
 option(ENABLE_cv1ToRoot "Choose if you want to compile cv1ToRoot" TRUE)
 option(ENABLE_multipleDump "Choose if you want to compile multipleDump" TRUE)
 option(ENABLE_speechRecognition "Choose if you want to install speechRecognition" TRUE)
-option(ENABLE_textToSpeech "Choose if you want to install textToSpeech" FALSE)
 
 if(MSVC)
   MESSAGE(STATUS "Running on windows")
