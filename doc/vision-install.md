@@ -7,8 +7,6 @@
 - [Install Yarp and OpenNI2DeviceServer](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-yarp.md)
 - [Install KDL](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-kdl.md)
 - [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-opencv.md)
-- [Install MBROLA VOICES](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-mbrola.md)
-- [Install Speech Recognition](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-speech-recognition.md)
 
 ### Install the Software on Ubuntu (working on all tested versions)
 

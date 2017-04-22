@@ -1,4 +1,4 @@
-[![Vision Homepage](https://img.shields.io/badge/vision-orange.svg)](http://robots.uc3m.es/dox-vision) [![Latest Release](https://img.shields.io/github/tag/roboticslab-uc3m/vision.svg?label=Latest Release)](https://github.com/roboticslab-uc3m/vision/tags)
+[![Vision Homepage](https://img.shields.io/badge/vision-orange.svg)](http://robots.uc3m.es/dox-vision) [![Latest Release](https://img.shields.io/github/tag/roboticslab-uc3m/vision.svg?label=Latest%20Release)](https://github.com/roboticslab-uc3m/vision/tags)
 
 Vision processing.
 
