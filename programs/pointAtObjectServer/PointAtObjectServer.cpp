@@ -93,7 +93,11 @@ void PointAtObjectServer::makeFloorActor(vtkActor* _floorActor) {
 
     // Maps to graphics library
     vtkPolyDataMapper *floorMapper = vtkPolyDataMapper::New();
+#if VTK_MAJOR_VERSION <= 5
+    floorMapper->SetInput(linesPolyData);
+#else
     floorMapper->SetInputData(linesPolyData);
+#endif
 
     // Actor coordinates geometry, properties, transformation
     _floorActor->SetMapper(floorMapper);

@@ -26,6 +26,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 #include <vtkTransform.h>
+#include <vtkVersion.h>
 
 #include "yarp/os/Network.h"
 
