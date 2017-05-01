@@ -2,11 +2,11 @@
 
 ### Install the Software dependencies:
 
-- [Install PCL](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-pcl.md)
-- [Install OpenNI2 & NiTE2](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-openni-nite.md)
-- [Install Yarp and OpenNI2DeviceServer](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-yarp.md)
-- [Install KDL](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-kdl.md)
-- [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/develop/install-opencv.md)
+- [Install PCL with VTK >= 5](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-pcl.md)
+- [Install OpenNI2 & NiTE2](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-openni-nite.md)
+- [Install Yarp and OpenNI2DeviceServer](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-yarp.md)
+- [Install KDL](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-kdl.md)
+- [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-opencv.md)
 
 ### Install the Software on Ubuntu (working on all tested versions)
 
