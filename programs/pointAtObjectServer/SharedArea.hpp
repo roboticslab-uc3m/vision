@@ -1,6 +1,8 @@
 #ifndef __SHARED_AREA_HPP__
 #define __SHARED_AREA_HPP__
 
+#include <stdio.h>
+
 #include <yarp/os/Semaphore.h>
 #include <yarp/sig/Vector.h>
 

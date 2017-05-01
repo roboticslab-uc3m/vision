@@ -1,5 +1,4 @@
 #include "SharedArea.hpp"
-#include <stdio.h>
 
 namespace teo {
 

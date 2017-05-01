@@ -26,8 +26,6 @@
 #include <vtkTransform.h>
 #include <vtkVersion.h>
 
-#include "yarp/os/Network.h"
-
 #include "SharedArea.hpp"
 #include "LineCallbackPort.hpp"
 #include "vtkTimerCallback.hpp"

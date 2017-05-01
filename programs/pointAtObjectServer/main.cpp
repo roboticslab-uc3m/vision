@@ -1,3 +1,5 @@
+#include <yarp/os/Network.h>
+
 #include "PointAtObjectServer.hpp"
 
 int main(int argc, char *argv[])
