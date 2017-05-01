@@ -348,7 +348,7 @@ void vtkTimerCallback::objectSegmentation( pcl::PointCloud<pcl::PointXYZ>::Ptr& 
 
         // [object] map to graphics library
         vtkSmartPointer<vtkPolyDataMapper> objectMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-        objectMapper->SetInput(object);
+        objectMapper->SetInputData(object);
 
         // [object] actor coordinates geometry, properties, transformation
         vtkSmartPointer<vtkActor> objectActor = vtkSmartPointer<vtkActor>::New();
