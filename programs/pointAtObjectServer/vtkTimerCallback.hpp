@@ -1,5 +1,3 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
-
 #ifndef __VTK_TIMER_CALLBACK_HPP__
 #define __VTK_TIMER_CALLBACK_HPP__
 

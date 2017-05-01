@@ -1,5 +1,3 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
-
 #ifndef __SHARED_AREA_HPP__
 #define __SHARED_AREA_HPP__
 
