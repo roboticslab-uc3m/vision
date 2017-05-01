@@ -124,7 +124,12 @@ void vtkTimerCallback::makeLineActor(vtkActor* _lineActor) {
 
     // Map to graphics library
     vtkSmartPointer<vtkPolyDataMapper> lineMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+
+#if VTK_MAJOR_VERSION <= 5
+    lineMapper->SetInput(lineSource->GetOutput());
+#else
     lineMapper->SetInputConnection(lineSource->GetOutputPort());
+#endif
 
     // Actor coordinates geometry, properties, transformation
     _lineActor->SetMapper(lineMapper);
@@ -149,7 +154,11 @@ void vtkTimerCallback::makeCloudActor(vtkActor* _cloudActor) {
     cloud_vtkPD = vtkSmartPointer<vtkPolyData>::New();
     convertPointCloudToVTKPolyData ( *cloud, cloud_vtkPD);
     vtkSmartPointer<vtkPolyDataMapper> cloudMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+#if VTK_MAJOR_VERSION <= 5
+    cloudMapper->SetInput(cloud_vtkPD);
+#else
     cloudMapper->SetInputData(cloud_vtkPD);
+#endif
     _cloudActor->SetMapper(cloudMapper);
     _cloudActor->GetProperty()->SetColor(1,1,1);  // Cloud color white
 }
@@ -159,7 +168,11 @@ void vtkTimerCallback::makeFilteredCloudActor(vtkActor* _filteredCloudActor) {
     cloud_filtered_vtkPD = vtkSmartPointer<vtkPolyData>::New();
     convertPointCloudToVTKPolyData ( *cloud_filtered, cloud_filtered_vtkPD);
     vtkSmartPointer<vtkPolyDataMapper> filteredCloudMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+#if VTK_MAJOR_VERSION <= 5
+    filteredCloudMapper->SetInput(cloud_filtered_vtkPD);
+#else
     filteredCloudMapper->SetInputData(cloud_filtered_vtkPD);
+#endif
     _filteredCloudActor->SetMapper(filteredCloudMapper);
     _filteredCloudActor->GetProperty()->SetColor(1,1,1);  // Cloud color white
 }
@@ -348,7 +361,11 @@ void vtkTimerCallback::objectSegmentation( pcl::PointCloud<pcl::PointXYZ>::Ptr& 
 
         // [object] map to graphics library
         vtkSmartPointer<vtkPolyDataMapper> objectMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+#if VTK_MAJOR_VERSION <= 5
+        objectMapper->SetInput(object);
+#else
         objectMapper->SetInputData(object);
+#endif
 
         // [object] actor coordinates geometry, properties, transformation
         vtkSmartPointer<vtkActor> objectActor = vtkSmartPointer<vtkActor>::New();
