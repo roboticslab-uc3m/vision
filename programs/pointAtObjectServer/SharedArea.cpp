@@ -3,7 +3,7 @@
 #include "SharedArea.hpp"
 #include <stdio.h>
 
-namespace pointatobject {
+namespace teo {
 
 /************************************************************************/
 void SharedArea::init() {
@@ -53,5 +53,5 @@ void SharedArea::getLongLC(double _longLineCoords[6]) {
 }
 
 /************************************************************************/
-}  // pointatobject
+}  // teo
 

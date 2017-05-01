@@ -2,7 +2,7 @@
 
 #include "PointAtObjectServer.hpp"
 
-using namespace pointatobject;
+using namespace teo;
 
 int main(int argc, char *argv[]) {
 

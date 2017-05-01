@@ -34,7 +34,7 @@
 #include "LineCallbackPort.hpp"
 #include "vtkTimerCallback.hpp"
 
-namespace pointatobject {
+namespace teo {
 
 /**
  * @ingroup PointAtObjectServer
@@ -62,7 +62,7 @@ class PointAtObjectServer {
         bool close();
 };
 
-}  // pointatobject
+}  // teo
 
 #endif  // __POINT_AT_OBJECT_SERVER_HPP__
 

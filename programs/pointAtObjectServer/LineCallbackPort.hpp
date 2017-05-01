@@ -9,7 +9,7 @@
 
 using namespace yarp::os;
 
-namespace pointatobject {
+namespace teo {
 
 class LineCallbackPort : public BufferedPort<Bottle> {
     protected:
@@ -20,7 +20,7 @@ class LineCallbackPort : public BufferedPort<Bottle> {
         void setSharedArea(SharedArea* _sharedArea);
 };
 
-}  // pointatobject
+}  // teo
 
 #endif  // __LINE_CALLBACK_PORT_HPP__
 

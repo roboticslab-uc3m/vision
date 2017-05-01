@@ -9,7 +9,7 @@
 using namespace yarp::os;
 using namespace yarp::sig;
 
-namespace pointatobject {
+namespace teo {
 
 class SharedArea {
     private:
@@ -23,7 +23,7 @@ class SharedArea {
         void getLongLC(double _longLineCoords[6]);
 };
 
-}  // pointatobject
+}  // teo
 
 #endif  // __SHARED_AREA_HPP__
 

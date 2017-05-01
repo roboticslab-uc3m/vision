@@ -2,7 +2,7 @@
 
 #include "PointAtObjectServer.hpp"
 
-namespace pointatobject {
+namespace teo {
 
 /************************************************************************/
 bool PointAtObjectServer::init() {
@@ -105,6 +105,6 @@ void PointAtObjectServer::makeFloorActor(vtkActor* _floorActor) {
 }
 
 /************************************************************************/
-}  // pointatobject
+}  // teo
 
 

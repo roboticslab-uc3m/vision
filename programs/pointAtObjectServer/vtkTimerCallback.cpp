@@ -2,7 +2,7 @@
 
 #include "vtkTimerCallback.hpp"
 
-namespace pointatobject {
+namespace teo {
 
 /************************************************************************/
 void vtkTimerCallback::setSharedArea(SharedArea* _sharedArea) {
@@ -412,5 +412,5 @@ void vtkTimerCallback::convertPointCloudToVTKPolyData (const pcl::PointCloud<pcl
 }
 
 /************************************************************************/
-}  // pointatobject
+}  // teo
 

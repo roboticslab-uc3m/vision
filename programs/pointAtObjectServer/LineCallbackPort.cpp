@@ -2,7 +2,7 @@
 
 #include "LineCallbackPort.hpp"
 
-namespace pointatobject {
+namespace teo {
 
 /************************************************************************/
 void LineCallbackPort::setSharedArea(SharedArea* _sharedArea) {
@@ -40,5 +40,5 @@ void LineCallbackPort::onRead(Bottle& b) {
 }
 
 /************************************************************************/
-}  // pointatobject
+}  // teo
 

@@ -46,7 +46,7 @@
 
 #include "SharedArea.hpp"
 
-namespace pointatobject {
+namespace teo {
 
 /**
  * @ingroup vtkTimerCallback
@@ -107,7 +107,7 @@ class vtkTimerCallback : public vtkCommand {
 
 };
 
-}  // pointatobject
+}  // teo
 
 #endif  // __VTK_TIMER_CALLBACK_HPP__
 
