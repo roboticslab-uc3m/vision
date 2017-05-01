@@ -124,7 +124,12 @@ void vtkTimerCallback::makeLineActor(vtkActor* _lineActor) {
 
     // Map to graphics library
     vtkSmartPointer<vtkPolyDataMapper> lineMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+
+#if VTK_MAJOR_VERSION <= 5
+    lineMapper->SetInput(lineSource->GetOutput());
+#else
     lineMapper->SetInputConnection(lineSource->GetOutputPort());
+#endif
 
     // Actor coordinates geometry, properties, transformation
     _lineActor->SetMapper(lineMapper);

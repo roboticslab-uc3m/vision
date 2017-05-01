@@ -42,6 +42,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
 #include <vtkTransform.h>
+#include <vtkVersion.h>
 
 #include "SharedArea.hpp"
 
