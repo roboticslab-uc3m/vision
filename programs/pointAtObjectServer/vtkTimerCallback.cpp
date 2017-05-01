@@ -159,7 +159,7 @@ void vtkTimerCallback::makeFilteredCloudActor(vtkActor* _filteredCloudActor) {
     cloud_filtered_vtkPD = vtkSmartPointer<vtkPolyData>::New();
     convertPointCloudToVTKPolyData ( *cloud_filtered, cloud_filtered_vtkPD);
     vtkSmartPointer<vtkPolyDataMapper> filteredCloudMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    filteredCloudMapper->SetInput(cloud_filtered_vtkPD);
+    filteredCloudMapper->SetInputData(cloud_filtered_vtkPD);
     _filteredCloudActor->SetMapper(filteredCloudMapper);
     _filteredCloudActor->GetProperty()->SetColor(1,1,1);  // Cloud color white
 }
