@@ -6,15 +6,12 @@
 #include <yarp/os/Semaphore.h>
 #include <yarp/sig/Vector.h>
 
-using namespace yarp::os;
-using namespace yarp::sig;
-
 namespace teo {
 
 class SharedArea {
     private:
         double lineCoords[6];
-        Semaphore lcMutex;
+        yarp::os::Semaphore lcMutex;
 
     public:
         void init();

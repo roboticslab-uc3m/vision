@@ -10,7 +10,7 @@ void LineCallbackPort::setSharedArea(SharedArea* _sharedArea) {
 }
 
 /************************************************************************/
-void LineCallbackPort::onRead(Bottle& b) {
+void LineCallbackPort::onRead(yarp::os::Bottle& b) {
     if (b.size() != 2) {
         fprintf(stderr,"[error] LineCallbackPort currently needs 2 lists to parse.\n");
         return;
@@ -23,7 +23,7 @@ void LineCallbackPort::onRead(Bottle& b) {
             fprintf(stderr,"[error] LineCallbackPort needs elements to be lists to parse\n");
             return;
         }
-        Bottle* inListElement = b.get(i).asList();
+        yarp::os::Bottle* inListElement = b.get(i).asList();
         if(inListElement->size()!=3) {  // case: inListElement is a point 3-vector
             fprintf(stderr,"[error] for now only parsing 3-double lists\n");
             return;  // case: other --> still not implemented

@@ -7,13 +7,11 @@
 
 #include "SharedArea.hpp"
 
-using namespace yarp::os;
-
 namespace teo {
 
-class LineCallbackPort : public BufferedPort<Bottle> {
+class LineCallbackPort : public yarp::os::BufferedPort<yarp::os::Bottle> {
     protected:
-        void onRead(Bottle& b);
+        void onRead(yarp::os::Bottle& b);
         SharedArea* sharedArea;
 
     public:
