@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     yarp::os::Network yarp;
     if (!yarp.checkNetwork()) {
         printf("[fail]\npointAtObjectServer found no yarp network (try running \"yarpserver &\"), bye!\n");
-        return -1;
+        return 1;
     } else printf("[ok]\n");
 
     teo::PointAtObjectServer pointAtObjectServer;
