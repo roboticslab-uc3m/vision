@@ -2,7 +2,7 @@
 
 #include "SegmentorThread.hpp"
 
-namespace teo
+namespace roboticslab
 {
 
 /************************************************************************/
@@ -185,4 +185,4 @@ void SegmentorThread::run() {
 
 }
 
-}  // namespace teo
+}  // namespace roboticslab

@@ -5,7 +5,7 @@
 
 #include "SharedArea.hpp"
 
-namespace teo {
+namespace roboticslab {
 
 class LineCallbackPort : public yarp::os::BufferedPort<yarp::os::Bottle> {
     protected:
@@ -16,7 +16,7 @@ class LineCallbackPort : public yarp::os::BufferedPort<yarp::os::Bottle> {
         void setSharedArea(SharedArea* _sharedArea);
 };
 
-}  // teo
+}  // namespace roboticslab
 
 #endif  // __LINE_CALLBACK_PORT_HPP__
 

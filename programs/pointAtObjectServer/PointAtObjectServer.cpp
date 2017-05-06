@@ -1,6 +1,6 @@
 #include "PointAtObjectServer.hpp"
 
-namespace teo {
+namespace roboticslab {
 
 /************************************************************************/
 bool PointAtObjectServer::init() {
@@ -103,6 +103,6 @@ void PointAtObjectServer::makeFloorActor(vtkActor* _floorActor) {
 }
 
 /************************************************************************/
-}  // teo
+}  // namespace roboticslab
 
 

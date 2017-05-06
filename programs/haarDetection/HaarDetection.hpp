@@ -12,7 +12,7 @@
 #define DEFAULT_WATCHDOG    2       // [s]
 
 
-namespace teo
+namespace roboticslab
 {
 
 /**
@@ -43,7 +43,7 @@ class HaarDetection : public yarp::os::RFModule {
     bool configure(yarp::os::ResourceFinder &rf);
 };
 
-}  // namespace teo
+}  // namespace roboticslab
 
 #endif  // __HAAR_DETECTION_HPP__
 

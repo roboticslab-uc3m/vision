@@ -12,7 +12,7 @@
 #define DEFAULT_WATCHDOG    2       // [s]
 
 
-namespace teo
+namespace roboticslab
 {
 
 /**
@@ -43,7 +43,7 @@ class VoxelOccupancyDetection : public yarp::os::RFModule {
     bool configure(yarp::os::ResourceFinder &rf);
 };
 
-}  // namespace teo
+}  // namespace roboticslab
 
 #endif  // __VOXEL_OCCUPANCY_DETECTION_HPP__
 

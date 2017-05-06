@@ -10,7 +10,7 @@
 #define DEFAULT_WATCHDOG    2       // [s]
 
 
-namespace teo
+namespace roboticslab
 {
 
 /**
@@ -37,7 +37,7 @@ class MultipleDump : public yarp::os::RFModule {
         FILE * filePtr;
 };
 
-}  // namespace teo
+}  // namespace roboticslab
 
 #endif  // __MULTIPLE_DUMP_HPP__
 

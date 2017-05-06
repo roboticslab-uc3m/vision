@@ -2,7 +2,7 @@
 
 #include "SegmentorThread.hpp"
 
-namespace teo
+namespace roboticslab
 {
 
 /************************************************************************/
@@ -436,4 +436,4 @@ void SegmentorThread::run() {
 //      pOutPort->write(output);
     }
 
-}  // namespace teo
+}  // namespace roboticslab

@@ -51,7 +51,7 @@
 #define DEFAULT_HIGH_X_BOX_VALUE 225
 
 
-namespace teo
+namespace roboticslab
 {
 
 /**
@@ -157,7 +157,7 @@ public:
     
 };
 
-}  // namespace teo
+}  // namespace roboticslab
 
 #endif  // __SEGMENTOR_THREAD_HPP__
 

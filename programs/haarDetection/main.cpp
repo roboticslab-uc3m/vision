@@ -6,7 +6,7 @@
  *
  * \defgroup haarDetection haarDetection
  *
- * @brief Creates an instance of teo::HaarDetection.
+ * @brief Creates an instance of roboticslab::HaarDetection.
  *
  * @section haarDetectionOptions HaarDetection options:
  *
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
     rf.setDefaultConfigFile("haarDetection.ini");
     rf.configure(argc, argv);
 
-    teo::HaarDetection mod;
+    roboticslab::HaarDetection mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }
