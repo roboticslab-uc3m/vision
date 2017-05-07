@@ -47,7 +47,7 @@
 #define DEFAULT_THRESHOLD 55
 
 
-namespace teo
+namespace roboticslab
 {
 
 /**
@@ -142,7 +142,7 @@ public:
     
 };
 
-}  // namespace teo
+}  // namespace roboticslab
 
 #endif  // __SEGMENTOR_THREAD_HPP__
 

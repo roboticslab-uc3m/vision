@@ -2,7 +2,7 @@
 
 #include "VoxelOccupancyDetection.hpp"
 
-namespace teo
+namespace roboticslab
 {
 
 /************************************************************************/
@@ -108,4 +108,4 @@ bool VoxelOccupancyDetection::interruptModule() {
 
 /************************************************************************/
 
-}  // namespace teo
+}  // namespace roboticslab

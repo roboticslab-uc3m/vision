@@ -44,7 +44,7 @@
 
 #include "SharedArea.hpp"
 
-namespace teo {
+namespace roboticslab {
 
 /**
  * @ingroup vtkTimerCallback
@@ -105,7 +105,7 @@ class vtkTimerCallback : public vtkCommand {
 
 };
 
-}  // teo
+}  // namespace roboticslab
 
 #endif  // __VTK_TIMER_CALLBACK_HPP__
 

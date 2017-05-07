@@ -6,7 +6,7 @@
  *
  * \defgroup colorRegionDetection colorRegionDetection
  *
- * @brief Creates an instance ---- of teo::ColorRegionDetection.
+ * @brief Creates an instance ---- of roboticslab::ColorRegionDetection.
  *
  * @section colorRegionDetection_options ColorRegionDetection options:
  *
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     rf.setDefaultConfigFile("colorRegionDetection.ini");
     rf.configure(argc, argv);
 
-    teo::ColorRegionDetection mod;
+    roboticslab::ColorRegionDetection mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

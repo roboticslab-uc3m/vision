@@ -1,6 +1,6 @@
 #include "vtkTimerCallback.hpp"
 
-namespace teo {
+namespace roboticslab {
 
 /************************************************************************/
 void vtkTimerCallback::setSharedArea(SharedArea* _sharedArea) {
@@ -410,5 +410,5 @@ void vtkTimerCallback::convertPointCloudToVTKPolyData (const pcl::PointCloud<pcl
 }
 
 /************************************************************************/
-}  // teo
+}  // namespace roboticslab
 

@@ -35,7 +35,7 @@
 #define DEFAULT_XMLCASCADE  "haarcascade_frontalface_alt.xml"
 
 
-namespace teo
+namespace roboticslab
 {
 
 /**
@@ -121,7 +121,7 @@ public:
 
 };
 
-}  // namespace teo
+}  // namespace roboticslab
 
 #endif  // __SEGMENTOR_THREAD_HPP__
 

@@ -11,7 +11,7 @@
 //#include "highgui.h" // to show windows
 
 
-namespace teo
+namespace roboticslab
 {
 
 /**
@@ -279,7 +279,7 @@ void calcArcLength(float& arc, const std::vector <cv::Point> biggestCont );
  */
 void calcCircle(float& radius, const std::vector <cv::Point> biggestCont );
 
-}  // namespace teo
+}  // namespace roboticslab
 
 #endif  // __TRAVIS_LIB_HPP__
 

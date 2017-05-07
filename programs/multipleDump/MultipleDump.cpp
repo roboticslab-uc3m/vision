@@ -2,7 +2,7 @@
 
 #include "MultipleDump.hpp"
 
-namespace teo
+namespace roboticslab
 {
 
 /************************************************************************/
@@ -68,4 +68,4 @@ bool MultipleDump::interruptModule() {
 
 /************************************************************************/
 
-}  // namespace teo
+}  // namespace roboticslab

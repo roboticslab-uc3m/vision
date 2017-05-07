@@ -2,7 +2,7 @@
 
 #include "ColorRegionDetection.hpp"
 
-namespace teo
+namespace roboticslab
 {
 
 /************************************************************************/
@@ -108,4 +108,4 @@ bool ColorRegionDetection::interruptModule() {
 
 /************************************************************************/
 
-}  // namespace teo
+}  // namespace roboticslab

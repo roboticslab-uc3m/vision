@@ -1,6 +1,6 @@
 #include "LineCallbackPort.hpp"
 
-namespace teo {
+namespace roboticslab {
 
 /************************************************************************/
 void LineCallbackPort::setSharedArea(SharedArea* _sharedArea) {
@@ -38,5 +38,5 @@ void LineCallbackPort::onRead(yarp::os::Bottle& b) {
 }
 
 /************************************************************************/
-}  // teo
+}  // namespace roboticslab
 
