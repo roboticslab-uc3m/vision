@@ -6,7 +6,7 @@
  *
  * \defgroup voxelOccupancyDetection voxelOccupancyDetection
  *
- * @brief Creates an instance ---- of teo::VoxelOccupancyDetection.
+ * @brief Creates an instance ---- of roboticslab::VoxelOccupancyDetection.
  *
  * @section voxelOccupancyDetection_options VoxelOccupancyDetection options:
  *
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     rf.setDefaultConfigFile("voxelOccupancyDetection.ini");
     rf.configure(argc, argv);
 
-    teo::VoxelOccupancyDetection mod;
+    roboticslab::VoxelOccupancyDetection mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

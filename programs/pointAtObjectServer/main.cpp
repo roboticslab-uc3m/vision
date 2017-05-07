@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
         return 1;
     } else printf("[ok]\n");
 
-    teo::PointAtObjectServer pointAtObjectServer;
+    roboticslab::PointAtObjectServer pointAtObjectServer;
     pointAtObjectServer.init();  // init() is a blocking function
     pointAtObjectServer.close();
 

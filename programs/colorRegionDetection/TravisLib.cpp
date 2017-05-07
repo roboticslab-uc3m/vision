@@ -2,7 +2,7 @@
 
 #include "TravisLib.hpp"
 
-namespace teo
+namespace roboticslab
 {
 
 /************************************************************************/
@@ -734,5 +734,5 @@ void calcCircle(float& radius, const std::vector <cv::Point> biggestCont ){
     radius=rad;
 }
 
-}  // namespace teo
+}  // namespace roboticslab
 

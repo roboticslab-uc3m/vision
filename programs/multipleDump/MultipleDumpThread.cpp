@@ -2,7 +2,7 @@
 
 #include "MultipleDumpThread.hpp"
 
-namespace teo
+namespace roboticslab
 {
 
 /************************************************************************/
@@ -61,4 +61,4 @@ void MultipleDumpThread::setIn2(yarp::os::BufferedPort<yarp::os::Bottle> *value)
 
 /************************************************************************/
 
-}  // namespace teo
+}  // namespace roboticslab

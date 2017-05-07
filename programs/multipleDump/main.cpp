@@ -6,7 +6,7 @@
  *
  * \defgroup multipleDump multipleDump
  *
- * @brief Creates an instance of teo::MultipleDump.
+ * @brief Creates an instance of roboticslab::MultipleDump.
  */
 
 #include "MultipleDump.hpp"
@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     rf.setDefaultConfigFile("multipleDump.ini");
     rf.configure(argc, argv);
 
-    teo::MultipleDump mod;
+    roboticslab::MultipleDump mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

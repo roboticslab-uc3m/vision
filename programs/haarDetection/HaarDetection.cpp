@@ -2,7 +2,7 @@
 
 #include "HaarDetection.hpp"
 
-namespace teo
+namespace roboticslab
 {
 
 /************************************************************************/
@@ -109,4 +109,4 @@ bool HaarDetection::interruptModule() {
 
 /************************************************************************/
 
-}  // namespace teo
+}  // namespace roboticslab

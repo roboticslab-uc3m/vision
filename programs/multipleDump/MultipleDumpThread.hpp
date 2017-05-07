@@ -15,7 +15,7 @@
 #define DEFAULT_RATE_MS 20
 
 
-namespace teo
+namespace roboticslab
 {
 
 /**
@@ -45,7 +45,7 @@ protected:
 
 };
 
-}  // namespace teo
+}  // namespace roboticslab
 
 #endif  // __MULTIPLE_DUMP_THREAD_HPP__
 

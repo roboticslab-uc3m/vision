@@ -1,6 +1,6 @@
 #include "SharedArea.hpp"
 
-namespace teo {
+namespace roboticslab {
 
 /************************************************************************/
 void SharedArea::init() {
@@ -50,5 +50,5 @@ void SharedArea::getLongLC(double _longLineCoords[6]) {
 }
 
 /************************************************************************/
-}  // teo
+}  // namespace roboticslab
 

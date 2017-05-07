@@ -6,7 +6,7 @@
 #include <yarp/os/Semaphore.h>
 #include <yarp/sig/Vector.h>
 
-namespace teo {
+namespace roboticslab {
 
 class SharedArea {
     private:
@@ -20,7 +20,7 @@ class SharedArea {
         void getLongLC(double _longLineCoords[6]);
 };
 
-}  // teo
+}  // namespace roboticslab
 
 #endif  // __SHARED_AREA_HPP__
 
