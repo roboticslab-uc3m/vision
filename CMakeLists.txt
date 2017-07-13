@@ -24,7 +24,6 @@ option(ENABLE_haarDetection "Choose if you want to compile haarDetection" TRUE)
 option(ENABLE_voxelOccupancyDetection "Choose if you want to compile voxelOccupancyDetection" TRUE)
 option(ENABLE_multipleDump "Choose if you want to compile multipleDump" TRUE)
 option(ENABLE_pointAtObjectServer "Choose if you want to compile pointAtObjectServer" TRUE)
-option(ENABLE_speechRecognition "Choose if you want to install speechRecognition" TRUE)
 
 if(MSVC)
   MESSAGE(STATUS "Running on windows")
