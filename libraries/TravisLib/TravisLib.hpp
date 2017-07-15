@@ -10,13 +10,16 @@
 #include "opencv2/imgproc/imgproc.hpp"
 //#include "highgui.h" // to show windows
 
+/**
+ * @ingroup vision_libraries
+ * @defgroup TravisLib
+ */
 
 namespace roboticslab
 {
 
 /**
- * @ingroup colorRegionDetection
- *
+ * @ingroup TravisLib
  * @brief The Travis class implements all the algorithms on a single image.
  */
 class Travis {
