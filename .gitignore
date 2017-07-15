@@ -3,5 +3,7 @@
 *.orig
 tags
 CMakeLists.txt.user
-/build*/
+**/build*/
 doc/html
+/.project
+/.cproject
