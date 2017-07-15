@@ -24,12 +24,12 @@ foreach(header_file ${folder_header})
 endforeach(header_file ${folder_header})
 
 # Inclue any directories needed for YARP
-include_directories(${YARP_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} /usr/local/include/NiTE-Linux-x64-2.2 /usr/local/include/OpenNI2)
+include_directories(${YARP_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} /usr/local/include/NiTE-Linux-x64-2.2 /usr/local/include/OpenNI2 ${ROBOTICSLAB_VISION_INCLUDE_DIRS})
 
 # Set up our main executable.
 if (folder_source)
   add_executable(${KEYWORD} ${folder_source} ${folder_header})
-  target_link_libraries(${KEYWORD} ${OpenCV_LIBS} ${YARP_LIBRARIES})
+  target_link_libraries(${KEYWORD} ${OpenCV_LIBS} ${YARP_LIBRARIES} ${ROBOTICSLAB_VISION_LIBRARIES})
   install(TARGETS ${KEYWORD} DESTINATION bin)
 else (folder_source)
   message(FATAL_ERROR "No source code files found. Please add something")
