@@ -6,7 +6,6 @@
 #include <math.h>  // fabs
 
 #include <yarp/os/RFModule.h>
-#include <yarp/os/Module.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/BufferedPort.h>
