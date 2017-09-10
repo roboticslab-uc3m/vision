@@ -8,6 +8,8 @@
 #include <yarp/os/Property.h>
 #include <yarp/os/Time.h>
 
+#include "ColorDebug.hpp"
+
 using namespace roboticslab;
 
 /************************************************************************/
@@ -19,8 +21,6 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
     std::string strCameraLocal = DEFAULT_CAMERA_LOCAL;
     std::string strCameraRemote = DEFAULT_CAMERA_REMOTE;
     watchdog = DEFAULT_WATCHDOG;  // double
-
-    std::fprintf(stdout,"--------------------------------------------------------------\n");
 
     if (rf.check("help"))
     {
@@ -39,7 +39,7 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
         cropSelector = rf.find("cropSelector").asInt();
     }
 
-    std::printf("HaarDetection2D using cropSelector: %d.\n", cropSelector);
+    CD_INFO("Using cropSelector: %d.\n", cropSelector);
 
     if (rf.check("cameraDevice"))
     {
@@ -61,10 +61,10 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
         watchdog = rf.find("watchdog").asDouble();
     }
 
-    std::printf("HaarDetection2D using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s.\n",
+    CD_INFO("Using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s.\n",
         strCameraDevice.c_str(), strCameraLocal.c_str(), strCameraRemote.c_str());
 
-    std::printf("HaarDetection2D using watchdog: %f.\n", watchdog);
+    CD_INFO("Using watchdog: %f.\n", watchdog);
 
     if (!rf.check("help"))
     {
@@ -76,19 +76,19 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
 
         while (!dd.open(options))
         {
-            std::printf("Waiting for camera device \"%s\"...\n", strCameraDevice.c_str());
+            CD_INFO("Waiting for camera device \"%s\"...\n", strCameraDevice.c_str());
             yarp::os::Time::delay(1);
         }
 
-        std::printf("[HaarDetection2D] success: camera device available.\n");
+        CD_SUCCESS("Camera device available.\n");
 
         if (!dd.view(camera))
         {
-            std::fprintf(stderr, "[HaarDetection2D] warning: camera device bad view.\n");
+            CD_WARNING("Camera device bad view.\n");
         }
         else
         {
-            std::printf("[HaarDetection2D] success: camera device ok view.\n");
+            CD_SUCCESS("Camera device ok view.\n");
         }
 
         segmentorThread.setIFrameGrabberImageDriver(camera);
@@ -130,7 +130,7 @@ double HaarDetection2D::getPeriod()
 
 bool HaarDetection2D::updateModule()
 {
-    std::printf("HaarDetection2D alive...\n");
+    CD_INFO("Alive...\n");
     return true;
 }
 
@@ -138,7 +138,7 @@ bool HaarDetection2D::updateModule()
 
 bool HaarDetection2D::interruptModule()
 {
-    std::printf("HaarDetection2D closing...\n");
+    CD_INFO("Closing...\n");
 
     segmentorThread.stop();
     outImg.interrupt();

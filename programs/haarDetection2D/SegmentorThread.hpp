@@ -3,8 +3,6 @@
 #ifndef __SEGMENTOR_THREAD_HPP__
 #define __SEGMENTOR_THREAD_HPP__
 
-#include <cstdio>
-
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
@@ -18,6 +16,8 @@
 #include <yarp/sig/Image.h>
 
 #include <opencv2/objdetect/objdetect.hpp>
+
+#include "ColorDebug.hpp"
 
 // thanks! https://web.stanford.edu/~qianyizh/projects/scenedata.html
 #define DEFAULT_FX_D          525.0  // 640x480
@@ -45,7 +45,7 @@ private:
         b.read(connection);
 
         // process data in b
-        std::printf("Got %s\n", b.toString().c_str());
+        CD_DEBUG("Got %s\n", b.toString().c_str());
 
         if (waitForFirst)
         {

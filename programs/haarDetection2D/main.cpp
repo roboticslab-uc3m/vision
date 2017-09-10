@@ -43,12 +43,11 @@
  * | xmlCascade | file.xml    | haarcascade_cocacola_can.xml |
  */
 
-#include <cstdio>
-
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
 
 #include "HaarDetection2D.hpp"
+#include "ColorDebug.hpp"
 
 int main(int argc, char** argv)
 {
@@ -65,20 +64,22 @@ int main(int argc, char** argv)
         return mod.runModule(rf);
     }
 
-    std::printf("Run \"%s --help\" for options.\n", argv[0]);
-    std::printf("%s checking for yarp network... ", argv[0]);
+    CD_INFO("Run \"%s --help\" for options.\n", argv[0]);
+    CD_INFO("%s checking for yarp network... ", argv[0]);
+
     std::fflush(stdout);
 
     yarp::os::Network yarp;
 
     if (!yarp::os::Network::checkNetwork())
     {
-        std::fprintf(stderr, "[fail]\n%s found no yarp network (try running \"yarpserver &\"), bye!\n", argv[0]);
+        CD_ERROR_NO_HEADER("[fail]\n");
+        CD_INFO("%s found no yarp network (try running \"yarpserver &\"), bye!\n", argv[0]);
         return -1;
     }
     else
     {
-        std::printf("[ok]\n");
+        CD_SUCCESS_NO_HEADER("[ok]\n");
     }
 
     return mod.runModule(rf);

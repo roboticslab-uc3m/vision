@@ -3,7 +3,7 @@ if(ENABLE_haarDetection2D)
 find_package(OpenCV REQUIRED)
 find_package(YARP REQUIRED)
 
-include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${OpenCV_INCLUDE_DIRS} ${COLOR_DEBUG_INCLUDE_DIRS})
 
 add_executable(haarDetection2D main.cpp
                                HaarDetection2D.hpp

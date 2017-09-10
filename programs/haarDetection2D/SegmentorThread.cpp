@@ -14,6 +14,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "ColorDebug.hpp"
+
 using namespace roboticslab;
 
 /************************************************************************/
@@ -50,13 +52,10 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     std::string xmlCascade = DEFAULT_XMLCASCADE;
 
-    std::printf("--------------------------------------------------------------\n");
-
     if (rf.check("help"))
     {
         std::printf("SegmentorThread options:\n");
         std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-
         std::printf("\t--fx_d (default: \"%f\")\n", fx_d);
         std::printf("\t--fy_d (default: \"%f\")\n", fy_d);
         std::printf("\t--cx_d (default: \"%f\")\n", cx_d);
@@ -86,7 +85,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
         cy_d = rf.find("cy_d").asDouble();
     }
 
-    std::printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n", fx_d, fy_d, cx_d, cy_d);
+    CD_INFO("Using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n", fx_d, fy_d, cx_d, cy_d);
 
     if (rf.check("rateMs"))
     {
@@ -98,8 +97,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
         xmlCascade = rf.find("xmlCascade").asString();
     }
 
-    std::printf("--------------------------------------------------------------\n");
-
     if (rf.check("help"))
     {
         std::exit(1);
@@ -109,7 +106,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     if (!object_cascade.load(cascade))
     {
-        std::printf("[error] no cascade!\n");
+        CD_ERROR("No cascade!\n");
         std::exit(1);
     }
 
