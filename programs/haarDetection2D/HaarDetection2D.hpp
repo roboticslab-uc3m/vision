@@ -3,6 +3,16 @@
 #ifndef __HAAR_DETECTION_2D_HPP__
 #define __HAAR_DETECTION_2D_HPP__
 
+#include <yarp/os/BufferedPort.h>
+#include <yarp/os/Port.h>
+#include <yarp/os/ResourceFinder.h>
+#include <yarp/os/RFModule.h>
+
+#include <yarp/dev/PolyDriver.h>
+#include <yarp/dev/IOpenNI2DeviceDriver.h>
+
+#include <yarp/sig/Image.h>
+
 #include "SegmentorThread.hpp"
 
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
@@ -19,10 +29,11 @@ namespace roboticslab
  *
  * @brief Computer Vision segment faces.
  */
-class HaarDetection2D : public yarp::os::RFModule {
-  private:
+class HaarDetection2D : public yarp::os::RFModule
+{
+private:
     SegmentorThread segmentorThread;
-    //
+
     yarp::dev::PolyDriver dd;
     yarp::dev::IOpenNI2DeviceDriver *kinect;
 
@@ -38,7 +49,7 @@ class HaarDetection2D : public yarp::os::RFModule {
     bool updateModule();
     double watchdog;
 
-  public:
+public:
     bool configure(yarp::os::ResourceFinder &rf);
 };
 
