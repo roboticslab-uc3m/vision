@@ -3,13 +3,13 @@
 
     <module>
         <name>yarpdev</name>
-        <parameters>--device OpenNI2DeviceServer --depthVideoMode 4 --colorVideoMode 9 --noRGBMirror --noDepthMirror</parameters>
+        <parameters>--device opencv_grabber --name frameGrabber2D</parameters>
         <node>localhost</node>
     </module>
 
     <module>
         <name>haarDetection2D</name>
-        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /haarDetection2D</parameters>
+        <parameters></parameters>
         <node>localhost</node>
     </module>
 

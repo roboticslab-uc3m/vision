@@ -30,17 +30,17 @@
  *
  * @section segmentorThread SegmentorThread options:
  *
- * | PROPERTY   | DESCRIPTION | DEFAULT                         |
- * |------------|-------------|---------------------------------|
- * | help       |             |                                 |
- * | from       | file.ini    |                                 |
- * | context    | path        |                                 |
- * | fx_d       |             | 525.000000                      |
- * | fy_d       |             | 525.000000                      |
- * | cx_d       |             | 319.500000                      |
- * | cy_d       |             | 239.500000                      |
- * | rateMs     |             | 20                              |
- * | xmlCascade | file.xml    | haarcascade_frontalface_alt.xml |
+ * | PROPERTY   | DESCRIPTION | DEFAULT                      |
+ * |------------|-------------|------------------------------|
+ * | help       |             |                              |
+ * | from       | file.ini    |                              |
+ * | context    | path        |                              |
+ * | fx_d       |             | 525.000000                   |
+ * | fy_d       |             | 525.000000                   |
+ * | cx_d       |             | 319.500000                   |
+ * | cy_d       |             | 239.500000                   |
+ * | rateMs     |             | 20                           |
+ * | xmlCascade | file.xml    | haarcascade_cocacola_can.xml |
  */
 
 #include <cstdio>
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 {
     yarp::os::ResourceFinder rf;
     rf.setVerbose(true);
-    rf.setDefaultContext("haarDetection2D");
+    rf.setDefaultContext("haarDetection");
     rf.setDefaultConfigFile("haarDetection2D.ini");
     rf.configure(argc, argv);
 
