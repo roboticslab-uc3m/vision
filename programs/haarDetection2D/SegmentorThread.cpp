@@ -11,13 +11,8 @@
 #include <yarp/os/Bottle.h>
 #include <yarp/sig/ImageDraw.h>
 
-#include <cv.h>
-//#include <highgui.h> // to show windows
-
 #include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/objdetect/objdetect.hpp>
 
 using namespace roboticslab;
 
@@ -140,12 +135,8 @@ void SegmentorThread::run()
     }
 
     // {yarp ImageOf Rgb -> openCv Mat Bgr}
-    IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
-                                         IPL_DEPTH_8U, 1);
-
-    cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2GRAY);
-
-    cv::Mat inCvMat(cv::cvarrToMat(inIplImage));
+    cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
+    cv::cvtColor(inCvMat, inCvMat, CV_RGB2GRAY);
 
     std::vector<cv::Rect> objects;
 
@@ -204,8 +195,6 @@ void SegmentorThread::run()
 
     pOutImg->prepare() = outYarpImg;
     pOutImg->write();
-
-    cvReleaseImage(&inIplImage);  // release the memory for the image
 
     if (output.size() > 0)
     {
