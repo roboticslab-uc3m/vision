@@ -13,7 +13,7 @@
 #include <yarp/os/RateThread.h>
 #include <yarp/os/ResourceFinder.h>
 
-#include <yarp/dev/IOpenNI2DeviceDriver.h>
+#include <yarp/dev/FrameGrabberInterfaces.h>
 
 #include <yarp/sig/Image.h>
 
@@ -96,7 +96,7 @@ public:
 class SegmentorThread : public yarp::os::RateThread
 {
 private:
-    yarp::dev::IOpenNI2DeviceDriver *kinect;
+    yarp::dev::IFrameGrabberImage *camera;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
 
@@ -108,12 +108,12 @@ private:
 
     DataProcessor processor;
 
-    cv::CascadeClassifier face_cascade;
+    cv::CascadeClassifier object_cascade;
 
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
 
-    void setIKinectDeviceDriver(yarp::dev::IOpenNI2DeviceDriver * _kinect);
+    void setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage * _camera);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
     void setOutPort(yarp::os::Port *_pOutPort);
     void init(yarp::os::ResourceFinder &rf);

@@ -15,18 +15,18 @@
  * | from         | file.ini                             |                  |
  * | context      | path                                 |                  |
  * | cropSelector |                                      | 0                |
- * | visionDevice | device we create                     | opencv_grabber   |
- * | visionLocal  | if accesing remote, local port name  | /haarDetection2D |
- * | visionRemote | if accesing remote, remote port name | /frameGrabber2D  |
+ * | cameraDevice | device we create                     | remote_grabber   |
+ * | cameraLocal  | if accesing remote, local port name  | /haarDetection2D |
+ * | cameraRemote | if accesing remote, remote port name | /frameGrabber2D  |
  * | watchdog     |                                      | 2.000000         |
  *
  *
  * @section  haarDetection2DPorts HaarDetection2D output ports:
  *
- * | OUTPUT PORT              | CONTENT                                               |
- * |--------------------------|-------------------------------------------------------|
- * | /haarDetection2D/img:o   | Output camera image with face detection using squares |
- * | /haarDetection2D/state:o | xyz coordinates of object tection                     |
+ * | OUTPUT PORT              | CONTENT                                                 |
+ * |--------------------------|---------------------------------------------------------|
+ * | /haarDetection2D/img:o   | Output camera image with object detection using squares |
+ * | /haarDetection2D/state:o | xy coordinates of object detection                      |
  *
  * @section segmentorThread SegmentorThread options:
  *

@@ -15,9 +15,9 @@ using namespace roboticslab;
 bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
 {
     cropSelector = DEFAULT_CROP_SELECTOR;
-    std::string strKinectDevice = DEFAULT_KINECT_DEVICE;
-    std::string strKinectLocal = DEFAULT_KINECT_LOCAL;
-    std::string strKinectRemote = DEFAULT_KINECT_REMOTE;
+    std::string strCameraDevice = DEFAULT_CAMERA_DEVICE;
+    std::string strCameraLocal = DEFAULT_CAMERA_LOCAL;
+    std::string strCameraRemote = DEFAULT_CAMERA_REMOTE;
     watchdog = DEFAULT_WATCHDOG;  // double
 
     std::fprintf(stdout,"--------------------------------------------------------------\n");
@@ -27,9 +27,9 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
         std::printf("HaarDetection2D options:\n");
         std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
         std::printf("\t--cropSelector (default: \"%d\")\n", cropSelector);
-        std::printf("\t--visionDevice (device we create, default: \"%s\")\n", strKinectDevice.c_str());
-        std::printf("\t--visionLocal (if accesing remote, local port name, default: \"%s\")\n", strKinectLocal.c_str());
-        std::printf("\t--visionRemote (if accesing remote, remote port name, default: \"%s\")\n", strKinectRemote.c_str());
+        std::printf("\t--cameraDevice (device we create, default: \"%s\")\n", strCameraDevice.c_str());
+        std::printf("\t--cameraLocal (if accesing remote, local port name, default: \"%s\")\n", strCameraLocal.c_str());
+        std::printf("\t--cameraRemote (if accesing remote, remote port name, default: \"%s\")\n", strCameraRemote.c_str());
         std::printf("\t--watchdog ([s] default: \"%f\")\n", watchdog);
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
@@ -41,19 +41,19 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
 
     std::printf("HaarDetection2D using cropSelector: %d.\n", cropSelector);
 
-    if (rf.check("kinectDevice"))
+    if (rf.check("cameraDevice"))
     {
-        strKinectDevice = rf.find("kinectDevice").asString();
+        strCameraDevice = rf.find("cameraDevice").asString();
     }
 
-    if (rf.check("kinectLocal"))
+    if (rf.check("cameraLocal"))
     {
-        strKinectLocal = rf.find("kinectLocal").asString();
+        strCameraLocal = rf.find("cameraLocal").asString();
     }
 
-    if (rf.check("kinectRemote"))
+    if (rf.check("cameraRemote"))
     {
-        strKinectRemote = rf.find("kinectRemote").asString();
+        strCameraRemote = rf.find("cameraRemote").asString();
     }
 
     if (rf.check("watchdog"))
@@ -61,8 +61,8 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
         watchdog = rf.find("watchdog").asDouble();
     }
 
-    std::printf("HaarDetection2D using kinectDevice: %s, kinectLocal: %s, kinectRemote: %s.\n",
-        strKinectDevice.c_str(), strKinectLocal.c_str(), strKinectRemote.c_str());
+    std::printf("HaarDetection2D using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s.\n",
+        strCameraDevice.c_str(), strCameraLocal.c_str(), strCameraRemote.c_str());
 
     std::printf("HaarDetection2D using watchdog: %f.\n", watchdog);
 
@@ -70,29 +70,29 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
     {
         yarp::os::Property options;
         options.fromString(rf.toString());  //-- Should get noMirror, noRGBMirror, noDepthMirror, video modes...
-        options.put("device", strKinectDevice);  //-- Important to override in case there is a "device" in the future
-        options.put("localName", strKinectLocal);  //
-        options.put("remoteName", strKinectRemote);  //
+        options.put("device", strCameraDevice);  //-- Important to override in case there is a "device" in the future
+        options.put("local", strCameraLocal);  //
+        options.put("remote", strCameraRemote);  //
         //if(rf.check("noMirror")) options.put("noMirror",1);  //-- Replaced by options.fromString( rf.toString() );
 
         while (!dd.open(options))
         {
-            std::printf("Waiting for kinectDevice \"%s\"...\n", strKinectDevice.c_str());
+            std::printf("Waiting for camera device \"%s\"...\n", strCameraDevice.c_str());
             yarp::os::Time::delay(1);
         }
 
-        std::printf("[HaarDetection2D] success: kinectDevice available.\n");
+        std::printf("[HaarDetection2D] success: camera device available.\n");
 
-        if (!dd.view(kinect))
+        if (!dd.view(camera))
         {
-            std::fprintf(stderr, "[HaarDetection2D] warning: kinectDevice bad view.\n");
+            std::fprintf(stderr, "[HaarDetection2D] warning: camera device bad view.\n");
         }
         else
         {
-            std::printf("[HaarDetection2D] success: kinectDevice ok view.\n");
+            std::printf("[HaarDetection2D] success: camera device ok view.\n");
         }
 
-        segmentorThread.setIKinectDeviceDriver(kinect);
+        segmentorThread.setIFrameGrabberImageDriver(camera);
         segmentorThread.setOutImg(&outImg);
         segmentorThread.setOutPort(&outPort);
         segmentorThread.setCropSelector(cropSelector);
@@ -108,13 +108,13 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
 
     //-----------------OPEN LOCAL PORTS------------//
 
-    outImg.open(strKinectLocal + "/img:o");
-    outPort.open(strKinectLocal + "/state:o");
+    outImg.open(strCameraLocal + "/img:o");
+    outPort.open(strCameraLocal + "/state:o");
 
     if (cropSelector != 0)
     {
-        outCropSelectorImg.open(strKinectLocal + "/cropSelector/img:o");
-        inCropSelectorPort.open(strKinectLocal + "/cropSelector/state:i");
+        outCropSelectorImg.open(strCameraLocal + "/cropSelector/img:o");
+        inCropSelectorPort.open(strCameraLocal + "/cropSelector/state:i");
     }
 
     return true;

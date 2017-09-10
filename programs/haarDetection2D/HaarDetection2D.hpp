@@ -9,16 +9,16 @@
 #include <yarp/os/RFModule.h>
 
 #include <yarp/dev/PolyDriver.h>
-#include <yarp/dev/IOpenNI2DeviceDriver.h>
+#include <yarp/dev/FrameGrabberInterfaces.h>
 
 #include <yarp/sig/Image.h>
 
 #include "SegmentorThread.hpp"
 
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
-#define DEFAULT_KINECT_DEVICE "OpenNI2DeviceServer"
-#define DEFAULT_KINECT_LOCAL "/haarDetection2D"
-#define DEFAULT_KINECT_REMOTE "/OpenNI2"
+#define DEFAULT_CAMERA_DEVICE "remote_grabber"
+#define DEFAULT_CAMERA_LOCAL "/haarDetection2D"
+#define DEFAULT_CAMERA_REMOTE "/frameGrabber2D"
 #define DEFAULT_WATCHDOG    2       // [s]
 
 namespace roboticslab
@@ -35,19 +35,20 @@ private:
     SegmentorThread segmentorThread;
 
     yarp::dev::PolyDriver dd;
-    yarp::dev::IOpenNI2DeviceDriver *kinect;
+    yarp::dev::IFrameGrabberImage *camera;
 
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outImg;
     yarp::os::Port outPort;
 
-    int cropSelector;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outCropSelectorImg;
     yarp::os::Port inCropSelectorPort;
+
+    int cropSelector;
+    double watchdog;
 
     bool interruptModule();
     double getPeriod();
     bool updateModule();
-    double watchdog;
 
 public:
     bool configure(yarp::os::ResourceFinder &rf);

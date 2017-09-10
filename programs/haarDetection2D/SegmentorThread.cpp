@@ -22,9 +22,9 @@ using namespace roboticslab;
 
 /************************************************************************/
 
-void SegmentorThread::setIKinectDeviceDriver(yarp::dev::IOpenNI2DeviceDriver *_kinect)
+void SegmentorThread::setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage *_camera)
 {
-    kinect = _kinect;
+    camera = _camera;
 }
 
 /************************************************************************/
@@ -111,13 +111,13 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     std::string cascade = rf.findFileByName(xmlCascade);
 
-    if (!face_cascade.load(cascade))
+    if (!object_cascade.load(cascade))
     {
         std::printf("[error] no cascade!\n");
         std::exit(1);
     }
 
-    if (cropSelector != 0 )
+    if (cropSelector != 0)
     {
         processor.reset();
         inCropSelectorPort->setReader(processor);
@@ -131,34 +131,12 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
 void SegmentorThread::run()
 {
-    // printf("[SegmentorThread] run()\n");
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
 
-    /*ImageOf<PixelRgb> *inYarpImg = pInImg->read(false);
-    ImageOf<PixelFloat> *depth = pInDepth->read(false);
-    if (inYarpImg==NULL) {
-        //printf("No img yet...\n");
-        return;
-    };
-    if (depth==NULL) {
-        //printf("No depth yet...\n");
-        return;
-    };*/
-
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg = kinect->getImageFrame();
-
-    if (inYarpImg.height() < 10)
+    if (!camera->getImage(inYarpImg))
     {
-        //printf("No img yet...\n");
         return;
-    };
-
-    yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
-
-    if (depth.height() < 10)
-    {
-        //printf("No depth yet...\n");
-        return;
-    };
+    }
 
     // {yarp ImageOf Rgb -> openCv Mat Bgr}
     IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
@@ -168,10 +146,10 @@ void SegmentorThread::run()
 
     cv::Mat inCvMat(cv::cvarrToMat(inIplImage));
 
-    std::vector<cv::Rect> faces;
+    std::vector<cv::Rect> objects;
 
     //face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0, Size(70, 70));
-    face_cascade.detectMultiScale(inCvMat, faces, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, cv::Size(30, 30));
+    object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, cv::Size(30, 30));
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
     yarp::sig::PixelRgb red(255, 0, 0);
@@ -179,60 +157,38 @@ void SegmentorThread::run()
 
     yarp::os::Bottle output;
 
-    double minZ = 999999;
-    int closestFace = 999999;
+    int closestObject = 999999;
 
-    for (int i = 0; i < faces.size(); i++)
+    for (int i = 0; i < objects.size(); i++)
     {
-        int pxX = faces[i].x + faces[i].width / 2;
-        int pxY = faces[i].y + faces[i].height / 2;
+        int pxX = objects[i].x + objects[i].width / 2;
+        int pxY = objects[i].y + objects[i].height / 2;
 
-        double mmZ_tmp = depth.pixel(pxX, pxY);
-
-        if (mmZ_tmp < 0.001)
-        {
-            std::fprintf(stderr, "[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n", i);
-            cvReleaseImage(&inIplImage);  // release the memory for the image
-            return;
-        }
-
-        if (mmZ_tmp < minZ)
-        {
-            minZ = mmZ_tmp;
-            closestFace = i;
-        }
+        // FIXME: detect closest (centered) object
     }
 
-    for (int i = 0; i < faces.size(); i++)
+    for (int i = 0; i < objects.size(); i++)
     {
-        int pxX = faces[i].x + faces[i].width / 2;
-        int pxY = faces[i].y + faces[i].height / 2;
+        int pxX = objects[i].x + objects[i].width / 2;
+        int pxY = objects[i].y + objects[i].height / 2;
 
-        double mmZ_tmp = depth.pixel(pxX, pxY);
+        double mmX_tmp = 1000.0 * (pxX - cx_d) / fx_d;
+        double mmY_tmp = 1000.0 * (pxY - cy_d) / fy_d;
 
-        if (mmZ_tmp < 0.001)
+        if (i == closestObject)
         {
-            fprintf(stderr,"[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n",i);
-            cvReleaseImage( &inIplImage );  // release the memory for the image
-            return;
-        }
-
-        double mmX_tmp = 1000.0 * ((pxX - cx_d) * mmZ_tmp/1000.0) / fx_d;
-        double mmY_tmp = 1000.0 * ((pxY - cy_d) * mmZ_tmp/1000.0) / fy_d;
-
-        if (i == closestFace)
-        {
-            yarp::sig::draw::addRectangleOutline(outYarpImg, green, faces[i].x + faces[i].width / 2, faces[i].y + faces[i].height / 2,
-                                faces[i].width / 2, faces[i].height / 2);
+            yarp::sig::draw::addRectangleOutline(outYarpImg, green,
+                    objects[i].x + objects[i].width / 2, objects[i].y + objects[i].height / 2,
+                    objects[i].width / 2, objects[i].height / 2);
 
             output.addDouble(-mmX_tmp);  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
             output.addDouble(mmY_tmp);   // Points down.
-            output.addDouble(mmZ_tmp);   // Points forward.
         }
         else
         {
-            yarp::sig::draw::addRectangleOutline(outYarpImg, red, faces[i].x + faces[i].width / 2, faces[i].y + faces[i].height / 2,
-                                faces[i].width / 2,faces[i].height / 2);
+            yarp::sig::draw::addRectangleOutline(outYarpImg, red,
+                    objects[i].x + objects[i].width / 2, objects[i].y + objects[i].height / 2,
+                    objects[i].width / 2,objects[i].height / 2);
         }
     }
 
