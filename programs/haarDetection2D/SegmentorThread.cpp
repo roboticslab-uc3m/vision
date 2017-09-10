@@ -2,6 +2,7 @@
 
 #include "SegmentorThread.hpp"
 
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <string>
@@ -148,7 +149,6 @@ void SegmentorThread::run()
 
     std::vector<cv::Rect> objects;
 
-    //face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0, Size(70, 70));
     object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, cv::Size(30, 30));
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
@@ -158,13 +158,23 @@ void SegmentorThread::run()
     yarp::os::Bottle output;
 
     int closestObject = 999999;
+    int minimumDistance = 999999;
 
     for (int i = 0; i < objects.size(); i++)
     {
         int pxX = objects[i].x + objects[i].width / 2;
         int pxY = objects[i].y + objects[i].height / 2;
 
-        // FIXME: detect closest (centered) object
+        int centerX = inCvMat.rows / 2;
+        int centerY = inCvMat.cols / 2;
+
+        int distance = std::sqrt(std::pow(pxX - centerX, 2) + std::pow(pxY - centerY, 2));
+
+        if (distance < minimumDistance)
+        {
+            minimumDistance = distance;
+            closestObject = i;
+        }
     }
 
     for (int i = 0; i < objects.size(); i++)
