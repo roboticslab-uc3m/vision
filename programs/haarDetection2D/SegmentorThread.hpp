@@ -26,8 +26,6 @@
 #define DEFAULT_CY_D          239.5  //
 
 #define DEFAULT_RATE_MS 20
-#define DEFAULT_SEE_BOUNDING 3
-#define DEFAULT_THRESHOLD 55
 #define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
 
 namespace roboticslab
@@ -85,6 +83,7 @@ public:
 
     int xKeep, yKeep;
     int x, y, w, h;
+
     bool waitForFirst;
 };
 
@@ -103,8 +102,8 @@ private:
     double fx_d, fy_d, cx_d, cy_d;
     int cropSelector;
 
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg;
-    yarp::os::Port* inCropSelectorPort;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *outCropSelectorImg;
+    yarp::os::Port *inCropSelectorPort;
 
     DataProcessor processor;
 

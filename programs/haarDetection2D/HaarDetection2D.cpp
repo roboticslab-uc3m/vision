@@ -69,11 +69,10 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
     if (!rf.check("help"))
     {
         yarp::os::Property options;
-        options.fromString(rf.toString());  //-- Should get noMirror, noRGBMirror, noDepthMirror, video modes...
-        options.put("device", strCameraDevice);  //-- Important to override in case there is a "device" in the future
-        options.put("local", strCameraLocal);  //
-        options.put("remote", strCameraRemote);  //
-        //if(rf.check("noMirror")) options.put("noMirror",1);  //-- Replaced by options.fromString( rf.toString() );
+        options.fromString(rf.toString());
+        options.put("device", strCameraDevice);
+        options.put("local", strCameraLocal);
+        options.put("remote", strCameraRemote);
 
         while (!dd.open(options))
         {
