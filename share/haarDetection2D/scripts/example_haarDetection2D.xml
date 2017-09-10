@@ -1,0 +1,26 @@
+<application>
+    <name>example haarDetection2D App</name>
+
+    <module>
+        <name>yarpdev</name>
+        <parameters>--device OpenNI2DeviceServer --depthVideoMode 4 --colorVideoMode 9 --noRGBMirror --noDepthMirror</parameters>
+        <node>localhost</node>
+    </module>
+
+    <module>
+        <name>haarDetection2D</name>
+        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /haarDetection2D</parameters>
+        <node>localhost</node>
+    </module>
+
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /haarDetection2D/yarpview/img:i</parameters>
+        <node>localhost</node>
+    </module>
+
+    <connection>
+        <from>/haarDetection2D/img:o</from>
+        <to>/haarDetection2D/yarpview/img:i</to>
+    </connection>
+</application>
