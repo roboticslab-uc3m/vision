@@ -104,7 +104,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     std::string cascade = rf.findFileByName(xmlCascade);
 
-    if (!object_cascade.load(cascade))
+    if (cascade.empty() || !object_cascade.load(cascade))
     {
         CD_ERROR("No cascade!\n");
         std::exit(1);
