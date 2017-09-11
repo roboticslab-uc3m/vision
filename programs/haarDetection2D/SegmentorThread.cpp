@@ -150,8 +150,8 @@ void SegmentorThread::run()
 
     for (int i = 0; i < objects.size(); i++)
     {
-        int pxX = objects[i].x + objects[i].width / 2;
-        int pxY = objects[i].y + objects[i].height / 2;
+        const int pxX = objects[i].x + objects[i].width / 2;
+        const int pxY = objects[i].y + objects[i].height / 2;
 
         int centerX = inCvMat.rows / 2;
         int centerY = inCvMat.cols / 2;
@@ -167,26 +167,24 @@ void SegmentorThread::run()
 
     for (int i = 0; i < objects.size(); i++)
     {
-        int pxX = objects[i].x + objects[i].width / 2;
-        int pxY = objects[i].y + objects[i].height / 2;
-
-        double mmX_tmp = 1000.0 * (pxX - cx_d) / fx_d;
-        double mmY_tmp = 1000.0 * (pxY - cy_d) / fy_d;
+        const int pxX = objects[i].x + objects[i].width / 2;
+        const int pxY = objects[i].y + objects[i].height / 2;
 
         if (i == closestObject)
         {
-            yarp::sig::draw::addRectangleOutline(outYarpImg, green,
-                    objects[i].x + objects[i].width / 2, objects[i].y + objects[i].height / 2,
+            double mmX_tmp = 1000.0 * (pxX - cx_d) / fx_d;
+            double mmY_tmp = 1000.0 * (pxY - cy_d) / fy_d;
+
+            yarp::sig::draw::addRectangleOutline(outYarpImg, green, pxX, pxY,
                     objects[i].width / 2, objects[i].height / 2);
 
-            output.addDouble(-mmX_tmp);  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
-            output.addDouble(mmY_tmp);   // Points down.
+            output.addDouble(mmX_tmp);   // Points left
+            output.addDouble(-mmY_tmp);  // Points up
         }
         else
         {
-            yarp::sig::draw::addRectangleOutline(outYarpImg, red,
-                    objects[i].x + objects[i].width / 2, objects[i].y + objects[i].height / 2,
-                    objects[i].width / 2,objects[i].height / 2);
+            yarp::sig::draw::addRectangleOutline(outYarpImg, red, pxX, pxY,
+                    objects[i].width / 2, objects[i].height / 2);
         }
     }
 
