@@ -49,6 +49,7 @@ private:
     bool interruptModule();
     double getPeriod();
     bool updateModule();
+    bool close();
 
 public:
     bool configure(yarp::os::ResourceFinder &rf);

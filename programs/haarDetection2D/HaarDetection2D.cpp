@@ -138,9 +138,6 @@ bool HaarDetection2D::updateModule()
 
 bool HaarDetection2D::interruptModule()
 {
-    CD_INFO("Closing...\n");
-
-    segmentorThread.stop();
     outImg.interrupt();
     outPort.interrupt();
 
@@ -149,6 +146,17 @@ bool HaarDetection2D::interruptModule()
         outCropSelectorImg.interrupt();
         inCropSelectorPort.interrupt();
     }
+
+    return true;
+}
+
+/************************************************************************/
+
+bool HaarDetection2D::close()
+{
+    CD_INFO("Closing...\n");
+
+    segmentorThread.stop();
 
     dd.close();
     outImg.close();
