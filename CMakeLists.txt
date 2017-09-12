@@ -22,6 +22,7 @@ option(ENABLE_VisionYarp "Choose if you want to compile HeadYarp" TRUE)
 ### options: cpp programs
 option(ENABLE_colorRegionDetection "Choose if you want to compile colorRegionDetection" TRUE)
 option(ENABLE_haarDetection "Choose if you want to compile haarDetection" TRUE)
+option(ENABLE_haarDetection2D "Choose if you want to compile haarDetection2D" TRUE)
 option(ENABLE_voxelOccupancyDetection "Choose if you want to compile voxelOccupancyDetection" TRUE)
 option(ENABLE_multipleDump "Choose if you want to compile multipleDump" TRUE)
 option(ENABLE_pointAtObjectServer "Choose if you want to compile pointAtObjectServer" TRUE)
