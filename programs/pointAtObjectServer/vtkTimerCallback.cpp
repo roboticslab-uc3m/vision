@@ -1,5 +1,7 @@
 #include "vtkTimerCallback.hpp"
 
+#include <iostream>
+
 namespace roboticslab {
 
 /************************************************************************/
