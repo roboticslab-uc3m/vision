@@ -17,7 +17,7 @@ set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "hide this!")
 
 ### options: cpp libraries
 option(ENABLE_TravisLib "Choose if you want to compile TravisLib" TRUE)
-option(ENABLE_VisionYarp "Choose if you want to compile HeadYarp" TRUE)
+option(ENABLE_YarpPlugins "Choose if you want to compile YarpPlugins" TRUE)
 
 ### options: cpp programs
 option(ENABLE_colorRegionDetection "Choose if you want to compile colorRegionDetection" TRUE)
