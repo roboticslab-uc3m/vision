@@ -16,12 +16,12 @@ namespace roboticslab {}
 
 /**
  * @ingroup vision_libraries
- * \defgroup VisionYarp VisionYarp
+ * \defgroup YarpPlugins YarpPlugins
  * @brief Contains vision libraries that implement YARP device interfaces
  * and therefore can be invoked as YARP plugins.
- * @section VisionYarp_install Installation
+ * @section YarpPlugins_install Installation
  *
- * Compiled when ENABLE_VisionYarp is activated.
+ * Compiled when ENABLE_YarpPlugins is activated.
  */
 
 /**
