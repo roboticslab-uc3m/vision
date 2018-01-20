@@ -2,72 +2,78 @@
 # Authors: Juan G. Victores & Raul de Santos Rico
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
-# Exploit new cmake 2.6 features (export). 
+cmake_minimum_required(VERSION 2.8.11)
 
-# reduce warning level with cmake 2.6
-cmake_minimum_required(VERSION 2.8.9)
-#cmake policies
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+# Safety check against missing dummy library for system-available COLOR_DEBUG.
+# Remove if cmake_minimum_required() above is set to 3.0 or later.
+if(POLICY CMP0046)
+    cmake_policy(SET CMP0046 NEW)
+endif()
 
-project(roboticslab_vision)
+project(ROBOTICSLAB_VISION)
 
+# Force building shared libraries and YARP DL modules.
 set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "hide this!")
-
-### options: cpp libraries
-option(ENABLE_TravisLib "Choose if you want to compile TravisLib" TRUE)
-option(ENABLE_YarpPlugins "Choose if you want to compile YarpPlugins" TRUE)
 
 ### options: cpp programs
 option(ENABLE_colorRegionDetection "Choose if you want to compile colorRegionDetection" TRUE)
 option(ENABLE_haarDetection "Choose if you want to compile haarDetection" TRUE)
-option(ENABLE_haarDetection2D "Choose if you want to compile haarDetection2D" TRUE)
 option(ENABLE_voxelOccupancyDetection "Choose if you want to compile voxelOccupancyDetection" TRUE)
 option(ENABLE_multipleDump "Choose if you want to compile multipleDump" TRUE)
 option(ENABLE_pointAtObjectServer "Choose if you want to compile pointAtObjectServer" TRUE)
 
+# Add suffix for debug libraries.
 if(MSVC)
-  MESSAGE(STATUS "Running on windows")
-  set(CMAKE_DEBUG_POSTFIX "d")
-endif(MSVC)
+    message(STATUS "Running on windows")
+    set(CMAKE_DEBUG_POSTFIX "d")
+endif()
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release" CACHE STRING 
-    "Choose the type of build, recommanded options are: Debug or Release")
-endif(NOT CMAKE_BUILD_TYPE)
-# Hide variable to MSVC users, since it is not needed
-if (MSVC)
-   mark_as_advanced(CMAKE_BUILD_TYPE)
-endif(MSVC)
+# Let the user specify a configuration (only single-config generators).
+if(NOT CMAKE_CONFIGURATION_TYPES)
+    # Possible values.
+    set(_configurations Debug Release MinSizeRel RelWithDebInfo)
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${_configurations})
 
-######################
+    foreach(_conf ${_configurations})
+        set(_conf_string "${_conf_string} ${_conf}")
+    endforeach()
 
-### this makes everything go in $ROBOTICSLAB_VISION_DIR/lib and $ROBOTICSLAB_VISION_DIR/bin
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-message(STATUS "Libraries go to ${LIBRARY_OUTPUT_PATH}")
-message(STATUS "Executables go to ${EXECUTABLE_OUTPUT_PATH}")
-# this doesn't happen automatically for makefiles
-make_directory(${LIBRARY_OUTPUT_PATH})
-make_directory(${EXECUTABLE_OUTPUT_PATH})
-# and let us clean their contents on a "make clean"
-##set_directory_properties(PROPERTIES LIBRARY_OUTPUT_PATH ADDITIONAL_MAKE_CLEAN_FILES)
-##set_directory_properties(PROPERTIES EXECUTABLE_OUTPUT_PATH ADDITIONAL_MAKE_CLEAN_FILES)
-mark_as_advanced(LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
-mark_as_advanced(CMAKE_BACKWARDS_COMPATIBILITY)
-##########################################
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY HELPSTRING
+                 "Choose the type of build, options are:${_conf_string}")
 
-# Pick up our cmake modules - they are all in the cmake subdirectory
-set(ROBOTICSLAB_VISION_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-# let cmake use them
-list(APPEND CMAKE_MODULE_PATH ${ROBOTICSLAB_VISION_MODULE_PATH})
+    if(NOT CMAKE_BUILD_TYPE)
+        # Encourage the user to specify build type.
+        message(STATUS "Setting build type to 'Release' as none was specified.")
+        set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE Release)
+    endif()
+endif()
+
+# Pick up our cmake modules.
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 # Bootstrap YCM. Stick to v0.2.2 because of:
 # https://github.com/robotology/ycm/issues/118
 # ...and to keep YCM itself compatible with cmake_minimum_required().
 set(YCM_TAG v0.2.2)
 include(YCMBootstrap)
+
+# Standard installation directories.
+include(GNUInstallDirs)
+
+# Control where libraries and executables are placed during the build.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+
+# Enabling coverage.
+option(ENABLE_coverage "Choose if you want to enable coverage collection" OFF)
+
+if(ENABLE_coverage)
+    # List supported compilers.
+    if(CMAKE_COMPILER_IS_GNUCXX)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+    endif()
+endif()
 
 # Superbuild phase - include color-debug.
 include(FindOrBuildPackage)
@@ -81,40 +87,82 @@ if(USE_SYSTEM_COLOR_DEBUG)
     include_directories(${COLOR_DEBUG_INCLUDE_DIRS})
 endif()
 
-#set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_INCLUDE_DIRS)
-#set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_LINK_DIRS)
-#set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_LIBRARIES)
-#set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_TARGETS)
-set(ROBOTICSLAB_VISION_INCLUDE_DIRS CACHE INTERNAL "appended header dirs" FORCE)
-set(ROBOTICSLAB_VISION_LINK_DIRS CACHE INTERNAL "appended link dirs" FORCE)
-set(ROBOTICSLAB_VISION_LIBRARIES CACHE INTERNAL "appended libraries" FORCE)
+# Store common include directories in global scope.
+set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_INCLUDE_DIRS)
 
-# add main contents
+# Store list of exported targets in global scope.
+set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_TARGETS)
+
+# Create targets if specific requirements are satisfied.
+include(CMakeDependentOption)
+
+# Add main contents.
 add_subdirectory(share)
 add_subdirectory(libraries)
 add_subdirectory(programs)
 
-# export our variables to a ROBOTICSLAB_VISIONConfig.cmake creation
-set(ROBOTICSLAB_VISION_LINK_DIRS ${ROBOTICSLAB_VISION_LINK_DIRS} ${LIBRARY_OUTPUT_PATH})
-configure_file(${CMAKE_SOURCE_DIR}/cmake/template/ROBOTICSLAB_VISIONConfig.cmake.in
-               ${CMAKE_BINARY_DIR}/ROBOTICSLAB_VISIONConfig.cmake @ONLY)
+# Store the package in the user registry.
+export(PACKAGE ROBOTICSLAB_VISION)
 
-# create a symbolic link to the shared directory (as contains models and may be heavy)
-# If you want a deep copy, you can use the copy_directory command instead of create_symlink.
-#add_custom_target(install_applications COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/app ${CMAKE_SOURCE_DIR}/../app)
+# Retrieve global properties.
+get_property(_common_includes GLOBAL PROPERTY ROBOTICSLAB_VISION_INCLUDE_DIRS)
+get_property(_exported_targets GLOBAL PROPERTY ROBOTICSLAB_VISION_TARGETS)
 
-#endif(MSVC)
-##add_custom_target(nuke
-##  "${CMAKE_COMMAND}" -E "remove_directory" "${CMAKE_SOURCE_DIR}/bin" ";"
-##  "${CMAKE_COMMAND}" -E "remove_directory" "${CMAKE_SOURCE_DIR}/lib")
+# CMake installation path.
+if(WIN32)
+    set(_cmake_destination cmake)
+else()
+    set(_cmake_destination ${CMAKE_INSTALL_LIBDIR}/cmake/ROBOTICSLAB_VISION)
+endif()
 
-#MESSAGE("\nDon't forget to set: " ${CMAKE_BINARY_DIR} " as your \${ROBOTICSLAB_VISION_DIR} !!!\n")
+# Create and install config files.
+include(CMakePackageConfigHelpers)
 
-# uninstall target
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/template/ROBOTICSLAB_VISIONConfigUninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/ROBOTICSLAB_VISIONConfigUninstall.cmake" IMMEDIATE @ONLY)
+# Set exported variables (build tree).
+set(ROBOTICSLAB_VISION_INCLUDE_DIR "${_common_includes}")
+set(ROBOTICSLAB_VISION_MODULE_DIR ${CMAKE_SOURCE_DIR}/cmake)
 
-add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/ROBOTICSLAB_VISIONConfigUninstall.cmake)
+# <pkg>Config.cmake (build tree).
+configure_package_config_file(${CMAKE_SOURCE_DIR}/cmake/template/ROBOTICSLAB_VISIONConfig.cmake.in
+                              ${CMAKE_BINARY_DIR}/ROBOTICSLAB_VISIONConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_BINARY_DIR}
+                              INSTALL_PREFIX ${CMAKE_BINARY_DIR}
+                              PATH_VARS ROBOTICSLAB_VISION_INCLUDE_DIR
+                                        ROBOTICSLAB_VISION_MODULE_DIR
+                              NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 
+# Set exported variables (build tree).
+set(ROBOTICSLAB_VISION_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
+set(ROBOTICSLAB_VISION_MODULE_DIR ${CMAKE_INSTALL_DATADIR}/ROBOTICSLAB_VISION/cmake)
+
+# <pkg>Config.cmake (install tree).
+configure_package_config_file(${CMAKE_SOURCE_DIR}/cmake/template/ROBOTICSLAB_VISIONConfig.cmake.in
+                              ${CMAKE_BINARY_DIR}/ROBOTICSLAB_VISIONConfig.cmake.install
+                              INSTALL_DESTINATION ${_cmake_destination}
+                              PATH_VARS ROBOTICSLAB_VISION_INCLUDE_DIR
+                                        ROBOTICSLAB_VISION_MODULE_DIR
+                              NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+
+# Install <pkg>Config.cmake.
+install(FILES ${CMAKE_BINARY_DIR}/ROBOTICSLAB_VISIONConfig.cmake.install
+        RENAME ROBOTICSLAB_VISIONConfig.cmake
+        DESTINATION ${_cmake_destination})
+
+# Export library targets if enabled.
+# https://github.com/roboticslab-uc3m/project-generator/issues/19
+if(_exported_targets)
+    # <pkg>Targets.cmake (build tree).
+    # In CMake 3.0 or later: export(EXPORT ROBOTICSLAB_VISION...)
+    export(TARGETS ${_exported_targets}
+           NAMESPACE ROBOTICSLAB::
+           FILE ROBOTICSLAB_VISIONTargets.cmake)
+
+    # <pkg>Targets.cmake (install tree).
+    install(EXPORT ROBOTICSLAB_VISION
+            DESTINATION ${_cmake_destination}
+            NAMESPACE ROBOTICSLAB::
+            FILE ROBOTICSLAB_VISIONTargets.cmake)
+endif()
+
+# Configure and create uninstall target.
+include(AddUninstallTarget)

@@ -1,14 +1,39 @@
 # Authors: Juan G Victores
 # CopyPolicy: Released under the terms of the LGPLv2.1 or later, see LGPL.TXT
-# Evident yet unstandarized names
 
-IF (NOT ROBOTICSLAB_VISION_FOUND)
+# Once you find_package(ROBOTICSLAB_VISION), it defines:
+#
+# * several targets; it's advised to link against individual libraries with the usual
+#   target_link_libraries() command
+#
+# * ROBOTICSLAB_VISION_INCLUDE_DIRS; use include_directories(${ROBOTICSLAB_VISION_INCLUDE_DIRS})
+#
+# * ROBOTICSLAB_VISION_MODULE_PATH; use list(APPEND CMAKE_MODULE_PATH ${ROBOTICSLAB_VISION_MODULE_PATH})
+#
+# * ROBOTICSLAB_VISION_LIBRARIES; shorthand for linking against all targets at once,
+#   use target_link_libraries(_target ${ROBOTICSLAB_VISION_LIBRARIES})
+#
+# Notes:
+#
+# * All target names are prepended with the ROBOTICSLAB:: namespace
 
-  SET(ROBOTICSLAB_VISION_LIBRARIES "@ROBOTICSLAB_VISION_LIBRARIES@")
-  SET(ROBOTICSLAB_VISION_INCLUDE_DIRS "@ROBOTICSLAB_VISION_INCLUDE_DIRS@")
-  SET(ROBOTICSLAB_VISION_LINK_DIRS "@ROBOTICSLAB_VISION_LINK_DIRS@")
-  SET(ROBOTICSLAB_VISION_DEFINES "@ROBOTICSLAB_VISION_DEFINES@")
-  SET(ROBOTICSLAB_VISION_MODULE_PATH "@ROBOTICSLAB_VISION_MODULE_PATH@")
+@PACKAGE_INIT@
 
-  SET (ROBOTICSLAB_VISION_FOUND TRUE)
-ENDIF (NOT ROBOTICSLAB_VISION_FOUND)
+set(ROBOTICSLAB_VISION_INCLUDE_DIRS)
+
+foreach(_dir @PACKAGE_ROBOTICSLAB_VISION_INCLUDE_DIR@)
+    set_and_check(_temp_var ${_dir})
+    list(APPEND ROBOTICSLAB_VISION_INCLUDE_DIRS ${_temp_var})
+endforeach()
+
+set(ROBOTICSLAB_VISION_MODULE_PATH "@PACKAGE_ROBOTICSLAB_VISION_MODULE_DIR@")
+
+if(NOT "@_exported_targets@" STREQUAL "")
+    include(${CMAKE_CURRENT_LIST_DIR}/ROBOTICSLAB_VISIONTargets.cmake)
+
+    set(ROBOTICSLAB_VISION_LIBRARIES)
+
+    foreach(_target @_exported_targets@)
+        list(APPEND ROBOTICSLAB_VISION_LIBRARIES ROBOTICSLAB::${_target})
+    endforeach()
+endif()

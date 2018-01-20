@@ -1,19 +1,29 @@
+option(ENABLE_TravisLib "Enable/disable TravisLib" ON)
+
 if(ENABLE_TravisLib)
 
 find_package(OpenCV REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-add_library(TravisLib TravisLib.hpp TravisLib.cpp)
+add_library(TravisLib TravisLib.hpp
+                      TravisLib.cpp)
 
-target_link_libraries(TravisLib ${OpenCV_LIBS})
+set_target_properties(TravisLib PROPERTIES PUBLIC_HEADER TravisLib.hpp)
+
+target_link_libraries(TravisLib PUBLIC ${OpenCV_LIBS})
+
+target_include_directories(TravisLib PUBLIC ${OpenCV_INCLUDE_DIRS}
+                                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                                            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 install(TARGETS TravisLib
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin)
+        EXPORT ROBOTICSLAB_VISION
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-set(ROBOTICSLAB_VISION_INCLUDE_DIRS ${ROBOTICSLAB_VISION_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "appended header dirs")
-set(ROBOTICSLAB_VISION_LIBRARIES ${ROBOTICSLAB_VISION_LIBRARIES} TravisLib CACHE INTERNAL "appended libraries")
+set_property(GLOBAL APPEND PROPERTY ROBOTICSLAB_VISION_TARGETS TravisLib)
 
 endif()

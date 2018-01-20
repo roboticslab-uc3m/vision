@@ -2,5 +2,4 @@
 # Authors: Juan G. Victores
 
 add_subdirectory(TravisLib)
-add_subdirectory(YarpPlugins)  # Old VisionYarp, a plugin library which contains YARP plugins
-
+add_subdirectory(YarpPlugins)
