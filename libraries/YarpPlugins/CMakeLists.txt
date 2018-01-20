@@ -2,28 +2,33 @@
 # Authors: Juan G. Victores & Raul de Santos Rico
 # CopyPolicy: Released under the terms of the LGPLv2.1 or later, see LGPL.TXT
 
-cmake_minimum_required(VERSION 2.6)
+option(ENABLE_YarpPlugins "Enable/disable YarpPlugins" OFF)
 
-IF (ENABLE_YarpPlugins)
+if(ENABLE_YarpPlugins)
 
-  option(ENABLE_launchYarpPlugins "Choose if you want to compile launchYarpPlugins" TRUE)
+# Find YARP (common dependency for all devices).
+find_package(YARP REQUIRED)
 
-  find_package(YARP REQUIRED)
-  include_directories(${YARP_INCLUDE_DIRS})
-  list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})  
-  include(YarpPlugin)
+# Include YARP CMake modules (needless since YARP 2.3.70).
+list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
 
-#  yarp_begin_plugin_library(YarpPlugins)
-#   add_subdirectory(Espeak)
-#  yarp_end_plugin_library(YarpPlugins)
+# Utilities for creating YARP devices.
+include(YarpPlugin)
 
-#  install(TARGETS YarpPlugins DESTINATION lib)
+# Common YARP includes for subdirectories (needless since YARP 2.3.70).
+include_directories(${YARP_INCLUDE_DIRS})
 
-#  IF (ENABLE_launchYarpPlugins)
+# Make interface headers discoverable by subdirectories.
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-#    yarp_add_plugin_library_executable(launchYarpPlugins YarpPlugins)
-#    install(TARGETS launchYarpPlugins DESTINATION bin)
+# YARP devices.
+#add_subdirectory(...)
 
-#  ENDIF (ENABLE_launchYarpPlugins)
+# Install interface headers.
+#install(FILES IWhatever.h
+#        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-ENDIF (ENABLE_YarpPlugins)
+# Export variables to the global scope.
+#set_property(GLOBAL APPEND PROPERTY ROBOTICSLAB_VISION_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
+
+endif()

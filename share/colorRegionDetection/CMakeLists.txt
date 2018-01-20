@@ -2,12 +2,9 @@
 # Author: Juan G Victores
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
-set(appname colorRegionDetection)
+yarp_install(FILES conf/colorRegionDetection.ini
+             DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/colorRegionDetection)
 
-
-file(GLOB conf ${CMAKE_CURRENT_SOURCE_DIR}/conf/*.ini)
-file(GLOB scripts ${CMAKE_CURRENT_SOURCE_DIR}/scripts/*.template)
-
-yarp_install(FILES ${conf} DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/${appname})
-yarp_install(FILES ${scripts} DESTINATION ${ROBOTICSLAB-VISION_APPLICATIONS_TEMPLATES_INSTALL_DIR})
-
+yarp_install(FILES scripts/example_colorRegionDetection.xml
+                   scripts/example_colorRegionDetection_local.xml
+             DESTINATION ${ROBOTICSLAB-VISION_APPLICATIONS_TEMPLATES_INSTALL_DIR})
