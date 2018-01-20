@@ -5,7 +5,7 @@
 # Exploit new cmake 2.6 features (export). 
 
 # reduce warning level with cmake 2.6
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.9)
 #cmake policies
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
@@ -62,6 +62,24 @@ mark_as_advanced(CMAKE_BACKWARDS_COMPATIBILITY)
 set(ROBOTICSLAB_VISION_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 # let cmake use them
 list(APPEND CMAKE_MODULE_PATH ${ROBOTICSLAB_VISION_MODULE_PATH})
+
+# Bootstrap YCM. Stick to v0.2.2 because of:
+# https://github.com/robotology/ycm/issues/118
+# ...and to keep YCM itself compatible with cmake_minimum_required().
+set(YCM_TAG v0.2.2)
+include(YCMBootstrap)
+
+# Superbuild phase - include color-debug.
+include(FindOrBuildPackage)
+find_or_build_package(COLOR_DEBUG)
+
+# find_or_build_package() doesn't bring into scope COLOR_DEBUG_INCLUDE_DIRS
+# nor other config variables. If a system copy is found, we have to call the
+# find_package() command and proceed as usual.
+if(USE_SYSTEM_COLOR_DEBUG)
+    find_package(COLOR_DEBUG REQUIRED)
+    include_directories(${COLOR_DEBUG_INCLUDE_DIRS})
+endif()
 
 #set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_INCLUDE_DIRS)
 #set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_LINK_DIRS)

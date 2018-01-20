@@ -11,6 +11,8 @@ add_executable(haarDetection2D main.cpp
                                SegmentorThread.hpp
                                SegmentorThread.cpp)
 
+add_dependencies(haarDetection2D COLOR_DEBUG)
+
 target_link_libraries(haarDetection2D YARP::YARP_OS
                                       YARP::YARP_init
                                       YARP::YARP_dev
