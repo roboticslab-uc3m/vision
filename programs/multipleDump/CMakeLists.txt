@@ -4,10 +4,7 @@ if(ENABLE_multipleDump)
 
 find_package(YARP REQUIRED)
 
-get_property(_common_includes GLOBAL PROPERTY ROBOTICSLAB_VISION_INCLUDE_DIRS)
-
-include_directories(${YARP_INCLUDE_DIRS}
-                    ${_common_includes})
+include_directories(${YARP_INCLUDE_DIRS})
 
 add_executable(multipleDump main.cpp
                             MultipleDump.hpp

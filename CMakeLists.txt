@@ -2,7 +2,7 @@
 # Authors: Juan G. Victores & Raul de Santos Rico
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 
 # Safety check against missing dummy library for system-available COLOR_DEBUG.
 # Remove if cmake_minimum_required() above is set to 3.0 or later.
@@ -14,13 +14,6 @@ project(ROBOTICSLAB_VISION)
 
 # Force building shared libraries and YARP DL modules.
 set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "hide this!")
-
-### options: cpp programs
-option(ENABLE_colorRegionDetection "Choose if you want to compile colorRegionDetection" TRUE)
-option(ENABLE_haarDetection "Choose if you want to compile haarDetection" TRUE)
-option(ENABLE_voxelOccupancyDetection "Choose if you want to compile voxelOccupancyDetection" TRUE)
-option(ENABLE_multipleDump "Choose if you want to compile multipleDump" TRUE)
-option(ENABLE_pointAtObjectServer "Choose if you want to compile pointAtObjectServer" TRUE)
 
 # Add suffix for debug libraries.
 if(MSVC)

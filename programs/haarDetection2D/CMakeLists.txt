@@ -5,11 +5,8 @@ if(ENABLE_haarDetection2D)
 find_package(OpenCV REQUIRED)
 find_package(YARP REQUIRED)
 
-get_property(_common_includes GLOBAL PROPERTY ROBOTICSLAB_VISION_INCLUDE_DIRS)
-
 include_directories(${YARP_INCLUDE_DIRS}
-                    ${OpenCV_INCLUDE_DIRS}
-                    ${_common_includes})
+                    ${OpenCV_INCLUDE_DIRS})
 
 add_executable(haarDetection2D main.cpp
                                HaarDetection2D.hpp

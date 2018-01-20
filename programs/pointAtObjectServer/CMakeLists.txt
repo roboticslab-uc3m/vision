@@ -5,11 +5,8 @@ if(ENABLE_pointAtObjectServer)
 find_package(YARP REQUIRED)
 find_package(PCL 1.6 REQUIRED)
 
-get_property(_common_includes GLOBAL PROPERTY ROBOTICSLAB_VISION_INCLUDE_DIRS)
-
 include_directories(${YARP_INCLUDE_DIRS}
-                    ${PCL_INCLUDE_DIRS}
-                    ${_common_includes})
+                    ${PCL_INCLUDE_DIRS})
 
 link_directories(${PCL_LIBRARY_DIRS})
 
