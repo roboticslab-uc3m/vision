@@ -164,44 +164,37 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 void SegmentorThread::run() {
     // printf("[SegmentorThread] run()\n");
 
-//    std::cout<<"CHECKING"<<std::endl;
-
     yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
     if (depth.height()<10) {
         //printf("No depth yet...\n");
         return;
     };
+
+    //Camera Resolutions:
     int H=depth.height(); //Height resolution
     int W=depth.width();
 
-//    double x = (320-W/2)*600/520;
-//    double y = (130-H/2)*600/520;
-//    std::cout<<" REAL X ES "<<x<<std::endl;
-//    std::cout<<" REAL Y ES "<<y<<std::endl;
-
-    //printf(" The depth of the low pixel is %d\n", depth.pixel(0, floor(0.45*H))); //107 for 240
-    //printf(" The depth of the low pixel is %d\n", depth.pixel(0, ceil(0.54*H))); //130 for 240
-
-    //                std::cout<<" EL umbral bajo es::::::::::::::: "<<areaLowThreshold<<std::endl;
-    //                std::cout<<" EL umbral alto es::::::::::::::: "<<areaHighThreshold<<std::endl;
-
     std::vector<int> occupancy_indices;
 
+    //Find pixels with a depth inside the interest area (occupancy pixels)
+
     //"Explore" loop
-    for(int i=floor(0.45*H); i<ceil(0.54*H); i++){
+    for(int i=floor(0.45*H); i<ceil(0.54*H); i++){ //Camera H umbral (0.45,0.54)H
         for(int j=0; j<W;j++){
-//            std::cout<<"LA PROFUNDIDAD DEL PIXEL "<<i<<"   "<<j<< "ES:: "<<depth.pixel(j,i)<<std::endl;
-            //Find pixels with a depth inside the interest area (occupancy pixels)
             //First convert to REAL WORLD coordinates to use the real area
             double x = (j-W/2)*depth.pixel(j,i)*kinectCalibrationValue;
             double y = (i-H/2)*depth.pixel(j,i)*kinectCalibrationValue;
+
+            //We have 4 voxel. This should be parametric.
             int ix=(highXBox-lowXBox)/4;
             int areaRegion=areaHighThreshold-areaLowThreshold;
-            //if(depth.pixel(j,i)<areaHighThreshold && depth.pixel(j,i)>areaLowThreshold)
+
+            //Is inside de search area?
             if(lowXBox<x && x<highXBox && lowYBox<y && y<highYBox && areaLowThreshold<depth.pixel(j,i) && depth.pixel(j,i)<areaHighThreshold){
-                //Calculate the number of occupancy pixels around that pixel
-                //std::cout<<"Detecté Pixel dentro del área de interés"<<std::endl;
+                //Calculate the number of occupancy pixels around that pixel.
                 int numberOccupancyIndices=0;
+
+                //Define a search area to see the occupancy around that pixel.
                 int lowX=j-searchAreaDilatation;
                 int highX=j+searchAreaDilatation;
                 if(lowX<0){
@@ -210,30 +203,28 @@ void SegmentorThread::run() {
                 if(highX>W){
                     highX=W;
                 }
-//                std::cout<<" EL umbral bajo es::::::::::::::: "<<areaLowThreshold<<std::endl;
-//                std::cout<<" EL umbral alto es::::::::::::::: "<<areaHighThreshold<<std::endl;
+
                 //Check area around detected pixel for pixel occupancy.
-//                std::cout<<"Umbral bajo es:: "<<areaLowThreshold<<std::endl;
-//                std::cout<<"Umbral alto es:: "<<areaHighThreshold<<std::endl;
                 for(int k=floor(0.45*H); k<ceil(0.54*H); k++){
                     for(int l=lowX; l<highX;l++){
-//                        std::cout<<"HASTA AQUI LLEGUE"<<std::endl;
                         if(depth.pixel(l,k)<areaHighThreshold && depth.pixel(l,k)>areaLowThreshold){
                             numberOccupancyIndices++;
                         }
                     }
                 }
+
                 //If we have more occupancy pixels than the threshold, that voxel is considered occupied.
-//                std::cout<<"THE NUMBER OF OCCUPANCY INDICES IS"<< numberOccupancyIndices<<std::endl;
                 if(numberOccupancyIndices>occupancyThreshold){
+
                     //Yarp Bottle
                     yarp::os::Bottle output;
-//                    std::cout<<" REAL X ES "<<areaLowThreshold<<std::endl;
-//                    std::cout<<" REAL Y ES "<<areaHighThreshold<<std::endl;
                     std::cout<<" X "<<x<<std::endl;
                     std::cout<<" Y "<<y<<std::endl;
                     std::cout<<" Z "<<depth.pixel(j,i)<<std::endl;
                     std::cout<<" Incremento "<<ix<<std::endl;
+
+
+                    //We have 4 voxel. This should be parametric.
                     if(lowXBox<x && x<(lowXBox+ix) && lowYBox<y && y<highYBox){ //Voxel_row_1
                         if(depth.pixel(j,i)<(areaRegion/4+areaLowThreshold)){ //Voxel_col_1
                             output.addInt(0);
@@ -368,6 +359,7 @@ void SegmentorThread::run() {
                 }
             }
 
+            //Voxel to clean
             if(lowXBox<x && x<(lowXBox+ix) && lowYBox<y && y<highYBox){ //CLEAN VOXEL
                 if((5*areaRegion/4+areaLowThreshold)<depth.pixel(j,i) && depth.pixel(j,i)<(6*areaRegion/4+areaLowThreshold)){
                     yarp::os::Bottle output;
