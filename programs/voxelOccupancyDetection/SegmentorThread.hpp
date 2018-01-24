@@ -40,7 +40,7 @@
 #define DEFAULT_SEARCH_AREA_DILATATION 10
 #define DEFAULT_AREA_LOW_THRESHOLD 730 //mm
 #define DEFAULT_AREA_HIGH_THRESHOLD 1250 //mm
-#define DEFAULT_OCCUPANCY_THRESHOLD 150
+#define DEFAULT_OCCUPANCY_THRESHOLD 100
 #define DEFAULT_CALIBRATION_VALUE_KINECT 0.001923 //This is an approximation (for better results a calibration may be needed)
 #define DEFAULT_LOW_Y_BOX_VALUE -15
 #define DEFAULT_HIGH_Y_BOX_VALUE 20
@@ -142,7 +142,6 @@ private:
     int lowYBox;
     int highYBox;
     int voxelResolution;
-
 
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
