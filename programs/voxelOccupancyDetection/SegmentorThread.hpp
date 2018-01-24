@@ -48,6 +48,7 @@
 //#define DEFAULT_HIGH_X_BOX_VALUE 184
 #define DEFAULT_LOW_X_BOX_VALUE -300
 #define DEFAULT_HIGH_X_BOX_VALUE 225
+#define DEFAULT_VOXEL_RESOLUTION 16 //this is the number of voxel per row.
 
 
 namespace roboticslab
@@ -140,6 +141,8 @@ private:
     int highXBox;
     int lowYBox;
     int highYBox;
+    int voxelResolution;
+
 
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}

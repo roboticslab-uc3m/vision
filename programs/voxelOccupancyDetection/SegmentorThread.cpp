@@ -55,6 +55,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     highXBox=DEFAULT_HIGH_X_BOX_VALUE;
     lowYBox=DEFAULT_LOW_Y_BOX_VALUE;
     highYBox=DEFAULT_HIGH_Y_BOX_VALUE;
+    voxelResolution=DEFAULT_VOXEL_RESOLUTION;
 
 
 
@@ -186,7 +187,7 @@ void SegmentorThread::run() {
             double y = (i-H/2)*depth.pixel(j,i)*kinectCalibrationValue;
 
             //We have 4 voxel. This should be parametric.
-            //int ix=(highXBox-lowXBox)/4;
+            int ix=(highXBox-lowXBox)/voxelResolution;
             int areaRegion=areaHighThreshold-areaLowThreshold;
 
             //Is inside de search area?
@@ -226,6 +227,21 @@ void SegmentorThread::run() {
                     output.addDouble(y);
                     std::cout<<" PIXEL "<<x<<" "<<y<<" is considered occupied"<<std::endl;
                     pOutPort->write(output);
+
+                    for(int r=1;r<int(voxelResolution*1.5);r++){
+
+                        if(lowXBox<x && x<(lowXBox+r*ix) && lowYBox<y && y<highYBox){ //Voxel_row
+                            for(int c=1; c<voxelResolution; c++){
+                                if(depth.pixel(j,i)<((c/voxelResolution)*areaRegion+areaLowThreshold)){
+                                    output.addInt(r);
+                                    output.addInt(c);
+                                    pOutPort->write(output);
+                                    std::cout<<" ENTRE EN EL VOXEL"<<r<<" "<<c<<std::endl;
+                                    return;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 //If not enough occupancy pixels. The region is saved for later removal of search area.
