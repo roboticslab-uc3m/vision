@@ -1,5 +1,5 @@
 <application>
-<name>visionSegmentorWebcam App</name>
+<name>example visionSegmentorOpenCV App</name>
         <module>
                 <name>yarpdev</name>
                 <parameters>--device opencv_grabber --name /grabber/img:o</parameters>

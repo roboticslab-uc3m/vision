@@ -1,5 +1,5 @@
 <application>
-<name>visionSegmentorWebcam App</name>
+<name>example visionSegmentorFFMPEG App</name>
         <module>
                 <name>yarpdev</name>
                 <parameters>--device ffmpeg_grabber --v4l2 /dev/video0 --name /grabber/img:o</parameters>
