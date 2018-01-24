@@ -225,18 +225,26 @@ void SegmentorThread::run() {
                     //std::cout<<" Incremento "<<ix<<std::endl;
                     output.addDouble(x);
                     output.addDouble(y);
-                    std::cout<<" PIXEL "<<x<<" "<<y<<" is considered occupied"<<std::endl;
+                    //std::cout<<" PIXEL "<<x<<" "<<y<<" is considered occupied"<<std::endl;
                     pOutPort->write(output);
 
-                    for(int r=1;r<int(voxelResolution*1.5);r++){
+                    std::cout<<"The x limits are: "<<lowXBox<<" "<<highXBox<<std::endl;
+                    std::cout<<"The y limits are: "<<lowYBox<<" "<<highYBox<<std::endl;
 
+
+                    for(int r=1;r<=voxelResolution;r++){
                         if(lowXBox<x && x<(lowXBox+r*ix) && lowYBox<y && y<highYBox){ //Voxel_row
-                            for(int c=1; c<voxelResolution; c++){
-                                if(depth.pixel(j,i)<((c/voxelResolution)*areaRegion+areaLowThreshold)){
+                            std::cout<<"I AM IN A ROW"<<std::endl;
+                            for(int c=1; c<=voxelResolution; c++){
+                                std::cout<<c<<std::endl;
+                                double bonud=(float(c)/voxelResolution)*areaRegion+areaLowThreshold;
+                                std::cout<<"Has to be lower than "<<bonud<<std::endl;
+                                if(depth.pixel(j,i)<((float(c)/voxelResolution)*areaRegion+areaLowThreshold)){
+                                    std::cout<<"I AM IN A VOXEL"<<std::endl;
                                     output.addInt(r);
                                     output.addInt(c);
                                     pOutPort->write(output);
-                                    std::cout<<" ENTRE EN EL VOXEL"<<r<<" "<<c<<std::endl;
+                                    std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ENTRE EN EL VOXEL"<<r<<" "<<c<<std::endl;
                                     return;
                                 }
                             }
