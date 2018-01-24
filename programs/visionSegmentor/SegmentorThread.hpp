@@ -38,6 +38,9 @@ using namespace yarp::sig::draw;
 
 using namespace cv;
 
+namespace roboticslab
+{
+
 class SegmentorThread : public RateThread {
 private:
     BufferedPort<ImageOf<PixelRgb> > *pInImg;
@@ -76,6 +79,8 @@ public:
     void init(ResourceFinder &rf);
     void run();  // The periodical function
 };
+
+}  // namespace roboticslab
 
 #endif  // __SEGMENTOR_THREAD_HPP__
 

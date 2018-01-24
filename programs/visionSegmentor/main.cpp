@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
     rf.setDefaultConfigFile("visionSegmentor.ini");
     rf.configure(argc, argv);
 
-    VisionSegmentor mod;
+    roboticslab::VisionSegmentor mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

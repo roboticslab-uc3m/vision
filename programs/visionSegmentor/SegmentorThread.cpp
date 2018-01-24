@@ -2,18 +2,26 @@
 
 #include "SegmentorThread.hpp"
 
+namespace roboticslab
+{
+
 /************************************************************************/
-void SegmentorThread::setInImg(BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pInImg) {
+
+void SegmentorThread::setInImg(BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pInImg)
+{
     pInImg = _pInImg;
 }
 
 /************************************************************************/
-void SegmentorThread::setOutImg(BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg) {
+
+void SegmentorThread::setOutImg(BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg)
+{
     pOutImg = _pOutImg;
 }
 
 /************************************************************************/
-void SegmentorThread::setOutPort(Port * _pOutPort) {
+void SegmentorThread::setOutPort(Port * _pOutPort)
+{
     pOutPort = _pOutPort;
 }
 
@@ -391,3 +399,4 @@ void SegmentorThread::run() {
 
 /************************************************************************/
 
+}  // namespace roboticslab

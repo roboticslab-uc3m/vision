@@ -2,7 +2,11 @@
 
 #include "VisionSegmentor.hpp"
 
+namespace roboticslab
+{
+
 /************************************************************************/
+
 bool VisionSegmentor::configure(ResourceFinder &rf) {
 
     //printf("--------------------------------------------------------------\n");
@@ -52,3 +56,4 @@ bool VisionSegmentor::interruptModule() {
 
 /************************************************************************/
 
+}  // namespace roboticslab

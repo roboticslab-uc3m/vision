@@ -8,6 +8,9 @@
 using namespace yarp::os;
 using namespace yarp::sig;
 
+namespace roboticslab
+{
+
 class VisionSegmentor : public RFModule {
   private:
     SegmentorThread segmentorThread;
@@ -23,6 +26,8 @@ class VisionSegmentor : public RFModule {
   public:
     bool configure(ResourceFinder &rf);
 };
+
+}  // namespace roboticslab
 
 #endif  // __VISION_SEGMENTOR_HPP__
 
