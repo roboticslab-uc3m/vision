@@ -7,3 +7,5 @@ add_subdirectory(haarDetection2D)
 add_subdirectory(multipleDump)
 add_subdirectory(pointAtObjectServer)
 add_subdirectory(voxelOccupancyDetection)
+add_subdirectory(visionSegmentor)
+
