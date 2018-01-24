@@ -2,7 +2,7 @@
 <name>example visionSegmentorOpenCV App</name>
         <module>
                 <name>yarpdev</name>
-                <parameters>--device opencv_grabber --name /grabber/img:o</parameters>
+                <parameters>--device opencv_grabber --name /grabber/img:o --camera 0</parameters>
                 <node>localhost</node>
         </module>
 
@@ -18,7 +18,7 @@
 
         <module>
                 <name>visionSegmentor</name>
-                <parameters>--outFeaturesFormat 1</parameters>
+                <parameters>--outFeaturesFormat 1 --maxNumBlobs 1 --algorithm blueMinusRed</parameters>
                 <node>localhost</node>
         </module>
         <module>
