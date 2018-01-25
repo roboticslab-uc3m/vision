@@ -183,8 +183,9 @@ void SegmentorThread::run() {
     int numBlobs = travis.blobize(maxNumBlobs);
     if( 0 == numBlobs )
         return;
-    std::vector<cv::Point> blobsXY;
-    travis.getBlobsXY(blobsXY);
+    std::vector<cv::Point2d> blobsXY;
+    if( ! travis.getBlobsXY(blobsXY) )
+        return;
     std::vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond;
     std::vector<double> blobsRectangularity,blobsSolidity;
     std::vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;

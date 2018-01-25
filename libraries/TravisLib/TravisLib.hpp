@@ -93,7 +93,7 @@ public:
      * This function calculates X and Y as moments directly extracted from the stored contours.
      * @param locations returned.
      */
-    bool getBlobsXY(std::vector <cv::Point>& locations);
+    bool getBlobsXY(std::vector<cv::Point2d> &locations);
 
     /**
      * This function calculates the Area of the blobs (contours).
