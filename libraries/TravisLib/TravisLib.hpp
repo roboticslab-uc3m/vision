@@ -80,6 +80,7 @@ public:
     /**
      * Use findContours to get what we use as blobs.
      * @param maxNumBlobs the number of max blobs to keep, the rest get truncated.
+     * @return number of blobs detected (can be 0), truncated by maxNumBlobs.
      */
     int blobize(const int& maxNumBlobs);
 
