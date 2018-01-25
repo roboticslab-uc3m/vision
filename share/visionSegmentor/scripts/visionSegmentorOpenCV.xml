@@ -41,5 +41,10 @@
                 <parameters>-e "yarp read ... /visionSegmentor/features:o"</parameters>
                 <node>localhost</node>
         </module>
+
+        <connection>
+                <from>/visionSegmentor/features:o</from>
+                <to>/features:i</to>
+        </connection>
 </application>
 
