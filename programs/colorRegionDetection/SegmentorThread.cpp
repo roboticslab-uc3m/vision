@@ -180,7 +180,9 @@ void SegmentorThread::run() {
     travis.morphClosing( inYarpImg.width() * morphClosing / 100.0 );  // percent
     //travis.morphOpening( morphOpening );
     //travis.morphClosing( morphClosing );
-    travis.blobize(maxNumBlobs);
+    int numBlobs = travis.blobize(maxNumBlobs);
+    if( 0 == numBlobs )
+        return;
     std::vector<cv::Point> blobsXY;
     travis.getBlobsXY(blobsXY);
     std::vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond;

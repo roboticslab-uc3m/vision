@@ -108,7 +108,9 @@ void SegmentorThread::run() {
     else if(algorithm=="canny") travis.binarize("canny");
     else travis.binarize(algorithm.c_str(), threshold);
     travis.morphClosing( inYarpImg->width() * morphClosing / 100.0 );
-    travis.blobize(maxNumBlobs);
+    int numBlobs = travis.blobize(maxNumBlobs);
+    if( 0 == numBlobs )
+        return;
     vector<cv::Point> blobsXY;
     travis.getBlobsXY(blobsXY);
     vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond,blobsPerimeter;

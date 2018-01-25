@@ -165,7 +165,7 @@ void Travis::morphOpening(const int& opening) {
 
 /************************************************************************/
 
-void Travis::blobize(const int& maxNumBlobs) {
+int Travis::blobize(const int& maxNumBlobs) {
     if (!_quiet) printf("[Travis] in: blobize(%d)\n", maxNumBlobs);
 
     // [thanks getBiggestContour from smorante] note: here jgvictores decides to avoid Canny
@@ -183,6 +183,7 @@ void Travis::blobize(const int& maxNumBlobs) {
     if (_contours.size() > maxNumBlobs)
         _contours.erase( _contours.begin()+maxNumBlobs, _contours.end() );
 
+    return _contours.size();
 }
 
 /************************************************************************/
