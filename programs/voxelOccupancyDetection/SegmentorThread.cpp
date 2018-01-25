@@ -180,6 +180,10 @@ void SegmentorThread::run() {
 
     std::vector<int> occupancy_indices;
 
+    //Yarp Bottle
+    yarp::os::Bottle output;
+    output.clear(); //Clear bottle
+
     //Find pixels with a depth inside the interest area (occupancy pixels)
 
     //"Explore" loop
@@ -220,14 +224,12 @@ void SegmentorThread::run() {
                 //If we have more occupancy pixels than the threshold, that pixel is considered occupied.
                 if(numberOccupancyIndices>occupancyThreshold){
 
-                    //Yarp Bottle
-                    yarp::os::Bottle output;
                     std::cout<<" X "<<x<<std::endl;
                     std::cout<<" Y "<<y<<std::endl;
                     std::cout<<" Z "<<depth.pixel(j,i)<<std::endl;
                     //std::cout<<" Incremento "<<ix<<std::endl;
-                    output.addDouble(x);
-                    output.addDouble(y);
+                    //output.addDouble(x);
+                    //output.addDouble(y);
                     //std::cout<<" PIXEL "<<x<<" "<<y<<" is considered occupied"<<std::endl;
                     pOutPort->write(output);
 
@@ -243,10 +245,12 @@ void SegmentorThread::run() {
                                 //std::cout<<"Has to be lower than "<<bonud<<std::endl;
                                 if(depth.pixel(j,i)<((float(r+1)/voxelResolution)*areaRegion+areaLowThreshold)){
                                     std::cout<<"I AM IN A VOXEL "<<std::endl;
-                                    output.addInt(r);
+                                    output.clear(); //Clear bottle
                                     output.addInt(c);
+                                    output.addInt(r);
                                     pOutPort->write(output);
-                                    std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ENTRE EN EL VOXEL"<<r<<" "<<c<<std::endl;
+                                    yarp::os::Time::delay(0.1);
+                                    std::cout<<"!!!!!!!!!!!!!!!!!!!!!ENTRE EN EL VOXEL"<<c<<" "<<r<<std::endl;
                                     return;
                                 }
                             }
@@ -291,16 +295,13 @@ void SegmentorThread::run() {
 
                 //If we have more occupancy pixels than the threshold, that pixel is considered occupied.
                 if(numberOccupancyIndices>occupancyThreshold){
-                    std::cout<<" OCUPAO "<<std::endl;
 
-                    //Yarp Bottle
-                    yarp::os::Bottle output;
                     std::cout<<" X "<<x<<std::endl;
                     std::cout<<" Y "<<y<<std::endl;
                     std::cout<<" Z "<<depth.pixel(j,i)<<std::endl;
                     //std::cout<<" Incremento "<<ix<<std::endl;
-                    output.addDouble(x);
-                    output.addDouble(y);
+                    //output.addInt(x);
+                    //output.addInt(y);
                     int uix=(highXBox-lowXBox)/numberUtilityVoxels;
                     //std::cout<<" PIXEL "<<x<<" "<<y<<" is considered occupied"<<std::endl;
                     pOutPort->write(output);
@@ -308,10 +309,12 @@ void SegmentorThread::run() {
                     for(int c=0;c<numberUtilityVoxels;c++){
                         if(lowXBox<x && x<(lowXBox+(c+1)*uix) && lowYBox<y && y<highYBox){ //Voxel_column
                             std::cout<<"UTILITY VOXEL "<<std::endl;
-                            output.addInt(voxelResolution);
+                            output.clear(); //Clear bottle
                             output.addInt(c);
+                            output.addInt(voxelResolution);
                             pOutPort->write(output);
-                            std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ENTRE EN EL VOXEL"<<voxelResolution<<" "<<c<<std::endl;
+                            yarp::os::Time::delay(0.1);
+                            std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ENTRE EN EL VOXEL"<<" "<<c<<voxelResolution<<std::endl;
                             return;
                         }
                     }
