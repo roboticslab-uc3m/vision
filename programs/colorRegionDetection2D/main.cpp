@@ -2,7 +2,7 @@
 
 /**
  * 
- * @ingroup asibot_modules
+ * @ingroup vision_programs
  * \defgroup colorRegionDetection2D colorRegionDetection2D
  *
  * @brief The colorRegionDetection2D module provides basic 2D image feature extraction. It uses the \ref ColorRegionDetection2DLib library.
