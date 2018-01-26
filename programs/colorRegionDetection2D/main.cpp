@@ -2,12 +2,12 @@
 
 /**
  * 
- * @ingroup asibot_modules
+ * @ingroup vision_programs
  * \defgroup colorRegionDetection2D colorRegionDetection2D
  *
- * @brief The colorRegionDetection2D module provides basic 2D image feature extraction. It uses the \ref ColorRegionDetection2DLib library.
+ * @brief The colorRegionDetection2D module provides basic 2D image feature extraction, via roboticslab::ColorRegionDetection2D.
  *
- * The colorRegionDetection2D module provides basic 2D image feature extraction. It uses the \ref ColorRegionDetection2DLib library.
+ * The colorRegionDetection2D module provides basic 2D image feature extraction, via roboticslab::ColorRegionDetection2D.
  * The current feature order is the following:
  \verbatim
  ((0 reserved for timestamps))
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     Network yarp;
     if (!yarp.checkNetwork()) {
         fprintf(stderr,"[fail]\n%s found no yarp network (try running \"yarpserver &\"), bye!\n",argv[0]);
-        return -1;
+        return 1;
     } else printf("[ok]\n");
 
     return mod.runModule(rf);

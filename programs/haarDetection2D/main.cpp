@@ -75,7 +75,7 @@ int main(int argc, char** argv)
     {
         CD_ERROR_NO_HEADER("[fail]\n");
         CD_INFO("%s found no yarp network (try running \"yarpserver &\"), bye!\n", argv[0]);
-        return -1;
+        return 1;
     }
     else
     {
