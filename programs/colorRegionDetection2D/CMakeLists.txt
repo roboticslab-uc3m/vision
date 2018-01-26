@@ -13,10 +13,10 @@ include_directories(${YARP_INCLUDE_DIRS}
                     ${OpenCV_INCLUDE_DIRS})
 
 add_executable(colorRegionDetection2D main.cpp
-                               SegmentorThread.cpp
-                               SegmentorThread.hpp
-                               ColorRegionDetection2D.cpp
-                               ColorRegionDetection2D.hpp)
+                                      SegmentorThread.cpp
+                                      SegmentorThread.hpp
+                                      ColorRegionDetection2D.cpp
+                                      ColorRegionDetection2D.hpp)
 
 target_link_libraries(colorRegionDetection2D YARP::YARP_OS
                                            YARP::YARP_init
