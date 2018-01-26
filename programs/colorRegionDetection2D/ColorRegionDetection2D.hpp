@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __VISION_SEGMENTOR_HPP__
-#define __VISION_SEGMENTOR_HPP__
+#ifndef __COLOR_REGION_DETECTION_2D_HPP__
+#define __COLOR_REGION_DETECTION_2D_HPP__
 
 #include "SegmentorThread.hpp"
 
@@ -11,7 +11,7 @@ using namespace yarp::sig;
 namespace roboticslab
 {
 
-class VisionSegmentor : public RFModule {
+class ColorRegionDetection2D : public RFModule {
   private:
     SegmentorThread segmentorThread;
     //
@@ -29,5 +29,5 @@ class VisionSegmentor : public RFModule {
 
 }  // namespace roboticslab
 
-#endif  // __VISION_SEGMENTOR_HPP__
+#endif  // __COLOR_REGION_DETECTION_2D_HPP__
 
