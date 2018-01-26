@@ -110,10 +110,16 @@ void SegmentorThread::run() {
     travis.morphClosing( inYarpImg->width() * morphClosing / 100.0 );
     int numBlobs = travis.blobize(maxNumBlobs);
     if( 0 == numBlobs )
+    {
+        travis.release();
         return;
+    }
     vector<cv::Point2d> blobsXY;
     if( ! travis.getBlobsXY(blobsXY) )
+    {
+        travis.release();
         return;
+    }
     vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond,blobsPerimeter;
     vector<double> blobsRectangularity,blobsSolidity;
     vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
@@ -121,8 +127,11 @@ void SegmentorThread::run() {
     travis.getBlobsPerimeter(blobsPerimeter);
     travis.getBlobsSolidity(blobsSolidity);
     travis.getBlobsHSV(blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev);
-    bool ok = travis.getBlobsAngle(0,blobsAngle);  // method: 0=box, 1=ellipse; note check for return as 1 can break
-    if (!ok) return;
+    if( ! travis.getBlobsAngle(0,blobsAngle) )  // method: 0=box, 1=ellipse; note check for return as 1 can break
+    {
+        travis.release();
+        return;
+    }
     travis.getBlobsAspectRatio(blobsAspectRatio,blobsAxisFirst,blobsAxisSecond);  // must be called after getBlobsAngle!!!!
     travis.getBlobsRectangularity(blobsRectangularity);  // must be called after getBlobsAngle!!!!
     Mat outCvMat = travis.getCvMat(outImage,seeBounding);

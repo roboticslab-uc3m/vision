@@ -182,19 +182,25 @@ void SegmentorThread::run() {
     //travis.morphClosing( morphClosing );
     int numBlobs = travis.blobize(maxNumBlobs);
     if( 0 == numBlobs )
+    {
+        travis.release();
         return;
+    }
     std::vector<cv::Point2d> blobsXY;
     if( ! travis.getBlobsXY(blobsXY) )
+    {
+        travis.release();
         return;
+    }
     std::vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond;
     std::vector<double> blobsRectangularity,blobsSolidity;
     std::vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
     travis.getBlobsArea(blobsArea);
     travis.getBlobsSolidity(blobsSolidity);
     travis.getBlobsHSV(blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev);
-    bool ok = travis.getBlobsAngle(0,blobsAngle);  // method: 0=box, 1=ellipse; note check for return as 1 can break
-    if (!ok) {
-        fprintf(stderr,"[warning] SegmentorThread: getBlobsAngle failed.\n");
+    if( ! travis.getBlobsAngle(0,blobsAngle) )  // method: 0=box, 1=ellipse; note check for return as 1 can break
+    {
+        travis.release();
         return;
     }
     travis.getBlobsAspectRatio(blobsAspectRatio,blobsAxisFirst,blobsAxisSecond);  // must be called after getBlobsAngle!!!!
