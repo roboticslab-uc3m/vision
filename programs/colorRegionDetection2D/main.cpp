@@ -5,9 +5,9 @@
  * @ingroup asibot_modules
  * \defgroup colorRegionDetection2D colorRegionDetection2D
  *
- * @brief The colorRegionDetection2D module provides basic 2D image feature extraction. It uses the \ref VisionSegmentorLib library.
+ * @brief The colorRegionDetection2D module provides basic 2D image feature extraction. It uses the \ref ColorRegionDetection2DLib library.
  *
- * The colorRegionDetection2D module provides basic 2D image feature extraction. It uses the \ref VisionSegmentorLib library.
+ * The colorRegionDetection2D module provides basic 2D image feature extraction. It uses the \ref ColorRegionDetection2DLib library.
  * The current feature order is the following:
  \verbatim
  ((0 reserved for timestamps))
@@ -57,7 +57,7 @@
  *
  */
 
-#include "VisionSegmentor.hpp"
+#include "ColorRegionDetection2D.hpp"
 
 int main(int argc, char** argv) {
 
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
     rf.setDefaultConfigFile("colorRegionDetection2D.ini");
     rf.configure(argc, argv);
 
-    roboticslab::VisionSegmentor mod;
+    roboticslab::ColorRegionDetection2D mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

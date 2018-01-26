@@ -11,7 +11,7 @@ using namespace yarp::sig;
 namespace roboticslab
 {
 
-class VisionSegmentor : public RFModule {
+class ColorRegionDetection2D : public RFModule {
   private:
     SegmentorThread segmentorThread;
     //
