@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     Network yarp;
     if (!yarp.checkNetwork()) {
         fprintf(stderr,"[fail]\n%s found no yarp network (try running \"yarpserver &\"), bye!\n",argv[0]);
-        return -1;
+        return 1;
     } else printf("[ok]\n");
 
     return mod.runModule(rf);
