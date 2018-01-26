@@ -3,11 +3,11 @@
 /**
  * 
  * @ingroup asibot_modules
- * \defgroup visionSegmentor visionSegmentor
+ * \defgroup colorRegionDetection2D colorRegionDetection2D
  *
- * @brief The visionSegmentor module provides basic 2D image feature extraction. It uses the \ref VisionSegmentorLib library.
+ * @brief The colorRegionDetection2D module provides basic 2D image feature extraction. It uses the \ref VisionSegmentorLib library.
  *
- * The visionSegmentor module provides basic 2D image feature extraction. It uses the \ref VisionSegmentorLib library.
+ * The colorRegionDetection2D module provides basic 2D image feature extraction. It uses the \ref VisionSegmentorLib library.
  * The current feature order is the following:
  \verbatim
  ((0 reserved for timestamps))
@@ -36,7 +36,7 @@
  hue_mode
  hue_mode \endverbatim
  *
- * @section visionSegmentor_legal Legal
+ * @section colorRegionDetection2D_legal Legal
  *
  * Copyright: 2013 (C) Universidad Carlos III de Madrid
  *
@@ -46,14 +46,14 @@
  * CopyPolicy: This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License 3.0 or later
  *
- * @section visionSegmentor_install Installation
+ * @section colorRegionDetection2D_install Installation
  *
- * The module is compiled when ENABLE_visionSegmentor is activated (default: ON). For further
+ * The module is compiled when ENABLE_colorRegionDetection2D is activated (default: ON). For further
  * installation steps refer to <a class="el" href="pages.html">your own system installation guidelines</a>.
  *
  * <hr>
  *
- * This file can be edited at $ASIBOT_ROOT/main/src/modules/visionSegmentor/main.cpp
+ * This file can be edited at $ASIBOT_ROOT/main/src/modules/colorRegionDetection2D/main.cpp
  *
  */
 
@@ -63,8 +63,8 @@ int main(int argc, char** argv) {
 
     ResourceFinder rf;
     rf.setVerbose(true);
-    rf.setDefaultContext("visionSegmentor/conf");
-    rf.setDefaultConfigFile("visionSegmentor.ini");
+    rf.setDefaultContext("colorRegionDetection2D/conf");
+    rf.setDefaultConfigFile("colorRegionDetection2D.ini");
     rf.configure(argc, argv);
 
     roboticslab::VisionSegmentor mod;
