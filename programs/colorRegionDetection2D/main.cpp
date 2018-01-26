@@ -5,9 +5,9 @@
  * @ingroup vision_programs
  * \defgroup colorRegionDetection2D colorRegionDetection2D
  *
- * @brief The colorRegionDetection2D module provides basic 2D image feature extraction. It uses the \ref ColorRegionDetection2DLib library.
+ * @brief The colorRegionDetection2D module provides basic 2D image feature extraction, via roboticslab::ColorRegionDetection2D.
  *
- * The colorRegionDetection2D module provides basic 2D image feature extraction. It uses the \ref ColorRegionDetection2DLib library.
+ * The colorRegionDetection2D module provides basic 2D image feature extraction, via roboticslab::ColorRegionDetection2D.
  * The current feature order is the following:
  \verbatim
  ((0 reserved for timestamps))
