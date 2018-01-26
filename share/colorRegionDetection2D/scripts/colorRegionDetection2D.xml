@@ -1,5 +1,5 @@
 <application>
-<name>example visionSegmentorOpenCV App</name>
+<name>example colorRegionDetection2D App</name>
         <module>
                 <name>yarpdev</name>
                 <parameters>--device opencv_grabber --name /grabber/img:o --camera 0</parameters>
