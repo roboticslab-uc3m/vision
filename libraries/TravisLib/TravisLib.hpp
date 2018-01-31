@@ -10,13 +10,16 @@
 #include "opencv2/imgproc/imgproc.hpp"
 //#include "highgui.h" // to show windows
 
+/**
+ * @ingroup vision_libraries
+ * @defgroup TravisLib
+ */
 
 namespace roboticslab
 {
 
 /**
- * @ingroup colorRegionDetection
- *
+ * @ingroup TravisLib
  * @brief The Travis class implements all the algorithms on a single image.
  */
 class Travis {
@@ -77,8 +80,9 @@ public:
     /**
      * Use findContours to get what we use as blobs.
      * @param maxNumBlobs the number of max blobs to keep, the rest get truncated.
+     * @return number of blobs detected (can be 0), truncated by maxNumBlobs.
      */
-    void blobize(const int& maxNumBlobs);
+    int blobize(const int& maxNumBlobs);
 
     /**
      * Push a contour.
@@ -90,7 +94,7 @@ public:
      * This function calculates X and Y as moments directly extracted from the stored contours.
      * @param locations returned.
      */
-    bool getBlobsXY(std::vector <cv::Point>& locations);
+    bool getBlobsXY(std::vector<cv::Point2d> &locations);
 
     /**
      * This function calculates the Area of the blobs (contours).

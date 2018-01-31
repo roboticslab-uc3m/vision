@@ -2,6 +2,8 @@
 
 #include "MultipleDumpThread.hpp"
 
+#include <yarp/os/Time.h>
+
 namespace roboticslab
 {
 

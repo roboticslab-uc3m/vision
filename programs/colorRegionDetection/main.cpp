@@ -6,7 +6,7 @@
  *
  * \defgroup colorRegionDetection colorRegionDetection
  *
- * @brief Creates an instance ---- of roboticslab::ColorRegionDetection.
+ * @brief Creates an instance of roboticslab::ColorRegionDetection.
  *
  * @section colorRegionDetection_options ColorRegionDetection options:
  *

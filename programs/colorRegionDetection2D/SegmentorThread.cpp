@@ -6,37 +6,32 @@ namespace roboticslab
 {
 
 /************************************************************************/
-void SegmentorThread::setIKinectDeviceDriver(yarp::dev::IOpenNI2DeviceDriver *_kinect) {
-    kinect = _kinect;
+
+void SegmentorThread::setInImg(BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pInImg)
+{
+    pInImg = _pInImg;
 }
 
 /************************************************************************/
-void SegmentorThread::setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg) {
+
+void SegmentorThread::setOutImg(BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg)
+{
     pOutImg = _pOutImg;
 }
 
 /************************************************************************/
-void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort) {
+void SegmentorThread::setOutPort(Port * _pOutPort)
+{
     pOutPort = _pOutPort;
 }
 
 /************************************************************************/
-void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
-
-    fx_d = DEFAULT_FX_D;
-    fy_d = DEFAULT_FY_D;
-    cx_d = DEFAULT_CX_D;
-    cy_d = DEFAULT_CY_D;
-    fx_rgb = DEFAULT_FX_RGB;
-    fy_rgb = DEFAULT_FY_RGB;
-    cx_rgb = DEFAULT_CX_RGB;
-    cy_rgb = DEFAULT_CY_RGB;
+void SegmentorThread::init(ResourceFinder &rf) {
 
     algorithm = DEFAULT_ALGORITHM;
     locate = DEFAULT_LOCATE;
     maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
     morphClosing = DEFAULT_MORPH_CLOSING;
-    morphOpening = DEFAULT_MORPH_OPENING;
     outImage = DEFAULT_OUT_IMAGE;
     outFeatures.fromString(DEFAULT_OUT_FEATURES);  // it's a bottle!!
     outFeaturesFormat = DEFAULT_OUT_FEATURES_FORMAT;
@@ -48,55 +43,25 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     if (rf.check("help")) {
         printf("SegmentorThread options:\n");
         printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-
-        printf("\t--fx_d (default: \"%f\")\n",fx_d);
-        printf("\t--fy_d (default: \"%f\")\n",fy_d);
-        printf("\t--cx_d (default: \"%f\")\n",cx_d);
-        printf("\t--cy_d (default: \"%f\")\n",cy_d);
-        printf("\t--fx_rgb (default: \"%f\")\n",fx_rgb);
-        printf("\t--fy_rgb (default: \"%f\")\n",fy_rgb);
-        printf("\t--cx_rgb (default: \"%f\")\n",cx_rgb);
-        printf("\t--cy_rgb (default: \"%f\")\n",cy_rgb);
-
-        printf("\t--algorithm (default: \"%s\")\n",algorithm.c_str());
-        printf("\t--locate (centroid or bottom; default: \"%s\")\n",locate.c_str());
+        printf("\t--algorithm (redMinusBlue,greenMinusRed...; default: \"%s\")\n",algorithm.c_str());
+        printf("\t--locate (centroid,bottom; default: \"%s\")\n",locate.c_str());
         printf("\t--maxNumBlobs (default: \"%d\")\n",maxNumBlobs);
         printf("\t--morphClosing (percentage, 2 or 4 okay; default: \"%f\")\n",morphClosing);
-        printf("\t--morphOpening (percentage, 2 or 4 okay; default: \"%f\")\n",morphOpening);
-        printf("\t--outFeatures (mmX,mmY,mmZ,pxXpos,pxYpos,pxX,pxY,angle,area,aspectRatio,rectangularity,axisFirst,axisSecond \
-solidity,hue,sat,val,hueStdDev,satStdDev,valStdDev,time; \
-default: \"(%s)\")\n",outFeatures.toString().c_str());
+        printf("\t--outFeatures (default: \"(%s)\")\n",outFeatures.toString().c_str());
         printf("\t--outFeaturesFormat (0=bottled,1=minimal; default: \"%d\")\n",outFeaturesFormat);
-        printf("\t--outImage (0=rgb,1=bin; default: \"%d\")\n",outImage);
+        printf("\t--outImage (0=rgb,1=bw; default: \"%d\")\n",outImage);
         printf("\t--rateMs (default: \"%d\")\n",rateMs);
-        printf("\t--seeBounding (0=none,1=box,2=contour,3=both; default: \"%d\")\n",seeBounding);
+        printf("\t--seeBounding (0=none,1=contour,2=box,3=both; default: \"%d\")\n",seeBounding);
         printf("\t--threshold (default: \"%d\")\n",threshold);
-        // Do not exit: let last layer exit so we get help from the complete chain.
     }
 
-    if (rf.check("fx_d")) fx_d = rf.find("fx_d").asDouble();
-    if (rf.check("fy_d")) fy_d = rf.find("fy_d").asDouble();
-    if (rf.check("cx_d")) cx_d = rf.find("cx_d").asDouble();
-    if (rf.check("cy_d")) cy_d = rf.find("cy_d").asDouble();
-    if (rf.check("fx_rgb")) fx_rgb = rf.find("fx_rgb").asDouble();
-    if (rf.check("fy_rgb")) fy_rgb = rf.find("fy_rgb").asDouble();
-    if (rf.check("cx_rgb")) cx_rgb = rf.find("cx_rgb").asDouble();
-    if (rf.check("cy_rgb")) cy_rgb = rf.find("cy_rgb").asDouble();
     if (rf.check("algorithm")) algorithm = rf.find("algorithm").asString();
     if (rf.check("locate")) locate = rf.find("locate").asString();
     if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt();
     if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asDouble();
-    if (rf.check("morphOpening")) morphOpening = rf.find("morphOpening").asDouble();
     if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt();
-
-    printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
-        fx_d,fy_d,cx_d,cy_d);
-    printf("SegmentorThread using fx_rgb: %f, fy_rgb: %f, cx_rgb: %f, cy_rgb: %f.\n",
-        fx_rgb,fy_rgb,cx_rgb,cy_rgb);
-    printf("SegmentorThread using algorithm: %s, locate: %s.\n",
-        algorithm.c_str(),locate.c_str());
-    printf("SegmentorThread using maxNumBlobs: %d, morphClosing: %.2f, outFeaturesFormat: %d.\n",
-        maxNumBlobs,morphClosing,outFeaturesFormat);
+    printf("SegmentorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
+        algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);
 
     if (rf.check("outFeatures")) {
         outFeatures = *(rf.find("outFeatures").asList());  // simple overrride
@@ -115,11 +80,6 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
         ::exit(1);
     }
 
-    if(cropSelector != 0) {
-        processor.reset();
-        inCropSelectorPort->setReader(processor);
-    }
-
     this->setRate(rateMs);
     this->start();
 
@@ -127,75 +87,44 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 
 /************************************************************************/
 void SegmentorThread::run() {
-    // printf("[SegmentorThread] run()\n");
+    //printf("[SegmentorThread] run()\n");
 
-    /*ImageOf<PixelRgb> *inYarpImg = pInImg->read(false);
-    ImageOf<PixelFloat> *depth = pInDepth->read(false);
+    ImageOf<PixelRgb> *inYarpImg = pInImg->read(false);
     if (inYarpImg==NULL) {
         //printf("No img yet...\n");
         return;
     };
-    if (depth==NULL) {
-        //printf("No depth yet...\n");
-        return;
-    };*/
-
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg = kinect->getImageFrame();
-    if (inYarpImg.height()<10) {
-        //printf("No img yet...\n");
-        return;
-    };
-    yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
-    if (depth.height()<10) {
-        //printf("No depth yet...\n");
-        return;
-    };
-
+    
     // {yarp ImageOf Rgb -> openCv Mat Bgr}
-    IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
+    IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg->width(), inYarpImg->height()),
                                          IPL_DEPTH_8U, 3 );
-    cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2BGR);
-    cv::Mat inCvMat( cv::cvarrToMat(inIplImage) );
-
-    // publish the original yarp img if crop selector invoked.
-    if(cropSelector != 0) {
-        //printf("1 x: %d, y: %d, w: %d, h: %d.\n",processor.x,processor.y,processor.w,processor.h);
-        if( (processor.w!=0)&&(processor.h!=0)) {
-            travisCrop(processor.x,processor.y,processor.w,processor.h,inCvMat);
-            yarp::sig::PixelRgb green(0,255,0);
-            yarp::sig::draw::addRectangleOutline(inYarpImg,green,processor.x+processor.w/2.0,processor.y+processor.h/2.0,processor.w/2.0,processor.h/2.0);
-        }
-        outCropSelectorImg->prepare() = inYarpImg;
-        outCropSelectorImg->write();
-    }
+    cvCvtColor((IplImage*)inYarpImg->getIplImage(), inIplImage, CV_RGB2BGR);
+    Mat inCvMat = cvarrToMat(inIplImage);
 
     // Because Travis stuff goes with [openCv Mat Bgr] for now
-    //Travis travis;  // ::Travis(quiet=true, overwrite=true);
-    Travis travis(false,true);  // ::Travis(quiet=true, overwrite=true);
+    Travis travis(false,true);    // ::Travis(quiet=true, overwrite=true);
     travis.setCvMat(inCvMat);
     if(algorithm=="hue") travis.binarize("hue", threshold-5,threshold+5);
     else if(algorithm=="canny") travis.binarize("canny");
     else travis.binarize(algorithm.c_str(), threshold);
-    travis.morphOpening( inYarpImg.width() * morphOpening / 100.0 );  // percent
-    travis.morphClosing( inYarpImg.width() * morphClosing / 100.0 );  // percent
-    //travis.morphOpening( morphOpening );
-    //travis.morphClosing( morphClosing );
+    travis.morphClosing( inYarpImg->width() * morphClosing / 100.0 );
     int numBlobs = travis.blobize(maxNumBlobs);
     if( 0 == numBlobs )
     {
         travis.release();
         return;
     }
-    std::vector<cv::Point2d> blobsXY;
+    vector<cv::Point2d> blobsXY;
     if( ! travis.getBlobsXY(blobsXY) )
     {
         travis.release();
         return;
     }
-    std::vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond;
-    std::vector<double> blobsRectangularity,blobsSolidity;
-    std::vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
+    vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond,blobsPerimeter;
+    vector<double> blobsRectangularity,blobsSolidity;
+    vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
     travis.getBlobsArea(blobsArea);
+    travis.getBlobsPerimeter(blobsPerimeter);
     travis.getBlobsSolidity(blobsSolidity);
     travis.getBlobsHSV(blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev);
     if( ! travis.getBlobsAngle(0,blobsAngle) )  // method: 0=box, 1=ellipse; note check for return as 1 can break
@@ -205,130 +134,48 @@ void SegmentorThread::run() {
     }
     travis.getBlobsAspectRatio(blobsAspectRatio,blobsAxisFirst,blobsAxisSecond);  // must be called after getBlobsAngle!!!!
     travis.getBlobsRectangularity(blobsRectangularity);  // must be called after getBlobsAngle!!!!
-    cv::Mat outCvMat = travis.getCvMat(outImage,seeBounding);
+    Mat outCvMat = travis.getCvMat(outImage,seeBounding);
     travis.release();
+
     // { openCv Mat Bgr -> yarp ImageOf Rgb}
     IplImage outIplImage = outCvMat;
     cvCvtColor(&outIplImage,&outIplImage, CV_BGR2RGB);
     char sequence[] = "RGB";
     strcpy (outIplImage.channelSeq,sequence);
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
+    ImageOf<PixelRgb> outYarpImg;
     outYarpImg.wrapIplImage(&outIplImage);
-    yarp::sig::PixelRgb blue(0,0,255);
-    std::vector<double> mmX, mmY, mmZ;
-    if(blobsXY.size() < 1) {
-        fprintf(stderr,"[warning] SegmentorThread run(): blobsXY.size() < 1.\n");
-        //return;
-    }
-    for( int i = 0; i < blobsXY.size(); i++) {
-        yarp::sig::draw::addCircle(outYarpImg,blue,blobsXY[i].x,blobsXY[i].y,3);
-        if (blobsXY[i].x<0) {
-            fprintf(stderr,"[warning] SegmentorThread run(): blobsXY[%d].x < 0.\n",i);
-            //return;
-            blobsXY[i].x = 0;
-        }
-        if (blobsXY[i].y<0) {
-            fprintf(stderr,"[warning] SegmentorThread run(): blobsXY[%d].y < 0.\n",i);
-            //return;
-            blobsXY[i].y = 0;
-        }
-        // double mmZ_tmp = depth->pixel(int(blobsXY[i].x +cx_d-cx_rgb),int(blobsXY[i].y +cy_d-cy_rgb));
-        double mmZ_tmp = depth.pixel(int(blobsXY[i].x),int(blobsXY[i].y));
-
-        if (mmZ_tmp < 0.001) {
-            fprintf(stderr,"[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n",i);
-            cvReleaseImage( &inIplImage );  // release the memory for the image
-            outCvMat.release();
-            return;
-        }
-
-        double mmX_tmp = 1000.0 * ( (blobsXY[i].x - cx_d) * mmZ_tmp/1000.0 ) / fx_d;
-        double mmY_tmp = 1000.0 * ( (blobsXY[i].y - cy_d) * mmZ_tmp/1000.0 ) / fy_d;
-
-        mmX.push_back( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
-        mmY.push_back( mmY_tmp );    // Points down.
-        mmZ.push_back( mmZ_tmp );    // oints forward.
-
-    }
-
+    PixelRgb blue(0,0,255);
+    for( int i = 0; i < blobsXY.size(); i++)
+       addCircle(outYarpImg,blue,blobsXY[i].x,blobsXY[i].y,3);
     pOutImg->prepare() = outYarpImg;
     pOutImg->write();
-    cvReleaseImage( &inIplImage );  // release the memory for the image
-    outCvMat.release();  // cvReleaseImage( &outIplImage );  // release the memory for the image
-
-    if ( ( blobsXY.size() < 1) && ( outFeaturesFormat == 1 ) ) return;
 
     // Take advantage we have the travis object and get features for text output
-    yarp::os::Bottle output;
+    Bottle output;
     for (int elem = 0; elem < outFeatures.size() ; elem++) {
-        if ( outFeatures.get(elem).asString() == "mmX" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmX[0]);
-            } else {
-                yarp::os::Bottle locXs;
-                for (int i = 0; i < blobsXY.size(); i++)
-                    locXs.addDouble(mmX[i]);
-                output.addList() = locXs;
-            }
-        } else if ( outFeatures.get(elem).asString() == "mmY" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmY[0]);
-            } else {
-                yarp::os::Bottle locYs;
-                for (int i = 0; i < blobsXY.size(); i++)
-                    locYs.addDouble(mmY[i]);
-                output.addList() = locYs;
-            }
-        } else if ( outFeatures.get(elem).asString() == "mmZ" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmZ[0]);
-            } else {
-                yarp::os::Bottle locZs;
-                for (int i = 0; i < blobsXY.size(); i++)
-                    locZs.addDouble(mmZ[i]);
-                output.addList() = locZs;
-            }
-        } else if ( outFeatures.get(elem).asString() == "pxXpos" ) {
+        if ( outFeatures.get(elem).asString() == "locX" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsXY[0].x);
             } else {
-                yarp::os::Bottle locXs;
+                Bottle locXs;
                 for (int i = 0; i < blobsXY.size(); i++)
                     locXs.addDouble(blobsXY[i].x);
                 output.addList() = locXs;
             }
-        } else if ( outFeatures.get(elem).asString() == "pxYpos" ) {
+        } else if ( outFeatures.get(elem).asString() == "locY" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsXY[0].y);
             } else {
-                yarp::os::Bottle locYs;
+                Bottle locYs;
                 for (int i = 0; i < blobsXY.size(); i++)
                     locYs.addDouble(blobsXY[i].y);
-                output.addList() = locYs;
-            }
-        } else if ( outFeatures.get(elem).asString() == "pxX" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsXY[0].x - cx_d);
-            } else {
-                yarp::os::Bottle locXs;
-                for (int i = 0; i < blobsXY.size(); i++)
-                    locXs.addDouble(blobsXY[i].x - cx_d);
-                output.addList() = locXs;
-            }
-        } else if ( outFeatures.get(elem).asString() == "pxY" ) {
-            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsXY[0].y - cy_d);
-            } else {
-                yarp::os::Bottle locYs;
-                for (int i = 0; i < blobsXY.size(); i++)
-                    locYs.addDouble(blobsXY[i].y - cy_d);
                 output.addList() = locYs;
             }
         } else if ( outFeatures.get(elem).asString() == "angle" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsAngle[0]);
             } else {
-                yarp::os::Bottle angles;
+                Bottle angles;
                 for (int i = 0; i < blobsAngle.size(); i++)
                     angles.addDouble(blobsAngle[i]);
                 output.addList() = angles;
@@ -337,16 +184,25 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsArea[0]);
             } else {
-                yarp::os::Bottle areas;
+                Bottle areas;
                 for (int i = 0; i < blobsArea.size(); i++)
                     areas.addDouble(blobsArea[i]);
+                output.addList() = areas;
+            }
+        } else if ( outFeatures.get(elem).asString() == "perimeter" ) {
+            if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
+                output.addDouble(blobsPerimeter[0]);
+            } else {
+                Bottle areas;
+                for (int i = 0; i < blobsPerimeter.size(); i++)
+                    areas.addDouble(blobsPerimeter[i]);
                 output.addList() = areas;
             }
         } else if ( outFeatures.get(elem).asString() == "aspectRatio" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsAspectRatio[0]);
             } else {
-                yarp::os::Bottle aspectRatios;
+                Bottle aspectRatios;
                 for (int i = 0; i < blobsAspectRatio.size(); i++)
                     aspectRatios.addDouble(blobsAspectRatio[i]);
                 output.addList() = aspectRatios;
@@ -355,7 +211,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsRectangularity[0]);
             } else {
-                yarp::os::Bottle rectangularities;
+                Bottle rectangularities;
                 for (int i = 0; i < blobsRectangularity.size(); i++)
                     rectangularities.addDouble(blobsRectangularity[i]);
                 output.addList() = rectangularities;
@@ -364,7 +220,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsAxisFirst[0]);
             } else {
-                yarp::os::Bottle axisFirsts;
+                Bottle axisFirsts;
                 for (int i = 0; i < blobsAxisFirst.size(); i++)
                     axisFirsts.addDouble(blobsAxisFirst[i]);
                 output.addList() = axisFirsts;
@@ -373,7 +229,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsAxisSecond[0]);
             } else {
-                yarp::os::Bottle axisSeconds;
+                Bottle axisSeconds;
                 for (int i = 0; i < blobsAxisSecond.size(); i++)
                     axisSeconds.addDouble(blobsAxisSecond[i]);
                 output.addList() = axisSeconds;
@@ -382,7 +238,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsSolidity[0]);
             } else {
-                yarp::os::Bottle solidities;
+                Bottle solidities;
                 for (int i = 0; i < blobsSolidity.size(); i++)
                     solidities.addDouble(blobsSolidity[i]);
                 output.addList() = solidities;
@@ -391,7 +247,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsHue[0]);
             } else {
-                yarp::os::Bottle hues;
+                Bottle hues;
                 for (int i = 0; i < blobsHue.size(); i++)
                     hues.addDouble(blobsHue[i]);
                 output.addList() = hues;
@@ -400,7 +256,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsSat[0]);
             } else {
-                yarp::os::Bottle sats;
+                Bottle sats;
                 for (int i = 0; i < blobsSat.size(); i++)
                     sats.addDouble(blobsSat[i]);
                 output.addList() = sats;
@@ -409,7 +265,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsVal[0]);
             } else {
-                yarp::os::Bottle vals;
+                Bottle vals;
                 for (int i = 0; i < blobsVal.size(); i++)
                     vals.addDouble(blobsVal[i]);
                 output.addList() = vals;
@@ -418,7 +274,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsHueStdDev[0]);
             } else {
-                yarp::os::Bottle hueStdDevs;
+                Bottle hueStdDevs;
                 for (int i = 0; i < blobsHueStdDev.size(); i++)
                     hueStdDevs.addDouble(blobsHueStdDev[i]);
                 output.addList() = hueStdDevs;
@@ -427,7 +283,7 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsSatStdDev[0]);
             } else {
-                yarp::os::Bottle satStdDevs;
+                Bottle satStdDevs;
                 for (int i = 0; i < blobsSatStdDev.size(); i++)
                     satStdDevs.addDouble(blobsSatStdDev[i]);
                 output.addList() = satStdDevs;
@@ -436,28 +292,123 @@ void SegmentorThread::run() {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addDouble(blobsValStdDev[0]);
             } else {
-                yarp::os::Bottle valStdDevs;
+                Bottle valStdDevs;
                 for (int i = 0; i < blobsValStdDev.size(); i++)
                     valStdDevs.addDouble(blobsValStdDev[i]);
                 output.addList() = valStdDevs;
             }
         } else if ( outFeatures.get(elem).asString() == "time" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(yarp::os::Time::now());
+                output.addDouble(Time::now());
             } else {
-                yarp::os::Bottle times;
+                Bottle times;
                 for (int i = 0; i < blobsArea.size(); i++)
-                    times.addDouble(yarp::os::Time::now());
+                    times.addDouble(Time::now());
                 output.addList() = times;
             }
-        } else {
-            fprintf(stderr,"[SegmentorThread] [error] bogus outFeatures: %s\n",
-                    outFeatures.get(elem).asString().c_str());
-            ::exit(0);
-        }
+        } else fprintf(stderr,"[SegmentorThread] warning: bogus outFeatures.\n");
     }
     pOutPort->write(output);
 
+    cvReleaseImage( &inIplImage );  // release the memory for the image
+    outCvMat.release();  // cvReleaseImage( &outIplImage );  // release the memory for the image
+
+/*  Mat mask= Mat::zeros(imageFile.rows, imageFile.cols, CV_8UC1);
+
+    //get biggest contour
+    vector <Point> biggestCont = getBiggestContour(imageFile);
+
+    //calculate mask of image with biggest contour
+    calcMask(mask,biggestCont);
+
+    //area of mask (with convexhull)
+    calcArea(area,biggestCont);
+
+    //location xy of the centre of biggest contour
+    calcLocationXY(locX,locY, biggestCont);
+
+    //object area over rect area
+    calcRectangularity(rectangularity, biggestCont);
+
+    //mass center
+    calcMassCenter(massCenterlocX,massCenterlocY,biggestCont);
+
+    //aspect ratio width/height
+    calcAspectRatio(aspectRatio, axisFirst, axisSecond, biggestCont);
+
+    //solidity. area object / area convexhull
+    calcSolidity(solidity,biggestCont);
+
+    //hsv peaks
+    calcHSVPeakColor(imageFile, mask, hue_mode, hue_peak, value_mode, value_peak);
+
+    //hsv mean and stddev
+    calcHSVMeanStdDev(imageFile, mask,
+                      hue_mean, hue_stddev,
+                      saturation_mean, saturation_stddev,
+                      value_mean, value_stddev);
+   
+    //arc
+    calcArcLength(arc,biggestCont);
+
+    //radius
+    calcCircle(radius,biggestCont);*/
+
+    // --- ALGORITHMS FINISH SOMEWHERE HERE ---
+
+//    cvReleaseImage( &rgb ); //release the memory for the image
+
+/*    printf("***** FEATURES *****\n");
+    printf("Area: %f\n",area);
+    printf("Mass Center Location (x,y): (%f, %f)\n",massCenterlocX,massCenterlocY);
+    printf("Rectangularity (areaObject/areaRectangle): %f\n",rectangularity);
+    printf("Aspect Ratio (width/height): %f\n",aspectRatio);
+    printf("Ellipse Axis 1: %f\n",axisFirst);
+    printf("Ellipse Axis 2: %f\n",axisSecond);
+    printf("Solidity (object/convexHull): %f\n",solidity);
+    printf("Arc: %f\n",arc);
+    printf("Radius: %f\n",radius);
+    printf("Hue Peak: %f\n",hue_peak);
+    printf("Hue Mean: %f\n",hue_mean);
+    printf("Hue StdDev: %f\n",hue_stddev);
+    printf("Saturation Peak: %f\n",saturation_peak);
+    printf("Saturation Mean: %f\n",saturation_mean);
+    printf("Saturation StdDev: %f\n",hue_stddev);
+    printf("Value Peak: %f\n",value_peak);
+    printf("Value Mean: %f\n",value_mean);
+    printf("Value StdDev: %f\n",value_stddev);
+    printf("Contour Location (x,y): (%f, %f)\n",locX,locY);*/
+
+/*    Bottle b;
+    b.addDouble(massCenterlocX);  // 1
+    b.addDouble(massCenterlocY);  // 2
+    b.addDouble(aspectRatio);  // 3
+    b.addDouble(area);  // 4
+    b.addDouble(rectangularity);  // 5
+    b.addDouble(axisFirst);  // 6
+    b.addDouble(axisSecond);  // 7
+    b.addDouble(solidity);  // 8
+    b.addDouble(arc);  // 9
+    b.addDouble(radius);  // 10
+    b.addDouble(hue_peak);  // 11
+    b.addDouble(value_peak); */ // 12
+    /*b.addDouble(hue_mean);  // 13
+    b.addDouble(hue_stddev);  // 14
+    b.addDouble(saturation_peak);  // 15
+    b.addDouble(saturation_mean);  // 16
+    b.addDouble(saturation_stddev);  // 17
+    b.addDouble(value_mean);  // 18
+    b.addDouble(value_stddev);  // 19
+    b.addDouble(locX);  // 20
+    b.addDouble(locY);  // 21
+    b.addDouble(value_mode);  // 22
+    b.addDouble(hue_mode);  // 23
+*/
+    
+    //pOutPort->write(b);
+
 }
+
+/************************************************************************/
 
 }  // namespace roboticslab

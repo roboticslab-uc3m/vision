@@ -2,6 +2,8 @@
 
 #include "SegmentorThread.hpp"
 
+#include <iostream>
+
 namespace roboticslab
 {
 
@@ -53,6 +55,10 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     highXBox=DEFAULT_HIGH_X_BOX_VALUE;
     lowYBox=DEFAULT_LOW_Y_BOX_VALUE;
     highYBox=DEFAULT_HIGH_Y_BOX_VALUE;
+    voxelResolution=DEFAULT_VOXEL_RESOLUTION;
+    utilityAreaLowThreshold=DEFAULT_UTILITY_AREA_LOW_THRESHOLD;
+    utilityAreaHighThreshold=DEFAULT_UTILITY_AREA_HIGH_THRESHOLD;
+    numberUtilityVoxels=DEFAULT_NUMBER_UTILITY_VOXELS;
 
 
 
@@ -162,44 +168,41 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 void SegmentorThread::run() {
     // printf("[SegmentorThread] run()\n");
 
-//    std::cout<<"CHECKING"<<std::endl;
-
     yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
     if (depth.height()<10) {
         //printf("No depth yet...\n");
         return;
     };
+
+    //Camera Resolutions:
     int H=depth.height(); //Height resolution
     int W=depth.width();
 
-//    double x = (320-W/2)*600/520;
-//    double y = (130-H/2)*600/520;
-//    std::cout<<" REAL X ES "<<x<<std::endl;
-//    std::cout<<" REAL Y ES "<<y<<std::endl;
-
-    //printf(" The depth of the low pixel is %d\n", depth.pixel(0, floor(0.45*H))); //107 for 240
-    //printf(" The depth of the low pixel is %d\n", depth.pixel(0, ceil(0.54*H))); //130 for 240
-
-    //                std::cout<<" EL umbral bajo es::::::::::::::: "<<areaLowThreshold<<std::endl;
-    //                std::cout<<" EL umbral alto es::::::::::::::: "<<areaHighThreshold<<std::endl;
-
     std::vector<int> occupancy_indices;
 
+    //Yarp Bottle
+    yarp::os::Bottle output;
+    output.clear(); //Clear bottle
+
+    //Find pixels with a depth inside the interest area (occupancy pixels)
+
     //"Explore" loop
-    for(int i=floor(0.45*H); i<ceil(0.54*H); i++){
+    for(int i=floor(0.45*H); i<ceil(0.54*H); i++){ //Camera H umbral (0.45,0.54)H. The region of search is something like a horizontal line.
         for(int j=0; j<W;j++){
-//            std::cout<<"LA PROFUNDIDAD DEL PIXEL "<<i<<"   "<<j<< "ES:: "<<depth.pixel(j,i)<<std::endl;
-            //Find pixels with a depth inside the interest area (occupancy pixels)
             //First convert to REAL WORLD coordinates to use the real area
             double x = (j-W/2)*depth.pixel(j,i)*kinectCalibrationValue;
             double y = (i-H/2)*depth.pixel(j,i)*kinectCalibrationValue;
-            int ix=(highXBox-lowXBox)/4;
+
+            //We have 4 voxel. This should be parametric.
+            int ix=(highXBox-lowXBox)/voxelResolution;
             int areaRegion=areaHighThreshold-areaLowThreshold;
-            //if(depth.pixel(j,i)<areaHighThreshold && depth.pixel(j,i)>areaLowThreshold)
+
+            //Is inside the search area?
             if(lowXBox<x && x<highXBox && lowYBox<y && y<highYBox && areaLowThreshold<depth.pixel(j,i) && depth.pixel(j,i)<areaHighThreshold){
-                //Calculate the number of occupancy pixels around that pixel
-                //std::cout<<"Detecté Pixel dentro del área de interés"<<std::endl;
+                //Calculate the number of occupancy pixels around that pixel.
                 int numberOccupancyIndices=0;
+
+                //Define a search area to see the occupancy around that pixel.
                 int lowX=j-searchAreaDilatation;
                 int highX=j+searchAreaDilatation;
                 if(lowX<0){
@@ -208,176 +211,115 @@ void SegmentorThread::run() {
                 if(highX>W){
                     highX=W;
                 }
-//                std::cout<<" EL umbral bajo es::::::::::::::: "<<areaLowThreshold<<std::endl;
-//                std::cout<<" EL umbral alto es::::::::::::::: "<<areaHighThreshold<<std::endl;
+
                 //Check area around detected pixel for pixel occupancy.
-//                std::cout<<"Umbral bajo es:: "<<areaLowThreshold<<std::endl;
-//                std::cout<<"Umbral alto es:: "<<areaHighThreshold<<std::endl;
                 for(int k=floor(0.45*H); k<ceil(0.54*H); k++){
                     for(int l=lowX; l<highX;l++){
-//                        std::cout<<"HASTA AQUI LLEGUE"<<std::endl;
                         if(depth.pixel(l,k)<areaHighThreshold && depth.pixel(l,k)>areaLowThreshold){
                             numberOccupancyIndices++;
                         }
                     }
                 }
-                //If we have more occupancy pixels than the threshold, that voxel is considered occupied.
-//                std::cout<<"THE NUMBER OF OCCUPANCY INDICES IS"<< numberOccupancyIndices<<std::endl;
+
+                //If we have more occupancy pixels than the threshold, that pixel is considered occupied.
                 if(numberOccupancyIndices>occupancyThreshold){
-                    //Yarp Bottle
-                    yarp::os::Bottle output;
-//                    std::cout<<" REAL X ES "<<areaLowThreshold<<std::endl;
-//                    std::cout<<" REAL Y ES "<<areaHighThreshold<<std::endl;
+
                     std::cout<<" X "<<x<<std::endl;
                     std::cout<<" Y "<<y<<std::endl;
                     std::cout<<" Z "<<depth.pixel(j,i)<<std::endl;
-                    std::cout<<" Incremento "<<ix<<std::endl;
-                    if(lowXBox<x && x<(lowXBox+ix) && lowYBox<y && y<highYBox){ //Voxel_row_1
-                        if(depth.pixel(j,i)<(areaRegion/4+areaLowThreshold)){ //Voxel_col_1
-                            output.addInt(0);
-                            output.addInt(0);
-                            pOutPort->write(output);
-                            std::cout<<" ENTRE EN EL VOXEL"<<0<<" "<<0<<std::endl;
-                            return;
-                        }
-                        else if(depth.pixel(j,i)<(areaRegion/2+areaLowThreshold)){ //Voxel_col_2
-                            output.addInt(0);
-                            output.addInt(1);
-                            pOutPort->write(output);
-                            std::cout<<" ENTRE EN EL VOXEL"<<0<<" "<<1<<std::endl;
-                            return;
-                        }
-                        else if(depth.pixel(j,i)<(3*areaRegion/4+areaLowThreshold)){ //Voxel_col_3
-                            output.addInt(0);
-                            output.addInt(2);
-                            pOutPort->write(output);
-                            std::cout<<" ENTRE EN EL VOXEL"<<0<<" "<<2<<std::endl;
-                            return;
-                        }
-                        else if(depth.pixel(j,i)<(areaRegion+areaLowThreshold)){ //Voxel_col_4
-                            output.addInt(0);
-                            output.addInt(3);
-                            std::cout<<" ENTRE EN EL VOXEL"<<0<<" "<<3<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
-                    }
-                    else if((lowXBox+ix)<x && x<(lowXBox+2*ix) && lowYBox<y && y<highYBox){ //Voxel_row_2
-                        if(depth.pixel(j,i)<(areaRegion/4+areaLowThreshold)){ //Voxel_col_1
-                            output.addInt(1);
-                            output.addInt(0);
-                            std::cout<<" ENTRE EN EL VOXEL"<<1<<" "<<0<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
-                        else if(depth.pixel(j,i)<(areaRegion/2+areaLowThreshold)){ //Voxel_col_2
-                            output.addInt(1);
-                            output.addInt(1);
-                            std::cout<<" ENTRE EN EL VOXEL"<<1<<" "<<1<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
-                        else if(depth.pixel(j,i)<(3*areaRegion/4+areaLowThreshold)){ //Voxel_col_3
-                            output.addInt(1);
-                            output.addInt(2);
-                            std::cout<<" ENTRE EN EL VOXEL"<<1<<" "<<2<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
-                        else if(depth.pixel(j,i)<(areaRegion+areaLowThreshold)){ //Voxel_col_4
-                            output.addInt(1);
-                            output.addInt(3);
-                            std::cout<<" ENTRE EN EL VOXEL"<<1<<" "<<3<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
+                    //std::cout<<" Incremento "<<ix<<std::endl;
+                    //output.addDouble(x);
+                    //output.addDouble(y);
+                    //std::cout<<" PIXEL "<<x<<" "<<y<<" is considered occupied"<<std::endl;
+                    pOutPort->write(output);
 
-                    }
-                    else if((lowXBox+2*ix)<x && x<(lowXBox+3*ix) && lowYBox<y && y<highYBox){ //Voxel_row_3
-                        if(depth.pixel(j,i)<(areaRegion/4+areaLowThreshold)){ //Voxel_col_1
-                            output.addInt(2);
-                            output.addInt(0);
-                            std::cout<<" ENTRE EN EL VOXEL"<<2<<" "<<0<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
-                        else if(depth.pixel(j,i)<(areaRegion/2+areaLowThreshold)){ //Voxel_col_2
-                            output.addInt(2);
-                            output.addInt(1);
-                            std::cout<<" ENTRE EN EL VOXEL"<<2<<" "<<1<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
-                        else if(depth.pixel(j,i)<(3*areaRegion/4+areaLowThreshold)){ //Voxel_col_3
-                            output.addInt(2);
-                            output.addInt(2);
-                            std::cout<<" ENTRE EN EL VOXEL"<<2<<" "<<2<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
-                        else if(depth.pixel(j,i)<(areaRegion+areaLowThreshold)){ //Voxel_col_4
-                            output.addInt(2);
-                            output.addInt(3);
-                            std::cout<<" ENTRE EN EL VOXEL"<<2<<" "<<3<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
+                    std::cout<<"The x limits are: "<<lowXBox<<" "<<highXBox<<std::endl;
+                    std::cout<<"The y limits are: "<<lowYBox<<" "<<highYBox<<std::endl;
 
-                    }
-                    else if((lowXBox+3*ix)<x && x<(lowXBox+4*ix) && lowYBox<y && y<highYBox){ //Voxel_row_4
-                        if(depth.pixel(j,i)<(areaRegion/4+areaLowThreshold)){ //Voxel_col_1
-                            output.addInt(3);
-                            output.addInt(0);
-                            std::cout<<" ENTRE EN EL VOXEL"<<3<<" "<<0<<std::endl;
-                            pOutPort->write(output);
-                            return;
+                    for(int c=0;c<voxelResolution;c++){
+                        if(lowXBox<x && x<(lowXBox+(c+1)*ix) && lowYBox<y && y<highYBox){ //Voxel_column
+                            std::cout<<"I AM IN A ROW"<<std::endl;
+                            for(int r=0; r<voxelResolution; r++){
+                                std::cout<<c<<std::endl;
+                                //double bonud=(float(c+1)/(voxelResolution*2))*areaRegion+areaLowThreshold;
+                                //std::cout<<"Has to be lower than "<<bonud<<std::endl;
+                                if(depth.pixel(j,i)<((float(r+1)/voxelResolution)*areaRegion+areaLowThreshold)){
+                                    std::cout<<"I AM IN A VOXEL "<<std::endl;
+                                    output.clear(); //Clear bottle
+                                    output.addInt(c);
+                                    output.addInt(r);
+                                    pOutPort->write(output);
+                                    yarp::os::Time::delay(0.1);
+                                    std::cout<<"!!!!!!!!!!!!!!!!!!!!!ENTRE EN EL VOXEL"<<c<<" "<<r<<std::endl;
+                                    return;
+                                }
+                            }
                         }
-                        else if(depth.pixel(j,i)<(areaRegion/2+areaLowThreshold)){ //Voxel_col_2
-                            output.addInt(3);
-                            output.addInt(1);
-                            std::cout<<" ENTRE EN EL VOXEL"<<3<<" "<<1<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
-                        else if(depth.pixel(j,i)<(3*areaRegion/4+areaLowThreshold)){ //Voxel_col_3
-                            output.addInt(3);
-                            output.addInt(2);
-                            std::cout<<" ENTRE EN EL VOXEL"<<3<<" "<<2<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
-                        else if(depth.pixel(j,i)<(areaRegion+areaLowThreshold)){ //Voxel_col_4
-                            output.addInt(3);
-                            output.addInt(3);
-                            std::cout<<" ENTRE EN EL VOXEL"<<3<<" "<<3<<std::endl;
-                            pOutPort->write(output);
-                            return;
-                        }
-
-                    }
-                    else{
-                        std::cout<<"PIXEL OUT OF THE BOX"<<std::endl;
                     }
                 }
+
                 //If not enough occupancy pixels. The region is saved for later removal of search area.
                 else{
                     //occupancy_indices.push_back(i);
                     occupancy_indices.push_back(j);
                 }
-            }
 
-            if(lowXBox<x && x<(lowXBox+ix) && lowYBox<y && y<highYBox){ //CLEAN VOXEL
-                if((5*areaRegion/4+areaLowThreshold)<depth.pixel(j,i) && depth.pixel(j,i)<(6*areaRegion/4+areaLowThreshold)){
-                    yarp::os::Bottle output;
-                    output.addInt(4);
-                    output.addInt(4);
-                    std::cout<<" ENTRE EN EL VOXEL"<<4<<" "<<4<<std::endl;
-                    std::cout<<"BORRANDO PANTALLA"<<std::endl;
-                    pOutPort->write(output);
-                    return;
+            }//END_IF SEARCH_AREA
+
+
+            //Is inside the utility area
+            else if(lowXBox<x && x<highXBox && lowYBox<y && y<highYBox && utilityAreaLowThreshold<depth.pixel(j,i) && depth.pixel(j,i)<utilityAreaHighThreshold){
+                //Calculate the number of occupancy pixels around that pixel.
+                int numberOccupancyIndices=0;
+                //std::cout<<" VAMOS CON LOS UTILITY PIXELS "<<std::endl;
+
+
+                //Define a search area to see the occupancy around that pixel.
+                int lowX=j-searchAreaDilatation;
+                int highX=j+searchAreaDilatation;
+                if(lowX<0){
+                    lowX=0;
                 }
-            }     
+                if(highX>W){
+                    highX=W;
+                }
 
+                //Check area around detected pixel for pixel occupancy.
+                for(int k=floor(0.45*H); k<ceil(0.54*H); k++){
+                    for(int l=lowX; l<highX;l++){
+                        if(depth.pixel(l,k)<utilityAreaHighThreshold && depth.pixel(l,k)>utilityAreaLowThreshold){
+                            numberOccupancyIndices++;
+                        }
+                    }
+                }
+
+                //If we have more occupancy pixels than the threshold, that pixel is considered occupied.
+                if(numberOccupancyIndices>occupancyThreshold){
+
+                    std::cout<<" X "<<x<<std::endl;
+                    std::cout<<" Y "<<y<<std::endl;
+                    std::cout<<" Z "<<depth.pixel(j,i)<<std::endl;
+                    //std::cout<<" Incremento "<<ix<<std::endl;
+                    //output.addInt(x);
+                    //output.addInt(y);
+                    int uix=(highXBox-lowXBox)/numberUtilityVoxels;
+                    //std::cout<<" PIXEL "<<x<<" "<<y<<" is considered occupied"<<std::endl;
+                    pOutPort->write(output);
+
+                    for(int c=0;c<numberUtilityVoxels;c++){
+                        if(lowXBox<x && x<(lowXBox+(c+1)*uix) && lowYBox<y && y<highYBox){ //Voxel_column
+                            std::cout<<"UTILITY VOXEL "<<std::endl;
+                            output.clear(); //Clear bottle
+                            output.addInt(c);
+                            output.addInt(voxelResolution);
+                            pOutPort->write(output);
+                            yarp::os::Time::delay(0.1);
+                            std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ENTRE EN EL VOXEL"<<" "<<c<<voxelResolution<<std::endl;
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
         //*****Delete the area pixels that have already been searched without success*****
@@ -394,46 +336,7 @@ void SegmentorThread::run() {
         /********************************************************************************/
     }
 
-    //Delete followings lines???
-//    //Lets check all the pixels in the area
-//    for(int i=0; i<W;i++)
-//    {
-//        //printf(" The depth of the low pixel is %d\n", depth.pixel(H/10,W/10));
-//        for(int j=floor(0.45*H); j<ceil(0.54*H); j++){
-//        //printf("%d\n", depth.pixel(i,j));
-//        if(depth.pixel(i,j)==0){
-//            std::cout<<"The x pixel is"<<i<<std::endl;
-//            std::cout<<"The y pixel is"<<j<<std::endl;
-//            filter_list[j][i]++;
-//            }
-//         }
-//    }
-
-
-//     //Print array filter_list array
-//     std::cout<<"**************************************************************************************************************************"<<std::endl;
-//     for(int i=0; i<W;i++)
-//     {
-//        for(int j=floor(0.45*H); j<ceil(0.54*H); j++){
-//            std::cout<<"Pixel number "<<i<<"  "<<j<<" Value "<< filter_list.at(j).at(i)<<std::endl;
-//        }
-//      }
-//      std::cout<<"**************************************************************************************************************************"<<std::endl;
-
-
-      /*yarp::sig::ImageOf<yarp::sig::PixelMono16> depth
-
-      pOutImg->prepare() = outYarpImg;
-      pOutImg->write();*/
-
       //The area pixels are (60cm from kinect) H:107 (20cm 2/5 Height) H:130 (25cm 1/2Height) Weidth:all (320 pix, 68cm).
-
-//      yarp::os::Bottle output;
-//      output.clear();
-//      //output.addInt(depth.pixel(5,5));
-//      //output.addInt(depth.pixel(5,6));
-//      //output.addDouble(34.3);
-//      pOutPort->write(output);
     }
 
 }  // namespace roboticslab

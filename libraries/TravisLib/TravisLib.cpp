@@ -165,7 +165,7 @@ void Travis::morphOpening(const int& opening) {
 
 /************************************************************************/
 
-void Travis::blobize(const int& maxNumBlobs) {
+int Travis::blobize(const int& maxNumBlobs) {
     if (!_quiet) printf("[Travis] in: blobize(%d)\n", maxNumBlobs);
 
     // [thanks getBiggestContour from smorante] note: here jgvictores decides to avoid Canny
@@ -183,6 +183,7 @@ void Travis::blobize(const int& maxNumBlobs) {
     if (_contours.size() > maxNumBlobs)
         _contours.erase( _contours.begin()+maxNumBlobs, _contours.end() );
 
+    return _contours.size();
 }
 
 /************************************************************************/
@@ -194,7 +195,7 @@ void Travis::pushContour(const std::vector <cv::Point>& contour) {
 }
 
 /************************************************************************/
-bool Travis::getBlobsXY(std::vector <cv::Point>& locations) {
+bool Travis::getBlobsXY(std::vector <cv::Point2d>& locations) {
     if (!_quiet) printf("[Travis] in: getBlobsXY(...)\n");
 
     // we have the number of actual blobs in _contours.size()
@@ -207,12 +208,17 @@ bool Travis::getBlobsXY(std::vector <cv::Point>& locations) {
 
     // [thanks http://areshopencv.blogspot.com.es/2011/09/finding-center-of-gravity-in-opencv.html]
     std::vector<cv::Moments> mu( _contours.size() );
+
     for( int i = 0; i < _contours.size(); i++ ) {
         mu[i] = moments( cv::Mat(_contours[i]), false );
     }
-    std::vector<cv::Point2f> mc( _contours.size() );
+    std::vector<cv::Point2d> mc( _contours.size() );
     for( int i = 0; i < _contours.size(); i++ ) {
-        mc[i] = cv::Point2f( mu[i].m10/mu[i].m00 , mu[i].m01/mu[i].m00 );
+        mc[i] = cv::Point2d( mu[i].m10/mu[i].m00 , mu[i].m01/mu[i].m00 );
+        if( mc[i].x != mc[i].x )
+            return false;
+        if( mc[i].y != mc[i].y )
+            return false;
         locations.push_back( mc[i] );
     }
 

@@ -1,0 +1,50 @@
+<application>
+<name>example colorRegionDetection2D App</name>
+        <module>
+                <name>yarpdev</name>
+                <parameters>--device opencv_grabber --name /grabber/img:o --camera 0</parameters>
+                <node>localhost</node>
+        </module>
+
+        <module>
+                <name>yarpview</name>
+                <parameters>--name /yarpview/grabber/img:i</parameters>
+                <node>localhost</node>
+        </module>
+        <connection>
+                <from>/grabber/img:o</from>
+                <to>/yarpview/grabber/img:i</to>
+        </connection>
+
+        <module>
+                <name>colorRegionDetection2D</name>
+                <parameters>--outFeaturesFormat 1 --maxNumBlobs 1 --algorithm blueMinusRed</parameters>
+                <node>localhost</node>
+        </module>
+        <module>
+                <name>yarpview</name>
+                <parameters>--name /yarpview/img:i</parameters>
+                <node>localhost</node>
+        </module>
+
+        <connection>
+                <from>/grabber/img:o</from>
+                <to>/colorRegionDetection2D/img:i</to>
+        </connection>
+        <connection>
+                <from>/colorRegionDetection2D/img:o</from>
+                <to>/yarpview/img:i</to>
+        </connection>
+
+        <module>
+                <name>gnome-terminal</name>
+                <parameters>-e "yarp read ... /colorRegionDetection2D/features:o"</parameters>
+                <node>localhost</node>
+        </module>
+
+        <connection>
+                <from>/colorRegionDetection2D/features:o</from>
+                <to>/features:i</to>
+        </connection>
+</application>
+

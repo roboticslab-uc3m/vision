@@ -1,0 +1,26 @@
+<application>
+    <name>example haarDetection2D App</name>
+
+    <module>
+        <name>yarpdev</name>
+        <parameters>--device opencv_grabber --name frameGrabber2D</parameters>
+        <node>localhost</node>
+    </module>
+
+    <module>
+        <name>haarDetection2D</name>
+        <parameters></parameters>
+        <node>localhost</node>
+    </module>
+
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /haarDetection2D/yarpview/img:i</parameters>
+        <node>localhost</node>
+    </module>
+
+    <connection>
+        <from>/haarDetection2D/img:o</from>
+        <to>/haarDetection2D/yarpview/img:i</to>
+    </connection>
+</application>
