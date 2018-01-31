@@ -1,4 +1,4 @@
-option(ENABLE_pointAtObjectServer "Enable/disable pointAtObjectServer program" ON)
+option(ENABLE_pointAtObjectServer "Enable/disable pointAtObjectServer program" OFF)
 
 if(ENABLE_pointAtObjectServer)
 
