@@ -20,8 +20,8 @@ Our software integrates the previous dependencies. Note that you will be prompte
 cd  # go home
 mkdir -p repos; cd repos  # make $HOME/repos if it doesn't exist; then, enter it
 git clone https://github.com/roboticslab-uc3m/vision.git  # Download vision software from the repository
-cd vision; mkdir build; cd build; cmake ..  # Configure the vision software
-make  # Compile
+cd vision && mkdir build && cd build && cmake ..  # Configure the vision software
+make -j$(nproc)  # compile
 sudo make install  # Install :-)
 ```
 
