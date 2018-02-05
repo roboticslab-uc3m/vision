@@ -1,0 +1,41 @@
+<application>
+<name>simKinectPxToReal App</name>
+        <module>
+                <name>cartesianServer</name>
+                <parameters>--env asibot_kitchen_kinect.env.xml --extraRobot 1dof</parameters>
+                <node>localhost</node>
+        </module>
+        <module>
+                <name>colorSegmentor</name>
+                <node>localhost</node>
+        </module>
+        <module>
+                <name>yarpview</name>
+                <parameters>--name /yarpview/img:i</parameters>
+                <node>localhost</node>
+        </module>
+        <module>
+                <name>kinectPxToReal</name>
+                <parameters>--from simKinectPxToReal.ini</parameters>
+                <node>localhost</node>
+        </module>
+
+        <connection>
+                <from>/ravebot/kinect_rgb/img:o</from>
+                <to>/colorSegmentor/img:i</to>
+        </connection>
+        <connection>
+                <from>/colorSegmentor/img:o</from>
+                <to>/yarpview/img:i</to>
+        </connection>
+        <connection>
+                <from>/ravebot/kinect_depth/depth:o</from>
+                <to>/kinectPxToReal/depth:i</to>
+        </connection>
+        <connection>
+                <from>/colorSegmentor/state:o</from>
+                <to>/kinectPxToReal/state:i</to>
+        </connection>
+
+</application>
+
