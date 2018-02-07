@@ -1,0 +1,29 @@
+<application>
+<name>visualServo App</name>
+        <module>
+                <name>optirun</name>
+                <parameters>cartesianServer --env VS.env.xml --numMotors 2</parameters>
+                <node>localhost</node>
+        </module>
+        <module>
+                <name>colorSegmentor</name>
+                <parameters>--maxNumBlobs 4 --algorithm greenMinusRed --seeBounding 1</parameters>
+                <node>localhost</node>
+        </module>
+        <module>
+                <name>yarpview</name>
+                <parameters>--name /yarpview/img:i</parameters>
+                <node>localhost</node>
+        </module>
+
+        <connection>
+                <from>/ravebot/ip_camera/img:o</from>
+                <to>/colorSegmentor/img:i</to>
+        </connection>
+        <connection>
+                <from>/colorSegmentor/img:o</from>
+                <to>/yarpview/img:i</to>
+        </connection>
+
+</application>
+
