@@ -5,7 +5,6 @@
 - [Install PCL with VTK >= 5](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-pcl.md)
 - [Install OpenNI2 & NiTE2](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-openni-nite.md)
 - [Install Yarp and OpenNI2DeviceServer](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-yarp.md)
-- [Install KDL](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-kdl.md)
 - [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-opencv.md)
 
 Additionally, this project depends on YCM to download and build external packages. Although this process is intended to run automatically during the CMake configuration phase, you may still want to install YCM and said packages by yourself. In that respect, refer to [Install YCM](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-ycm.md) and to the installation guides of any package listed below:
