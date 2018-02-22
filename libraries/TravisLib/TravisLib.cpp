@@ -2,6 +2,13 @@
 
 #include "TravisLib.hpp"
 
+#include <stdio.h>  // printf, fprintf, stderr
+#include <string.h>  // strcmp
+
+#include <cmath>
+#include <algorithm>
+#include <vector>
+
 namespace roboticslab
 {
 
@@ -741,4 +748,3 @@ void calcCircle(float& radius, const std::vector <cv::Point> biggestCont ){
 }
 
 }  // namespace roboticslab
-
