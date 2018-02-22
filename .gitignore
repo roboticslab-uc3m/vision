@@ -4,6 +4,7 @@
 tags
 CMakeLists.txt.user
 **/build*/
-doc/html
+/doc/html/
 /.project
 /.cproject
+/external/
