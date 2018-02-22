@@ -9,7 +9,6 @@
 #define __KINECT_PX_TO_REAL_HPP__
 
 #include <yarp/os/RFModule.h>
-#include <yarp/os/Module.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/BufferedPort.h>
