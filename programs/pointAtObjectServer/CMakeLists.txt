@@ -4,7 +4,7 @@ if(NOT PCL_FOUND AND (NOT DEFINED ENABLE_pointAtObjectServer OR ENABLE_pointAtOb
     message(WARNING "PCL package not found, disabling pointAtObjectServer program")
 endif()
 
-cmake_dependent_option(ENABLE_pointAtObjectServer "Enable/disable pointAtObjectServer program" OFF
+cmake_dependent_option(ENABLE_pointAtObjectServer "Enable/disable pointAtObjectServer program" ON
                        PCL_FOUND OFF)
 
 if(ENABLE_pointAtObjectServer)
