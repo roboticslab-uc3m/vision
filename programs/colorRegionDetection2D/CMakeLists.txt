@@ -1,31 +1,37 @@
+find_package(OpenCV QUIET)
+
+if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_colorRegionDetection2D OR ENABLE_colorRegionDetection2D))
+    message(WARNING "OpenCV package not found, disabling colorRegionDetection2D program")
+endif()
+
 cmake_dependent_option(ENABLE_colorRegionDetection2D "Enable/disable colorRegionDetection2D program" ON
-                       ENABLE_TravisLib OFF)
+                       "ENABLE_TravisLib;OpenCV_FOUND" OFF)
 
-IF (ENABLE_colorRegionDetection2D)
+if(ENABLE_colorRegionDetection2D)
 
-set(KEYWORD "colorRegionDetection2D")
+    find_package(YARP REQUIRED)
 
-find_package(OpenCV REQUIRED)
-find_package(YARP REQUIRED)
+    include_directories(${YARP_INCLUDE_DIRS}
+                        ${OpenCV_INCLUDE_DIRS})
 
-include_directories(${YARP_INCLUDE_DIRS}
-                    ${OpenCV_INCLUDE_DIRS})
+    add_executable(colorRegionDetection2D main.cpp
+                                          SegmentorThread.cpp
+                                          SegmentorThread.hpp
+                                          ColorRegionDetection2D.cpp
+                                          ColorRegionDetection2D.hpp)
 
-add_executable(colorRegionDetection2D main.cpp
-                                      SegmentorThread.cpp
-                                      SegmentorThread.hpp
-                                      ColorRegionDetection2D.cpp
-                                      ColorRegionDetection2D.hpp)
+    target_link_libraries(colorRegionDetection2D YARP::YARP_OS
+                                               YARP::YARP_init
+                                               YARP::YARP_dev
+                                               YARP::YARP_sig
+                                               ${OpenCV_LIBS}
+                                               TravisLib)
 
-target_link_libraries(colorRegionDetection2D YARP::YARP_OS
-                                           YARP::YARP_init
-                                           YARP::YARP_dev
-                                           YARP::YARP_sig
-                                           ${OpenCV_LIBS}
-                                           TravisLib)
+    install(TARGETS colorRegionDetection2D
+            DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-install(TARGETS colorRegionDetection2D
-        DESTINATION ${CMAKE_INSTALL_BINDIR})
+else()
 
-ENDIF (ENABLE_colorRegionDetection2D)
+    set(ENABLE_colorRegionDetection2D OFF CACHE BOOL "Enable/disable colorRegionDetection2D program" FORCE)
 
+endif()
