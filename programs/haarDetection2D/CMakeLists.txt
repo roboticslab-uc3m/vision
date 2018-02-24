@@ -1,28 +1,38 @@
-option(ENABLE_haarDetection2D "Enable/disable haarDetection2D program" ON)
+find_package(OpenCV QUIET)
+
+if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_haarDetection2D OR ENABLE_haarDetection2D))
+    message(WARNING "OpenCV package not found, disabling haarDetection2D program")
+endif()
+
+cmake_dependent_option(ENABLE_haarDetection2D "Enable/disable haarDetection2D program" ON
+                       OpenCV_FOUND OFF)
 
 if(ENABLE_haarDetection2D)
 
-find_package(OpenCV REQUIRED)
-find_package(YARP REQUIRED)
+    find_package(YARP REQUIRED)
 
-include_directories(${YARP_INCLUDE_DIRS}
-                    ${OpenCV_INCLUDE_DIRS})
+    include_directories(${YARP_INCLUDE_DIRS}
+                        ${OpenCV_INCLUDE_DIRS})
 
-add_executable(haarDetection2D main.cpp
-                               HaarDetection2D.hpp
-                               HaarDetection2D.cpp
-                               SegmentorThread.hpp
-                               SegmentorThread.cpp)
+    add_executable(haarDetection2D main.cpp
+                                   HaarDetection2D.hpp
+                                   HaarDetection2D.cpp
+                                   SegmentorThread.hpp
+                                   SegmentorThread.cpp)
 
-add_dependencies(haarDetection2D COLOR_DEBUG)
+    add_dependencies(haarDetection2D COLOR_DEBUG)
 
-target_link_libraries(haarDetection2D YARP::YARP_OS
-                                      YARP::YARP_init
-                                      YARP::YARP_dev
-                                      YARP::YARP_sig
-                                      ${OpenCV_LIBS})
+    target_link_libraries(haarDetection2D YARP::YARP_OS
+                                          YARP::YARP_init
+                                          YARP::YARP_dev
+                                          YARP::YARP_sig
+                                          ${OpenCV_LIBS})
 
-install(TARGETS haarDetection2D
-        DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS haarDetection2D
+            DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+else()
+
+    set(ENABLE_haarDetection2D OFF CACHE BOOL "Enable/disable haarDetection2D program" FORCE)
 
 endif()
