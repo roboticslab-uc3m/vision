@@ -6,12 +6,7 @@
 # * several targets; it's advised to link against individual libraries with the usual
 #   target_link_libraries() command
 #
-# * ROBOTICSLAB_VISION_INCLUDE_DIRS; use include_directories(${ROBOTICSLAB_VISION_INCLUDE_DIRS})
-#
 # * ROBOTICSLAB_VISION_MODULE_PATH; use list(APPEND CMAKE_MODULE_PATH ${ROBOTICSLAB_VISION_MODULE_PATH})
-#
-# * ROBOTICSLAB_VISION_LIBRARIES; shorthand for linking against all targets at once,
-#   use target_link_libraries(_target ${ROBOTICSLAB_VISION_LIBRARIES})
 #
 # Notes:
 #
@@ -19,21 +14,8 @@
 
 @PACKAGE_INIT@
 
-set(ROBOTICSLAB_VISION_INCLUDE_DIRS)
-
-foreach(_dir @PACKAGE_ROBOTICSLAB_VISION_INCLUDE_DIR@)
-    set_and_check(_temp_var ${_dir})
-    list(APPEND ROBOTICSLAB_VISION_INCLUDE_DIRS ${_temp_var})
-endforeach()
-
 set(ROBOTICSLAB_VISION_MODULE_PATH "@PACKAGE_ROBOTICSLAB_VISION_MODULE_DIR@")
 
 if(NOT "@_exported_targets@" STREQUAL "")
     include(${CMAKE_CURRENT_LIST_DIR}/ROBOTICSLAB_VISIONTargets.cmake)
-
-    set(ROBOTICSLAB_VISION_LIBRARIES)
-
-    foreach(_target @_exported_targets@)
-        list(APPEND ROBOTICSLAB_VISION_LIBRARIES ROBOTICSLAB::${_target})
-    endforeach()
 endif()
