@@ -65,19 +65,11 @@
         <to>/green/in</to>
     </connection>
 
-    <module>
-        <name>multipleDump</name>
-        <parameters>--file move</parameters>
-        <node>localhost</node>
-    </module>
-    <connection>
-        <from>/red/out</from>
-        <to>/in1</to>
-    </connection>
-    <connection>
-        <from>/green/out</from>
-        <to>/in2</to>
-    </connection>
+    <!--
+         Used to use multipleDump here; should update to yarpdatadumper, see:
+         - https://github.com/roboticslab-uc3m/vision/issues/80
+         - https://github.com/roboticslab-uc3m/developer-manual/blob/01870d8509ad006279e07d38a6f28bd3dc0b5f51/frequently-asked-questions.md#how-can-i-record-data-for-programming-by-demonstration-pbd-aka-learning-from-demonstration-lfd
+    -->
 
 </application>
 

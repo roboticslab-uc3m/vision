@@ -2,6 +2,8 @@
 
 #include "SegmentorThread.hpp"
 
+using namespace std;
+
 namespace roboticslab
 {
 
