@@ -10,7 +10,7 @@
 #include <yarp/os/RateThread.h>
 
 #include <yarp/dev/all.h>
-#include <yarp/dev/IOpenNI2DeviceDriver.h>
+#include <yarp/dev/IRGBDSensor.h>
 
 #include <yarp/sig/all.h>
 
@@ -110,7 +110,7 @@ public:
  */
 class SegmentorThread : public yarp::os::RateThread {
 private:
-    yarp::dev::IOpenNI2DeviceDriver *kinect;
+    yarp::dev::IRGBDSensor *kinect;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono16> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
     //
@@ -151,7 +151,7 @@ private:
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
 
-    void setIKinectDeviceDriver(yarp::dev::IOpenNI2DeviceDriver * _kinect);
+    void setRGBDInterface(yarp::dev::IRGBDSensor * _kinect);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono16> > * _pOutImg);
     void setOutPort(yarp::os::Port *_pOutPort);
     void init(yarp::os::ResourceFinder &rf);

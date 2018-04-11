@@ -8,7 +8,7 @@ namespace roboticslab
 {
 
 /************************************************************************/
-void SegmentorThread::setIKinectDeviceDriver(yarp::dev::IOpenNI2DeviceDriver *_kinect) {
+void SegmentorThread::setRGBDInterface(yarp::dev::IRGBDSensor *_kinect) {
     kinect = _kinect;
 }
 
@@ -168,8 +168,8 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 void SegmentorThread::run() {
     // printf("[SegmentorThread] run()\n");
 
-    yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
-    if (depth.height()<10) {
+    yarp::sig::ImageOf<yarp::sig::PixelFloat> depth;
+    if (!kinect->getDepthImage(depth)) {
         //printf("No depth yet...\n");
         return;
     };

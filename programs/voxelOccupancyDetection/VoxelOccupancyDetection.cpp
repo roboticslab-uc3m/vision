@@ -39,8 +39,12 @@ bool VoxelOccupancyDetection::configure(yarp::os::ResourceFinder &rf) {
         yarp::os::Property options;
         options.fromString( rf.toString() );  //-- Should get noMirror, noRGBMirror, noDepthMirror, video modes...
         options.put("device",strKinectDevice);  //-- Important to override in case there is a "device" in the future
-        options.put("localName",strKinectLocal);  //
-        options.put("remoteName",strKinectRemote);  //
+        options.put("localImagePort",strKinectLocal+"/rgbImage:i");
+        options.put("localDepthPort",strKinectLocal+"/depthImage:i");
+        options.put("localRpcPort",strKinectLocal+"/rpc:o");
+        options.put("remoteImagePort",strKinectRemote+"/rgbImage:o");
+        options.put("remoteDepthPort",strKinectRemote+"/depthImage:o");
+        options.put("remoteRpcPort",strKinectRemote+"/rpc:i");
         //if(rf.check("noMirror")) options.put("noMirror",1);  //-- Replaced by options.fromString( rf.toString() );
         while(!dd.open(options)) {
             printf("Waiting for kinectDevice \"%s\"...\n",strKinectDevice.c_str());
@@ -50,7 +54,7 @@ bool VoxelOccupancyDetection::configure(yarp::os::ResourceFinder &rf) {
         if (! dd.view(kinect) ) fprintf(stderr,"[VoxelOccupancyDetection] warning: kinectDevice bad view.\n");
         else printf("[VoxelOccupancyDetection] success: kinectDevice ok view.\n");
 
-        segmentorThread.setIKinectDeviceDriver(kinect);
+        segmentorThread.setRGBDInterface(kinect);
         segmentorThread.setOutImg(&outImg);
         segmentorThread.setOutPort(&outPort);
 

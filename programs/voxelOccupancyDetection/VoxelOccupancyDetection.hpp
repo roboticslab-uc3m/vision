@@ -6,7 +6,7 @@
 #include "SegmentorThread.hpp"
 
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
-#define DEFAULT_KINECT_DEVICE "OpenNI2DeviceClient"
+#define DEFAULT_KINECT_DEVICE "RGBDSensorClient"
 #define DEFAULT_KINECT_LOCAL "/voxelOccupancyDetection"
 #define DEFAULT_KINECT_REMOTE "/OpenNI2"
 #define DEFAULT_WATCHDOG    2       // [s]
@@ -25,7 +25,7 @@ class VoxelOccupancyDetection : public yarp::os::RFModule {
     SegmentorThread segmentorThread;
     //
     yarp::dev::PolyDriver dd;
-    yarp::dev::IOpenNI2DeviceDriver *kinect;
+    yarp::dev::IRGBDSensor *kinect;
 
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono16> > outImg;
     yarp::os::Port outPort;

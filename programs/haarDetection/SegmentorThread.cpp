@@ -6,7 +6,7 @@ namespace roboticslab
 {
 
 /************************************************************************/
-void SegmentorThread::setIKinectDeviceDriver(yarp::dev::IOpenNI2DeviceDriver *_kinect) {
+void SegmentorThread::setRGBDInterface(yarp::dev::IRGBDSensor *_kinect) {
     kinect = _kinect;
 }
 
@@ -96,28 +96,24 @@ void SegmentorThread::run() {
         return;
     };*/
 
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg = kinect->getImageFrame();
-    if (inYarpImg.height()<10) {
-        //printf("No img yet...\n");
+    yarp::sig::FlexImage colorFrame;
+    yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
+    if (!kinect->getImages(colorFrame, depthFrame)) {
         return;
-    };
-    yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
-    if (depth.height()<10) {
-        //printf("No depth yet...\n");
-        return;
-    };
+    }
 
     // {yarp ImageOf Rgb -> openCv Mat Bgr}
-    IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
+    IplImage *inIplImage = cvCreateImage(cvSize(colorFrame.width(), colorFrame.height()),
                                          IPL_DEPTH_8U, 1 );
-    cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2GRAY);
+    cvCvtColor((IplImage*)colorFrame.getIplImage(), inIplImage, CV_RGB2GRAY);
     cv::Mat inCvMat( cv::cvarrToMat(inIplImage) );
 
     std::vector<cv::Rect> faces;
     //face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0, Size(70, 70));
     face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(30, 30) );
 
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
+    outYarpImg.copy(colorFrame);
     yarp::sig::PixelRgb red(255,0,0);
     yarp::sig::PixelRgb green(0,255,0);
     yarp::os::Bottle output;
@@ -128,7 +124,7 @@ void SegmentorThread::run() {
     {
         int pxX = faces[i].x+faces[i].width/2;
         int pxY = faces[i].y+faces[i].height/2;
-        double mmZ_tmp = depth.pixel(pxX,pxY);
+        double mmZ_tmp = depthFrame.pixel(pxX,pxY);
 
         if (mmZ_tmp < 0.001)
         {
@@ -148,7 +144,7 @@ void SegmentorThread::run() {
 
         int pxX = faces[i].x+faces[i].width/2;
         int pxY = faces[i].y+faces[i].height/2;
-        double mmZ_tmp = depth.pixel(pxX,pxY);
+        double mmZ_tmp = depthFrame.pixel(pxX,pxY);
 
         if (mmZ_tmp < 0.001)
         {
