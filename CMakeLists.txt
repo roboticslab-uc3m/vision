@@ -94,10 +94,23 @@ set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_TARGETS)
 # Create targets if specific requirements are satisfied.
 include(CMakeDependentOption)
 
+# Find YARP (main dependency).
+find_package(YARP REQUIRED)
+
+# Load YARP modules.
+if(YARP_VERSION_SHORT VERSION_LESS 2.3.70)
+    list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
+    include(YarpPlugin)
+    include(YarpInstallationHelpers)
+endif()
+
+# Configure installation paths for YARP resources.
+yarp_configure_external_installation(roboticslab-vision)
+
 # Add main contents.
-add_subdirectory(share)
 add_subdirectory(libraries)
 add_subdirectory(programs)
+add_subdirectory(share)
 
 # Store the package in the user registry.
 export(PACKAGE ROBOTICSLAB_VISION)

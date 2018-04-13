@@ -6,12 +6,7 @@ option(ENABLE_YarpPlugins "Enable/disable YarpPlugins" OFF)
 
 if(ENABLE_YarpPlugins)
 
-# Find YARP (common dependency for all devices).
-find_package(YARP REQUIRED)
-
 if(YARP_VERSION_SHORT VERSION_LESS 2.3.70)
-    list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
-    include(YarpPlugin)
     include_directories(${YARP_INCLUDE_DIRS})
 endif()
 
