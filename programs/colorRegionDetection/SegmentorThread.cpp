@@ -2,6 +2,8 @@
 
 #include "SegmentorThread.hpp"
 
+#include <yarp/os/Time.h>
+
 namespace roboticslab
 {
 
@@ -120,9 +122,12 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
         inCropSelectorPort->setReader(processor);
     }
 
+    // Wait for the first few frames to arrive. We kept receiving invalid pixel codes
+    // from the depthCamera device if started straight away.
+    yarp::os::Time::delay(1);
+
     this->setRate(rateMs);
     this->start();
-
 }
 
 /************************************************************************/
