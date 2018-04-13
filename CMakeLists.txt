@@ -95,7 +95,8 @@ set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_TARGETS)
 include(CMakeDependentOption)
 
 # Find YARP (main dependency).
-find_package(YARP REQUIRED)
+# v2.3.68+: yarp::dev::IRGBDSensor
+find_package(YARP 2.3.68 REQUIRED)
 
 # Load YARP modules.
 if(YARP_VERSION_SHORT VERSION_LESS 2.3.70)
