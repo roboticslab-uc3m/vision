@@ -138,7 +138,7 @@ private:
     int areaLowThreshold;
     int areaHighThreshold;
     int occupancyThreshold;
-    double kinectCalibrationValue;
+    double RGBDCalibrationValue;
     int lowXBox;
     int highXBox;
     int lowYBox;

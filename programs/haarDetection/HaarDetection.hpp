@@ -6,9 +6,9 @@
 #include "SegmentorThread.hpp"
 
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
-#define DEFAULT_KINECT_DEVICE "RGBDSensorClient"
-#define DEFAULT_KINECT_LOCAL "/haarDetection"
-#define DEFAULT_KINECT_REMOTE "/OpenNI2"
+#define DEFAULT_RGBD_DEVICE "RGBDSensorClient"
+#define DEFAULT_RGBD_LOCAL "/haarDetection"
+#define DEFAULT_RGBD_REMOTE "/rgbd"
 #define DEFAULT_WATCHDOG    2       // [s]
 
 
