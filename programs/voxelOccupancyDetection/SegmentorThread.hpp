@@ -110,7 +110,7 @@ public:
  */
 class SegmentorThread : public yarp::os::RateThread {
 private:
-    yarp::dev::IRGBDSensor *kinect;
+    yarp::dev::IRGBDSensor *iRGBDSensor;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono16> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
     //
@@ -151,7 +151,7 @@ private:
 public:
     SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
 
-    void setRGBDInterface(yarp::dev::IRGBDSensor * _kinect);
+    void setIRGBDSensor(yarp::dev::IRGBDSensor * _iRGBDSensor);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono16> > * _pOutImg);
     void setOutPort(yarp::os::Port *_pOutPort);
     void init(yarp::os::ResourceFinder &rf);

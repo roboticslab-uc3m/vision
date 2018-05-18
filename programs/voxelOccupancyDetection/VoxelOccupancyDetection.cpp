@@ -51,10 +51,10 @@ bool VoxelOccupancyDetection::configure(yarp::os::ResourceFinder &rf) {
             yarp::os::Time::delay(1);
         }
         printf("[VoxelOccupancyDetection] success: kinectDevice available.\n");
-        if (! dd.view(kinect) ) fprintf(stderr,"[VoxelOccupancyDetection] warning: kinectDevice bad view.\n");
+        if (! dd.view(iRGBDSensor) ) fprintf(stderr,"[VoxelOccupancyDetection] warning: kinectDevice bad view.\n");
         else printf("[VoxelOccupancyDetection] success: kinectDevice ok view.\n");
 
-        segmentorThread.setRGBDInterface(kinect);
+        segmentorThread.setIRGBDSensor(iRGBDSensor);
         segmentorThread.setOutImg(&outImg);
         segmentorThread.setOutPort(&outPort);
 

@@ -51,10 +51,10 @@ bool ColorRegionDetection::configure(yarp::os::ResourceFinder &rf) {
             yarp::os::Time::delay(1);
         }
         printf("[ColorRegionDetection] success: kinectDevice available.\n");
-        if (! dd.view(kinect) ) fprintf(stderr,"[ColorRegionDetection] warning: kinectDevice bad view.\n");
+        if (! dd.view(iRGBDSensor) ) fprintf(stderr,"[ColorRegionDetection] warning: kinectDevice bad view.\n");
         else printf("[ColorRegionDetection] success: kinectDevice ok view.\n");
 
-        segmentorThread.setRGBDInterface(kinect);
+        segmentorThread.setIRGBDSensor(iRGBDSensor);
         segmentorThread.setOutImg(&outImg);
         segmentorThread.setOutPort(&outPort);
 

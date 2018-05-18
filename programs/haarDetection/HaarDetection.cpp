@@ -52,10 +52,10 @@ bool HaarDetection::configure(yarp::os::ResourceFinder &rf) {
             yarp::os::Time::delay(1);
         }
         printf("[HaarDetection] success: kinectDevice available.\n");
-        if (! dd.view(kinect) ) fprintf(stderr,"[HaarDetection] warning: kinectDevice bad view.\n");
+        if (! dd.view(iRGBDSensor) ) fprintf(stderr,"[HaarDetection] warning: kinectDevice bad view.\n");
         else printf("[HaarDetection] success: kinectDevice ok view.\n");
 
-        segmentorThread.setRGBDInterface(kinect);
+        segmentorThread.setIRGBDSensor(iRGBDSensor);
         segmentorThread.setOutImg(&outImg);
         segmentorThread.setOutPort(&outPort);
 

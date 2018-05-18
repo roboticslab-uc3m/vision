@@ -25,7 +25,7 @@ class VoxelOccupancyDetection : public yarp::os::RFModule {
     SegmentorThread segmentorThread;
     //
     yarp::dev::PolyDriver dd;
-    yarp::dev::IRGBDSensor *kinect;
+    yarp::dev::IRGBDSensor *iRGBDSensor;
 
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono16> > outImg;
     yarp::os::Port outPort;

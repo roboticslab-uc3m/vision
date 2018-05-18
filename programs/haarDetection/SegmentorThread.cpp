@@ -8,8 +8,8 @@ namespace roboticslab
 {
 
 /************************************************************************/
-void SegmentorThread::setRGBDInterface(yarp::dev::IRGBDSensor *_kinect) {
-    kinect = _kinect;
+void SegmentorThread::setIRGBDSensor(yarp::dev::IRGBDSensor *_iRGBDSensor) {
+    iRGBDSensor = _iRGBDSensor;
 }
 
 /************************************************************************/
@@ -103,7 +103,7 @@ void SegmentorThread::run() {
 
     yarp::sig::FlexImage colorFrame;
     yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
-    if (!kinect->getImages(colorFrame, depthFrame)) {
+    if (!iRGBDSensor->getImages(colorFrame, depthFrame)) {
         return;
     }
 
