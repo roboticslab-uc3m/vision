@@ -2,13 +2,7 @@
 # Authors: Juan G. Victores & Raul de Santos Rico
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
-
-# Disable annoying YCM-related warnings.
-# Remove if cmake_minimum_required() is set to 3.1 or later.
-if(POLICY CMP0054)
-    cmake_policy(SET CMP0054 NEW)
-endif()
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 project(ROBOTICSLAB_VISION)
 
@@ -42,14 +36,22 @@ if(NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 # Pick up our cmake modules.
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake
-                              ${CMAKE_SOURCE_DIR}/cmake/ycm-modules)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-# Bootstrap YCM. Stick to v0.2.2 because of:
-# https://github.com/robotology/ycm/issues/118
-# ...and to keep YCM itself compatible with cmake_minimum_required().
-set(YCM_TAG v0.2.2)
-include(YCMBootstrap)
+# Find project's hard dependencies.
+find_package(YCM 0.8 REQUIRED)
+find_package(YARP REQUIRED)
+find_package(COLOR_DEBUG REQUIRED)
+
+# Load YARP modules.
+if(YARP_VERSION_SHORT VERSION_LESS 2.3.70)
+    list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
+    include(YarpPlugin)
+    include(YarpInstallationHelpers)
+endif()
+
+# Configure installation paths for YARP resources.
+yarp_configure_external_installation(roboticslab-vision)
 
 # Standard installation directories.
 include(GNUInstallDirs)
@@ -74,20 +76,6 @@ set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_TARGETS)
 
 # Create targets if specific requirements are satisfied.
 include(CMakeDependentOption)
-
-# Find project's hard dependencies.
-find_package(COLOR_DEBUG REQUIRED)
-find_package(YARP REQUIRED)
-
-# Load YARP modules.
-if(YARP_VERSION_SHORT VERSION_LESS 2.3.70)
-    list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
-    include(YarpPlugin)
-    include(YarpInstallationHelpers)
-endif()
-
-# Configure installation paths for YARP resources.
-yarp_configure_external_installation(roboticslab-vision)
 
 # Add main contents.
 add_subdirectory(libraries)
