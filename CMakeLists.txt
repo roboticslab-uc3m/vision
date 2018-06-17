@@ -2,13 +2,7 @@
 # Authors: Juan G. Victores & Raul de Santos Rico
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
-cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
-
-# Safety check against missing dummy library for system-available COLOR_DEBUG.
-# Remove if cmake_minimum_required() is set to 3.0 or later.
-if(POLICY CMP0046)
-    cmake_policy(SET CMP0046 NEW)
-endif()
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
 # Disable annoying YCM-related warnings.
 # Remove if cmake_minimum_required() is set to 3.1 or later.
@@ -75,26 +69,14 @@ if(ENABLE_coverage)
     endif()
 endif()
 
-# Superbuild phase - include color-debug.
-include(FindOrBuildPackage)
-find_or_build_package(COLOR_DEBUG)
-
-# find_or_build_package() doesn't bring into scope COLOR_DEBUG_INCLUDE_DIRS
-# nor other config variables. If a system copy is found, we have to call the
-# find_package() command and proceed as usual.
-if(USE_SYSTEM_COLOR_DEBUG)
-    find_package(COLOR_DEBUG REQUIRED)
-    include_directories(${COLOR_DEBUG_INCLUDE_DIRS})
-    add_library(COLOR_DEBUG UNKNOWN IMPORTED)
-endif()
-
 # Store list of exported targets in global scope.
 set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_TARGETS)
 
 # Create targets if specific requirements are satisfied.
 include(CMakeDependentOption)
 
-# Find YARP (main dependency).
+# Find project's hard dependencies.
+find_package(COLOR_DEBUG REQUIRED)
 find_package(YARP REQUIRED)
 
 # Load YARP modules.

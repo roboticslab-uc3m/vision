@@ -21,13 +21,12 @@ if(ENABLE_haarDetection2D)
                                    SegmentorThread.hpp
                                    SegmentorThread.cpp)
 
-    add_dependencies(haarDetection2D COLOR_DEBUG)
-
     target_link_libraries(haarDetection2D YARP::YARP_OS
                                           YARP::YARP_init
                                           YARP::YARP_dev
                                           YARP::YARP_sig
-                                          ${OpenCV_LIBS})
+                                          ${OpenCV_LIBS}
+                                          ROBOTICSLAB::ColorDebug)
 
     install(TARGETS haarDetection2D
             DESTINATION ${CMAKE_INSTALL_BINDIR})

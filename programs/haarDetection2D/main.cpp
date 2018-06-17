@@ -46,8 +46,9 @@
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
 
+#include <ColorDebug.h>
+
 #include "HaarDetection2D.hpp"
-#include "ColorDebug.hpp"
 
 int main(int argc, char** argv)
 {
