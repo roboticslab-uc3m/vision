@@ -11,10 +11,6 @@ if(ENABLE_haarDetection)
 
     include_directories(${OpenCV_INCLUDE_DIRS})
 
-    if(YARP_VERSION_SHORT VERSION_LESS 2.3.70)
-        include_directories(${YARP_INCLUDE_DIRS})
-    endif()
-
     add_executable(haarDetection main.cpp
                                  HaarDetection.hpp
                                  HaarDetection.cpp

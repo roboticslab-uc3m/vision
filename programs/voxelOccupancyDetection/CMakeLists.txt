@@ -2,10 +2,6 @@ option(ENABLE_voxelOccupancyDetection "Enable/disable voxelOccupancyDetection pr
 
 if(ENABLE_voxelOccupancyDetection)
 
-if(YARP_VERSION_SHORT VERSION_LESS 2.3.70)
-    include_directories(${YARP_INCLUDE_DIRS})
-endif()
-
 add_executable(voxelOccupancyDetection main.cpp
                                        VoxelOccupancyDetection.hpp
                                        VoxelOccupancyDetection.cpp
