@@ -25,11 +25,11 @@ before_install:
 
 install:
   # Install color-debug
-  - cd
   - git clone https://github.com/roboticslab-uc3m/color-debug
   - cd color-debug && mkdir build && cd build
   - cmake ..
   - sudo make install
+  - cd ../..
 
   #-- Install OpenNI2
   - git clone https://github.com/occipital/OpenNI2.git
