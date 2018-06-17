@@ -6,9 +6,6 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 project(ROBOTICSLAB_VISION)
 
-# Force building shared libraries and YARP DL modules.
-set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "hide this!")
-
 # Add suffix for debug libraries.
 if(MSVC)
     message(STATUS "Running on windows")
@@ -47,8 +44,11 @@ if(NOT YARP_FOUND)
 endif()
 find_package(COLOR_DEBUG REQUIRED)
 
+# Always build YARP devices as MODULE libraries.
+set(YARP_FORCE_DYNAMIC_PLUGINS TRUE CACHE INTERNAL "Force dynamic plugins")
+
 # Configure installation paths for YARP resources.
-yarp_configure_external_installation(roboticslab-vision)
+yarp_configure_external_installation(roboticslab-vision WITH_PLUGINS)
 
 # Standard installation directories.
 include(GNUInstallDirs)
@@ -67,9 +67,6 @@ if(ENABLE_coverage)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
     endif()
 endif()
-
-# Store list of exported targets in global scope.
-set_property(GLOBAL PROPERTY ROBOTICSLAB_VISION_TARGETS)
 
 # Create targets if specific requirements are satisfied.
 include(CMakeDependentOption)
@@ -125,8 +122,7 @@ install(FILES ${CMAKE_BINARY_DIR}/ROBOTICSLAB_VISIONConfig.cmake.install
 # https://github.com/roboticslab-uc3m/project-generator/issues/19
 if(_exported_targets)
     # <pkg>Targets.cmake (build tree).
-    # In CMake 3.0 or later: export(EXPORT ROBOTICSLAB_VISION...)
-    export(TARGETS ${_exported_targets}
+    export(EXPORT ROBOTICSLAB_VISION
            NAMESPACE ROBOTICSLAB::
            FILE ROBOTICSLAB_VISIONTargets.cmake)
 
