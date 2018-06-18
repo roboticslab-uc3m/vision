@@ -6,10 +6,6 @@ option(ENABLE_YarpPlugins "Enable/disable YarpPlugins" OFF)
 
 if(ENABLE_YarpPlugins)
 
-if(YARP_VERSION_SHORT VERSION_LESS 2.3.70)
-    include_directories(${YARP_INCLUDE_DIRS})
-endif()
-
 # Create device interface target.
 #add_library(VisionInterfaces INTERFACE)
 

@@ -1,53 +1,68 @@
 language: cpp
 dist: trusty
 sudo: required
-
-os:
-  - linux
+os: linux
 
 compiler:
   - gcc
   - clang
 
 before_install:
-  - '[[ "$TRAVIS_EVENT_TYPE" = cron ]] && export YARP_CHECKOUT=devel || export YARP_CHECKOUT=master'
-  #-- Install cmake
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install cmake; fi
-  #-- Install opencv
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install libopencv-dev; fi
-  #-- Install openni deps
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install git libusb-1.0-0-dev libudev-dev; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install openjdk-6-jdk; fi  # if not using other java version
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install freeglut3-dev; fi
-  #-- Install YARP and KDL deps
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install libeigen3-dev; fi  # Needed for creating YARP lib_math
+  - sudo add-apt-repository --yes ppa:v-launchpad-jochen-sprickerhof-de/pcl  # for PCL-related packages
+  - sudo apt-get -qq update
+  - '[[ "$TRAVIS_EVENT_TYPE" = cron ]] && export ROBOTOLOGY_CHECKOUT=devel || export ROBOTOLOGY_CHECKOUT=master'
+
+  #-- Install OpenCV
+  - sudo apt-get install libopencv-dev
+
+  #-- Install PCL
+  - sudo apt-get install libpcl-all libpcl-all-dev
+
+  #-- Install OpenNI deps
+  - sudo apt-get install git libusb-1.0-0-dev libudev-dev
+  - sudo apt-get install openjdk-6-jdk  # if not using other java version
+  - sudo apt-get install freeglut3-dev
 
 install:
-  #-- Install PCL
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo add-apt-repository --yes ppa:v-launchpad-jochen-sprickerhof-de/pcl; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get update -qq; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install libpcl-all libpcl-all-dev; fi
-  #-- Install openni
+  # Install color-debug
+  - git clone https://github.com/roboticslab-uc3m/color-debug
+  - cd color-debug && mkdir build && cd build
+  - cmake ..
+  - sudo make install
+  - cd ../..
+
+  #-- Install OpenNI2
   - git clone https://github.com/occipital/OpenNI2.git
   - cd OpenNI2
-  - make
+  - make -j$(nproc)
   - sudo ln -s $PWD/Bin/x64-Release/libOpenNI2.so /usr/local/lib/
   - sudo ln -s $PWD/Bin/x64-Release/OpenNI2/ /usr/local/lib/
   - sudo ln -s $PWD/Include /usr/local/include/OpenNI2
   - sudo ldconfig
   - cd ..
-  #-- Install nite
+
+  #-- Install NiTE
   - wget https://sourceforge.net/projects/roboticslab/files/External/nite/NiTE-Linux-x64-2.2.tar.bz2
   - tar xvf NiTE-Linux-x64-2.2.tar.bz2
   - sudo ln -s $PWD/NiTE-Linux-x64-2.2/Redist/libNiTE2.so /usr/local/lib/
   - sudo ln -s $PWD/NiTE-Linux-x64-2.2/Include /usr/local/include/NiTE-Linux-x64-2.2
-  #-- Install yarp
-  - git clone --branch="$YARP_CHECKOUT" https://github.com/robotology/yarp
-  - cd yarp && mkdir build && cd build
-  - cmake .. -DSKIP_ACE=ON -DCREATE_LIB_MATH=ON -DCREATE_DEVICE_LIBRARY_MODULES=ON -DENABLE_yarpmod_OpenNI2DeviceServer=ON -DOpenNI2_INCLUDE_DIR=/usr/local/include/OpenNI2/ -DOpenNI2_LIBRARY=/usr/local/lib/libOpenNI2.so -DNITE2_INCLUDE_LOCAL=/usr/local/include/NiTE-Linux-x64-2.2 -DNITE2_LIBRARY=/usr/local/lib/libNiTE2.so
-  - make
+
+  #-- Install YCM
+  - git clone --branch="$ROBOTOLOGY_CHECKOUT" https://github.com/robotology/ycm
+  - cd ycm && mkdir build && cd build
+  - cmake ..
+  - make -j$(nproc)
   - sudo make install
   - cd ../..
+
+  #-- Install YARP
+  - git clone --branch="$ROBOTOLOGY_CHECKOUT" https://github.com/robotology/yarp
+  - cd yarp && mkdir build && cd build
+  - cmake .. -DSKIP_ACE=ON -DCREATE_LIB_MATH=ON -DCREATE_DEVICE_LIBRARY_MODULES=ON -DENABLE_yarpmod_OpenNI2DeviceServer=ON -DOpenNI2_INCLUDE_DIR=/usr/local/include/OpenNI2/ -DOpenNI2_LIBRARY=/usr/local/lib/libOpenNI2.so -DNITE2_INCLUDE_LOCAL=/usr/local/include/NiTE-Linux-x64-2.2 -DNITE2_LIBRARY=/usr/local/lib/libNiTE2.so
+  - make -j$(nproc)
+  - sudo make install
+  - cd ../..
+
   # see http://gronlier.fr/blog/2015/01/adding-code-coverage-to-your-c-project/
   - if [ "$CXX" = "g++" ]; then wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.11.orig.tar.gz; fi
   - if [ "$CXX" = "g++" ]; then tar xf lcov_1.11.orig.tar.gz; fi
@@ -57,10 +72,9 @@ install:
 before_script:
   - mkdir -p build && cd build
   - cmake .. -DENABLE_coverage=ON
-  - make
 
 script:
-  - sudo make install
+  - make && sudo make install && sudo ldconfig
 
 after_success:
   #  - cd ${TRAVIS_BUILD_DIR}
