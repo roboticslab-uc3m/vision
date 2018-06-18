@@ -1,19 +1,21 @@
 find_package(OpenCV QUIET)
 
-if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_colorRegionDetection OR ENABLE_colorRegionDetection))
-    message(WARNING "OpenCV package not found, disabling colorRegionDetection program")
+if(NOT DEFINED ENABLE_colorRegionDetection OR ENABLE_colorRegionDetection)
+    if(NOT OpenCV_FOUND)
+        message(WARNING "OpenCV package not found, disabling colorRegionDetection program")
+    endif()
+
+    if(NOT YARP_VERSION_SHORT VERSION_LESS 3)
+        message(WARNING "Unsuitable YARP version (>=3), disabling colorRegionDetection program")
+    endif()
 endif()
 
 cmake_dependent_option(ENABLE_colorRegionDetection "Enable/disable colorRegionDetection program" ON
-                       "ENABLE_TravisLib;OpenCV_FOUND" OFF)
+                       "ENABLE_TravisLib;OpenCV_FOUND;YARP_VERSION_SHORT VERSION_LESS 3" OFF)
 
 if(ENABLE_colorRegionDetection)
 
     include_directories(${OpenCV_INCLUDE_DIRS})
-
-    if(YARP_VERSION_SHORT VERSION_LESS 2.3.70)
-        include_directories(${YARP_INCLUDE_DIRS})
-    endif()
 
     add_executable(colorRegionDetection main.cpp
                                         ColorRegionDetection.hpp

@@ -13,10 +13,6 @@ if(ENABLE_pointAtObjectServer)
 
     link_directories(${PCL_LIBRARY_DIRS})
 
-    if(YARP_VERSION_SHORT VERSION_LESS 2.3.70)
-        include_directories(${YARP_INCLUDE_DIRS})
-    endif()
-
     add_executable(pointAtObjectServer main.cpp
                                        PointAtObjectServer.hpp
                                        PointAtObjectServer.cpp
