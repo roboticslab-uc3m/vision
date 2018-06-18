@@ -9,10 +9,7 @@ cmake_dependent_option(ENABLE_haarDetection2D "Enable/disable haarDetection2D pr
 
 if(ENABLE_haarDetection2D)
 
-    find_package(YARP REQUIRED)
-
-    include_directories(${YARP_INCLUDE_DIRS}
-                        ${OpenCV_INCLUDE_DIRS})
+    include_directories(${OpenCV_INCLUDE_DIRS})
 
     add_executable(haarDetection2D main.cpp
                                    HaarDetection2D.hpp
@@ -20,13 +17,12 @@ if(ENABLE_haarDetection2D)
                                    SegmentorThread.hpp
                                    SegmentorThread.cpp)
 
-    add_dependencies(haarDetection2D COLOR_DEBUG)
-
     target_link_libraries(haarDetection2D YARP::YARP_OS
                                           YARP::YARP_init
                                           YARP::YARP_dev
                                           YARP::YARP_sig
-                                          ${OpenCV_LIBS})
+                                          ${OpenCV_LIBS}
+                                          ROBOTICSLAB::ColorDebug)
 
     install(TARGETS haarDetection2D
             DESTINATION ${CMAKE_INSTALL_BINDIR})

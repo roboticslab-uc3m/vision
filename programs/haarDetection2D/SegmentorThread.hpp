@@ -17,7 +17,7 @@
 
 #include <opencv2/objdetect/objdetect.hpp>
 
-#include "ColorDebug.hpp"
+#include <ColorDebug.h>
 
 // http://web.archive.org/web/20150524152748/https://web.stanford.edu/~qianyizh/projects/scenedata.html
 #define DEFAULT_FX_D          525.0  // 640x480

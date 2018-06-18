@@ -9,10 +9,7 @@ cmake_dependent_option(ENABLE_colorRegionDetection2D "Enable/disable colorRegion
 
 if(ENABLE_colorRegionDetection2D)
 
-    find_package(YARP REQUIRED)
-
-    include_directories(${YARP_INCLUDE_DIRS}
-                        ${OpenCV_INCLUDE_DIRS})
+    include_directories(${OpenCV_INCLUDE_DIRS})
 
     add_executable(colorRegionDetection2D main.cpp
                                           SegmentorThread.cpp

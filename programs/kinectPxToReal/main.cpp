@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     Network yarp;
     if (!yarp.checkNetwork()) {
         fprintf(stderr, "[fail]\nkinectPxToReal found no yarp network (try running \"yarpserver &\"), bye!\n");
-        return -1;
+        return 1;
     } else printf("[ok]\n");
 
     return mod.runModule(rf);

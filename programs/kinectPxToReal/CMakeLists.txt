@@ -2,10 +2,6 @@ option(ENABLE_kinectPxToReal "Enable/disable kinectPxToReal program" ON)
 
 if(ENABLE_kinectPxToReal)
 
-find_package(YARP REQUIRED)
-
-include_directories(${YARP_INCLUDE_DIRS})
-
 add_executable(kinectPxToReal main.cpp
                               KinectPxToReal.hpp
                               KinectPxToReal.cpp

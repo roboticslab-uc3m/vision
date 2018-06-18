@@ -9,10 +9,7 @@ cmake_dependent_option(ENABLE_pointAtObjectServer "Enable/disable pointAtObjectS
 
 if(ENABLE_pointAtObjectServer)
 
-    find_package(YARP REQUIRED)
-
-    include_directories(${YARP_INCLUDE_DIRS}
-                        ${PCL_INCLUDE_DIRS})
+    include_directories(${PCL_INCLUDE_DIRS})
 
     link_directories(${PCL_LIBRARY_DIRS})
 

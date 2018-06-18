@@ -3,7 +3,7 @@
 #ifndef __TRAVIS_LIB_HPP__
 #define __TRAVIS_LIB_HPP__
 
-#include <stdio.h>  // just printf and fprintf
+#include <vector>
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -286,4 +286,3 @@ void calcCircle(float& radius, const std::vector <cv::Point> biggestCont );
 }  // namespace roboticslab
 
 #endif  // __TRAVIS_LIB_HPP__
-
