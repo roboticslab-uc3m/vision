@@ -1,5 +1,3 @@
-find_package(PCL 1.6 QUIET)
-
 if(NOT PCL_FOUND AND (NOT DEFINED ENABLE_pointAtObjectServer OR ENABLE_pointAtObjectServer))
     message(WARNING "PCL package not found, disabling pointAtObjectServer program")
 endif()
