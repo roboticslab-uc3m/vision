@@ -1,5 +1,3 @@
-find_package(OpenCV QUIET)
-
 if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_haarDetection OR ENABLE_haarDetection))
     message(WARNING "OpenCV package not found, disabling colorRegionDetection program")
 endif()

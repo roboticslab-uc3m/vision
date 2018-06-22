@@ -1,5 +1,3 @@
-find_package(OpenCV QUIET)
-
 if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_haarDetection2D OR ENABLE_haarDetection2D))
     message(WARNING "OpenCV package not found, disabling haarDetection2D program")
 endif()
