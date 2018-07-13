@@ -31,10 +31,6 @@ addons:
   apt:
     packages:
     - libopencv-dev
-    - libusb-1.0-0-dev # OpenNI
-    - libudev-dev # OpenNI
-    - openjdk-6-jdk # OpenNI
-    - freeglut3-dev # OpenNI
 
 before_install:
   #-- Configure Git (needed by YCM)
@@ -46,26 +42,12 @@ before_install:
   - sudo apt-get -qq update
 
   #-- Install PCL
-  - sudo apt-get install libpcl-all libpcl-all-dev
+  - sudo apt-get install libpcl-all-dev
 
   #-- Code coverage
   - if [ "$CXX" = "g++" ]; then gem install coveralls-lcov; fi
 
 install:
-  #-- Install OpenNI2
-  - git clone https://github.com/occipital/OpenNI2.git ~/OpenNI2
-  - make -C ~/OpenNI2 -j$(nproc)
-  - sudo ln -s ~/OpenNI2/Bin/x64-Release/libOpenNI2.so /usr/local/lib/
-  - sudo ln -s ~/OpenNI2/Bin/x64-Release/OpenNI2/ /usr/local/lib/
-  - sudo ln -s ~/OpenNI2/Include /usr/local/include/OpenNI2
-  - sudo ldconfig
-
-  #-- Install NiTE
-  - wget https://sourceforge.net/projects/roboticslab/files/External/nite/NiTE-Linux-x64-2.2.tar.bz2 ~
-  - tar xjf ~/NiTE-Linux-x64-2.2.tar.bz2
-  - sudo ln -s ~/NiTE-Linux-x64-2.2/Redist/libNiTE2.so /usr/local/lib/
-  - sudo ln -s ~/NiTE-Linux-x64-2.2/Include /usr/local/include/NiTE-Linux-x64-2.2
-
   #-- Install YCM
   - >
     source "$TRAVIS_BUILD_DIR/scripts/travis/git-cache-dependency.sh"
@@ -79,7 +61,7 @@ install:
     --package-name YARP
     --repo-url https://github.com/robotology/yarp
     --repo-checkout "${ROBOTOLOGY_CHECKOUT:-$YARP_CHECKOUT}"
-    --additional-cmake-options "-DSKIP_ACE:BOOL=ON -DCREATE_LIB_MATH:BOOL=ON -DCREATE_DEVICE_LIBRARY_MODULES:BOOL=ON -DENABLE_yarpmod_OpenNI2DeviceServer:BOOL=ON -DOpenNI2_INCLUDE_DIR:PATH=/usr/local/include/OpenNI2 -DOpenNI2_LIBRARY:FILEPATH=/usr/local/lib/libOpenNI2.so -DNITE2_INCLUDE_LOCAL:PATH=/usr/local/include/NiTE-Linux-x64-2.2 -DNITE2_LIBRARY:FILEPATH=/usr/local/lib/libNiTE2.so"
+    --additional-cmake-options "-DSKIP_ACE:BOOL=ON"
     --prepend-to-linker-path lib
     --additional-export-paths "YARP_DATA_DIRS;share/yarp"
 
