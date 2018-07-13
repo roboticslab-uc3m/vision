@@ -7,85 +7,83 @@ compiler:
   - gcc
   - clang
 
-before_install:
-  - sudo add-apt-repository --yes ppa:v-launchpad-jochen-sprickerhof-de/pcl  # for PCL-related packages
-  - sudo apt-get -qq update
-  - '[[ "$TRAVIS_EVENT_TYPE" = cron ]] && export ROBOTOLOGY_CHECKOUT=devel || export ROBOTOLOGY_CHECKOUT=master'
+env:
+  global:
+    - CACHE_DIR=~/cached-deps
+  matrix:
+    - YARP_CHECKOUT=master
+    - YARP_CHECKOUT=v2.3.72.1
+    - YARP_CHECKOUT=v2.3.70.2
 
-  #-- Install OpenCV
-  - sudo apt-get install libopencv-dev
+matrix:
+  include:
+    - if: type = cron
+      compiler: gcc
+      env: ROBOTOLOGY_CHECKOUT=devel
+    - if: type = cron
+      compiler: clang
+      env: ROBOTOLOGY_CHECKOUT=devel
+
+cache:
+  directories: $CACHE_DIR
+
+addons:
+  apt:
+    packages:
+    - libopencv-dev
+
+before_install:
+  #-- Configure Git (needed by YCM)
+  - if [ ! `git config --get user.email` ]; then `git config --global user.email 'user@example.com'`; fi
+  - if [ ! `git config --get user.name` ]; then `git config --global user.name 'Travis CI'`; fi
+
+  #-- Add source repository for PCL-related packages
+  - sudo add-apt-repository --yes ppa:v-launchpad-jochen-sprickerhof-de/pcl
+  - sudo apt-get -qq update
 
   #-- Install PCL
-  - sudo apt-get install libpcl-all libpcl-all-dev
+  - sudo apt-get install libpcl-all-dev
 
-  #-- Install OpenNI deps
-  - sudo apt-get install git libusb-1.0-0-dev libudev-dev
-  - sudo apt-get install openjdk-6-jdk  # if not using other java version
-  - sudo apt-get install freeglut3-dev
-
-install:
-  # Install color-debug
-  - git clone https://github.com/roboticslab-uc3m/color-debug
-  - cd color-debug && mkdir build && cd build
-  - cmake ..
-  - sudo make install
-  - cd ../..
-
-  #-- Install OpenNI2
-  - git clone https://github.com/occipital/OpenNI2.git
-  - cd OpenNI2
-  - make -j$(nproc)
-  - sudo ln -s $PWD/Bin/x64-Release/libOpenNI2.so /usr/local/lib/
-  - sudo ln -s $PWD/Bin/x64-Release/OpenNI2/ /usr/local/lib/
-  - sudo ln -s $PWD/Include /usr/local/include/OpenNI2
-  - sudo ldconfig
-  - cd ..
-
-  #-- Install NiTE
-  - wget https://sourceforge.net/projects/roboticslab/files/External/nite/NiTE-Linux-x64-2.2.tar.bz2
-  - tar xvf NiTE-Linux-x64-2.2.tar.bz2
-  - sudo ln -s $PWD/NiTE-Linux-x64-2.2/Redist/libNiTE2.so /usr/local/lib/
-  - sudo ln -s $PWD/NiTE-Linux-x64-2.2/Include /usr/local/include/NiTE-Linux-x64-2.2
-
-  #-- Install YCM
-  - git clone --branch="$ROBOTOLOGY_CHECKOUT" https://github.com/robotology/ycm
-  - cd ycm && mkdir build && cd build
-  - cmake ..
-  - make -j$(nproc)
-  - sudo make install
-  - cd ../..
-
-  #-- Install YARP
-  - git clone --branch="$ROBOTOLOGY_CHECKOUT" https://github.com/robotology/yarp
-  - cd yarp && mkdir build && cd build
-  - cmake .. -DSKIP_ACE=ON -DCREATE_LIB_MATH=ON -DCREATE_DEVICE_LIBRARY_MODULES=ON -DENABLE_yarpmod_OpenNI2DeviceServer=ON -DOpenNI2_INCLUDE_DIR=/usr/local/include/OpenNI2/ -DOpenNI2_LIBRARY=/usr/local/lib/libOpenNI2.so -DNITE2_INCLUDE_LOCAL=/usr/local/include/NiTE-Linux-x64-2.2 -DNITE2_LIBRARY=/usr/local/lib/libNiTE2.so
-  - make -j$(nproc)
-  - sudo make install
-  - cd ../..
-
-  # see http://gronlier.fr/blog/2015/01/adding-code-coverage-to-your-c-project/
-  - if [ "$CXX" = "g++" ]; then wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.11.orig.tar.gz; fi
-  - if [ "$CXX" = "g++" ]; then tar xf lcov_1.11.orig.tar.gz; fi
-  - if [ "$CXX" = "g++" ]; then sudo make -C lcov-1.11/ install; fi
+  #-- Code coverage
   - if [ "$CXX" = "g++" ]; then gem install coveralls-lcov; fi
 
+install:
+  #-- Install YCM
+  - >
+    source "$TRAVIS_BUILD_DIR/scripts/travis/git-cache-dependency.sh"
+    --package-name YCM
+    --repo-url https://github.com/robotology/ycm
+    --repo-checkout "${ROBOTOLOGY_CHECKOUT:-${YCM_CHECKOUT:-master}}"
+
+  #-- Install YARP
+  - >
+    source "$TRAVIS_BUILD_DIR/scripts/travis/git-cache-dependency.sh"
+    --package-name YARP
+    --repo-url https://github.com/robotology/yarp
+    --repo-checkout "${ROBOTOLOGY_CHECKOUT:-$YARP_CHECKOUT}"
+    --additional-cmake-options "-DSKIP_ACE:BOOL=ON"
+    --prepend-to-linker-path lib
+    --additional-export-paths "YARP_DATA_DIRS;share/yarp"
+
+  #-- Install color-debug
+  - >
+    source "$TRAVIS_BUILD_DIR/scripts/travis/git-cache-dependency.sh"
+    --package-name COLOR_DEBUG
+    --repo-url https://github.com/roboticslab-uc3m/color-debug
+    --repo-checkout master
+
 before_script:
-  - mkdir -p build && cd build
-  - cmake .. -DENABLE_coverage=ON
+  - mkdir -p "$TRAVIS_BUILD_DIR/build" && cd "$_"
+  - cmake .. -DCMAKE_INSTALL_PREFIX="$PWD/install" -DENABLE_coverage:BOOL=ON
+  - make install
+  - export LD_LIBRARY_PATH=$PWD/install/lib:$LD_LIBRARY_PATH
+  - export YARP_DATA_DIRS=$PWD/install/share/roboticslab-vision:$YARP_DATA_DIRS
 
 script:
-  - make && sudo make install && sudo ldconfig
+  - echo "No unit tests available"
 
 after_success:
-  #  - cd ${TRAVIS_BUILD_DIR}
-  # capture coverage info
-  - if [ "$CXX" = "g++" ]; then lcov --directory . --capture --output-file coverage.info; fi
-  # filter out system and test code
-  - if [ "$CXX" = "g++" ]; then lcov --remove coverage.info  '/usr/*' 'test/*' --output-file coverage.info; fi
-  # debug before upload
-  - if [ "$CXX" = "g++" ]; then lcov --list coverage.info; fi
-  # uploads to coveralls
-  #- if [ "$CXX" = "g++" ]; then coveralls-lcov --source-encoding=ISO-8859-1 --repo-token InWqFy6VWMrEUzr2Rn8XV0cGqv3wXWo2d coverage.info; fi
-  - if [ "$CXX" = "g++" ]; then coveralls-lcov --source-encoding=ISO-8859-1 coverage.info; fi
+  #-- Code coverage
+  - if [ "$CXX" = "g++" ]; then source "$TRAVIS_BUILD_DIR/scripts/travis/coverage.sh"; fi
 
-  - sudo make uninstall
+  - make uninstall
