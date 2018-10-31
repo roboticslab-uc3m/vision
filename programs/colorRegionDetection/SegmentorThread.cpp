@@ -2,12 +2,14 @@
 
 #include "SegmentorThread.hpp"
 
+#include <yarp/os/Time.h>
+
 namespace roboticslab
 {
 
 /************************************************************************/
-void SegmentorThread::setIKinectDeviceDriver(yarp::dev::IOpenNI2DeviceDriver *_kinect) {
-    kinect = _kinect;
+void SegmentorThread::setIRGBDSensor(yarp::dev::IRGBDSensor *_iRGBDSensor) {
+    iRGBDSensor = _iRGBDSensor;
 }
 
 /************************************************************************/
@@ -120,9 +122,12 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
         inCropSelectorPort->setReader(processor);
     }
 
+    // Wait for the first few frames to arrive. We kept receiving invalid pixel codes
+    // from the depthCamera device if started straight away.
+    yarp::os::Time::delay(1);
+
     this->setRate(rateMs);
     this->start();
-
 }
 
 /************************************************************************/
@@ -140,26 +145,23 @@ void SegmentorThread::run() {
         return;
     };*/
 
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg = kinect->getImageFrame();
-    if (inYarpImg.height()<10) {
-        //printf("No img yet...\n");
+    yarp::sig::FlexImage colorFrame;
+    yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
+    if (!iRGBDSensor->getImages(colorFrame, depthFrame)) {
         return;
-    };
-    yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
-    if (depth.height()<10) {
-        //printf("No depth yet...\n");
-        return;
-    };
+    }
 
     // {yarp ImageOf Rgb -> openCv Mat Bgr}
-    IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
+    IplImage *inIplImage = cvCreateImage(cvSize(colorFrame.width(), colorFrame.height()),
                                          IPL_DEPTH_8U, 3 );
-    cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2BGR);
+    cvCvtColor((IplImage*)colorFrame.getIplImage(), inIplImage, CV_RGB2BGR);
     cv::Mat inCvMat( cv::cvarrToMat(inIplImage) );
 
     // publish the original yarp img if crop selector invoked.
     if(cropSelector != 0) {
         //printf("1 x: %d, y: %d, w: %d, h: %d.\n",processor.x,processor.y,processor.w,processor.h);
+        yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
+        inYarpImg.copy(colorFrame);
         if( (processor.w!=0)&&(processor.h!=0)) {
             travisCrop(processor.x,processor.y,processor.w,processor.h,inCvMat);
             yarp::sig::PixelRgb green(0,255,0);
@@ -176,8 +178,8 @@ void SegmentorThread::run() {
     if(algorithm=="hue") travis.binarize("hue", threshold-5,threshold+5);
     else if(algorithm=="canny") travis.binarize("canny");
     else travis.binarize(algorithm.c_str(), threshold);
-    travis.morphOpening( inYarpImg.width() * morphOpening / 100.0 );  // percent
-    travis.morphClosing( inYarpImg.width() * morphClosing / 100.0 );  // percent
+    travis.morphOpening( colorFrame.width() * morphOpening / 100.0 );  // percent
+    travis.morphClosing( colorFrame.width() * morphClosing / 100.0 );  // percent
     //travis.morphOpening( morphOpening );
     //travis.morphClosing( morphClosing );
     int numBlobs = travis.blobize(maxNumBlobs);
@@ -233,7 +235,7 @@ void SegmentorThread::run() {
             blobsXY[i].y = 0;
         }
         // double mmZ_tmp = depth->pixel(int(blobsXY[i].x +cx_d-cx_rgb),int(blobsXY[i].y +cy_d-cy_rgb));
-        double mmZ_tmp = depth.pixel(int(blobsXY[i].x),int(blobsXY[i].y));
+        double mmZ_tmp = depthFrame.pixel(int(blobsXY[i].x),int(blobsXY[i].y));
 
         if (mmZ_tmp < 0.001) {
             fprintf(stderr,"[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n",i);

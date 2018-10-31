@@ -10,16 +10,16 @@
  *
  * @section colorRegionDetection_options ColorRegionDetection options:
  *
- * |PROPERTY     | DESCRIPTION                           | DEFAULT              |
- * |-------------|---------------------------------------|----------------------|
- * |help         |                                       |                      |
- * |from         |file.ini                               |                      |
- * |context      |path                                   |                      |
- * |cropSelector |                                       | 0                    |
- * |kinectDevice |device we create                       | OpenNI2DeviceServer  |
- * |kinectLocal  |if accesing remote, local port name    | /colorRegionDetection                 |
- * |kinectRemote |if accesing remote, remote port name   | /OpenNI2             |
- * |watchdog     |                                       | 2.000000             |
+ * |PROPERTY     | DESCRIPTION                           | DEFAULT               |
+ * |-------------|---------------------------------------|-----------------------|
+ * |help         |                                       |                       |
+ * |from         |file.ini                               |                       |
+ * |context      |path                                   |                       |
+ * |cropSelector |                                       | 0                     |
+ * |RGBDDevice   |device we create                       | RGBDSensorClient      |
+ * |RGBDLocal    |if accesing remote, local port name    | /colorRegionDetection |
+ * |RGBDRemote   |if accesing remote, remote port name   | /rgbd                 |
+ * |watchdog     |                                       | 2.000000              |
  *
  *
  * @section segmentorthread_options SegmentorThread options:
