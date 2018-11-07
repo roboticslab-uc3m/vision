@@ -1,9 +1,9 @@
-# Modelos HAAR
+# HAAR Models
 
-- [Listado de modelos HAAR](#listado-de-modelos-haar)
-- [Enlaces de interés](#enlaces-de-interés)
+- [HAAR models list](#haar-models-list)
+- [References](#references)
 
-## Listado de modelos HAAR
+## HAAR models list
 
 - [Monitor](#monitor)
 - [Lemmon](#lemmon)
@@ -14,15 +14,12 @@
 - [Lamp](#lamp)
 - [Chair](#chair)
 - [Sofa](#sofa)
-- [Face](#face)
-- [Upper body](#upper-body)
-- [Legs](#legs)
 - [Dog](#dog)
 
 
 ### Monitor
 
-Entrenamiento HAAR de televisores y monitores.
+TV HAAR training.
 
 ```
 Positive images: 1300
@@ -33,7 +30,7 @@ Number of stages: 19
 ### Lemmon
 
 
-Entrenamiento HAAR de limones.
+Lemmon HAAR training.
 
 ```
 Positive images: 1200
@@ -43,7 +40,7 @@ Number of stages: 6
 
 ### Bottle of water
 
-Entrenamiento HAAR de botellas de agua.
+Bottle HAAR training.
 
 ```
 Positive images: 1100
@@ -53,7 +50,7 @@ Number of stages: 8
 
 ### Watch
 
-Entrenamiento HAAR de relojes.
+Watch HAAR training.
 
 ```
 Positive images: 1300
@@ -63,7 +60,7 @@ Number of stages: 20
 
 ### Car
 
-Entrenamiento HAAR de de coches.
+Car HAAR training.
 
 ```
 Positive images: 2000
@@ -72,7 +69,7 @@ Number of stages: 20
 ```
 ### Cup
 
-Entrenamiento HAAR de vasos.
+Cup HAAR training.
 
 ```
 Positive images: 350
@@ -81,7 +78,7 @@ Number of stages: 21
 ```
 ### Lamp
 
-Entrenamiento HAAR de lámparas.
+Lamp HAAR training.
 
 ```
 Positive images: 220
@@ -90,7 +87,7 @@ Number of stages: 15
 ```
 ### Chair
 
-Entrenamiento HAAR de sillas.
+Chair HAAR training.
 
 ```
 Positive images: 240
@@ -99,7 +96,7 @@ Number of stages: 15
 ```
 ### Sofa
 
-Entrenamiento HAAR de sofás.
+Sofa HAAR training.
 
 ```
 Positive images: 250
@@ -107,49 +104,19 @@ Negative images: 500
 Number of stages: 18
 ```
 
-## Face
-
-Entrenamiento HAAR de caras.
-*OpenCV Libray*
-
-```
-Positive images: XXXXXXXX
-Negative images: XXXXXXXX
-Number of stages: XXXXXXXX 
-```
-
-### Upper body
-
-Entrenamiento HAAR del torso superior.
-*OpenCV Library*
-
-```
-Positive images: XXXXXXXX
-Negative images: XXXXXXXX
-Number of stages: XXXXXXXX 
-```
-### Legs
-
-Entrenamiento HAAR de piernas.
-*OpenCV Library*
-
-```
-Positive images: XXXXXXXX
-Negative images: XXXXXXXX
-Number of stages: XXXXXXXX
-```
-
 ### Dog
 
-Entrenamiento HAAR de perros.
+Dog HAAR training.
 
 ```
 Positive images: 1300
 Negative images: 2100
 Number of stages: 20
 ```
-## Enlaces de interés
+## References
 
+[Training positive and negative samples](https://www.dropbox.com/sh/0gi5gpekmybuin1/AADNr1-ilpV_vjUj_IkveyORa?dl=0)
+[OpenCV HAAR model](https://github.com/opencv/opencv/tree/master/data/haarcascades)
 Origin of coke xml: "DISEÑO E IMPLEMENTACIÓN DE UN SISTEMA DETECTOR DE OBJETOS PARA EL ROBOT ASIBOT", Autor: Raúl Sánchez Álvarez
 Tutor: Alberto Jardón Huete. Director: Juan Carlos González Víctores. Leganés, Marzo de 2011.
 
