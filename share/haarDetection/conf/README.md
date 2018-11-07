@@ -1,4 +1,9 @@
-# Listado de modelos HAAR
+# Modelos HAAR
+
+- [Listado de modelos HAAR](#listado-de-modelos-haar)
+- [Enlaces de interés](#enlaces-de-interés)
+
+## Listado de modelos HAAR
 
 - [Monitor](#monitor)
 - [Lemmon](#lemmon)
@@ -15,7 +20,7 @@
 - [Dog](#dog)
 
 
-## Monitor
+### Monitor
 
 Entrenamiento HAAR de televisores y monitores.
 
@@ -25,7 +30,7 @@ Negative images: 2100
 Number of stages: 19
 ```
 
-## Lemmon
+### Lemmon
 
 
 Entrenamiento HAAR de limones.
@@ -36,7 +41,7 @@ Negative images: 1300
 Number of stages: 6
 ```
 
-## Bottle of water
+### Bottle of water
 
 Entrenamiento HAAR de botellas de agua.
 
@@ -46,7 +51,7 @@ Negative images: 1300
 Number of stages: 8
 ```
 
-## Watch
+### Watch
 
 Entrenamiento HAAR de relojes.
 
@@ -56,7 +61,7 @@ Negative images: 2100
 Number of stages: 20
 ```
 
-## Car
+### Car
 
 Entrenamiento HAAR de de coches.
 
@@ -65,7 +70,7 @@ Positive images: 2000
 Negative images: 2500
 Number of stages: 20
 ```
-## Cup
+### Cup
 
 Entrenamiento HAAR de vasos.
 
@@ -74,7 +79,7 @@ Positive images: 350
 Negative images: 500
 Number of stages: 21
 ```
-## Lamp
+### Lamp
 
 Entrenamiento HAAR de lámparas.
 
@@ -83,7 +88,7 @@ Positive images: 220
 Negative images: 500
 Number of stages: 15
 ```
-## Chair
+### Chair
 
 Entrenamiento HAAR de sillas.
 
@@ -92,7 +97,7 @@ Positive images: 240
 Negative images: 350 
 Number of stages: 15 
 ```
-## Sofa
+### Sofa
 
 Entrenamiento HAAR de sofás.
 
@@ -113,7 +118,7 @@ Negative images: XXXXXXXX
 Number of stages: XXXXXXXX 
 ```
 
-## Upper body
+### Upper body
 
 Entrenamiento HAAR del torso superior.
 *OpenCV Library*
@@ -123,7 +128,7 @@ Positive images: XXXXXXXX
 Negative images: XXXXXXXX
 Number of stages: XXXXXXXX 
 ```
-## Legs
+### Legs
 
 Entrenamiento HAAR de piernas.
 *OpenCV Library*
@@ -134,7 +139,7 @@ Negative images: XXXXXXXX
 Number of stages: XXXXXXXX
 ```
 
-## Dog
+### Dog
 
 Entrenamiento HAAR de perros.
 
@@ -143,5 +148,8 @@ Positive images: 1300
 Negative images: 2100
 Number of stages: 20
 ```
+## Enlaces de interés
 
+Origin of coke xml: "DISEÑO E IMPLEMENTACIÓN DE UN SISTEMA DETECTOR DE OBJETOS PARA EL ROBOT ASIBOT", Autor: Raúl Sánchez Álvarez
+Tutor: Alberto Jardón Huete. Director: Juan Carlos González Víctores. Leganés, Marzo de 2011.
 
