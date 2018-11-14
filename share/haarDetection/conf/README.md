@@ -115,7 +115,8 @@ Number of stages: 20
 ```
 ## References
 
-[Training positive and negative samples](https://www.dropbox.com/sh/0gi5gpekmybuin1/AADNr1-ilpV_vjUj_IkveyORa?dl=0)
+[Training positive and negative samples HAAR List](https://drive.google.com/drive/folders/1gYGtfsKGi0_505JAHBiivdGd9Exue57F?usp=sharing)
+[PAL Robotics HAAR logo samples](https://www.dropbox.com/sh/0gi5gpekmybuin1/AADNr1-ilpV_vjUj_IkveyORa?dl=0)
 [OpenCV HAAR model](https://github.com/opencv/opencv/tree/master/data/haarcascades)
 Origin of coke xml: "DISEÑO E IMPLEMENTACIÓN DE UN SISTEMA DETECTOR DE OBJETOS PARA EL ROBOT ASIBOT", Autor: Raúl Sánchez Álvarez
 Tutor: Alberto Jardón Huete. Director: Juan Carlos González Víctores. Leganés, Marzo de 2011.
