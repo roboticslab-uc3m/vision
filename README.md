@@ -23,9 +23,6 @@ Installation instructions for installing from source can be found [here]( doc/vi
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
-#### Manuals
-1. Read [development manual](https://github.com/roboticslab-uc3m/vision/blob/develop/doc/vision-development-manual.md) if you want to build a new language model
-
 ## Status
 
 [![Build Status (Linux/OSX)](https://travis-ci.org/roboticslab-uc3m/vision.svg?branch=develop)](https://travis-ci.org/roboticslab-uc3m/vision)
