@@ -34,8 +34,7 @@ Installation instructions for installing from source can be found [here]( doc/vi
 
 [![Issues](https://img.shields.io/github/issues/roboticslab-uc3m/vision.svg?label=Issues)](https://github.com/roboticslab-uc3m/vision/issues)
 
-## Links of interest:
-
-* [kinematics-dynamics](https://github.com/roboticslab-uc3m/kinematics-dynamics)
-* [yarp-devices](https://github.com/roboticslab-uc3m/yarp-devices)
-
+## Similar and Related Projects
+- https://github.com/robotology/segmentation
+- [GRIP](https://wpiroboticsprojects.github.io/GRIP): [github](https://github.com/WPIRoboticsProjects/GRIP), [1](http://wpilib.screenstepslive.com/s/4485/m/24194/l/463566-introduction-to-grip)
+- [ViSP](http://visp.inria.fr/)
