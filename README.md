@@ -37,4 +37,4 @@ Installation instructions for installing from source can be found [here]( doc/vi
 - [GRIP](https://wpiroboticsprojects.github.io/GRIP): A tool for developing computer vision algorithms interactively
    - [github](https://github.com/WPIRoboticsProjects/GRIP), [tutorial](http://wpilib.screenstepslive.com/s/4485/m/24194/l/463566-introduction-to-grip)
    - We have used it for several projects, including [asrob-uc3m/air-hockey](https://github.com/asrob-uc3m/air-hockey/issues/5).
-- [ViSP](http://visp.inria.fr/)
+- [ViSP](http://visp.inria.fr/): Visual Servoing Platform
