@@ -32,6 +32,9 @@ Installation instructions for installing from source can be found [here]( doc/vi
 [![Issues](https://img.shields.io/github/issues/roboticslab-uc3m/vision.svg?label=Issues)](https://github.com/roboticslab-uc3m/vision/issues)
 
 ## Similar and Related Projects
-- [robotology/segmentation](https://github.com/robotology/segmentation): [doxygen](http://robotology.github.io/segmentation/doxygen/doc/html/modules.html)
-- [GRIP](https://wpiroboticsprojects.github.io/GRIP): [github](https://github.com/WPIRoboticsProjects/GRIP), [1](http://wpilib.screenstepslive.com/s/4485/m/24194/l/463566-introduction-to-grip)
+- [robotology/segmentation](https://github.com/robotology/segmentation)
+   - [doxygen](http://robotology.github.io/segmentation/doxygen/doc/html/modules.html)
+- [GRIP](https://wpiroboticsprojects.github.io/GRIP): A tool for developing computer vision algorithms interactively
+   - [github](https://github.com/WPIRoboticsProjects/GRIP), [tutorial](http://wpilib.screenstepslive.com/s/4485/m/24194/l/463566-introduction-to-grip)
+   - We have used it for several projects, including [asrob-uc3m/air-hockey](https://github.com/asrob-uc3m/air-hockey/issues/5).
 - [ViSP](http://visp.inria.fr/)
