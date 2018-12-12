@@ -38,3 +38,6 @@ Installation instructions for installing from source can be found [here]( doc/vi
    - [github](https://github.com/WPIRoboticsProjects/GRIP), [tutorial](http://wpilib.screenstepslive.com/s/4485/m/24194/l/463566-introduction-to-grip)
    - We have used it for several projects, including [asrob-uc3m/air-hockey](https://github.com/asrob-uc3m/air-hockey/issues/5).
 - [ViSP](http://visp.inria.fr/): Visual Servoing Platform
+- [PCL](http://pointclouds.org): 2D/3D image and point cloud processing
+   - [github](https://github.com/PointCloudLibrary/pcl)
+- [CloudCompare/CloudCompare](https://github.com/CloudCompare/CloudCompare): A 3D point cloud (and triangular mesh) processing software
