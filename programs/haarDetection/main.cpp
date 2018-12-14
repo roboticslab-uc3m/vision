@@ -16,17 +16,17 @@
  * |from                |file.ini                               |                      |
  * |context             |path                                   |                      |
  * |cropSelector        |                                       |0                     |
- * |kinectDevice        |device we create                       |OpenNI2DeviceServer   |
- * |kinectLocal         |if accesing remote, local port name    |/haarDetection        |
- * |kinectRemote        |if accesing remote, remote port name   |/OpenNI2              |
+ * |RGBDDevice          |device we create                       |RGBDSensorClient      |
+ * |RGBDLocal           |if accesing remote, local port name    |/haarDetection        |
+ * |RGBDRemote          |if accesing remote, remote port name   |/rgbd                 |
  * |watchdog            |                                       |2.000000              |
  *
  *
  * @section  haarDetectionPorts HaarDetection output ports:
  * |OUTPUT PORT            | CONTENT   |
  * |-----------------------|-----------|
- * |/haarDetection/img:o   | Output kinect image with face detection using squares  |
- * |/haarDetection/state:o | xyz coordinates of face detection                      |
+ * |/haarDetection/img:o   | Output RGBD image with face detection using squares  |
+ * |/haarDetection/state:o | xyz coordinates of face detection                    |
  *
  * @section segmentorThread SegmentorThread options:
  *

@@ -4,12 +4,14 @@
 
 #include <iostream>
 
+#include <yarp/os/Time.h>
+
 namespace roboticslab
 {
 
 /************************************************************************/
-void SegmentorThread::setIKinectDeviceDriver(yarp::dev::IOpenNI2DeviceDriver *_kinect) {
-    kinect = _kinect;
+void SegmentorThread::setIRGBDSensor(yarp::dev::IRGBDSensor *_iRGBDSensor) {
+    iRGBDSensor = _iRGBDSensor;
 }
 
 /************************************************************************/
@@ -50,7 +52,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     areaLowThreshold=DEFAULT_AREA_LOW_THRESHOLD;
     areaHighThreshold=DEFAULT_AREA_HIGH_THRESHOLD;
     occupancyThreshold=DEFAULT_OCCUPANCY_THRESHOLD;
-    kinectCalibrationValue=DEFAULT_CALIBRATION_VALUE_KINECT;
+    RGBDCalibrationValue=DEFAULT_CALIBRATION_VALUE_KINECT;
     lowXBox=DEFAULT_LOW_X_BOX_VALUE;
     highXBox=DEFAULT_HIGH_X_BOX_VALUE;
     lowYBox=DEFAULT_LOW_Y_BOX_VALUE;
@@ -159,6 +161,10 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 //    printf("Calibrating..................");
     /***********************************************************************************/
 
+    // Wait for the first few frames to arrive. We kept receiving invalid pixel codes
+    // from the depthCamera device if started straight away.
+    yarp::os::Time::delay(1);
+
     this->setRate(rateMs);
     this->start();
 
@@ -168,8 +174,8 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 void SegmentorThread::run() {
     // printf("[SegmentorThread] run()\n");
 
-    yarp::sig::ImageOf<yarp::sig::PixelMono16> depth = kinect->getDepthFrame();
-    if (depth.height()<10) {
+    yarp::sig::ImageOf<yarp::sig::PixelFloat> depth;
+    if (!iRGBDSensor->getDepthImage(depth)) {
         //printf("No depth yet...\n");
         return;
     };
@@ -190,8 +196,8 @@ void SegmentorThread::run() {
     for(int i=floor(0.45*H); i<ceil(0.54*H); i++){ //Camera H umbral (0.45,0.54)H. The region of search is something like a horizontal line.
         for(int j=0; j<W;j++){
             //First convert to REAL WORLD coordinates to use the real area
-            double x = (j-W/2)*depth.pixel(j,i)*kinectCalibrationValue;
-            double y = (i-H/2)*depth.pixel(j,i)*kinectCalibrationValue;
+            double x = (j-W/2)*depth.pixel(j,i)*RGBDCalibrationValue;
+            double y = (i-H/2)*depth.pixel(j,i)*RGBDCalibrationValue;
 
             //We have 4 voxel. This should be parametric.
             int ix=(highXBox-lowXBox)/voxelResolution;

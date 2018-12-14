@@ -1,5 +1,3 @@
-find_package(OpenCV QUIET)
-
 if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_colorRegionDetection2D OR ENABLE_colorRegionDetection2D))
     message(WARNING "OpenCV package not found, disabling colorRegionDetection2D program")
 endif()
