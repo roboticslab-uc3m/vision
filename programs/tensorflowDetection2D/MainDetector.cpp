@@ -48,7 +48,7 @@ using namespace cv;
 
 
 
-int maindetector::detect(string labels, string graph, string video_source, Port puerto_pre, Port puerto_post) {
+int maindetector::detect(string labels, string graph, string video_source, Port sender_port_pre, Port sender_port_pre) {
 
 
     std::system("clear");
@@ -62,18 +62,18 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
     string source_video=video_source;
 
     // Set  nombres nodos entrada y salida
-    string inputLayer = "image_tensor:0";
+    tensorflow::string inputLayer = "image_tensor:0";
     vector<string> outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
 
     // Load .pb frozen model
     std::unique_ptr<tensorflow::Session> session;
-    string graphPath = tensorflow::io::JoinPath(ROOTDIR, GRAPH);
+    tensorflow::string graphPath = tensorflow::io::JoinPath(ROOTDIR, GRAPH);
     cout<<"The graph it´s going to be loaded:" << graphPath<<"."<<endl;
     cout<<"Loading graph..."<<endl;
     Time::delay(1);
     //LOG(INFO) << "Loading graph:" << graphPath<<" ...";
 
-    Status loadGraphStatus = loadGraph(graphPath, &session);
+    tensorflow::Status loadGraphStatus = loadGraph(graphPath, &session);
     if (!loadGraphStatus.ok()) {
         std::system("clear");
         cout<<endl;
@@ -98,7 +98,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
     cout<<endl;
     cout<<"Labels "<<LABELS<<" are going to be loaded."<<endl;
     Time::delay(1);
-    Status readLabelsMapStatus = readLabelsMapFile(tensorflow::io::JoinPath(ROOTDIR, LABELS), labelsMap);
+    tensorflow::Status readLabelsMapStatus = readLabelsMapFile(tensorflow::io::JoinPath(ROOTDIR, LABELS), labelsMap);
     if (!readLabelsMapStatus.ok()) {
         //LOG(ERROR) << "readLabelsMapFile(): ERROR" << loadGraphStatus;
         cout<<"Fail loading labels "<<LABELS<<"."<<endl;
@@ -117,8 +117,8 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
     cout<<"Video source frames are going to be taken."<<endl;
     Time::delay(1);
     Mat frame;
-    Tensor tensor;
-    std::vector<Tensor> outputs;
+    tensorflow::Tensor tensor;
+    std::vector<tensorflow::Tensor> outputs;
     double thresholdScore = 0.5;
     double thresholdIOU = 0.8;
 
@@ -134,8 +134,8 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
 
     tensorflow::TensorShape shape = tensorflow::TensorShape();
     shape.AddDim(1);
-    shape.AddDim((int64)cap.get(CAP_PROP_FRAME_HEIGHT));
-    shape.AddDim((int64)cap.get(CAP_PROP_FRAME_WIDTH));
+    shape.AddDim((tensorflow::int64)cap.get(CAP_PROP_FRAME_HEIGHT));
+    shape.AddDim((tensorflow::int64)cap.get(CAP_PROP_FRAME_WIDTH));
     shape.AddDim(3);
     std::system("clear");
     cout<<endl;
@@ -164,8 +164,8 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         iFrame++;
 
         // Pasar Mat a Tensor
-        tensor = Tensor(tensorflow::DT_FLOAT, shape);
-        Status readTensorStatus = readTensorFromMat(frame, tensor);
+        tensor = tensorflow::Tensor(tensorflow::DT_FLOAT, shape);
+        tensorflow::Status readTensorStatus = readTensorFromMat(frame, tensor);
         if (!readTensorStatus.ok()) {
             //LOG(ERROR) << "Mat->Tensor conversion failed: " << readTensorStatus;
             std::system("clear");
@@ -178,7 +178,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
 
         // Ejecutar graph
         outputs.clear();
-        Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
+        tensorflow::Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
         if (!runStatus.ok()) {
             //LOG(ERROR) << "Running model failed: " << runStatus;
             std::system("clear");

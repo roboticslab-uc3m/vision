@@ -43,7 +43,7 @@ using namespace cv;
 class maindetector
 {
 public:
-int detect(string labels, string graph, string video_source, Port puerto_pre, Port puerto_post);
+int detect(string labels, string graph, string video_source, Port sender_port_pre, Port sender_port_post);
 
 };
 #endif //MAINDETECTOR_HPP
