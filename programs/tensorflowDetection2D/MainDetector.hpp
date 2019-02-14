@@ -28,11 +28,6 @@
 #include <cv.hpp>
 #include "TensorflowDetector.hpp"
 
-using tensorflow::Flag;
-using tensorflow::Tensor;
-using tensorflow::Status;
-using tensorflow::string;
-using tensorflow::int32;
 
 using namespace yarp::os;
 using namespace yarp::sig;

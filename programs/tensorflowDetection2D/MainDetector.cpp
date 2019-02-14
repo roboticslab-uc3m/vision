@@ -30,13 +30,7 @@
 #include "tensorflow/core/util/command_line_flags.h"
 #include "TensorflowDetector.hpp"
 #include "MainDetector.hpp"
-//#include "tensorflowdetection2d.hpp" Da error de ambiguedad int64 int_64
 
-using tensorflow::Flag;
-using tensorflow::Tensor;
-using tensorflow::Status;
-using tensorflow::string;
-using tensorflow::int32;
 
 // Namespace
 
@@ -48,7 +42,7 @@ using namespace cv;
 
 
 
-int maindetector::detect(string labels, string graph, string video_source, Port sender_port_pre, Port sender_port_pre) {
+int maindetector::detect(string labels, string graph, string video_source, Port sender_port_pre, Port sender_port_post) {
 
 
     std::system("clear");
@@ -151,7 +145,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         // A mano
         ImageOf<PixelBgr> B;
         B.setExternal(frame.data,frame.size[1],frame.size[0]);
-        puerto_pre.write(B);
+        sender_port_pre.write(B);
 
         cvtColor(frame, frame, COLOR_BGR2RGB);
         cout << "Frame: " << iFrame << endl;
@@ -217,7 +211,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         // A mano
         ImageOf<PixelBgr> C;
         C.setExternal(frame.data,frame.size[1],frame.size[0]);
-        puerto_post.write(C);
+        sender_port_post.write(C);
         imshow("Video source: Processed", frame);
         waitKey(5);
     }}
