@@ -30,12 +30,6 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include "TensorflowDetector.hpp"
 
-using tensorflow::Flag;
-using tensorflow::Tensor;
-using tensorflow::Status;
-using tensorflow::string;
-using tensorflow::int32;
-
 // Namespace
 
 using namespace std;
@@ -43,17 +37,17 @@ using namespace cv;
 
 // Create session and load graph
 
-Status loadGraph(const string &graph_file_name,
+tensorflow::Status loadGraph(const string &graph_file_name,
               unique_ptr<tensorflow::Session> *session) {
     tensorflow::GraphDef graph_def;
-    Status load_graph_status =
+    tensorflow::Status load_graph_status =
             ReadBinaryProto(tensorflow::Env::Default(), graph_file_name, &graph_def);
     if (!load_graph_status.ok()) {
         return tensorflow::errors::NotFound("Fail loading graph: '",
                                             graph_file_name, "'");
     }
     session->reset(tensorflow::NewSession(tensorflow::SessionOptions()));
-    Status session_create_status = (*session)->Create(graph_def);
+    tensorflow::Status session_create_status = (*session)->Create(graph_def);
     if (!session_create_status.ok()) {
         return session_create_status;
     }
@@ -62,7 +56,7 @@ Status loadGraph(const string &graph_file_name,
 
 // Read labels
 
-Status readLabelsMapFile(const string &fileName, map<int, string> &labelsMap) {
+tensorflow::Status readLabelsMapFile(const string &fileName, map<int, string> &labelsMap) {
 
 
     ifstream t(fileName);
@@ -107,7 +101,7 @@ Status readLabelsMapFile(const string &fileName, map<int, string> &labelsMap) {
 
 //  Mat OpenCV -> TensorFlow
 
-Status readTensorFromMat(const Mat &mat, Tensor &outTensor) {
+tensorflow::Status readTensorFromMat(const Mat &mat, Tensor &outTensor) {
 
     auto root = tensorflow::Scope::NewRootScope();
     using namespace ::tensorflow::ops;

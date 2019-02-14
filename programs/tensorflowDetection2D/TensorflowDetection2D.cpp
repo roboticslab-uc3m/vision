@@ -45,13 +45,6 @@
 #include "TensorflowDetector.hpp"
 #include "MainDetector.hpp"
 
-using tensorflow::Flag;
-using tensorflow::Tensor;
-using tensorflow::Status;
-using tensorflow::string;
-using tensorflow::int32;
-
-
 // Namespace
 
 using namespace yarp::os;

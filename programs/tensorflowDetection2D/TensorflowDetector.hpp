@@ -9,17 +9,12 @@
 #include <opencv2/core/mat.hpp>
 
 
-using tensorflow::Tensor;
-using tensorflow::Status;
-using tensorflow::string;
+tensorflow::Status readLabelsMapFile(const string &fileName, std::map<int, string> &labelsMap);
 
-
-Status readLabelsMapFile(const string &fileName, std::map<int, string> &labelsMap);
-
-Status loadGraph(const string &graph_file_name,
+tensorflow::Status loadGraph(const string &graph_file_name,
                  std::unique_ptr<tensorflow::Session> *session);
 
-Status readTensorFromMat(const cv::Mat &mat, Tensor &outTensor);
+tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &outTensor);
 
 void drawBoundingBoxOnImage(cv::Mat &image, double xMin, double yMin, double xMax, double yMax, double score, std::string label, bool scaled);
 
