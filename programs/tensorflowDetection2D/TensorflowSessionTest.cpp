@@ -9,6 +9,7 @@
 // Libraries
 
 #include <iostream>
+#include <cstdlib>
 #include <yarp/os/all.h>
 #include <yarp/sig/all.h>
 #include <yarp/os/Time.h>
@@ -38,12 +39,12 @@ tensorflow_test::tensorflow_test()
 
 void tensorflow_test::run()
 {
-    system("clear");
+    std::system("clear");
     cout<<endl;
     cout<<endl;
     cout<<"Initializing tensorflow test session..."<<endl;
     Time::delay(1);
-    system("clear");
+    std::system("clear");
     cout<<endl;
     cout<<endl;
     Session* session;
@@ -53,7 +54,7 @@ void tensorflow_test::run()
 
     }
     Time::delay(1);
-    system("clear");
+    std::system("clear");
     cout<<endl;
     cout<<endl;
     cout << "Tensorflow test session created correctly."<<endl;

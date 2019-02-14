@@ -9,6 +9,7 @@
 // Libraries
 
 #include <iostream>
+#include <cstdlib>
 #include <yarp/os/all.h>
 #include <yarp/sig/all.h>
 #include <opencv2/opencv.hpp>
@@ -38,7 +39,7 @@ string graph = "models/ssd_mobilenet_v1_egohands/frozen_inference_graph.pb";
 int main(){
 
   // Welcome message
-  system("clear");
+  std::system("clear");
   cout<<"**************************************************************************"<<endl;
   cout<<"**************************************************************************"<<endl;
   cout<<"                     Program: Tensorflow Detector 2D                      "<<endl;
@@ -47,29 +48,29 @@ int main(){
   cout<<"**************************************************************************"<<endl;
   cout<<"**************************************************************************"<<endl;
   Time::delay(1);
-  system("clear");
+  std::system("clear");
   cout<<endl;
   cout<<endl;
   cout<<"System date:"<<endl;
-  system("date");
+  std::system("date");
   Time::delay(1);
-  system("clear");
+  std::system("clear");
   cout<<endl;
   cout<<endl;
   cout<<"Starting system..."<<endl;
   Time::delay(1);
-  system("clear");
+  std::system("clear");
   cout<<endl;
   cout<<endl;
   cout<<"Welcome ..."<<endl;
-  system("whoami");
+  std::system("whoami");
   Time::delay(1);
-  system("clear");
+  std::system("clear");
   cout<<endl;
   cout<<endl;
   cout<<"Initializing ..."<<endl;
   Time::delay(1);
-  system("clear");
+  std::system("clear");
   cout<<endl;
   cout<<endl;
   cout<<"Loading TensorFlow 2D detector module..."<<endl;
@@ -78,7 +79,7 @@ int main(){
   //Red yarp
   Network yarp;
 
-  system("clear");
+  std::system("clear");
   cout<<endl;
   cout<<endl;
   cout<<"Initializing YARP network..."<<endl;
@@ -87,19 +88,19 @@ int main(){
   // Apertura puerto emisión
   Port sender_port_pre;
   Port sender_port_post;
-  system("clear");
+  std::system("clear");
   cout<<endl;
   cout<<endl;
   cout<<"Opening sender ports..."<<endl;
   Time::delay(1);
-  system("clear");
+  std::system("clear");
   cout<<endl;
   cout<<endl;
   cout<<"Opening pre-processed video port with the name /video_sender_pre."<<endl;
   Time::delay(1);
   sender_port_pre.open("/video_sender_pre");
   Time::delay(1);
-  system("clear");
+  std::system("clear");
   cout<<endl;
   cout<<endl;
   cout<<"Opening post-processed port with the name /video_sender_post."<<endl;
@@ -108,7 +109,7 @@ int main(){
   Time::delay(1);
 
   // Comprobación yarpserver
-  system("clear");
+  std::system("clear");
   cout<<endl;
   cout<<endl;
   cout<<"Checking yarpserver status..."<<endl;
@@ -126,7 +127,7 @@ int main(){
       Time::delay(1);
 
   }else{
-      system("clear");
+      std::system("clear");
       cout<<endl;
       cout<<endl;
       cout<<"YARPSERVER status: OK"<<endl;
@@ -137,12 +138,12 @@ int main(){
   }
   }
 
-  system("clear");
+  std::system("clear");
   // Test sesión tensorflow
   tensorflow_test test;
   test.run();
 
-  system("clear");
+  std::system("clear");
   // Instanciar detector
   tensorflowDetection2D detector;
 
@@ -150,7 +151,7 @@ int main(){
   detector.init(source_video, labels, graph);
   detector.detector(sender_port_pre, sender_port_post);
 
-  system("clear");
+  std::system("clear");
   cout<<endl;
   cout<<endl;
   cout<<"Closing Tensorflow 2D detector module..."<<endl;
