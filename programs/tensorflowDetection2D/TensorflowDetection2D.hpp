@@ -9,7 +9,7 @@
  * ************************************************************
  */
 
-// Librerias
+// Libraries
 
 #include <iostream>
 #include <string>
@@ -21,7 +21,7 @@
 #include <tensorflow/core/public/session.h>
 
 
-// Espacios de nombres
+// Namespace
 
 using namespace yarp::os;
 using namespace yarp::sig;
@@ -36,9 +36,9 @@ public:
     tensorflowDetection2D();
     void init(string source_video, string labels, string graph);
     Mat get_image();
-    void send_post(Mat img_post, Port puerto_post);
-    void send_pre(Mat img_pre, Port puerto_pre);
-    int detector(Port puerto_pre, Port puerto_post);
+    void send_post(Mat img_post, Port sender_port_post);
+    void send_pre(Mat img_pre, Port sender_port_pre);
+    int detector(Port sender_port_pre, Port sender_port_post);
 
 // Variables
 

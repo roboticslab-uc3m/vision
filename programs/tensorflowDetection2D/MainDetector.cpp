@@ -1,5 +1,5 @@
 
-// Librerias
+// Libraries
 
 #include <fstream>
 #include <utility>
@@ -37,7 +37,7 @@ using tensorflow::Status;
 using tensorflow::string;
 using tensorflow::int32;
 
-// Espacios de nombres
+// Namespace
 
 using namespace yarp::os;
 using namespace yarp::sig;
@@ -64,29 +64,29 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
     string inputLayer = "image_tensor:0";
     vector<string> outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
 
-    // Cargar modelo del .pb
+    // Load .pb frozen model
     std::unique_ptr<tensorflow::Session> session;
     string graphPath = tensorflow::io::JoinPath(ROOTDIR, GRAPH);
-    cout<<"Se cargará el graph:" << graphPath<<"."<<endl;
-    cout<<"Cargando graph..."<<endl;
+    cout<<"The graph it´s going to be loaded:" << graphPath<<"."<<endl;
+    cout<<"Loading graph..."<<endl;
     Time::delay(1);
-    //LOG(INFO) << "Cargando graph:" << graphPath<<" ...";
+    //LOG(INFO) << "Loading graph:" << graphPath<<" ...";
 
     Status loadGraphStatus = loadGraph(graphPath, &session);
     if (!loadGraphStatus.ok()) {
         system("clear");
         cout<<endl;
         cout<<endl;
-        cout<<"Fallo al cargar el graph "<<graphPath<<"."<<endl;
-        //LOG(ERROR) << "Carga del graph: FAIL" << loadGraphStatus;
+        cout<<"Fail loading graph "<<graphPath<<"."<<endl;
+        //LOG(ERROR) << "Loading graph: FAIL" << loadGraphStatus;
         Time::delay(1);
         return -1;
     } else
         system("clear");
         cout<<endl;
         cout<<endl;
-        cout<<"Graph "<<graphPath<<" cargado correctamente."<<endl;
-        //LOG(INFO) << "Carga del graph: OK" << endl;
+        cout<<"Graph "<<graphPath<<" loaded correctly."<<endl;
+        //LOG(INFO) << "Loading  graph: OK" << endl;
         Time::delay(1);
 
 
@@ -95,25 +95,25 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
     system("clear");
     cout<<endl;
     cout<<endl;
-    cout<<"Se cargarán las etiquetas "<<LABELS<<"."<<endl;
+    cout<<"Labels "<<LABELS<<" are going to be loaded."<<endl;
     Time::delay(1);
     Status readLabelsMapStatus = readLabelsMapFile(tensorflow::io::JoinPath(ROOTDIR, LABELS), labelsMap);
     if (!readLabelsMapStatus.ok()) {
         //LOG(ERROR) << "readLabelsMapFile(): ERROR" << loadGraphStatus;
-        cout<<"Fallo al cargar las etiquetas "<<LABELS<<"."<<endl;
+        cout<<"Fail loading labels "<<LABELS<<"."<<endl;
         //LOG(INFO) << "Carga del graph: OK" << endl;
         Time::delay(1);
         return -1;
     } else
         //LOG(INFO) << "readLabelsMapFile(): labels map loaded with " << labelsMap.size() << " label(s)" << endl;
-        cout<<"Etiquetas "<<LABELS<<" cargadas correctamente."<<endl;
-        cout<<labelsMap.size()<<" equiquetas han sido cargadas."<<endl;
+        cout<<"Labels "<<LABELS<<" loaded correctly."<<endl;
+        cout<<labelsMap.size()<<" labels have been loaded."<<endl;
         Time::delay(1);
 
     system("clear");
     cout<<endl;
     cout<<endl;
-    cout<<"Se capturarán frames de la fuente de video."<<endl;
+    cout<<"Video source frames are going to be taken."<<endl;
     Time::delay(1);
     Mat frame;
     Tensor tensor;
@@ -139,7 +139,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
     system("clear");
     cout<<endl;
     cout<<endl;
-    cout<<"Capturando..."<<endl;
+    cout<<"Taking frames..."<<endl;
     Time::delay(1);
     //tensorflowDetection2D yarp_sender;
     while (cap.isOpened()) {
@@ -170,7 +170,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
             system("clear");
             cout<<endl;
             cout<<endl;
-            cout<<"Conversión Mat OpenCV -> Tensor : FAIL"<<endl;
+            cout<<"Mat OpenCV -> Tensor : FAIL"<<endl;
             Time::delay(1);
             return -1;
         }
@@ -183,7 +183,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
             system("clear");
             cout<<endl;
             cout<<endl;
-            cout<<"Ejecución del modelo: FAIL"<<endl;
+            cout<<"Running model status: FAIL"<<endl;
             Time::delay(1);
             return -1;
         }
@@ -198,7 +198,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         for (size_t i = 0; i < goodIdxs.size(); i++){
         cout<<endl;
         cout<<endl;
-        cout<<"Detección: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Precisón: "<<scores(goodIdxs.at(i))<<endl;
+        cout<<"Detection: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Score: "<<scores(goodIdxs.at(i))<<endl;
 
         /* LOG(INFO) << "score:" << scores(goodIdxs.at(i)) << ",class:" << labelsMap[classes(goodIdxs.at(i))]
                       << " (" << classes(goodIdxs.at(i)) << "), box:" << "," << boxes(0, goodIdxs.at(i), 0) << ","
@@ -217,7 +217,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         ImageOf<PixelBgr> C;
         C.setExternal(frame.data,frame.size[1],frame.size[0]);
         puerto_post.write(C);
-        imshow("Fuente de video: Procesada", frame);
+        imshow("Video source: Processed", frame);
         waitKey(5);
     }}
     destroyAllWindows();

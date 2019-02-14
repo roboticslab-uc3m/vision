@@ -6,7 +6,7 @@
  * ************************************************************
  */
 
-// Librerias
+// Libraries
 
 #include <iostream>
 #include <yarp/os/all.h>
@@ -19,7 +19,7 @@
 #include "TensorflowDetection2D.hpp"
 #include "TensorflowSessionTest.h"
 
-// Espacios de nombres
+// Namespace
 
 using namespace yarp::os;
 using namespace yarp::sig;
@@ -34,14 +34,14 @@ tensorflow_test::tensorflow_test()
 
 }
 
-// Crea sesión de prueba TensorFlow
+// Tensorflow session test
 
 void tensorflow_test::run()
 {
     system("clear");
     cout<<endl;
     cout<<endl;
-    cout<<"Iniciando sesión de prueba de tensorflow..."<<endl;
+    cout<<"Initializing tensorflow test session..."<<endl;
     Time::delay(1);
     system("clear");
     cout<<endl;
@@ -56,7 +56,7 @@ void tensorflow_test::run()
     system("clear");
     cout<<endl;
     cout<<endl;
-    cout << "Sesión creada correctamente."<<endl;
+    cout << "Tensorflow test session created correctly."<<endl;
     Time::delay(1);
 
 }

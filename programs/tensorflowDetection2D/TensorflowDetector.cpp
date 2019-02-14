@@ -1,5 +1,5 @@
 
-// Librerias
+// Libraries
 
 #include <math.h>
 #include <fstream>
@@ -36,12 +36,12 @@ using tensorflow::Status;
 using tensorflow::string;
 using tensorflow::int32;
 
-// Espacios de nombres
+// Namespace
 
 using namespace std;
 using namespace cv;
 
-// Cargar graph y crear session
+// Create session and load graph
 
 Status loadGraph(const string &graph_file_name,
               unique_ptr<tensorflow::Session> *session) {
@@ -49,7 +49,7 @@ Status loadGraph(const string &graph_file_name,
     Status load_graph_status =
             ReadBinaryProto(tensorflow::Env::Default(), graph_file_name, &graph_def);
     if (!load_graph_status.ok()) {
-        return tensorflow::errors::NotFound("No se ha podido cargar el graph: '",
+        return tensorflow::errors::NotFound("Fail loading graph: '",
                                             graph_file_name, "'");
     }
     session->reset(tensorflow::NewSession(tensorflow::SessionOptions()));
@@ -60,14 +60,14 @@ Status loadGraph(const string &graph_file_name,
     return Status::OK();
 }
 
-// Leer etiquetas
+// Read labels
 
 Status readLabelsMapFile(const string &fileName, map<int, string> &labelsMap) {
 
 
     ifstream t(fileName);
     if (t.bad())
-        return tensorflow::errors::NotFound("Se han encontrado errores al cargar etiquetas de: '", fileName, "'");
+        return tensorflow::errors::NotFound("Fail loading labels: '", fileName, "'");
     stringstream buffer;
     buffer << t.rdbuf();
     string fileString = buffer.str();
@@ -105,7 +105,7 @@ Status readLabelsMapFile(const string &fileName, map<int, string> &labelsMap) {
 }
 
 
-// Pasar de Mat OpenCV a TensorFlow
+//  Mat OpenCV -> TensorFlow
 
 Status readTensorFromMat(const Mat &mat, Tensor &outTensor) {
 
@@ -121,7 +121,7 @@ Status readTensorFromMat(const Mat &mat, Tensor &outTensor) {
     vector<pair<string, tensorflow::Tensor>> inputs = {{"input", outTensor}};
     auto uint8Caster = Cast(root.WithOpName("uint8_Cast"), outTensor, tensorflow::DT_UINT8);
 
-    // Salida tensor
+    // Tensor output
     tensorflow::GraphDef graph;
     TF_RETURN_IF_ERROR(root.ToGraphDef(&graph));
 

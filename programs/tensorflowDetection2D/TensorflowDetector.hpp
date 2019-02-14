@@ -1,5 +1,5 @@
 
-// Librerias
+// Libraries
 
 #include <vector>
 #include "tensorflow/core/framework/tensor.h"

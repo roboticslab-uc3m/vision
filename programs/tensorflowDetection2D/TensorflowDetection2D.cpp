@@ -6,7 +6,7 @@
  * ************************************************************
  */
 
-// Librerias
+// Libraries
 
 #include <iostream>
 #include <fstream>
@@ -52,7 +52,7 @@ using tensorflow::string;
 using tensorflow::int32;
 
 
-// Espacios de nombres
+// Namespace
 
 using namespace yarp::os;
 using namespace yarp::sig;
@@ -76,43 +76,43 @@ void tensorflowDetection2D::init(string source_video, string labels, string grap
 
 Mat tensorflowDetection2D::get_image()
 {
-    VideoCapture cap;
-    Mat imagen;
+    VideoCapture webcam;
+    Mat picture;
     // Abrir cámara
     int cam_ok=0;
     while(cam_ok==0){
-    if(!cap.open(cam_path)){
-      cout << "Lo siento, no puedo acceder a la webcam, revise la conexión..." << endl;
+    if(!webcam.open(cam_path)){
+      cout << "I can´t open source video, check connection..." << endl;
     }else{
-        cout<<"Cámara abierta correctamente"<<endl;
+        cout<<"Source video opended correctly"<<endl;
         cam_ok=1;
     }}
 
-    cap >> imagen;
+    webcam >> picture;
 
-    return imagen;
+    return picture;
 
 }
-int tensorflowDetection2D::detector(Port puerto_pre,Port puerto_post){
+int tensorflowDetection2D::detector(Port sender_port_pre,Port sender_port_post){
 
   maindetector detection_module;
-  detection_module.detect(vgg16_labels, vgg16_graph, video_source, puerto_pre, puerto_post);
+  detection_module.detect(vgg16_labels, vgg16_graph, video_source, sender_port_pre, sender_port_post);
   return 0;
 }
 
 
-void tensorflowDetection2D::send_post(Mat img_post, Port puerto_post)
+void tensorflowDetection2D::send_post(Mat img_post, Port sender_port_post)
 {
   ImageOf<PixelBgr> B;
   B.setExternal(img_post.data,img_post.size[1],img_post.size[0]);
-  puerto_post.write(B);
+  sender_port_post.write(B);
 
 }
 
-void tensorflowDetection2D::send_pre(Mat img_pre, Port puerto_pre)
+void tensorflowDetection2D::send_pre(Mat img_pre, Port sender_port_pre)
 {
   ImageOf<PixelBgr> B;
   B.setExternal(img_pre.data,img_pre.size[1],img_pre.size[0]);
-  puerto_pre.write(B);
+  sender_port_pre.write(B);
 
 }
