@@ -1,3 +1,5 @@
+#ifndef TENSORFLOWDETECTOR_HPP
+#define TENSORFLOWDETECTOR_HPP
 
 // Libraries
 
@@ -33,3 +35,4 @@ double IOU(cv::Rect box1, cv::Rect box2);
 std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
                                 tensorflow::TTypes<float, 3>::Tensor &boxes,
                                 double thresholdIOU, double thresholdScore);
+#endif // TENSORFLOWDETECTOR_HPP
