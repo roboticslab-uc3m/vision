@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <time.h>
+#include <cstdlib>
 #include <yarp/os/all.h>
 #include <yarp/sig/all.h>
 #include <yarp/sig/Image.h>
@@ -50,7 +51,7 @@ using namespace cv;
 int maindetector::detect(string labels, string graph, string video_source, Port puerto_pre, Port puerto_post) {
 
 
-    system("clear");
+    std::system("clear");
     cout<<endl;
     cout<<endl;
 
@@ -74,7 +75,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
 
     Status loadGraphStatus = loadGraph(graphPath, &session);
     if (!loadGraphStatus.ok()) {
-        system("clear");
+        std::system("clear");
         cout<<endl;
         cout<<endl;
         cout<<"Fail loading graph "<<graphPath<<"."<<endl;
@@ -82,7 +83,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         Time::delay(1);
         return -1;
     } else
-        system("clear");
+        std::system("clear");
         cout<<endl;
         cout<<endl;
         cout<<"Graph "<<graphPath<<" loaded correctly."<<endl;
@@ -92,7 +93,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
 
     // Cargar etiquetas
     std::map<int, std::string> labelsMap = std::map<int,std::string>();
-    system("clear");
+    std::system("clear");
     cout<<endl;
     cout<<endl;
     cout<<"Labels "<<LABELS<<" are going to be loaded."<<endl;
@@ -110,7 +111,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         cout<<labelsMap.size()<<" labels have been loaded."<<endl;
         Time::delay(1);
 
-    system("clear");
+    std::system("clear");
     cout<<endl;
     cout<<endl;
     cout<<"Video source frames are going to be taken."<<endl;
@@ -136,7 +137,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
     shape.AddDim((int64)cap.get(CAP_PROP_FRAME_HEIGHT));
     shape.AddDim((int64)cap.get(CAP_PROP_FRAME_WIDTH));
     shape.AddDim(3);
-    system("clear");
+    std::system("clear");
     cout<<endl;
     cout<<endl;
     cout<<"Taking frames..."<<endl;
@@ -167,7 +168,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         Status readTensorStatus = readTensorFromMat(frame, tensor);
         if (!readTensorStatus.ok()) {
             //LOG(ERROR) << "Mat->Tensor conversion failed: " << readTensorStatus;
-            system("clear");
+            std::system("clear");
             cout<<endl;
             cout<<endl;
             cout<<"Mat OpenCV -> Tensor : FAIL"<<endl;
@@ -180,7 +181,7 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
         if (!runStatus.ok()) {
             //LOG(ERROR) << "Running model failed: " << runStatus;
-            system("clear");
+            std::system("clear");
             cout<<endl;
             cout<<endl;
             cout<<"Running model status: FAIL"<<endl;
