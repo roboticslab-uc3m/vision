@@ -29,16 +29,10 @@
 #include "TensorflowDetector.hpp"
 
 
-using namespace yarp::os;
-using namespace yarp::sig;
-using namespace yarp::sig::draw;
-using namespace std;
-using namespace cv;
-
 class maindetector
 {
 public:
-int detect(string labels, string graph, string video_source, Port sender_port_pre, Port sender_port_post);
+int detect(std::string labels, std::string graph, std::string video_source, yarp::os::Port sender_port_preyarp, yarp::os::Port sender_port_post);
 
 };
 #endif //MAINDETECTOR_HPP

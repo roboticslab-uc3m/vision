@@ -45,39 +45,29 @@
 #include "TensorflowDetector.hpp"
 #include "MainDetector.hpp"
 
-// Namespace
-
-using namespace yarp::os;
-using namespace yarp::sig;
-using namespace yarp::sig::draw;
-using namespace cv;
-using namespace std;
-using namespace tensorflow;
-
-
 
 tensorflowDetection2D::tensorflowDetection2D()
 {
 }
 
-void tensorflowDetection2D::init(string source_video, string labels, string graph)
+void tensorflowDetection2D::init(std::string source_video, std::string labels, std::string graph)
 {
   video_source=source_video;
   vgg16_graph=graph;
   vgg16_labels=labels;
 }
 
-Mat tensorflowDetection2D::get_image()
+cv::Mat tensorflowDetection2D::get_image()
 {
-    VideoCapture webcam;
-    Mat picture;
+    cv::VideoCapture webcam;
+    cv::Mat picture;
     // Abrir cámara
     int cam_ok=0;
     while(cam_ok==0){
     if(!webcam.open(cam_path)){
-      cout << "I can´t open source video, check connection..." << endl;
+      std::cout << "I can´t open source video, check connection..." << std::endl;
     }else{
-        cout<<"Source video opended correctly"<<endl;
+        std::cout<<"Source video opended correctly"<<std::endl;
         cam_ok=1;
     }}
 
@@ -86,7 +76,7 @@ Mat tensorflowDetection2D::get_image()
     return picture;
 
 }
-int tensorflowDetection2D::detector(Port sender_port_pre,Port sender_port_post){
+int tensorflowDetection2D::detector(yarp::os::Port sender_port_pre,yarp::os::Port sender_port_post){
 
   maindetector detection_module;
   detection_module.detect(vgg16_labels, vgg16_graph, video_source, sender_port_pre, sender_port_post);
@@ -94,17 +84,17 @@ int tensorflowDetection2D::detector(Port sender_port_pre,Port sender_port_post){
 }
 
 
-void tensorflowDetection2D::send_post(Mat img_post, Port sender_port_post)
+void tensorflowDetection2D::send_post(cv::Mat img_post, yarp::os::Port sender_port_post)
 {
-  ImageOf<PixelBgr> B;
+  yarp::sig::ImageOf<yarp::sig::PixelBgr> B;
   B.setExternal(img_post.data,img_post.size[1],img_post.size[0]);
   sender_port_post.write(B);
 
 }
 
-void tensorflowDetection2D::send_pre(Mat img_pre, Port sender_port_pre)
+void tensorflowDetection2D::send_pre(cv::Mat img_pre, yarp::os::Port sender_port_pre)
 {
-  ImageOf<PixelBgr> B;
+  yarp::sig::ImageOf<yarp::sig::PixelBgr> B;
   B.setExternal(img_pre.data,img_pre.size[1],img_pre.size[0]);
   sender_port_pre.write(B);
 

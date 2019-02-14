@@ -9,7 +9,6 @@
 #include <opencv2/core/mat.hpp>
 
 
-
 tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::map<int, tensorflow::string> &labelsMap);
 
 tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,

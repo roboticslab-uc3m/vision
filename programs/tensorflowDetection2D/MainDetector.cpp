@@ -32,85 +32,76 @@
 #include "MainDetector.hpp"
 
 
-// Namespace
 
-using namespace yarp::os;
-using namespace yarp::sig;
-using namespace yarp::sig::draw;
-using namespace std;
-using namespace cv;
-
-
-
-int maindetector::detect(string labels, string graph, string video_source, Port sender_port_pre, Port sender_port_post) {
+int maindetector::detect(std::string labels, std::string graph, std::string video_source, yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post) {
 
 
     std::system("clear");
-    cout<<endl;
-    cout<<endl;
+    std::cout<<std::endl;
+    std::cout<<std::endl;
 
     // Path
-    string ROOTDIR = "../";
-    string LABELS = labels;
-    string GRAPH = graph;
-    string source_video=video_source;
+    std::string ROOTDIR = "../";
+    std::string LABELS = labels;
+    std::string GRAPH = graph;
+    std::string source_video=video_source;
 
     // Set  nombres nodos entrada y salida
     tensorflow::string inputLayer = "image_tensor:0";
-    vector<string> outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
+    std::vector<std::string> outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
 
     // Load .pb frozen model
     std::unique_ptr<tensorflow::Session> session;
     tensorflow::string graphPath = tensorflow::io::JoinPath(ROOTDIR, GRAPH);
-    cout<<"The graph it´s going to be loaded:" << graphPath<<"."<<endl;
-    cout<<"Loading graph..."<<endl;
-    Time::delay(1);
+    std::cout<<"The graph it´s going to be loaded:" << graphPath<<"."<<std::endl;
+    std::cout<<"Loading graph..."<<std::endl;
+    yarp::os::Time::delay(1);
     //LOG(INFO) << "Loading graph:" << graphPath<<" ...";
 
     tensorflow::Status loadGraphStatus = loadGraph(graphPath, &session);
     if (!loadGraphStatus.ok()) {
         std::system("clear");
-        cout<<endl;
-        cout<<endl;
-        cout<<"Fail loading graph "<<graphPath<<"."<<endl;
+        std::cout<<std::endl;
+        std::cout<<std::endl;
+        std::cout<<"Fail loading graph "<<graphPath<<"."<<std::endl;
         //LOG(ERROR) << "Loading graph: FAIL" << loadGraphStatus;
-        Time::delay(1);
+        yarp::os::Time::delay(1);
         return -1;
     } else
         std::system("clear");
-        cout<<endl;
-        cout<<endl;
-        cout<<"Graph "<<graphPath<<" loaded correctly."<<endl;
-        //LOG(INFO) << "Loading  graph: OK" << endl;
-        Time::delay(1);
+        std::cout<<std::endl;
+        std::cout<<std::endl;
+        std::cout<<"Graph "<<graphPath<<" loaded correctly."<<std::endl;
+        //LOG(INFO) << "Loading  graph: OK" << std::endl;
+        yarp::os::Time::delay(1);
 
 
     // Cargar etiquetas
     std::map<int, std::string> labelsMap = std::map<int,std::string>();
     std::system("clear");
-    cout<<endl;
-    cout<<endl;
-    cout<<"Labels "<<LABELS<<" are going to be loaded."<<endl;
-    Time::delay(1);
+    std::cout<<std::endl;
+    std::cout<<std::endl;
+    std::cout<<"Labels "<<LABELS<<" are going to be loaded."<<std::endl;
+    yarp::os::Time::delay(1);
     tensorflow::Status readLabelsMapStatus = readLabelsMapFile(tensorflow::io::JoinPath(ROOTDIR, LABELS), labelsMap);
     if (!readLabelsMapStatus.ok()) {
         //LOG(ERROR) << "readLabelsMapFile(): ERROR" << loadGraphStatus;
-        cout<<"Fail loading labels "<<LABELS<<"."<<endl;
-        //LOG(INFO) << "Carga del graph: OK" << endl;
-        Time::delay(1);
+        std::cout<<"Fail loading labels "<<LABELS<<"."<<std::endl;
+        //LOG(INFO) << "Carga del graph: OK" << std::endl;
+        yarp::os::Time::delay(1);
         return -1;
     } else
-        //LOG(INFO) << "readLabelsMapFile(): labels map loaded with " << labelsMap.size() << " label(s)" << endl;
-        cout<<"Labels "<<LABELS<<" loaded correctly."<<endl;
-        cout<<labelsMap.size()<<" labels have been loaded."<<endl;
-        Time::delay(1);
+        //LOG(INFO) << "readLabelsMapFile(): labels map loaded with " << labelsMap.size() << " label(s)" << std::endl;
+        std::cout<<"Labels "<<LABELS<<" loaded correctly."<<std::endl;
+        std::cout<<labelsMap.size()<<" labels have been loaded."<<std::endl;
+        yarp::os::Time::delay(1);
 
     std::system("clear");
-    cout<<endl;
-    cout<<endl;
-    cout<<"Video source frames are going to be taken."<<endl;
-    Time::delay(1);
-    Mat frame;
+    std::cout<<std::endl;
+    std::cout<<std::endl;
+    std::cout<<"Video source frames are going to be taken."<<std::endl;
+    yarp::os::Time::delay(1);
+    cv::Mat frame;
     tensorflow::Tensor tensor;
     std::vector<tensorflow::Tensor> outputs;
     double thresholdScore = 0.5;
@@ -124,18 +115,18 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
     time(&start);
 
     // Adquiere imagen de la fuente de video
-    VideoCapture cap(source_video);
+    cv::VideoCapture cap(source_video);
 
     tensorflow::TensorShape shape = tensorflow::TensorShape();
     shape.AddDim(1);
-    shape.AddDim((tensorflow::int64)cap.get(CAP_PROP_FRAME_HEIGHT));
-    shape.AddDim((tensorflow::int64)cap.get(CAP_PROP_FRAME_WIDTH));
+    shape.AddDim((tensorflow::int64)cap.get(cv::CAP_PROP_FRAME_HEIGHT));
+    shape.AddDim((tensorflow::int64)cap.get(cv::CAP_PROP_FRAME_WIDTH));
     shape.AddDim(3);
     std::system("clear");
-    cout<<endl;
-    cout<<endl;
-    cout<<"Taking frames..."<<endl;
-    Time::delay(1);
+    std::cout<<std::endl;
+    std::cout<<std::endl;
+    std::cout<<"Taking frames..."<<std::endl;
+    yarp::os::Time::delay(1);
     //tensorflowDetection2D yarp_sender;
     while (cap.isOpened()) {
         cap >> frame;
@@ -143,12 +134,12 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         // Enviar imagen preprocesada por yarp
         //yarp_sender.send_post(frame, puerto_pre);
         // A mano
-        ImageOf<PixelBgr> B;
+        yarp::sig::ImageOf<yarp::sig::PixelBgr> B;
         B.setExternal(frame.data,frame.size[1],frame.size[0]);
         sender_port_pre.write(B);
 
-        cvtColor(frame, frame, COLOR_BGR2RGB);
-        cout << "Frame: " << iFrame << endl;
+        cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
+        std::cout << "Frame: " << iFrame << std::endl;
 
         if (nFrames % (iFrame + 1) == 0) {
             time(&end);
@@ -163,10 +154,10 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         if (!readTensorStatus.ok()) {
             //LOG(ERROR) << "Mat->Tensor conversion failed: " << readTensorStatus;
             std::system("clear");
-            cout<<endl;
-            cout<<endl;
-            cout<<"Mat OpenCV -> Tensor : FAIL"<<endl;
-            Time::delay(1);
+            std::cout<<std::endl;
+            std::cout<<std::endl;
+            std::cout<<"Mat OpenCV -> Tensor : FAIL"<<std::endl;
+            yarp::os::Time::delay(1);
             return -1;
         }
 
@@ -176,10 +167,10 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         if (!runStatus.ok()) {
             //LOG(ERROR) << "Running model failed: " << runStatus;
             std::system("clear");
-            cout<<endl;
-            cout<<endl;
-            cout<<"Running model status: FAIL"<<endl;
-            Time::delay(1);
+            std::cout<<std::endl;
+            std::cout<<std::endl;
+            std::cout<<"Running model status: FAIL"<<std::endl;
+            yarp::os::Time::delay(1);
             return -1;
         }
 
@@ -189,11 +180,11 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
         tensorflow::TTypes<float>::Flat numDetections = outputs[3].flat<float>();
         tensorflow::TTypes<float, 3>::Tensor boxes = outputs[0].flat_outer_dims<float,3>();
 
-        vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
+        std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
         for (size_t i = 0; i < goodIdxs.size(); i++){
-        cout<<endl;
-        cout<<endl;
-        cout<<"Detection: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Score: "<<scores(goodIdxs.at(i))<<endl;
+        std::cout<<std::endl;
+        std::cout<<std::endl;
+        std::cout<<"Detection: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Score: "<<scores(goodIdxs.at(i))<<std::endl;
 
         /* LOG(INFO) << "score:" << scores(goodIdxs.at(i)) << ",class:" << labelsMap[classes(goodIdxs.at(i))]
                       << " (" << classes(goodIdxs.at(i)) << "), box:" << "," << boxes(0, goodIdxs.at(i), 0) << ","
@@ -201,21 +192,21 @@ int maindetector::detect(string labels, string graph, string video_source, Port 
                       << boxes(0, goodIdxs.at(i), 3);*/
 
 
-        cout<<endl;
+        std::cout<<std::endl;
 
-        cvtColor(frame, frame, COLOR_BGR2RGB);
+        cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
         drawBoundingBoxesOnImage(frame, scores, classes, boxes, labelsMap, goodIdxs);
 
-        putText(frame, to_string(fps).substr(0, 5), Point(0, frame.rows), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(255, 255, 255));
+        cv::putText(frame, std::to_string(fps).substr(0, 5), cv::Point(0, frame.rows), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 255));
         //yarp_sender.send_post(frame, puerto_post);
         // A mano
-        ImageOf<PixelBgr> C;
+        yarp::sig::ImageOf<yarp::sig::PixelBgr> C;
         C.setExternal(frame.data,frame.size[1],frame.size[0]);
         sender_port_post.write(C);
-        imshow("Video source: Processed", frame);
-        waitKey(5);
+        cv::imshow("Video source: Processed", frame);
+        cv::waitKey(5);
     }}
-    destroyAllWindows();
+    cv::destroyAllWindows();
 
     return 0;
 }

@@ -20,15 +20,6 @@
 #include "TensorflowDetection2D.hpp"
 #include "TensorflowSessionTest.h"
 
-// Namespace
-
-using namespace yarp::os;
-using namespace yarp::sig;
-using namespace yarp::sig::draw;
-using namespace cv;
-using namespace std;
-using namespace tensorflow;
-
 
 tensorflow_test::tensorflow_test()
 {
@@ -40,24 +31,24 @@ tensorflow_test::tensorflow_test()
 void tensorflow_test::run()
 {
     std::system("clear");
-    cout<<endl;
-    cout<<endl;
-    cout<<"Initializing tensorflow test session..."<<endl;
-    Time::delay(1);
+    std::cout<<std::endl;
+    std::cout<<std::endl;
+    std::cout<<"Initializing tensorflow test session..."<<std::endl;
+    yarp::os::Time::delay(1);
     std::system("clear");
-    cout<<endl;
-    cout<<endl;
-    Session* session;
-    Status status = NewSession(SessionOptions(), &session);
+    std::cout<<std::endl;
+    std::cout<<std::endl;
+    tensorflow::Session* session;
+    tensorflow::Status status = NewSession(tensorflow::SessionOptions(), &session);
     if (!status.ok()) {
-            cout << status.ToString() << "\n";
+            std::cout << status.ToString() << "\n";
 
     }
-    Time::delay(1);
+    yarp::os::Time::delay(1);
     std::system("clear");
-    cout<<endl;
-    cout<<endl;
-    cout << "Tensorflow test session created correctly."<<endl;
-    Time::delay(1);
+    std::cout<<std::endl;
+    std::cout<<std::endl;
+    std::cout << "Tensorflow test session created correctly."<<std::endl;
+    yarp::os::Time::delay(1);
 
 }

@@ -21,35 +21,26 @@
 #include <tensorflow/core/public/session.h>
 
 
-// Namespace
-
-using namespace yarp::os;
-using namespace yarp::sig;
-using namespace yarp::sig::draw;
-using namespace cv;
-using namespace std;
-using namespace tensorflow;
-
 class tensorflowDetection2D
 {
 public:
     tensorflowDetection2D();
-    void init(string source_video, string labels, string graph);
-    Mat get_image();
-    void send_post(Mat img_post, Port sender_port_post);
-    void send_pre(Mat img_pre, Port sender_port_pre);
-    int detector(Port sender_port_pre, Port sender_port_post);
+    void init(std::string source_video, std::string labels, std::string graph);
+    cv::Mat get_image();
+    void send_post(cv::Mat img_post, yarp::os::Port sender_port_post);
+    void send_pre(cv::Mat img_pre, yarp::os::Port sender_port_pre);
+    int detector(yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post);
 
 // Variables
 
-    string cam_path="0";
+    std::string cam_path="0";
     // Test tiagoentrenamiento: /home/tiagoentrenamiento/Vídeos/tiago.mp4
     // Test tiagoentrenamiento: /home/tiagoentrenamiento/Imágenes/tiago.jpeg
 
 private:
-    string video_source;
-    string vgg16_graph;
-    string vgg16_labels;
+    std::string video_source;
+    std::string vgg16_graph;
+    std::string vgg16_labels;
 
 };
 

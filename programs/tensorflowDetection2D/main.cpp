@@ -20,121 +20,112 @@
 #include "TensorflowDetection2D.hpp"
 #include "TensorflowSessionTest.h"
 
-// Namespace
-
-using namespace yarp::os;
-using namespace yarp::sig;
-using namespace yarp::sig::draw;
-using namespace cv;
-using namespace std;
-using namespace tensorflow;
-
 // Variables
 
 int yarpserver_ok=0;
-string source_video="/home/tiagoentrenamiento/Vídeos/tiago.mp4";// Test: /home/tiagoentrenamiento/Vídeos/tiago.mp4
-string labels = "models/ssd_mobilenet_v1_egohands/labels_map.pbtxt";
-string graph = "models/ssd_mobilenet_v1_egohands/frozen_inference_graph.pb";
+std::string source_video="/home/tiagoentrenamiento/Vídeos/tiago.mp4";// Test: /home/tiagoentrenamiento/Vídeos/tiago.mp4
+std::string labels = "models/ssd_mobilenet_v1_egohands/labels_map.pbtxt";
+std::string graph = "models/ssd_mobilenet_v1_egohands/frozen_inference_graph.pb";
 
 int main(){
 
   // Welcome message
   std::system("clear");
-  cout<<"**************************************************************************"<<endl;
-  cout<<"**************************************************************************"<<endl;
-  cout<<"                     Program: Tensorflow Detector 2D                      "<<endl;
-  cout<<"                     Author: David Velasco García                         "<<endl;
-  cout<<"                             @davidvelascogarcia                          "<<endl;
-  cout<<"**************************************************************************"<<endl;
-  cout<<"**************************************************************************"<<endl;
-  Time::delay(1);
+  std::cout<<"**************************************************************************"<<std::endl;
+  std::cout<<"**************************************************************************"<<std::endl;
+  std::cout<<"                     Program: Tensorflow Detector 2D                      "<<std::endl;
+  std::cout<<"                     Author: David Velasco García                         "<<std::endl;
+  std::cout<<"                             @davidvelascogarcia                          "<<std::endl;
+  std::cout<<"**************************************************************************"<<std::endl;
+  std::cout<<"**************************************************************************"<<std::endl;
+  yarp::os::Time::delay(1);
   std::system("clear");
-  cout<<endl;
-  cout<<endl;
-  cout<<"System date:"<<endl;
+  std::cout<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"System date:"<<std::endl;
   std::system("date");
-  Time::delay(1);
+  yarp::os::Time::delay(1);
   std::system("clear");
-  cout<<endl;
-  cout<<endl;
-  cout<<"Starting system..."<<endl;
-  Time::delay(1);
+  std::cout<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"Starting system..."<<std::endl;
+  yarp::os::Time::delay(1);
   std::system("clear");
-  cout<<endl;
-  cout<<endl;
-  cout<<"Welcome ..."<<endl;
+  std::cout<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"Welcome ..."<<std::endl;
   std::system("whoami");
-  Time::delay(1);
+  yarp::os::Time::delay(1);
   std::system("clear");
-  cout<<endl;
-  cout<<endl;
-  cout<<"Initializing ..."<<endl;
-  Time::delay(1);
+  std::cout<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"Initializing ..."<<std::endl;
+  yarp::os::Time::delay(1);
   std::system("clear");
-  cout<<endl;
-  cout<<endl;
-  cout<<"Loading TensorFlow 2D detector module..."<<endl;
-  Time::delay(1);
+  std::cout<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"Loading TensorFlow 2D detector module..."<<std::endl;
+  yarp::os::Time::delay(1);
 
   //Red yarp
-  Network yarp;
+  yarp::os::Network yarp;
 
   std::system("clear");
-  cout<<endl;
-  cout<<endl;
-  cout<<"Initializing YARP network..."<<endl;
-  Time::delay(1);
+  std::cout<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"Initializing YARP network..."<<std::endl;
+  yarp::os::Time::delay(1);
 
   // Apertura puerto emisión
-  Port sender_port_pre;
-  Port sender_port_post;
+  yarp::os::Port sender_port_pre;
+  yarp::os::Port sender_port_post;
   std::system("clear");
-  cout<<endl;
-  cout<<endl;
-  cout<<"Opening sender ports..."<<endl;
-  Time::delay(1);
+  std::cout<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"Opening sender ports..."<<std::endl;
+  yarp::os::Time::delay(1);
   std::system("clear");
-  cout<<endl;
-  cout<<endl;
-  cout<<"Opening pre-processed video port with the name /video_sender_pre."<<endl;
-  Time::delay(1);
+  std::cout<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"Opening pre-processed video port with the name /video_sender_pre."<<std::endl;
+  yarp::os::Time::delay(1);
   sender_port_pre.open("/video_sender_pre");
-  Time::delay(1);
+  yarp::os::Time::delay(1);
   std::system("clear");
-  cout<<endl;
-  cout<<endl;
-  cout<<"Opening post-processed port with the name /video_sender_post."<<endl;
-  Time::delay(1);
+  std::cout<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"Opening post-processed port with the name /video_sender_post."<<std::endl;
+  yarp::os::Time::delay(1);
   sender_port_post.open("/video_sender_post");
-  Time::delay(1);
+  yarp::os::Time::delay(1);
 
   // Comprobación yarpserver
   std::system("clear");
-  cout<<endl;
-  cout<<endl;
-  cout<<"Checking yarpserver status..."<<endl;
-  Time::delay(1);
+  std::cout<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"Checking yarpserver status..."<<std::endl;
+  yarp::os::Time::delay(1);
   while(yarpserver_ok==0){
 
   if (!yarp::os::Network::checkNetwork())
   {
 
-      cout<<endl;
-      cout<<endl;
-      cout<<"YARPSERVER status: FAIL"<<endl;
-      cout<<"Please star yarpserver or connect to yarpserver already running..."<<endl;
+      std::cout<<std::endl;
+      std::cout<<std::endl;
+      std::cout<<"YARPSERVER status: FAIL"<<std::endl;
+      std::cout<<"Please star yarpserver or connect to yarpserver already running..."<<std::endl;
 
-      Time::delay(1);
+      yarp::os::Time::delay(1);
 
   }else{
       std::system("clear");
-      cout<<endl;
-      cout<<endl;
-      cout<<"YARPSERVER status: OK"<<endl;
-      cout<<endl;
-      cout<<endl;
+      std::cout<<std::endl;
+      std::cout<<std::endl;
+      std::cout<<"YARPSERVER status: OK"<<std::endl;
+      std::cout<<std::endl;
+      std::cout<<std::endl;
       yarpserver_ok=1;
-      Time::delay(1);
+      yarp::os::Time::delay(1);
   }
   }
 
@@ -152,10 +143,10 @@ int main(){
   detector.detector(sender_port_pre, sender_port_post);
 
   std::system("clear");
-  cout<<endl;
-  cout<<endl;
-  cout<<"Closing Tensorflow 2D detector module..."<<endl;
-  Time::delay(5);
+  std::cout<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"Closing Tensorflow 2D detector module..."<<std::endl;
+  yarp::os::Time::delay(5);
 
   return 0;
 }
