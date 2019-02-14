@@ -30,6 +30,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include "TensorflowDetector.hpp"
 
+
 // Namespace
 
 using namespace std;
@@ -37,7 +38,7 @@ using namespace cv;
 
 // Create session and load graph
 
-tensorflow::Status loadGraph(const string &graph_file_name,
+tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
               unique_ptr<tensorflow::Session> *session) {
     tensorflow::GraphDef graph_def;
     tensorflow::Status load_graph_status =
@@ -51,12 +52,12 @@ tensorflow::Status loadGraph(const string &graph_file_name,
     if (!session_create_status.ok()) {
         return session_create_status;
     }
-    return Status::OK();
+    return tensorflow::Status::OK();
 }
 
 // Read labels
 
-tensorflow::Status readLabelsMapFile(const string &fileName, map<int, string> &labelsMap) {
+tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, map<int, tensorflow::string> &labelsMap) {
 
 
     ifstream t(fileName);
@@ -95,13 +96,13 @@ tensorflow::Status readLabelsMapFile(const string &fileName, map<int, string> &l
             continue;
         labelsMap.insert(pair<int, string>(id, name));
     }
-    return Status::OK();
+    return tensorflow::Status::OK();
 }
 
 
 //  Mat OpenCV -> TensorFlow
 
-tensorflow::Status readTensorFromMat(const Mat &mat, Tensor &outTensor) {
+tensorflow::Status readTensorFromMat(const Mat &mat, tensorflow::Tensor &outTensor) {
 
     auto root = tensorflow::Scope::NewRootScope();
     using namespace ::tensorflow::ops;
@@ -119,14 +120,14 @@ tensorflow::Status readTensorFromMat(const Mat &mat, Tensor &outTensor) {
     tensorflow::GraphDef graph;
     TF_RETURN_IF_ERROR(root.ToGraphDef(&graph));
 
-    vector<Tensor> outTensors;
+    vector<tensorflow::Tensor> outTensors;
     unique_ptr<tensorflow::Session> session(tensorflow::NewSession(tensorflow::SessionOptions()));
 
     TF_RETURN_IF_ERROR(session->Create(graph));
     TF_RETURN_IF_ERROR(session->Run({inputs}, {"uint8_Cast"}, {}, &outTensors));
 
     outTensor = outTensors.at(0);
-    return Status::OK();
+    return tensorflow::Status::OK();
 }
 
 
@@ -157,7 +158,7 @@ void drawBoundingBoxesOnImage(Mat &image,
                               tensorflow::TTypes<float>::Flat &scores,
                               tensorflow::TTypes<float>::Flat &classes,
                               tensorflow::TTypes<float,3>::Tensor &boxes,
-                              map<int, string> &labelsMap,
+                              map<int, tensorflow::string> &labelsMap,
                               vector<size_t> &idxs) {
     for (int j = 0; j < idxs.size(); j++)
         drawBoundingBoxOnImage(image,
