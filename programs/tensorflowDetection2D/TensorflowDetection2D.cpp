@@ -13,9 +13,13 @@
 #include <utility>
 #include <vector>
 #include <iostream>
-#include <yarp/os/all.h>
-#include <yarp/sig/all.h>
+#include <yarp/os/Bottle.h>
+#include <yarp/os/BufferedPort.h>
+#include <yarp/os/ConnectionReader.h>
+#include <yarp/os/Port.h>
+#include <yarp/os/PortReader.h>
 #include <yarp/sig/Image.h>
+#include <yarp/os/Time.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/videoio.hpp>

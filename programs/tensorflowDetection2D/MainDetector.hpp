@@ -18,9 +18,13 @@
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/public/session.h"
 #include "tensorflow/core/util/command_line_flags.h"
-#include <yarp/os/all.h>
-#include <yarp/sig/all.h>
+#include <yarp/os/Bottle.h>
+#include <yarp/os/BufferedPort.h>
+#include <yarp/os/ConnectionReader.h>
+#include <yarp/os/Port.h>
+#include <yarp/os/PortReader.h>
 #include <yarp/sig/Image.h>
+#include <yarp/os/Time.h>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui/highgui.hpp>

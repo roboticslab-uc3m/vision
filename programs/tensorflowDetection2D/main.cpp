@@ -10,11 +10,14 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <yarp/os/all.h>
-#include <yarp/sig/all.h>
-#include <opencv2/opencv.hpp>
+#include <yarp/os/Bottle.h>
+#include <yarp/os/BufferedPort.h>
+#include <yarp/os/ConnectionReader.h>
+#include <yarp/os/Port.h>
+#include <yarp/os/PortReader.h>
 #include <yarp/sig/Image.h>
 #include <yarp/os/Time.h>
+#include <opencv2/opencv.hpp>
 #include <tensorflow/core/platform/env.h>
 #include <tensorflow/core/public/session.h>
 #include "TensorflowDetection2D.hpp"
