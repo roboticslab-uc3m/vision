@@ -30,7 +30,7 @@
 #include "tensorflow/core/util/command_line_flags.h"
 #include "TensorflowDetector.hpp"
 #include "MainDetector.hpp"
-
+#include <map>
 
 
 int maindetector::detect(std::string labels, std::string graph, std::string video_source, yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post) {
