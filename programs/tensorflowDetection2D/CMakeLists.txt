@@ -23,8 +23,6 @@ if(ENABLE_tensorflowDetection2D)
                                    MainDetector.cpp
                                    )
 
-    find_package(TensorflowCC REQUIRED)
-
     target_link_libraries(tensorflowDetection2D YARP::YARP_OS
                                           YARP::YARP_init
                                           YARP::YARP_dev

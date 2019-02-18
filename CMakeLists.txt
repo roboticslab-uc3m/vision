@@ -47,6 +47,7 @@ find_package(COLOR_DEBUG REQUIRED)
 # Soft dependencies.
 find_package(OpenCV QUIET)
 find_package(PCL 1.6 QUIET)
+find_package(TensorflowCC 1.12 QUIET)
 
 # Always build YARP devices as MODULE libraries.
 set(YARP_FORCE_DYNAMIC_PLUGINS TRUE CACHE INTERNAL "Force dynamic plugins")
