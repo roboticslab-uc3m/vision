@@ -11,9 +11,6 @@ cmake_dependent_option(ENABLE_tensorflowDetection2D "Enable/disable tensorflowDe
                        "OpenCV_FOUND;TensorflowCC_FOUND" OFF)
 
 
-cmake_dependent_option(ENABLE_tensorflowDetection2D "Enable/disable tensorflowDetection2D program" ON
-                       OpenCV_FOUND OFF)
-
 if(ENABLE_tensorflowDetection2D)
 
     set(CMAKE_CXX_STANDARD 11)
