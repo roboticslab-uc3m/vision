@@ -3,6 +3,14 @@ if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_tensorflowDetection2D OR ENABLE_tens
     message(WARNING "OpenCV package not found, disabling tensorflowDetection2D program")
 endif()
 
+if(NOT TensorflowCC_FOUND AND (NOT DEFINED ENABLE_tensorflowDetection2D OR ENABLE_tensorflowDetection2D))
+    message(WARNING "TensorflowCC package not found, disabling tensorflowDetection2D program")
+endif()
+
+cmake_dependent_option(ENABLE_tensorflowDetection2D "Enable/disable tensorflowDetection2D program" ON
+                       "OpenCV_FOUND;TensorflowCC_FOUND" OFF)
+
+
 cmake_dependent_option(ENABLE_tensorflowDetection2D "Enable/disable tensorflowDetection2D program" ON
                        OpenCV_FOUND OFF)
 
