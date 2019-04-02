@@ -9,7 +9,7 @@
 - [Install YARP 2.3.70+ and OpenNI2DeviceServer](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-yarp.md)
 - [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-opencv.md)
 - [Install color-debug](https://github.com/roboticslab-uc3m/color-debug)
-- [Install tensorflow_cc 1.12+](https://github.com/FloopCZ/tensorflow_cc)
+- [Install tensorflow_cc](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-tensorflow_cc.md)
 
 ### Install the Software on Ubuntu (working on all tested versions)
 
