@@ -24,7 +24,6 @@
 #include <yarp/os/Port.h>
 #include <yarp/os/PortReader.h>
 #include <yarp/sig/Image.h>
-#include <yarp/os/Time.h>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -36,7 +35,7 @@
 class maindetector
 {
 public:
-int detect(std::string labels, std::string graph, std::string video_source, yarp::os::Port sender_port_preyarp, yarp::os::Port sender_port_post);
+int detect(std::string labels, std::string graph, yarp::os::Port sender_port_preyarp, yarp::os::Port sender_port_post);
 
 };
 #endif //MAINDETECTOR_HPP

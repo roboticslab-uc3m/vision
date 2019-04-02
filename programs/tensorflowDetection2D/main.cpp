@@ -15,9 +15,11 @@
 #include <yarp/os/ConnectionReader.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/PortReader.h>
+#include <yarp/sig/all.h>
+#include <yarp/os/all.h>
+#include <opencv2/opencv.hpp>
 #include <yarp/sig/Image.h>
 #include <yarp/os/Time.h>
-#include <opencv2/opencv.hpp>
 #include <tensorflow/core/platform/env.h>
 #include <tensorflow/core/public/session.h>
 #include "TensorflowDetection2D.hpp"
@@ -26,7 +28,6 @@
 // Variables
 
 int yarpserver_ok=0;
-std::string source_video="/home/tiagoentrenamiento/Vídeos/tiago.mp4";// Test: /home/tiagoentrenamiento/Vídeos/tiago.mp4
 std::string labels = "models/ssd_mobilenet_v1_egohands/labels_map.pbtxt";
 std::string graph = "models/ssd_mobilenet_v1_egohands/frozen_inference_graph.pb";
 
@@ -79,6 +80,15 @@ int main(){
   std::cout<<"Initializing YARP network..."<<std::endl;
   yarp::os::Time::delay(1);
 
+  // Apertura puerto de recepcións
+  std::cout<<"Opening image input port with the name /tensorflowDetection2D/img:i."<<std::endl;
+  yarp::os::Time::delay(1);
+  //BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inImg;
+
+  //inImg.open("/tensorflowDetection2D/img:i");
+  yarp::os::Time::delay(1);
+  std::system("clear");
+
   // Apertura puerto emisión
   yarp::os::Port sender_port_pre;
   yarp::os::Port sender_port_post;
@@ -90,16 +100,16 @@ int main(){
   std::system("clear");
   std::cout<<std::endl;
   std::cout<<std::endl;
-  std::cout<<"Opening pre-processed video port with the name /video_sender_pre."<<std::endl;
+  std::cout<<"Opening pre-processed video port with the name /tensorflowDetection2D/img:pre."<<std::endl;
   yarp::os::Time::delay(1);
-  sender_port_pre.open("/video_sender_pre");
+  sender_port_pre.open("/tensorflowDetection2D/img:pre");
   yarp::os::Time::delay(1);
   std::system("clear");
   std::cout<<std::endl;
   std::cout<<std::endl;
-  std::cout<<"Opening post-processed port with the name /video_sender_post."<<std::endl;
+  std::cout<<"Opening post-processed port with the name /tensorflowDetection2D/img:o."<<std::endl;
   yarp::os::Time::delay(1);
-  sender_port_post.open("/video_sender_post");
+  sender_port_post.open("/tensorflowDetection2D/img:o");
   yarp::os::Time::delay(1);
 
   // Comprobación yarpserver
@@ -133,12 +143,11 @@ int main(){
   }
 
   std::system("clear");
-  std::system("clear");
   // Instanciar detector
   tensorflowDetection2D detector;
 
   // Inicializar
-  detector.init(source_video, labels, graph);
+  detector.init(labels, graph);
   detector.detector(sender_port_pre, sender_port_post);
 
   std::system("clear");

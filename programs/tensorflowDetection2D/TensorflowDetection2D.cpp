@@ -19,7 +19,6 @@
 #include <yarp/os/Port.h>
 #include <yarp/os/PortReader.h>
 #include <yarp/sig/Image.h>
-#include <yarp/os/Time.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/videoio.hpp>
@@ -53,9 +52,8 @@ tensorflowDetection2D::tensorflowDetection2D()
 {
 }
 
-void tensorflowDetection2D::init(std::string source_video, std::string labels, std::string graph)
+void tensorflowDetection2D::init(std::string labels, std::string graph)
 {
-  video_source=source_video;
   vgg16_graph=graph;
   vgg16_labels=labels;
 }
@@ -79,10 +77,10 @@ cv::Mat tensorflowDetection2D::get_image()
     return picture;
 
 }
-int tensorflowDetection2D::detector(yarp::os::Port sender_port_pre,yarp::os::Port sender_port_post){
+int tensorflowDetection2D::detector(yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post){
 
   maindetector detection_module;
-  detection_module.detect(vgg16_labels, vgg16_graph, video_source, sender_port_pre, sender_port_post);
+  detection_module.detect(vgg16_labels, vgg16_graph, sender_port_pre, sender_port_post);
   return 0;
 }
 

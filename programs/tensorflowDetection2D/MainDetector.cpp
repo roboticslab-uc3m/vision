@@ -35,8 +35,17 @@
 #include "MainDetector.hpp"
 #include <map>
 
+// Librerias
 
-int maindetector::detect(std::string labels, std::string graph, std::string video_source, yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post) {
+#include <iostream>
+#include <yarp/os/all.h>
+#include <yarp/sig/all.h>
+#include <opencv2/opencv.hpp>
+#include <opencv/cv.h>
+#include <opencv/cvaux.h>
+#include <opencv/highgui.h>
+
+int maindetector::detect(std::string labels, std::string graph, yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post) {
 
 
     std::system("clear");
@@ -47,7 +56,6 @@ int maindetector::detect(std::string labels, std::string graph, std::string vide
     std::string ROOTDIR = "../";
     std::string LABELS = labels;
     std::string GRAPH = graph;
-    std::string source_video=video_source;
 
     // Set  nombres nodos entrada y salida
     tensorflow::string inputLayer = "image_tensor:0";
@@ -116,24 +124,24 @@ int maindetector::detect(std::string labels, std::string graph, std::string vide
     double fps = 0.;
     time_t start, end;
     time(&start);
-
-    // Adquiere imagen de la fuente de video
-    cv::VideoCapture cap(source_video);
-
     tensorflow::TensorShape shape = tensorflow::TensorShape();
     shape.AddDim(1);
-    shape.AddDim((tensorflow::int64)cap.get(cv::CAP_PROP_FRAME_HEIGHT));
-    shape.AddDim((tensorflow::int64)cap.get(cv::CAP_PROP_FRAME_WIDTH));
+    shape.AddDim((tensorflow::int64)800);//cap.get(cv::CAP_PROP_FRAME_HEIGHT)->800
+    shape.AddDim((tensorflow::int64)600);//cap.get(cv::CAP_PROP_FRAME_WIDTH)->600
     shape.AddDim(3);
     std::system("clear");
     std::cout<<std::endl;
     std::cout<<std::endl;
     std::cout<<"Taking frames..."<<std::endl;
     yarp::os::Time::delay(1);
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inImg;
+    inImg.open("/tensorflowDetection2D/img:i");
     //tensorflowDetection2D yarp_sender;
-    while (cap.isOpened()) {
-        cap >> frame;
+    while (true) {
 
+        yarp::sig::ImageOf<yarp::sig::PixelRgb> *inImgY = inImg.read();
+        cv::Mat in_cv = cv::cvarrToMat((IplImage *)inImgY->getIplImage());
+        frame=in_cv;
         // Enviar imagen preprocesada por yarp
         //yarp_sender.send_post(frame, puerto_pre);
         // A mano
@@ -206,9 +214,11 @@ int maindetector::detect(std::string labels, std::string graph, std::string vide
         yarp::sig::ImageOf<yarp::sig::PixelBgr> C;
         C.setExternal(frame.data,frame.size[1],frame.size[0]);
         sender_port_post.write(C);
-        cv::imshow("Video source: Processed", frame);
+  cv::imshow("Video source: Processed", frame);
         cv::waitKey(5);
-    }}
+    }
+
+}
     cv::destroyAllWindows();
 
     return 0;

@@ -30,7 +30,6 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include "TensorflowDetector.hpp"
 
-
 // Create session and load graph
 
 tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
