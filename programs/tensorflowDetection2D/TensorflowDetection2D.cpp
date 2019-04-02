@@ -45,7 +45,6 @@
 #include "tensorflow/core/lib/io/path.h"
 #include "tensorflow/core/util/command_line_flags.h"
 #include "TensorflowDetection2D.hpp"
-#include "TensorflowSessionTest.h"
 #include "TensorflowDetector.hpp"
 #include "MainDetector.hpp"
 

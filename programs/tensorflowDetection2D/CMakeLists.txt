@@ -20,8 +20,6 @@ if(ENABLE_tensorflowDetection2D)
     add_executable(tensorflowDetection2D main.cpp
                                    TensorflowDetection2D.hpp
                                    TensorflowDetection2D.cpp
-                                   TensorflowSessionTest.h
-                                   TensorflowSessionTest.cpp
                                    TensorflowDetector.hpp
                                    TensorflowDetector.cpp
                                    MainDetector.hpp

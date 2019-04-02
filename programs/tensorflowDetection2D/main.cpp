@@ -21,7 +21,7 @@
 #include <tensorflow/core/platform/env.h>
 #include <tensorflow/core/public/session.h>
 #include "TensorflowDetection2D.hpp"
-#include "TensorflowSessionTest.h"
+
 
 // Variables
 
@@ -133,10 +133,6 @@ int main(){
   }
 
   std::system("clear");
-  // Test sesión tensorflow
-  tensorflow_test test;
-  test.run();
-
   std::system("clear");
   // Instanciar detector
   tensorflowDetection2D detector;
