@@ -53,7 +53,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
     std::cout<<std::endl;
 
     // Path
-    std::string ROOTDIR = "../";
     std::string LABELS = labels;
     std::string GRAPH = graph;
 
@@ -63,7 +62,7 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
 
     // Load .pb frozen model
     std::unique_ptr<tensorflow::Session> session;
-    tensorflow::string graphPath = tensorflow::io::JoinPath(ROOTDIR, GRAPH);
+    tensorflow::string graphPath = GRAPH;
     std::cout<<"The graph it´s going to be loaded:" << graphPath<<"."<<std::endl;
     std::cout<<"Loading graph..."<<std::endl;
     yarp::os::Time::delay(1);
@@ -94,7 +93,7 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
     std::cout<<std::endl;
     std::cout<<"Labels "<<LABELS<<" are going to be loaded."<<std::endl;
     yarp::os::Time::delay(1);
-    tensorflow::Status readLabelsMapStatus = readLabelsMapFile(tensorflow::io::JoinPath(ROOTDIR, LABELS), labelsMap);
+    tensorflow::Status readLabelsMapStatus = readLabelsMapFile(LABELS, labelsMap);
     if (!readLabelsMapStatus.ok()) {
         //LOG(ERROR) << "readLabelsMapFile(): ERROR" << loadGraphStatus;
         std::cout<<"Fail loading labels "<<LABELS<<"."<<std::endl;

@@ -28,8 +28,8 @@
 // Variables
 
 int yarpserver_ok=0;
-std::string labels = "models/ssd_mobilenet_v1_egohands/labels_map.pbtxt";
-std::string graph = "models/ssd_mobilenet_v1_egohands/frozen_inference_graph.pb";
+std::string labels;
+std::string graph;
 
 int main(){
 
@@ -80,7 +80,7 @@ int main(){
   std::cout<<"Initializing YARP network..."<<std::endl;
   yarp::os::Time::delay(1);
 
-  // Apertura puerto de recepcións
+  // Apertura puerto de recepción
   std::cout<<"Opening image input port with the name /tensorflowDetection2D/img:i."<<std::endl;
   yarp::os::Time::delay(1);
   //BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inImg;
@@ -143,6 +143,17 @@ int main(){
   }
 
   std::system("clear");
+  std::cout<<"Locating pre-trained model and labels map..."<<std::endl;
+  yarp::os::ResourceFinder rf;
+
+  rf.setVerbose(true);
+  rf.setDefaultContext("tensorflowDetection2D");
+  rf.setDefaultConfigFile("tensorflowDetection2D.ini");
+  labels = rf.findFileByName("labels_map.pbtxt");
+  graph = rf.findFileByName("frozen_inference_graph.pb");
+  yarp::os::Time::delay(1);
+  std::system("clear");
+
   // Instanciar detector
   tensorflowDetection2D detector;
 
