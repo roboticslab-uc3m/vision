@@ -45,7 +45,7 @@
 #include <opencv/cvaux.h>
 #include <opencv/highgui.h>
 
-int maindetector::detect(std::string labels, std::string graph, yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post, yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *inImg) {
+int maindetector::detect(std::string labels, std::string graph, yarp::os::Port sender_port_post, yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *inImg) {
 
 
 

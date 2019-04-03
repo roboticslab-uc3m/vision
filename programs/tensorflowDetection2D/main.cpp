@@ -72,10 +72,6 @@ int main(int argc, char ** argv){
   std::cout<<std::endl;
   std::cout<<"Opening sender ports..."<<std::endl;
   std::cout<<std::endl;
-  std::cout<<"Opening pre-processed video port with the name /tensorflowDetection2D/img:pre."<<std::endl;
-  sender_port_pre.open("/tensorflowDetection2D/img:pre");
-  std::cout<<std::endl;
-  std::cout<<std::endl;
   std::cout<<"Opening post-processed port with the name /tensorflowDetection2D/img:o."<<std::endl;
   sender_port_post.open("/tensorflowDetection2D/img:o");
 
@@ -120,7 +116,7 @@ int main(int argc, char ** argv){
 
   // Inicializar
   detector.init(labels, graph);
-  detector.detector(sender_port_pre, sender_port_post, &inImg);
+  detector.detector(sender_port_post, &inImg);
 
   std::cout<<std::endl;
   std::cout<<std::endl;

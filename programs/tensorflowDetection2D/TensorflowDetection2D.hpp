@@ -35,7 +35,7 @@ public:
     cv::Mat get_image();
     void send_post(cv::Mat img_post, yarp::os::Port sender_port_post);
     void send_pre(cv::Mat img_pre, yarp::os::Port sender_port_pre);
-    int detector(yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post, yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *inImg);
+    int detector(yarp::os::Port sender_port_post, yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *inImg);
 
 // Variables
 
