@@ -77,10 +77,11 @@ cv::Mat tensorflowDetection2D::get_image()
     return picture;
 
 }
-int tensorflowDetection2D::detector(yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post){
+int tensorflowDetection2D::detector(yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post, yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *inImg){
 
+  inImg_i=inImg;
   maindetector detection_module;
-  detection_module.detect(vgg16_labels, vgg16_graph, sender_port_pre, sender_port_post);
+  detection_module.detect(vgg16_labels, vgg16_graph, sender_port_pre, sender_port_post, inImg_i);
   return 0;
 }
 

@@ -45,12 +45,9 @@
 #include <opencv/cvaux.h>
 #include <opencv/highgui.h>
 
-int maindetector::detect(std::string labels, std::string graph, yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post) {
+int maindetector::detect(std::string labels, std::string graph, yarp::os::Port sender_port_pre, yarp::os::Port sender_port_post, yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *inImg) {
 
 
-    std::system("clear");
-    std::cout<<std::endl;
-    std::cout<<std::endl;
 
     // Path
     std::string LABELS = labels;
@@ -70,7 +67,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
 
     tensorflow::Status loadGraphStatus = loadGraph(graphPath, &session);
     if (!loadGraphStatus.ok()) {
-        std::system("clear");
         std::cout<<std::endl;
         std::cout<<std::endl;
         std::cout<<"Fail loading graph "<<graphPath<<"."<<std::endl;
@@ -78,7 +74,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
         yarp::os::Time::delay(1);
         return -1;
     } else
-        std::system("clear");
         std::cout<<std::endl;
         std::cout<<std::endl;
         std::cout<<"Graph "<<graphPath<<" loaded correctly."<<std::endl;
@@ -88,7 +83,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
 
     // Cargar etiquetas
     std::map<int, std::string> labelsMap = std::map<int,std::string>();
-    std::system("clear");
     std::cout<<std::endl;
     std::cout<<std::endl;
     std::cout<<"Labels "<<LABELS<<" are going to be loaded."<<std::endl;
@@ -106,7 +100,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
         std::cout<<labelsMap.size()<<" labels have been loaded."<<std::endl;
         yarp::os::Time::delay(1);
 
-    std::system("clear");
     std::cout<<std::endl;
     std::cout<<std::endl;
     std::cout<<"Video source frames are going to be taken."<<std::endl;
@@ -128,25 +121,17 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
     shape.AddDim((tensorflow::int64)800);//cap.get(cv::CAP_PROP_FRAME_HEIGHT)->800
     shape.AddDim((tensorflow::int64)600);//cap.get(cv::CAP_PROP_FRAME_WIDTH)->600
     shape.AddDim(3);
-    std::system("clear");
     std::cout<<std::endl;
     std::cout<<std::endl;
     std::cout<<"Taking frames..."<<std::endl;
     yarp::os::Time::delay(1);
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inImg;
-    inImg.open("/tensorflowDetection2D/img:i");
-    //tensorflowDetection2D yarp_sender;
+    inImg_i=inImg;
+
     while (true) {
 
-        yarp::sig::ImageOf<yarp::sig::PixelRgb> *inImgY = inImg.read();
+        yarp::sig::ImageOf<yarp::sig::PixelRgb> *inImgY = inImg_i->read();
         cv::Mat in_cv = cv::cvarrToMat((IplImage *)inImgY->getIplImage());
         frame=in_cv;
-        // Enviar imagen preprocesada por yarp
-        //yarp_sender.send_post(frame, puerto_pre);
-        // A mano
-        yarp::sig::ImageOf<yarp::sig::PixelBgr> B;
-        B.setExternal(frame.data,frame.size[1],frame.size[0]);
-        sender_port_pre.write(B);
 
         cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
         std::cout << "Frame: " << iFrame << std::endl;
@@ -163,7 +148,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
         tensorflow::Status readTensorStatus = readTensorFromMat(frame, tensor);
         if (!readTensorStatus.ok()) {
             //LOG(ERROR) << "Mat->Tensor conversion failed: " << readTensorStatus;
-            std::system("clear");
             std::cout<<std::endl;
             std::cout<<std::endl;
             std::cout<<"Mat OpenCV -> Tensor : FAIL"<<std::endl;
@@ -176,7 +160,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
         tensorflow::Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
         if (!runStatus.ok()) {
             //LOG(ERROR) << "Running model failed: " << runStatus;
-            std::system("clear");
             std::cout<<std::endl;
             std::cout<<std::endl;
             std::cout<<"Running model status: FAIL"<<std::endl;
@@ -213,7 +196,7 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
         yarp::sig::ImageOf<yarp::sig::PixelBgr> C;
         C.setExternal(frame.data,frame.size[1],frame.size[0]);
         sender_port_post.write(C);
-  cv::imshow("Video source: Processed", frame);
+        cv::imshow("Video source: Processed", frame);
         cv::waitKey(5);
     }
 

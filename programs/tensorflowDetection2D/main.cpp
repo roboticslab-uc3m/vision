@@ -31,10 +31,9 @@ int yarpserver_ok=0;
 std::string labels;
 std::string graph;
 
-int main(){
+int main(int argc, char ** argv){
 
   // Welcome message
-  std::system("clear");
   std::cout<<"**************************************************************************"<<std::endl;
   std::cout<<"**************************************************************************"<<std::endl;
   std::cout<<"                     Program: Tensorflow Detector 2D                      "<<std::endl;
@@ -43,29 +42,18 @@ int main(){
   std::cout<<"**************************************************************************"<<std::endl;
   std::cout<<"**************************************************************************"<<std::endl;
   yarp::os::Time::delay(1);
-  std::system("clear");
   std::cout<<std::endl;
-  std::cout<<std::endl;
-  std::cout<<"System date:"<<std::endl;
-  std::system("date");
   yarp::os::Time::delay(1);
-  std::system("clear");
-  std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Starting system..."<<std::endl;
   yarp::os::Time::delay(1);
-  std::system("clear");
-  std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Welcome ..."<<std::endl;
-  std::system("whoami");
   yarp::os::Time::delay(1);
-  std::system("clear");
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Initializing ..."<<std::endl;
   yarp::os::Time::delay(1);
-  std::system("clear");
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Loading TensorFlow 2D detector module..."<<std::endl;
@@ -74,7 +62,6 @@ int main(){
   //Red yarp
   yarp::os::Network yarp;
 
-  std::system("clear");
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Initializing YARP network..."<<std::endl;
@@ -83,28 +70,23 @@ int main(){
   // Apertura puerto de recepción
   std::cout<<"Opening image input port with the name /tensorflowDetection2D/img:i."<<std::endl;
   yarp::os::Time::delay(1);
-  //BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inImg;
-
-  //inImg.open("/tensorflowDetection2D/img:i");
+  yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inImg;
+  inImg.open("/tensorflowDetection2D/img:i");
   yarp::os::Time::delay(1);
-  std::system("clear");
 
   // Apertura puerto emisión
   yarp::os::Port sender_port_pre;
   yarp::os::Port sender_port_post;
-  std::system("clear");
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Opening sender ports..."<<std::endl;
   yarp::os::Time::delay(1);
-  std::system("clear");
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Opening pre-processed video port with the name /tensorflowDetection2D/img:pre."<<std::endl;
   yarp::os::Time::delay(1);
   sender_port_pre.open("/tensorflowDetection2D/img:pre");
   yarp::os::Time::delay(1);
-  std::system("clear");
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Opening post-processed port with the name /tensorflowDetection2D/img:o."<<std::endl;
@@ -113,7 +95,6 @@ int main(){
   yarp::os::Time::delay(1);
 
   // Comprobación yarpserver
-  std::system("clear");
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Checking yarpserver status..."<<std::endl;
@@ -131,7 +112,6 @@ int main(){
       yarp::os::Time::delay(1);
 
   }else{
-      std::system("clear");
       std::cout<<std::endl;
       std::cout<<std::endl;
       std::cout<<"YARPSERVER status: OK"<<std::endl;
@@ -142,26 +122,25 @@ int main(){
   }
   }
 
-  std::system("clear");
   std::cout<<"Locating pre-trained model and labels map..."<<std::endl;
   yarp::os::ResourceFinder rf;
 
   rf.setVerbose(true);
   rf.setDefaultContext("tensorflowDetection2D");
   rf.setDefaultConfigFile("tensorflowDetection2D.ini");
+  rf.configure(argc, argv);
+  std::string pathToModel = rf.check("pathToModel", yarp::os::Value(""), "documentation").asString();
   labels = rf.findFileByName("labels_map.pbtxt");
   graph = rf.findFileByName("frozen_inference_graph.pb");
   yarp::os::Time::delay(1);
-  std::system("clear");
 
   // Instanciar detector
   tensorflowDetection2D detector;
 
   // Inicializar
   detector.init(labels, graph);
-  detector.detector(sender_port_pre, sender_port_post);
+  detector.detector(sender_port_pre, sender_port_post, &inImg);
 
-  std::system("clear");
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Closing Tensorflow 2D detector module..."<<std::endl;

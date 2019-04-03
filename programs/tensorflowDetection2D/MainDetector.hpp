@@ -35,7 +35,8 @@
 class maindetector
 {
 public:
-int detect(std::string labels, std::string graph, yarp::os::Port sender_port_preyarp, yarp::os::Port sender_port_post);
-
+int detect(std::string labels, std::string graph, yarp::os::Port sender_port_preyarp, yarp::os::Port sender_port_post, yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *inImg);
+private:
+yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *inImg_i;
 };
 #endif //MAINDETECTOR_HPP
