@@ -84,20 +84,3 @@ int tensorflowDetection2D::detector(yarp::os::Port sender_port_post, yarp::os::B
   detection_module.detect(vgg16_labels, vgg16_graph, sender_port_post, inImg_i);
   return 0;
 }
-
-
-void tensorflowDetection2D::send_post(cv::Mat img_post, yarp::os::Port sender_port_post)
-{
-  yarp::sig::ImageOf<yarp::sig::PixelBgr> B;
-  B.setExternal(img_post.data,img_post.size[1],img_post.size[0]);
-  sender_port_post.write(B);
-
-}
-
-void tensorflowDetection2D::send_pre(cv::Mat img_pre, yarp::os::Port sender_port_pre)
-{
-  yarp::sig::ImageOf<yarp::sig::PixelBgr> B;
-  B.setExternal(img_pre.data,img_pre.size[1],img_pre.size[0]);
-  sender_port_pre.write(B);
-
-}
