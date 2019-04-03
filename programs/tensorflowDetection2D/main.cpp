@@ -41,23 +41,17 @@ int main(int argc, char ** argv){
   std::cout<<"                             @davidvelascogarcia                          "<<std::endl;
   std::cout<<"**************************************************************************"<<std::endl;
   std::cout<<"**************************************************************************"<<std::endl;
-  yarp::os::Time::delay(1);
-  std::cout<<std::endl;
-  yarp::os::Time::delay(1);
+
   std::cout<<std::endl;
   std::cout<<"Starting system..."<<std::endl;
-  yarp::os::Time::delay(1);
   std::cout<<std::endl;
   std::cout<<"Welcome ..."<<std::endl;
-  yarp::os::Time::delay(1);
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Initializing ..."<<std::endl;
-  yarp::os::Time::delay(1);
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Loading TensorFlow 2D detector module..."<<std::endl;
-  yarp::os::Time::delay(1);
 
   //Red yarp
   yarp::os::Network yarp;
@@ -65,14 +59,11 @@ int main(int argc, char ** argv){
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Initializing YARP network..."<<std::endl;
-  yarp::os::Time::delay(1);
 
   // Apertura puerto de recepción
   std::cout<<"Opening image input port with the name /tensorflowDetection2D/img:i."<<std::endl;
-  yarp::os::Time::delay(1);
   yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inImg;
   inImg.open("/tensorflowDetection2D/img:i");
-  yarp::os::Time::delay(1);
 
   // Apertura puerto emisión
   yarp::os::Port sender_port_pre;
@@ -80,25 +71,18 @@ int main(int argc, char ** argv){
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Opening sender ports..."<<std::endl;
-  yarp::os::Time::delay(1);
-  std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Opening pre-processed video port with the name /tensorflowDetection2D/img:pre."<<std::endl;
-  yarp::os::Time::delay(1);
   sender_port_pre.open("/tensorflowDetection2D/img:pre");
-  yarp::os::Time::delay(1);
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Opening post-processed port with the name /tensorflowDetection2D/img:o."<<std::endl;
-  yarp::os::Time::delay(1);
   sender_port_post.open("/tensorflowDetection2D/img:o");
-  yarp::os::Time::delay(1);
 
   // Comprobación yarpserver
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Checking yarpserver status..."<<std::endl;
-  yarp::os::Time::delay(1);
   while(yarpserver_ok==0){
 
   if (!yarp::os::Network::checkNetwork())
@@ -109,7 +93,6 @@ int main(int argc, char ** argv){
       std::cout<<"YARPSERVER status: FAIL"<<std::endl;
       std::cout<<"Please star yarpserver or connect to yarpserver already running..."<<std::endl;
 
-      yarp::os::Time::delay(1);
 
   }else{
       std::cout<<std::endl;
@@ -118,7 +101,6 @@ int main(int argc, char ** argv){
       std::cout<<std::endl;
       std::cout<<std::endl;
       yarpserver_ok=1;
-      yarp::os::Time::delay(1);
   }
   }
 
@@ -132,7 +114,6 @@ int main(int argc, char ** argv){
   std::string pathToModel = rf.check("pathToModel", yarp::os::Value(""), "documentation").asString();
   labels = rf.findFileByName("labels_map.pbtxt");
   graph = rf.findFileByName("frozen_inference_graph.pb");
-  yarp::os::Time::delay(1);
 
   // Instanciar detector
   tensorflowDetection2D detector;
@@ -144,7 +125,6 @@ int main(int argc, char ** argv){
   std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Closing Tensorflow 2D detector module..."<<std::endl;
-  yarp::os::Time::delay(5);
 
   return 0;
 }

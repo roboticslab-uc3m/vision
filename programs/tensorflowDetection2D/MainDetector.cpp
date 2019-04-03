@@ -62,7 +62,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
     tensorflow::string graphPath = GRAPH;
     std::cout<<"The graph it´s going to be loaded:" << graphPath<<"."<<std::endl;
     std::cout<<"Loading graph..."<<std::endl;
-    yarp::os::Time::delay(1);
     //LOG(INFO) << "Loading graph:" << graphPath<<" ...";
 
     tensorflow::Status loadGraphStatus = loadGraph(graphPath, &session);
@@ -71,14 +70,12 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
         std::cout<<std::endl;
         std::cout<<"Fail loading graph "<<graphPath<<"."<<std::endl;
         //LOG(ERROR) << "Loading graph: FAIL" << loadGraphStatus;
-        yarp::os::Time::delay(1);
         return -1;
     } else
         std::cout<<std::endl;
         std::cout<<std::endl;
         std::cout<<"Graph "<<graphPath<<" loaded correctly."<<std::endl;
         //LOG(INFO) << "Loading  graph: OK" << std::endl;
-        yarp::os::Time::delay(1);
 
 
     // Cargar etiquetas
@@ -86,24 +83,20 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
     std::cout<<std::endl;
     std::cout<<std::endl;
     std::cout<<"Labels "<<LABELS<<" are going to be loaded."<<std::endl;
-    yarp::os::Time::delay(1);
     tensorflow::Status readLabelsMapStatus = readLabelsMapFile(LABELS, labelsMap);
     if (!readLabelsMapStatus.ok()) {
         //LOG(ERROR) << "readLabelsMapFile(): ERROR" << loadGraphStatus;
         std::cout<<"Fail loading labels "<<LABELS<<"."<<std::endl;
         //LOG(INFO) << "Carga del graph: OK" << std::endl;
-        yarp::os::Time::delay(1);
         return -1;
     } else
         //LOG(INFO) << "readLabelsMapFile(): labels map loaded with " << labelsMap.size() << " label(s)" << std::endl;
         std::cout<<"Labels "<<LABELS<<" loaded correctly."<<std::endl;
         std::cout<<labelsMap.size()<<" labels have been loaded."<<std::endl;
-        yarp::os::Time::delay(1);
 
     std::cout<<std::endl;
     std::cout<<std::endl;
     std::cout<<"Video source frames are going to be taken."<<std::endl;
-    yarp::os::Time::delay(1);
     cv::Mat frame;
     tensorflow::Tensor tensor;
     std::vector<tensorflow::Tensor> outputs;
@@ -125,7 +118,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
     std::cout<<std::endl;
     std::cout<<std::endl;
     std::cout<<"Taking frames..."<<std::endl;
-    yarp::os::Time::delay(1);
     inImg_i=inImg;
 
     while (true) {
@@ -151,7 +143,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
             std::cout<<std::endl;
             std::cout<<std::endl;
             std::cout<<"Mat OpenCV -> Tensor : FAIL"<<std::endl;
-            yarp::os::Time::delay(1);
             return -1;
         }
 
@@ -163,7 +154,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
             std::cout<<std::endl;
             std::cout<<std::endl;
             std::cout<<"Running model status: FAIL"<<std::endl;
-            yarp::os::Time::delay(1);
             return -1;
         }
 
