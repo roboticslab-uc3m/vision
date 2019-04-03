@@ -116,10 +116,11 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
     double fps = 0.;
     time_t start, end;
     time(&start);
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> *inImgYi = inImg->read();
     tensorflow::TensorShape shape = tensorflow::TensorShape();
     shape.AddDim(1);
-    shape.AddDim((tensorflow::int64)800);//cap.get(cv::CAP_PROP_FRAME_HEIGHT)->800
-    shape.AddDim((tensorflow::int64)600);//cap.get(cv::CAP_PROP_FRAME_WIDTH)->600
+    shape.AddDim((tensorflow::int64)inImgYi->height());//cap.get(cv::CAP_PROP_FRAME_HEIGHT)->800
+    shape.AddDim((tensorflow::int64)inImgYi->width());//cap.get(cv::CAP_PROP_FRAME_WIDTH)->600
     shape.AddDim(3);
     std::cout<<std::endl;
     std::cout<<std::endl;
@@ -132,7 +133,6 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
         yarp::sig::ImageOf<yarp::sig::PixelRgb> *inImgY = inImg_i->read();
         cv::Mat in_cv = cv::cvarrToMat((IplImage *)inImgY->getIplImage());
         frame=in_cv;
-
         cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
         std::cout << "Frame: " << iFrame << std::endl;
 
