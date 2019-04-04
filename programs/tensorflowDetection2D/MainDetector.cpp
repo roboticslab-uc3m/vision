@@ -34,6 +34,7 @@
 #include "TensorflowDetector.hpp"
 #include "MainDetector.hpp"
 #include <map>
+#include <string.h>
 
 // Librerias
 
@@ -119,6 +120,9 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
     std::cout<<std::endl;
     std::cout<<"Taking frames..."<<std::endl;
     inImg_i=inImg;
+    yarp::os::Port detection;
+    detection.open("/detection_port");
+    yarp::os::Bottle bottle;
 
     while (true) {
 
@@ -175,6 +179,17 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
                       << boxes(0, goodIdxs.at(i), 3);*/
 
 
+        std::string class_name=std::string(labelsMap[classes(goodIdxs.at(i))]);
+        //std::string score_detection=std::string(scores(goodIdxs.at(i)));
+        bottle.clear();
+        bottle.addString(" Detection number: ");
+        bottle.addInt(goodIdxs.size());
+        bottle.addString(" Detection: ");
+        bottle.addString(class_name);
+
+      //  bottle.addString(" Score: ");
+      //  bottle.addString(score_detection);
+
         std::cout<<std::endl;
 
         cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
@@ -183,12 +198,14 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
         cv::putText(frame, std::to_string(fps).substr(0, 5), cv::Point(0, frame.rows), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 255));
         //yarp_sender.send_post(frame, puerto_post);
         // A mano
-        yarp::sig::ImageOf<yarp::sig::PixelBgr> C;
-        C.setExternal(frame.data,frame.size[1],frame.size[0]);
-        sender_port_post.write(C);
-        cv::imshow("Video source: Processed", frame);
-        cv::waitKey(5);
+
     }
+    yarp::sig::ImageOf<yarp::sig::PixelBgr> C;
+    C.setExternal(frame.data,frame.size[1],frame.size[0]);
+    sender_port_post.write(C);
+    cv::imshow("Video source: Processed", frame);
+    cv::waitKey(5);
+    detection.write(bottle);
 
 }
     cv::destroyAllWindows();

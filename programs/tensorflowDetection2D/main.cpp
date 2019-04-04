@@ -47,16 +47,13 @@ int main(int argc, char ** argv){
   std::cout<<std::endl;
   std::cout<<"Welcome ..."<<std::endl;
   std::cout<<std::endl;
-  std::cout<<std::endl;
   std::cout<<"Initializing ..."<<std::endl;
-  std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Loading TensorFlow 2D detector module..."<<std::endl;
 
   //Red yarp
   yarp::os::Network yarp;
 
-  std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Initializing YARP network..."<<std::endl;
 
@@ -69,14 +66,12 @@ int main(int argc, char ** argv){
   yarp::os::Port sender_port_pre;
   yarp::os::Port sender_port_post;
   std::cout<<std::endl;
-  std::cout<<std::endl;
   std::cout<<"Opening sender ports..."<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Opening post-processed port with the name /tensorflowDetection2D/img:o."<<std::endl;
   sender_port_post.open("/tensorflowDetection2D/img:o");
 
   // Comprobación yarpserver
-  std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Checking yarpserver status..."<<std::endl;
   while(yarpserver_ok==0){
@@ -85,16 +80,13 @@ int main(int argc, char ** argv){
   {
 
       std::cout<<std::endl;
-      std::cout<<std::endl;
       std::cout<<"YARPSERVER status: FAIL"<<std::endl;
-      std::cout<<"Please star yarpserver or connect to yarpserver already running..."<<std::endl;
+      std::cout<<"Please, start yarpserver or connect to yarpserver already running..."<<std::endl;
 
 
   }else{
       std::cout<<std::endl;
-      std::cout<<std::endl;
       std::cout<<"YARPSERVER status: OK"<<std::endl;
-      std::cout<<std::endl;
       std::cout<<std::endl;
       yarpserver_ok=1;
   }
@@ -118,7 +110,6 @@ int main(int argc, char ** argv){
   detector.init(labels, graph);
   detector.detector(sender_port_post, &inImg);
 
-  std::cout<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Closing Tensorflow 2D detector module..."<<std::endl;
 
