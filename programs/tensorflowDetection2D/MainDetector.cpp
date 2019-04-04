@@ -9,11 +9,9 @@
 #include <cstdlib>
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
-#include <yarp/os/ConnectionReader.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/PortReader.h>
 #include <yarp/sig/Image.h>
-#include <yarp/os/Time.h>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -36,15 +34,6 @@
 #include <map>
 #include <string.h>
 
-// Librerias
-
-#include <iostream>
-#include <yarp/os/all.h>
-#include <yarp/sig/all.h>
-#include <opencv2/opencv.hpp>
-#include <opencv/cv.h>
-#include <opencv/cvaux.h>
-#include <opencv/highgui.h>
 
 int maindetector::detect(std::string labels, std::string graph, yarp::os::Port sender_port_post, yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *inImg) {
 
