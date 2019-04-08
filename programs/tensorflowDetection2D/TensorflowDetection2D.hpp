@@ -24,7 +24,7 @@ class tensorflowDetection2D
 public:
     tensorflowDetection2D();
     void init( std::string labels, std::string graph);
-    int detector(yarp::os::Port sender_port_post, yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *inImg);
+    int detector(yarp::os::Port sender_port_post, yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *inImg, yarp::os::Port results_port);
 
 // Variables
 

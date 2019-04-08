@@ -53,14 +53,18 @@ int main(int argc, char ** argv){
   yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inImg;
   inImg.open("/tensorflowDetection2D/img:i");
 
-  // Apertura puerto emisión
-  yarp::os::Port sender_port_pre;
+  // Opening Sender Port
   yarp::os::Port sender_port_post;
   std::cout<<std::endl;
   std::cout<<"Opening sender ports..."<<std::endl;
   std::cout<<std::endl;
   std::cout<<"Opening post-processed port with the name /tensorflowDetection2D/img:o."<<std::endl;
   sender_port_post.open("/tensorflowDetection2D/img:o");
+  // Opening results data ports
+  yarp::os::Port results_port;
+  std::cout<<std::endl;
+  std::cout<<"Opening results port with the name /tensorflowDetection2D/results."<<std::endl;
+  results_port.open("/tensorflowDetection2D/results");
 
   // Comprobación yarpserver
   std::cout<<std::endl;
@@ -94,12 +98,12 @@ int main(int argc, char ** argv){
   labels = rf.findFileByName("labels_map.pbtxt");
   graph = rf.findFileByName("frozen_inference_graph.pb");
 
-  // Instanciar detector
+  // Object detector
   tensorflowDetection2D detector;
 
-  // Inicializar
+  // Init
   detector.init(labels, graph);
-  detector.detector(sender_port_post, &inImg);
+  detector.detector(sender_port_post, &inImg, results_port);
 
   std::cout<<std::endl;
   std::cout<<"Closing Tensorflow 2D detector module..."<<std::endl;
