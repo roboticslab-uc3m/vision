@@ -172,12 +172,10 @@ int maindetector::detect(std::string labels, std::string graph, yarp::os::Port s
     yarp::sig::ImageOf<yarp::sig::PixelBgr> C;
     C.setExternal(frame.data,frame.size[1],frame.size[0]);
     sender_port_post.write(C);
-    cv::imshow("Video source: Processed", frame);
-    cv::waitKey(5);
     results_port.write(bottle);
 
 }
-    cv::destroyAllWindows();
+
 
     return 0;
 }
