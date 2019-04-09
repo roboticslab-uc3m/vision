@@ -96,8 +96,8 @@ int main(int argc, char ** argv){
   rf.configure(argc, argv);
   std::string pathToModel = rf.check("pathToModel", yarp::os::Value(""), "documentation").asString();
   labels = rf.findFileByName("labels_map.pbtxt");
-  graph = rf.findFileByName("frozen_inference_graph.pb");
-
+  //graph = rf.findFileByName("frozen_inference_graph.pb");
+  graph="./../models/frozen_inference_graph.pb";
   // Object detector
   tensorflowDetection2D detector;
 
