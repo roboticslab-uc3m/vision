@@ -126,6 +126,7 @@ tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &out
 
 
 void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMax, double xMax, double score, std::string label, bool scaled=true) {
+    cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
     cv::Point tl, br;
     if (scaled) {
         tl = cv::Point((int) (xMin * image.cols), (int) (yMin * image.rows));
