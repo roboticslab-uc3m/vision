@@ -6,6 +6,20 @@
  * ************************************************************
  */
 
+/*
+  *
+  * | INPUT PORT                      | CONTENT                                                 |
+  * |---------------------------------|---------------------------------------------------------|
+  * | /tensorflowDetection2D/img:i    | Input image                                       |
+  *
+  *
+  * | OUTPUT PORT                     | CONTENT                                                 |
+  * |---------------------------------|---------------------------------------------------------|
+  * | /tensorflowDetection2D/img:o    | Output image with object detection               |
+  * | /tensorflowDetection2D/results  | Output result, object, score and number           |
+  *
+  */
+
 // Libraries
 
 #include <iostream>
