@@ -36,7 +36,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 # Hard dependencies.
-find_package(YCM 0.8 REQUIRED)
+find_package(YCM 0.10 REQUIRED)
 find_package(YARP 3.0 QUIET)
 # https://github.com/roboticslab-uc3m/questions-and-answers/issues/65
 if(NOT YARP_FOUND)
@@ -45,6 +45,7 @@ endif()
 find_package(COLOR_DEBUG REQUIRED)
 
 # Soft dependencies.
+find_package(Doxygen QUIET)
 find_package(OpenCV QUIET)
 find_package(PCL 1.6 QUIET)
 
@@ -79,6 +80,7 @@ include(CMakeDependentOption)
 add_subdirectory(libraries)
 add_subdirectory(programs)
 add_subdirectory(share)
+add_subdirectory(doc)
 
 # Store the package in the user registry.
 export(PACKAGE ROBOTICSLAB_VISION)
