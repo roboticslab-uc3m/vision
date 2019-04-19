@@ -49,6 +49,10 @@ find_package(Doxygen QUIET)
 find_package(OpenCV QUIET)
 find_package(PCL 1.6 QUIET)
 
+# Xenial + PCL 1.7 bug
+# https://github.com/PointCloudLibrary/pcl/issues/2406
+list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
+
 # Always build YARP devices as MODULE libraries.
 set(YARP_FORCE_DYNAMIC_PLUGINS TRUE CACHE INTERNAL "Force dynamic plugins")
 

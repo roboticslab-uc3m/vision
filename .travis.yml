@@ -1,5 +1,5 @@
 language: cpp
-dist: trusty
+dist: xenial
 os: linux
 
 compiler:
@@ -32,15 +32,10 @@ addons:
   apt:
     packages:
     - libopencv-dev
+    - libpcl-dev
+    - libproj-dev # needed by libpcl-dev on Xenial (known bug)
 
 before_install:
-  #-- Add source repository for PCL-related packages
-  - sudo add-apt-repository --yes ppa:v-launchpad-jochen-sprickerhof-de/pcl
-  - sudo apt-get -qq update
-
-  #-- Install PCL
-  - sudo apt-get install libpcl-all-dev
-
   #-- Code coverage
   - if [ "$CXX" = "g++" ]; then gem install coveralls-lcov; fi
 
