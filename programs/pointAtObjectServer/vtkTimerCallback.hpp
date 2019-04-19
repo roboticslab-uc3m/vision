@@ -21,6 +21,7 @@
 #include <pcl/surface/poisson.h>
 //#include <pcl/surface/vtk_utils.h> // worked in pcl-1.6
 #include <pcl/surface/vtk_smoothing/vtk_utils.h> // worked in pcl-1.7
+#include <pcl/search/impl/search.hpp> // linker errors on pcl-1.7
 
 #include <vtkActor.h>
 #include <vtkAxesActor.h>
