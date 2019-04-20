@@ -23,7 +23,7 @@
 
 #include "TravisLib.hpp"
 
-// thanks! https://web.stanford.edu/~qianyizh/projects/scenedata.html
+// thanks! https://web.archive.org/web/20150524152748/https://web.stanford.edu/~qianyizh/projects/scenedata.html
 #define DEFAULT_FX_D          525.0  // 640x480
 #define DEFAULT_FY_D          525.0  //
 #define DEFAULT_CX_D          319.5  //

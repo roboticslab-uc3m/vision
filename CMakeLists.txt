@@ -36,7 +36,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 # Hard dependencies.
-find_package(YCM 0.8 REQUIRED)
+find_package(YCM 0.10 REQUIRED)
 find_package(YARP 3.0 QUIET)
 # https://github.com/roboticslab-uc3m/questions-and-answers/issues/65
 if(NOT YARP_FOUND)
@@ -45,8 +45,13 @@ endif()
 find_package(COLOR_DEBUG REQUIRED)
 
 # Soft dependencies.
+find_package(Doxygen QUIET)
 find_package(OpenCV QUIET)
 find_package(PCL 1.6 QUIET)
+
+# Xenial + PCL 1.7 bug
+# https://github.com/PointCloudLibrary/pcl/issues/2406
+list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
 
 # Always build YARP devices as MODULE libraries.
 set(YARP_FORCE_DYNAMIC_PLUGINS TRUE CACHE INTERNAL "Force dynamic plugins")
@@ -79,6 +84,7 @@ include(CMakeDependentOption)
 add_subdirectory(libraries)
 add_subdirectory(programs)
 add_subdirectory(share)
+add_subdirectory(doc)
 
 # Store the package in the user registry.
 export(PACKAGE ROBOTICSLAB_VISION)
