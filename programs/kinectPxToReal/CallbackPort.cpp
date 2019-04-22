@@ -2,6 +2,24 @@
 
 #include "CallbackPort.hpp"
 
+namespace
+{
+    inline void scaleXY(int width1, int height1, const yarp::sig::Image & frame2, double px1, double py1, double * px2, double * py2)
+    {
+        if (width1 != frame2.width() || height1 != frame2.height())
+        {
+            *px2 = px1 * ((double)frame2.width() / (double)width1);
+            *py2 = py1 * ((double)frame2.height() / (double)height1);
+        }
+        else
+        {
+            *px2 = px1;
+            *py2 = py1;
+        }
+    }
+}
+
+
 /************************************************************************/
 void CallbackPort::setParams(double _fx, double _fy, double _cx, double _cy) {
     fx = _fx;
@@ -29,12 +47,16 @@ void CallbackPort::onRead(Bottle& b) {
         Bottle* pxCoords = b.get(i).asList();
         int pxX = pxCoords->get(0).asDouble();
         int pxY = pxCoords->get(1).asDouble();
+        int width = pxCoords->get(2).asInt();
+        int height = pxCoords->get(3).asInt();
         ImageOf<PixelFloat>* depth = depthPort->read();
         if (depth==NULL) {
             printf("[CallbackPort] No depth image yet.\n");
             continue;
         }
-        double mmZ = depth->pixel(pxX,pxY);  // maybe better do a mean around area?
+        double depthX, depthY;
+        scaleXY(width, height, *depth, pxX, pxY, &depthX, &depthY);
+        double mmZ = depth->pixel(int(depthX), int(depthY));  // maybe better do a mean around area?
         fprintf(stdout,"[CallbackPort] depth at (%d,%d) is %f.\n",pxX,pxY,mmZ);
         Bottle mmOut;
         double mmX = 1000.0 * (pxX - (cx * mmZ/1000.0)) / fx;

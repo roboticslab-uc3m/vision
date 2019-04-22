@@ -4,6 +4,23 @@
 
 #include <yarp/os/Time.h>
 
+namespace
+{
+    inline void scaleXY(const yarp::sig::Image & frame1, const yarp::sig::Image & frame2, double px1, double py1, double * px2, double * py2)
+    {
+        if (frame1.width() != frame2.width() || frame1.height() != frame2.height())
+        {
+            *px2 = px1 * ((double)frame2.width() / (double)frame1.width());
+            *py2 = py1 * ((double)frame2.height() / (double)frame1.height());
+        }
+        else
+        {
+            *px2 = px1;
+            *py2 = py1;
+        }
+    }
+}
+
 namespace roboticslab
 {
 
@@ -28,7 +45,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     fx_d = DEFAULT_FX_D;
     fy_d = DEFAULT_FY_D;
     cx_d = DEFAULT_CX_D;
-    cy_d = DEFAULT_CY_D;    
+    cy_d = DEFAULT_CY_D;
 
     int rateMs = DEFAULT_RATE_MS;
 
@@ -129,7 +146,9 @@ void SegmentorThread::run() {
     {
         int pxX = faces[i].x+faces[i].width/2;
         int pxY = faces[i].y+faces[i].height/2;
-        double mmZ_tmp = depthFrame.pixel(pxX,pxY);
+        double depthX, depthY;
+        scaleXY(colorFrame, depthFrame, pxX, pxY, &depthX, &depthY);
+        double mmZ_tmp = depthFrame.pixel(int(depthX), int(depthY));
 
         if (mmZ_tmp < 0.001)
         {

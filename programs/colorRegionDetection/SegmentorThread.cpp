@@ -4,6 +4,23 @@
 
 #include <yarp/os/Time.h>
 
+namespace
+{
+    inline void scaleXY(const yarp::sig::Image & frame1, const yarp::sig::Image & frame2, double px1, double py1, double * px2, double * py2)
+    {
+        if (frame1.width() != frame2.width() || frame1.height() != frame2.height())
+        {
+            *px2 = px1 * ((double)frame2.width() / (double)frame1.width());
+            *py2 = py1 * ((double)frame2.height() / (double)frame1.height());
+        }
+        else
+        {
+            *px2 = px1;
+            *py2 = py1;
+        }
+    }
+}
+
 namespace roboticslab
 {
 
@@ -102,7 +119,7 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 
     if (rf.check("outFeatures")) {
         outFeatures = *(rf.find("outFeatures").asList());  // simple overrride
-    }   
+    }
     printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
 
     if (rf.check("outImage")) outImage = rf.find("outImage").asInt();
@@ -235,7 +252,9 @@ void SegmentorThread::run() {
             blobsXY[i].y = 0;
         }
         // double mmZ_tmp = depth->pixel(int(blobsXY[i].x +cx_d-cx_rgb),int(blobsXY[i].y +cy_d-cy_rgb));
-        double mmZ_tmp = depthFrame.pixel(int(blobsXY[i].x),int(blobsXY[i].y));
+        double depthX, depthY;
+        scaleXY(colorFrame, depthFrame, blobsXY[i].x, blobsXY[i].y, &depthX, &depthY);
+        double mmZ_tmp = depthFrame.pixel(int(depthX), int(depthY));
 
         if (mmZ_tmp < 0.001) {
             fprintf(stderr,"[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n",i);
