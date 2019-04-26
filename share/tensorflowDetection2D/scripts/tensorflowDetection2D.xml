@@ -28,7 +28,11 @@
 
         <connection>
                 <from>/grabber/img:i</from>
-                <to>/tensorflowDetection2D/img:i</to>
+                <to>/tensorflowDetection2D/shape</to>
+        </connection>
+        <connection>
+                <from>/grabber/img:i</from>
+                <to>/tensorflowDetection2D/</to>
         </connection>
         <connection>
                 <from>/tensorflowDetection2D/img:o</from>

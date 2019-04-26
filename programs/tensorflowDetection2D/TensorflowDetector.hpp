@@ -2,7 +2,6 @@
 #define TENSORFLOWDETECTOR_HPP
 
 // Libraries
-
 #include <vector>
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/public/session.h"

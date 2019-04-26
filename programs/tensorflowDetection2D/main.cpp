@@ -10,117 +10,55 @@
   *
   * | INPUT PORT                      | CONTENT                                                 |
   * |---------------------------------|---------------------------------------------------------|
-  * | /tensorflowDetection2D/img:i    | Input image                                       |
+  * | /tensorflowDetection2D/img:i    | Input image                                             |
+  * | /tensorflowDetection2D/shape   |  Pre-configure tensorflow width and height image         |
   *
   *
   * | OUTPUT PORT                     | CONTENT                                                 |
   * |---------------------------------|---------------------------------------------------------|
-  * | /tensorflowDetection2D/img:o    | Output image with object detection               |
-  * | /tensorflowDetection2D/results  | Output result, object, score and number           |
+  * | /tensorflowDetection2D/img:o    | Output image with object detection                      |
+  * | /tensorflowDetection2D/results  | Output result, object, score and number                 |
   *
   */
 
-// Libraries
 
-#include <iostream>
-#include <cstdlib>
-#include <yarp/os/BufferedPort.h>
-#include <yarp/os/Port.h>
-#include <yarp/sig/Image.h>
+#include <yarp/os/Network.h>
+#include <yarp/os/ResourceFinder.h>
+#include <ColorDebug.h>
 #include "TensorflowDetection2D.hpp"
 
+int main(int argc, char** argv)
+{
+    yarp::os::ResourceFinder rf;
+    rf.setVerbose(true);
+    rf.setDefaultContext("tensorflowDetection");
+    rf.setDefaultConfigFile("tensorflowDetection2D.ini");
+    rf.configure(argc, argv);
 
-// Variables
+    roboticslab::TensorflowDetection2D mod;
 
-int yarpserver_ok=0;
-std::string labels;
-std::string graph;
+    if (rf.check("help"))
+    {
+        return mod.runModule(rf);
+    }
 
-int main(int argc, char ** argv){
+    CD_INFO("Run \"%s --help\" for options.\n", argv[0]);
+    CD_INFO("%s checking for yarp network... ", argv[0]);
 
-  // Welcome message
-  std::cout<<"**************************************************************************"<<std::endl;
-  std::cout<<"**************************************************************************"<<std::endl;
-  std::cout<<"                     Program: Tensorflow Detector 2D                      "<<std::endl;
-  std::cout<<"                     Author: David Velasco García                         "<<std::endl;
-  std::cout<<"                             @davidvelascogarcia                          "<<std::endl;
-  std::cout<<"**************************************************************************"<<std::endl;
-  std::cout<<"**************************************************************************"<<std::endl;
+    std::fflush(stdout);
 
-  std::cout<<std::endl;
-  std::cout<<"Starting system..."<<std::endl;
-  std::cout<<std::endl;
-  std::cout<<"Welcome ..."<<std::endl;
-  std::cout<<std::endl;
-  std::cout<<"Initializing ..."<<std::endl;
-  std::cout<<std::endl;
-  std::cout<<"Loading TensorFlow 2D detector module..."<<std::endl;
+    yarp::os::Network yarp;
 
-  //Red yarp
-  yarp::os::Network yarp;
+    if (!yarp::os::Network::checkNetwork())
+    {
+        CD_ERROR_NO_HEADER("[fail]\n");
+        CD_INFO("%s found no yarp network (try running \"yarpserver &\"), bye!\n", argv[0]);
+        return 1;
+    }
+    else
+    {
+        CD_SUCCESS_NO_HEADER("[ok]\n");
+    }
 
-  std::cout<<std::endl;
-  std::cout<<"Initializing YARP network..."<<std::endl;
-
-  // Apertura puerto de recepción
-  std::cout<<"Opening image input port with the name /tensorflowDetection2D/img:i."<<std::endl;
-  yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inImg;
-  inImg.open("/tensorflowDetection2D/img:i");
-
-  // Opening Sender Port
-  yarp::os::Port sender_port_post;
-  std::cout<<std::endl;
-  std::cout<<"Opening sender ports..."<<std::endl;
-  std::cout<<std::endl;
-  std::cout<<"Opening post-processed port with the name /tensorflowDetection2D/img:o."<<std::endl;
-  sender_port_post.open("/tensorflowDetection2D/img:o");
-  // Opening results data ports
-  yarp::os::Port results_port;
-  std::cout<<std::endl;
-  std::cout<<"Opening results port with the name /tensorflowDetection2D/results."<<std::endl;
-  results_port.open("/tensorflowDetection2D/results");
-
-  // Comprobación yarpserver
-  std::cout<<std::endl;
-  std::cout<<"Checking yarpserver status..."<<std::endl;
-  while(yarpserver_ok==0){
-
-  if (!yarp::os::Network::checkNetwork())
-  {
-
-      std::cout<<std::endl;
-      std::cout<<"YARPSERVER status: FAIL"<<std::endl;
-      std::cout<<"Please, start yarpserver or connect to yarpserver already running..."<<std::endl;
-
-
-  }else{
-      std::cout<<std::endl;
-      std::cout<<"YARPSERVER status: OK"<<std::endl;
-      std::cout<<std::endl;
-      yarpserver_ok=1;
-  }
-  }
-
-  std::cout<<"Locating pre-trained model and labels map..."<<std::endl;
-  yarp::os::ResourceFinder rf;
-
-  rf.setVerbose(true);
-  rf.setDefaultContext("tensorflowDetection2D");
-  rf.setDefaultConfigFile("tensorflowDetection2D.ini");
-  rf.configure(argc, argv);
-  std::string pathToModel = rf.check("pathToModel", yarp::os::Value(""), "documentation").asString();
-  labels = rf.findFileByName("labels_map.pbtxt");
-  //graph = rf.findFileByName("frozen_inference_graph.pb");
-  graph="./../models/frozen_inference_graph.pb";
-  // Object detector
-  tensorflowDetection2D detector;
-
-  // Init
-  detector.init(labels, graph);
-  detector.detector(sender_port_post, &inImg, results_port);
-
-  std::cout<<std::endl;
-  std::cout<<"Closing Tensorflow 2D detector module..."<<std::endl;
-
-  return 0;
+    return mod.runModule(rf);
 }

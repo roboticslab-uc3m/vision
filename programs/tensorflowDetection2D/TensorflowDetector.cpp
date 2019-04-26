@@ -30,6 +30,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include "TensorflowDetector.hpp"
 
+/************************************************************************/
 // Create session and load graph
 
 tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
@@ -49,6 +50,7 @@ tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
     return tensorflow::Status::OK();
 }
 
+/************************************************************************/
 // Read labels
 
 tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::map<int, tensorflow::string> &labelsMap) {
@@ -94,10 +96,11 @@ tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::ma
 }
 
 
+/************************************************************************/
 //  Mat OpenCV -> TensorFlow
 
 tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &outTensor) {
-
+    //cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
     auto root = tensorflow::Scope::NewRootScope();
     using namespace ::tensorflow::ops;
 
@@ -124,9 +127,10 @@ tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &out
     return tensorflow::Status::OK();
 }
 
+/************************************************************************/
 
 void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMax, double xMax, double score, std::string label, bool scaled=true) {
-    cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+    //cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
     cv::Point tl, br;
     if (scaled) {
         tl = cv::Point((int) (xMin * image.cols), (int) (yMin * image.rows));
@@ -148,6 +152,7 @@ void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMa
     cv::putText(image, caption, textCorner, cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(255, 0, 0));
 }
 
+/************************************************************************/
 
 void drawBoundingBoxesOnImage(cv::Mat &image,
                               tensorflow::TTypes<float>::Flat &scores,
@@ -162,7 +167,7 @@ void drawBoundingBoxesOnImage(cv::Mat &image,
                                scores(idxs.at(j)), labelsMap[classes(idxs.at(j))]);
 }
 
-
+/************************************************************************/
 double IOU(cv::Rect2f box1, cv::Rect2f box2) {
 
     float xA = std::max(box1.tl().x, box2.tl().x);
@@ -176,6 +181,7 @@ double IOU(cv::Rect2f box1, cv::Rect2f box2) {
     return 1. * intersectArea / unionArea;
 }
 
+/************************************************************************/
 std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
                            tensorflow::TTypes<float, 3>::Tensor &boxes,
                            double thresholdIOU, double thresholdScore) {
