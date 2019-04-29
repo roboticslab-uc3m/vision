@@ -155,6 +155,7 @@ public:
         this->inCropSelectorPort = inCropSelectorPort;
     }
 
+    // Tensorflow: Session object instance
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inputPort;
     tensorflow::Status readLabelsMapStatus;
     tensorflow::Status loadGraphStatus;

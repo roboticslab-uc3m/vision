@@ -32,6 +32,7 @@
 
 /************************************************************************/
 // Create session and load graph
+/************************************************************************/
 
 tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
               std::unique_ptr<tensorflow::Session> *session) {
@@ -52,6 +53,7 @@ tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
 
 /************************************************************************/
 // Read labels
+/************************************************************************/
 
 tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::map<int, tensorflow::string> &labelsMap) {
 
@@ -98,6 +100,7 @@ tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::ma
 
 /************************************************************************/
 //  Mat OpenCV -> TensorFlow
+/************************************************************************/
 
 tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &outTensor) {
     //cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
@@ -152,6 +155,8 @@ void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMa
     cv::putText(image, caption, textCorner, cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(255, 0, 0));
 }
 
+/************************************************************************/
+// Draw on image
 /************************************************************************/
 
 void drawBoundingBoxesOnImage(cv::Mat &image,

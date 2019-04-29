@@ -159,14 +159,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
     RateThread::setRate(rateMs);
     RateThread::start();
 
-  /*  if (!camera->getImage(inYarpImg_2))
-    {
-        return;
-    }*/
-
-  // Path
-
-
   inputPort.open("/tensorflowDetection2D/shape");
   yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg_2 = inputPort.read();
   resultsPort.open("/tensorflowDetection2D/results");
