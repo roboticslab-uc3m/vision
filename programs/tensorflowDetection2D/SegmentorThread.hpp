@@ -46,7 +46,7 @@
 #define DEFAULT_CX_D          319.5  //
 #define DEFAULT_CY_D          239.5  //
 
-#define DEFAULT_RATE_MS 100
+#define DEFAULT_RATE_MS 20
 #define DEFAULT_TRAINEDMODEL "frozen_inference_graph.pb"
 #define DEFAULT_TRAINEDMODEL_LABELS "labels_map.pbtxt"
 

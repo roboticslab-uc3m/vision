@@ -103,7 +103,7 @@ tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::ma
 /************************************************************************/
 
 tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &outTensor) {
-    //cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
+    cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
     auto root = tensorflow::Scope::NewRootScope();
     using namespace ::tensorflow::ops;
 
@@ -127,13 +127,14 @@ tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &out
     TF_RETURN_IF_ERROR(session->Run({inputs}, {"uint8_Cast"}, {}, &outTensors));
 
     outTensor = outTensors.at(0);
+    cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
     return tensorflow::Status::OK();
 }
 
 /************************************************************************/
 
 void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMax, double xMax, double score, std::string label, bool scaled=true) {
-    //cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+    cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
     cv::Point tl, br;
     if (scaled) {
         tl = cv::Point((int) (xMin * image.cols), (int) (yMin * image.rows));
@@ -153,6 +154,8 @@ void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMa
     cv::rectangle(image, tl, brRect, cv::Scalar(0, 255, 255), -1);
     cv::Point textCorner = cv::Point(tl.x, tl.y + fontCoeff * 0.9);
     cv::putText(image, caption, textCorner, cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(255, 0, 0));
+    cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+
 }
 
 /************************************************************************/
@@ -165,11 +168,13 @@ void drawBoundingBoxesOnImage(cv::Mat &image,
                               tensorflow::TTypes<float,3>::Tensor &boxes,
                               std::map<int, tensorflow::string> &labelsMap,
                               std::vector<size_t> &idxs) {
+    cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
     for (int j = 0; j < idxs.size(); j++)
         drawBoundingBoxOnImage(image,
                                boxes(0,idxs.at(j),0), boxes(0,idxs.at(j),1),
                                boxes(0,idxs.at(j),2), boxes(0,idxs.at(j),3),
                                scores(idxs.at(j)), labelsMap[classes(idxs.at(j))]);
+                               cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
 }
 
 /************************************************************************/
