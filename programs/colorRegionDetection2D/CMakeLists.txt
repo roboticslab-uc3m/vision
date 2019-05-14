@@ -16,11 +16,11 @@ if(ENABLE_colorRegionDetection2D)
                                           ColorRegionDetection2D.hpp)
 
     target_link_libraries(colorRegionDetection2D YARP::YARP_OS
-                                               YARP::YARP_init
-                                               YARP::YARP_dev
-                                               YARP::YARP_sig
-                                               ${OpenCV_LIBS}
-                                               TravisLib)
+                                                 YARP::YARP_init
+                                                 YARP::YARP_dev
+                                                 YARP::YARP_sig
+                                                 ${OpenCV_LIBS}
+                                                 TravisLib)
 
     install(TARGETS colorRegionDetection2D
             DESTINATION ${CMAKE_INSTALL_BINDIR})
