@@ -99,7 +99,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     // from the depthCamera device if started straight away.
     yarp::os::Time::delay(1);
 
-    this->setRate(rateMs);
+    this->setPeriod(rateMs * 0.001);
     this->start();
 }
 

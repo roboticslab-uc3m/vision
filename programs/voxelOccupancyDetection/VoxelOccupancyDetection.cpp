@@ -9,9 +9,9 @@ namespace roboticslab
 bool VoxelOccupancyDetection::configure(yarp::os::ResourceFinder &rf) {
 
     cropSelector = DEFAULT_CROP_SELECTOR;
-    yarp::os::ConstString strRGBDDevice = DEFAULT_RGBD_DEVICE;
-    yarp::os::ConstString strRGBDLocal = DEFAULT_RGBD_LOCAL;
-    yarp::os::ConstString strRGBDRemote = DEFAULT_RGBD_REMOTE;
+    std::string strRGBDDevice = DEFAULT_RGBD_DEVICE;
+    std::string strRGBDLocal = DEFAULT_RGBD_LOCAL;
+    std::string strRGBDRemote = DEFAULT_RGBD_REMOTE;
     watchdog = DEFAULT_WATCHDOG;  // double
 
     fprintf(stdout,"--------------------------------------------------------------\n");

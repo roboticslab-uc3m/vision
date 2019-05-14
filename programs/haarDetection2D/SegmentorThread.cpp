@@ -46,7 +46,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
     fx_d = DEFAULT_FX_D;
     fy_d = DEFAULT_FY_D;
     cx_d = DEFAULT_CX_D;
-    cy_d = DEFAULT_CY_D;    
+    cy_d = DEFAULT_CY_D;
 
     int rateMs = DEFAULT_RATE_MS;
 
@@ -116,8 +116,8 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
         inCropSelectorPort->setReader(processor);
     }
 
-    RateThread::setRate(rateMs);
-    RateThread::start();
+    PeriodicThread::setPeriod(rateMs * 0.001);
+    PeriodicThread::start();
 }
 
 /************************************************************************/

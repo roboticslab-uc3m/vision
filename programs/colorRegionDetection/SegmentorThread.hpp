@@ -7,7 +7,7 @@
 #include <yarp/os/Network.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/BufferedPort.h>
-#include <yarp/os/RateThread.h>
+#include <yarp/os/PeriodicThread.h>
 
 #include <yarp/dev/all.h>
 #include <yarp/dev/IRGBDSensor.h>
@@ -99,16 +99,16 @@ public:
 /**
  * @ingroup colorRegionDetection
  *
- * @brief Implements colorRegionDetection RateThread.
+ * @brief Implements colorRegionDetection PeriodicThread.
  */
-class SegmentorThread : public yarp::os::RateThread {
+class SegmentorThread : public yarp::os::PeriodicThread {
 private:
     yarp::dev::IRGBDSensor *iRGBDSensor;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
     //
-    yarp::os::ConstString algorithm;
-    yarp::os::ConstString locate;
+    std::string algorithm;
+    std::string locate;
     int maxNumBlobs;
     double morphClosing;
     double morphOpening;
@@ -127,7 +127,7 @@ private:
     DataProcessor processor;
 
 public:
-    SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
+    SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
     void setIRGBDSensor(yarp::dev::IRGBDSensor * _iRGBDSensor);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
@@ -138,7 +138,7 @@ public:
     void setCropSelector(int cropSelector) { this->cropSelector = cropSelector; }
     void setOutCropSelectorImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg) { this->outCropSelectorImg = outCropSelectorImg; }
     void setInCropSelectorPort(yarp::os::Port* inCropSelectorPort) { this->inCropSelectorPort = inCropSelectorPort; }
-    
+
 };
 
 }  // namespace roboticslab

@@ -6,9 +6,9 @@
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
+#include <yarp/os/PeriodicThread.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/PortReader.h>
-#include <yarp/os/RateThread.h>
 #include <yarp/os/ResourceFinder.h>
 
 #include <yarp/dev/FrameGrabberInterfaces.h>
@@ -90,9 +90,9 @@ public:
 /**
  * @ingroup haarDetection2D
  *
- * @brief Implements haarDetection2D RateThread.
+ * @brief Implements haarDetection2D PeriodicThread.
  */
-class SegmentorThread : public yarp::os::RateThread
+class SegmentorThread : public yarp::os::PeriodicThread
 {
 private:
     yarp::dev::IFrameGrabberImage *camera;
@@ -110,7 +110,7 @@ private:
     cv::CascadeClassifier object_cascade;
 
 public:
-    SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
+    SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
     void setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage * _camera);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);

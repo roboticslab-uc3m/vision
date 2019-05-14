@@ -67,7 +67,7 @@ void SegmentorThread::init(ResourceFinder &rf) {
 
     if (rf.check("outFeatures")) {
         outFeatures = *(rf.find("outFeatures").asList());  // simple overrride
-    }   
+    }
     printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
 
     if (rf.check("outImage")) outImage = rf.find("outImage").asInt();
@@ -82,7 +82,7 @@ void SegmentorThread::init(ResourceFinder &rf) {
         ::exit(1);
     }
 
-    this->setRate(rateMs);
+    this->setPeriod(rateMs * 0.001);
     this->start();
 
 }
@@ -96,7 +96,7 @@ void SegmentorThread::run() {
         //printf("No img yet...\n");
         return;
     };
-    
+
     // {yarp ImageOf Rgb -> openCv Mat Bgr}
     IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg->width(), inYarpImg->height()),
                                          IPL_DEPTH_8U, 3 );
@@ -349,7 +349,7 @@ void SegmentorThread::run() {
                       hue_mean, hue_stddev,
                       saturation_mean, saturation_stddev,
                       value_mean, value_stddev);
-   
+
     //arc
     calcArcLength(arc,biggestCont);
 
@@ -406,7 +406,7 @@ void SegmentorThread::run() {
     b.addDouble(value_mode);  // 22
     b.addDouble(hue_mode);  // 23
 */
-    
+
     //pOutPort->write(b);
 
 }

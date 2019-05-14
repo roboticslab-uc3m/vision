@@ -121,7 +121,7 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 
     if (rf.check("outFeatures")) {
         outFeatures = *(rf.find("outFeatures").asList());  // simple overrride
-    }   
+    }
     printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
 
     if (rf.check("outImage")) outImage = rf.find("outImage").asInt();
@@ -165,7 +165,7 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
     // from the depthCamera device if started straight away.
     yarp::os::Time::delay(1);
 
-    this->setRate(rateMs);
+    this->setPeriod(rateMs * 0.001);
     this->start();
 
 }

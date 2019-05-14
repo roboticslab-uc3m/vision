@@ -7,7 +7,7 @@
 #include <yarp/os/Network.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/BufferedPort.h>
-#include <yarp/os/RateThread.h>
+#include <yarp/os/PeriodicThread.h>
 
 #include <yarp/dev/all.h>
 #include <yarp/dev/IRGBDSensor.h>
@@ -87,9 +87,9 @@ public:
 /**
  * @ingroup haarDetection
  *
- * @brief Implements haarDetection RateThread.
+ * @brief Implements haarDetection PeriodicThread.
  */
-class SegmentorThread : public yarp::os::RateThread {
+class SegmentorThread : public yarp::os::PeriodicThread {
 private:
     yarp::dev::IRGBDSensor *iRGBDSensor;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
@@ -106,7 +106,7 @@ private:
 
 
 public:
-    SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
+    SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
     void setIRGBDSensor(yarp::dev::IRGBDSensor * _iRGBDSensor);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
