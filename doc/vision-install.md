@@ -6,7 +6,7 @@
 - [Install PCL with VTK >= 5](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-pcl.md/)
 - [Install OpenNI2 & NiTE2](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-openni-nite.md/)
 - [Install YCM 0.10+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-ycm.md/)
-- [Install YARP 3.0+ and OpenNI2DeviceServer](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-yarp.md/)
+- [Install YARP 3.1+ and OpenNI2DeviceServer](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-yarp.md/)
 - [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-opencv.md/)
 - [Install color-debug](https://github.com/roboticslab-uc3m/color-debug)
 
