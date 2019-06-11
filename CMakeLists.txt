@@ -88,7 +88,12 @@ add_subdirectory(doc)
 export(PACKAGE ROBOTICSLAB_VISION)
 
 # Retrieve global properties.
-get_property(_exported_targets GLOBAL PROPERTY ROBOTICSLAB_VISION_TARGETS)
+get_property(_exported_targets GLOBAL PROPERTY _exported_targets)
+get_property(_exported_dependencies GLOBAL PROPERTY _exported_dependencies)
+
+if(DEFINED _exported_dependencies)
+    list(REMOVE_DUPLICATES _exported_dependencies)
+endif()
 
 # CMake installation path.
 if(WIN32)
