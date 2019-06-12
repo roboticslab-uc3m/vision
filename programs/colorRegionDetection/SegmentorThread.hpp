@@ -8,6 +8,7 @@
 #include <yarp/os/Port.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/PeriodicThread.h>
+#include <yarp/os/Property.h>
 
 #include <yarp/dev/all.h>
 #include <yarp/dev/IRGBDSensor.h>
@@ -22,16 +23,6 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "TravisLib.hpp"
-
-// thanks! https://web.archive.org/web/20150524152748/https://web.stanford.edu/~qianyizh/projects/scenedata.html
-#define DEFAULT_FX_D          525.0  // 640x480
-#define DEFAULT_FY_D          525.0  //
-#define DEFAULT_CX_D          319.5  //
-#define DEFAULT_CY_D          239.5  //
-#define DEFAULT_FX_RGB        525.0  //
-#define DEFAULT_FY_RGB        525.0  //
-#define DEFAULT_CX_RGB        319.5  //
-#define DEFAULT_CY_RGB        239.5  //
 
 #define DEFAULT_ALGORITHM "blueMinusRed"
 #define DEFAULT_LOCATE "centroid"

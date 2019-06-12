@@ -41,11 +41,14 @@ void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort) {
 
 /************************************************************************/
 void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
+    yarp::os::Property depthIntrinsicParams;
 
-    fx_d = DEFAULT_FX_D;
-    fy_d = DEFAULT_FY_D;
-    cx_d = DEFAULT_CX_D;
-    cy_d = DEFAULT_CY_D;
+    iRGBDSensor->getDepthIntrinsicParam(depthIntrinsicParams);
+
+    fx_d = depthIntrinsicParams.find("focalLengthX").asFloat64();
+    fy_d = depthIntrinsicParams.find("focalLengthY").asFloat64();
+    cx_d = depthIntrinsicParams.find("principalPointX").asFloat64();
+    cy_d = depthIntrinsicParams.find("principalPointY").asFloat64();
 
     int rateMs = DEFAULT_RATE_MS;
 
@@ -55,25 +58,13 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     if (rf.check("help")) {
         printf("SegmentorThread options:\n");
         printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-
-        printf("\t--fx_d (default: \"%f\")\n",fx_d);
-        printf("\t--fy_d (default: \"%f\")\n",fy_d);
-        printf("\t--cx_d (default: \"%f\")\n",cx_d);
-        printf("\t--cy_d (default: \"%f\")\n",cy_d);
         printf("\t--rateMs (default: \"%d\")\n",rateMs);
         printf("\t--xmlCascade [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
 
-    if (rf.check("fx_d")) fx_d = rf.find("fx_d").asDouble();
-    if (rf.check("fy_d")) fy_d = rf.find("fy_d").asDouble();
-    if (rf.check("cx_d")) cx_d = rf.find("cx_d").asDouble();
-    if (rf.check("cy_d")) cy_d = rf.find("cy_d").asDouble();
-
     printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
         fx_d,fy_d,cx_d,cy_d);
-
-
 
     if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt();
     if (rf.check("xmlCascade")) xmlCascade = rf.find("xmlCascade").asString();

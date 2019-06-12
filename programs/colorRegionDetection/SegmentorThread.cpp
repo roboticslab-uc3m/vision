@@ -41,15 +41,21 @@ void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort) {
 
 /************************************************************************/
 void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
+    yarp::os::Property rgbIntrinsicParams;
+    yarp::os::Property depthIntrinsicParams;
 
-    fx_d = DEFAULT_FX_D;
-    fy_d = DEFAULT_FY_D;
-    cx_d = DEFAULT_CX_D;
-    cy_d = DEFAULT_CY_D;
-    fx_rgb = DEFAULT_FX_RGB;
-    fy_rgb = DEFAULT_FY_RGB;
-    cx_rgb = DEFAULT_CX_RGB;
-    cy_rgb = DEFAULT_CY_RGB;
+    iRGBDSensor->getRgbIntrinsicParam(rgbIntrinsicParams);
+    iRGBDSensor->getDepthIntrinsicParam(depthIntrinsicParams);
+
+    fx_d = depthIntrinsicParams.find("focalLengthX").asFloat64();
+    fy_d = depthIntrinsicParams.find("focalLengthY").asFloat64();
+    cx_d = depthIntrinsicParams.find("principalPointX").asFloat64();
+    cy_d = depthIntrinsicParams.find("principalPointY").asFloat64();
+
+    fx_rgb = rgbIntrinsicParams.find("focalLengthX").asFloat64();
+    fy_rgb = rgbIntrinsicParams.find("focalLengthY").asFloat64();
+    cx_rgb = rgbIntrinsicParams.find("principalPointX").asFloat64();
+    cy_rgb = rgbIntrinsicParams.find("principalPointY").asFloat64();
 
     algorithm = DEFAULT_ALGORITHM;
     locate = DEFAULT_LOCATE;
@@ -67,16 +73,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     if (rf.check("help")) {
         printf("SegmentorThread options:\n");
         printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-
-        printf("\t--fx_d (default: \"%f\")\n",fx_d);
-        printf("\t--fy_d (default: \"%f\")\n",fy_d);
-        printf("\t--cx_d (default: \"%f\")\n",cx_d);
-        printf("\t--cy_d (default: \"%f\")\n",cy_d);
-        printf("\t--fx_rgb (default: \"%f\")\n",fx_rgb);
-        printf("\t--fy_rgb (default: \"%f\")\n",fy_rgb);
-        printf("\t--cx_rgb (default: \"%f\")\n",cx_rgb);
-        printf("\t--cy_rgb (default: \"%f\")\n",cy_rgb);
-
         printf("\t--algorithm (default: \"%s\")\n",algorithm.c_str());
         printf("\t--locate (centroid or bottom; default: \"%s\")\n",locate.c_str());
         printf("\t--maxNumBlobs (default: \"%d\")\n",maxNumBlobs);
@@ -93,14 +89,6 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
 
-    if (rf.check("fx_d")) fx_d = rf.find("fx_d").asDouble();
-    if (rf.check("fy_d")) fy_d = rf.find("fy_d").asDouble();
-    if (rf.check("cx_d")) cx_d = rf.find("cx_d").asDouble();
-    if (rf.check("cy_d")) cy_d = rf.find("cy_d").asDouble();
-    if (rf.check("fx_rgb")) fx_rgb = rf.find("fx_rgb").asDouble();
-    if (rf.check("fy_rgb")) fy_rgb = rf.find("fy_rgb").asDouble();
-    if (rf.check("cx_rgb")) cx_rgb = rf.find("cx_rgb").asDouble();
-    if (rf.check("cy_rgb")) cy_rgb = rf.find("cy_rgb").asDouble();
     if (rf.check("algorithm")) algorithm = rf.find("algorithm").asString();
     if (rf.check("locate")) locate = rf.find("locate").asString();
     if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt();
