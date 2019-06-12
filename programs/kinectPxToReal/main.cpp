@@ -2,7 +2,7 @@
 
 /**
  * 
- * @ingroup asibot_modules
+ * @ingroup vision_programs
  * \defgroup kinectPxToReal kinectPxToReal
  *
  * kinectPxToReal means Pixel to Homogeneous Transformation Matrix for Kinect
