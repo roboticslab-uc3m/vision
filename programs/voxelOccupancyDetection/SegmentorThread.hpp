@@ -59,11 +59,11 @@ class DataProcessor : public yarp::os::PortReader {
         // process data in b
         printf("Got %s\n", b.toString().c_str());
         if(waitForFirst) {
-            xKeep = b.get(0).asInt();
-            yKeep = b.get(1).asInt();
+            xKeep = b.get(0).asInt32();
+            yKeep = b.get(1).asInt32();
             waitForFirst = false;
         } else {
-            if((b.get(0).asInt()<xKeep)||(b.get(1).asInt()<yKeep)){
+            if((b.get(0).asInt32()<xKeep)||(b.get(1).asInt32()<yKeep)){
                 x = 0;
                 y = 0;
                 w = 0;
@@ -71,8 +71,8 @@ class DataProcessor : public yarp::os::PortReader {
             } else {
                 x = xKeep;
                 y = yKeep;
-                w = b.get(0).asInt() - x;
-                h = b.get(1).asInt() - y;
+                w = b.get(0).asInt32() - x;
+                h = b.get(1).asInt32() - y;
             }
             waitForFirst = true;
         }

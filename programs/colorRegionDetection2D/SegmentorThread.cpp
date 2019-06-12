@@ -59,9 +59,9 @@ void SegmentorThread::init(ResourceFinder &rf) {
 
     if (rf.check("algorithm")) algorithm = rf.find("algorithm").asString();
     if (rf.check("locate")) locate = rf.find("locate").asString();
-    if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt();
-    if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asDouble();
-    if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt();
+    if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt32();
+    if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asFloat64();
+    if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt32();
     printf("SegmentorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
         algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);
 
@@ -70,10 +70,10 @@ void SegmentorThread::init(ResourceFinder &rf) {
     }
     printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
 
-    if (rf.check("outImage")) outImage = rf.find("outImage").asInt();
-    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt();
-    if (rf.check("threshold")) threshold = rf.find("threshold").asInt();
-    if (rf.check("seeBounding")) seeBounding = rf.find("seeBounding").asInt();
+    if (rf.check("outImage")) outImage = rf.find("outImage").asInt32();
+    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt32();
+    if (rf.check("threshold")) threshold = rf.find("threshold").asInt32();
+    if (rf.check("seeBounding")) seeBounding = rf.find("seeBounding").asInt32();
     printf("SegmentorThread using outImage: %d, rateMs: %d, seeBounding: %d, threshold: %d.\n",
         outImage, rateMs, seeBounding, threshold);
 
@@ -157,155 +157,155 @@ void SegmentorThread::run() {
     for (int elem = 0; elem < outFeatures.size() ; elem++) {
         if ( outFeatures.get(elem).asString() == "locX" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsXY[0].x);
+                output.addFloat64(blobsXY[0].x);
             } else {
                 Bottle locXs;
                 for (int i = 0; i < blobsXY.size(); i++)
-                    locXs.addDouble(blobsXY[i].x);
+                    locXs.addFloat64(blobsXY[i].x);
                 output.addList() = locXs;
             }
         } else if ( outFeatures.get(elem).asString() == "locY" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsXY[0].y);
+                output.addFloat64(blobsXY[0].y);
             } else {
                 Bottle locYs;
                 for (int i = 0; i < blobsXY.size(); i++)
-                    locYs.addDouble(blobsXY[i].y);
+                    locYs.addFloat64(blobsXY[i].y);
                 output.addList() = locYs;
             }
         } else if ( outFeatures.get(elem).asString() == "angle" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsAngle[0]);
+                output.addFloat64(blobsAngle[0]);
             } else {
                 Bottle angles;
                 for (int i = 0; i < blobsAngle.size(); i++)
-                    angles.addDouble(blobsAngle[i]);
+                    angles.addFloat64(blobsAngle[i]);
                 output.addList() = angles;
             }
         } else if ( outFeatures.get(elem).asString() == "area" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsArea[0]);
+                output.addFloat64(blobsArea[0]);
             } else {
                 Bottle areas;
                 for (int i = 0; i < blobsArea.size(); i++)
-                    areas.addDouble(blobsArea[i]);
+                    areas.addFloat64(blobsArea[i]);
                 output.addList() = areas;
             }
         } else if ( outFeatures.get(elem).asString() == "perimeter" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsPerimeter[0]);
+                output.addFloat64(blobsPerimeter[0]);
             } else {
                 Bottle areas;
                 for (int i = 0; i < blobsPerimeter.size(); i++)
-                    areas.addDouble(blobsPerimeter[i]);
+                    areas.addFloat64(blobsPerimeter[i]);
                 output.addList() = areas;
             }
         } else if ( outFeatures.get(elem).asString() == "aspectRatio" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsAspectRatio[0]);
+                output.addFloat64(blobsAspectRatio[0]);
             } else {
                 Bottle aspectRatios;
                 for (int i = 0; i < blobsAspectRatio.size(); i++)
-                    aspectRatios.addDouble(blobsAspectRatio[i]);
+                    aspectRatios.addFloat64(blobsAspectRatio[i]);
                 output.addList() = aspectRatios;
             }
         } else if ( outFeatures.get(elem).asString() == "rectangularity" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsRectangularity[0]);
+                output.addFloat64(blobsRectangularity[0]);
             } else {
                 Bottle rectangularities;
                 for (int i = 0; i < blobsRectangularity.size(); i++)
-                    rectangularities.addDouble(blobsRectangularity[i]);
+                    rectangularities.addFloat64(blobsRectangularity[i]);
                 output.addList() = rectangularities;
             }
         } else if ( outFeatures.get(elem).asString() == "axisFirst" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsAxisFirst[0]);
+                output.addFloat64(blobsAxisFirst[0]);
             } else {
                 Bottle axisFirsts;
                 for (int i = 0; i < blobsAxisFirst.size(); i++)
-                    axisFirsts.addDouble(blobsAxisFirst[i]);
+                    axisFirsts.addFloat64(blobsAxisFirst[i]);
                 output.addList() = axisFirsts;
             }
         } else if ( outFeatures.get(elem).asString() == "axisSecond" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsAxisSecond[0]);
+                output.addFloat64(blobsAxisSecond[0]);
             } else {
                 Bottle axisSeconds;
                 for (int i = 0; i < blobsAxisSecond.size(); i++)
-                    axisSeconds.addDouble(blobsAxisSecond[i]);
+                    axisSeconds.addFloat64(blobsAxisSecond[i]);
                 output.addList() = axisSeconds;
             }
         } else if ( outFeatures.get(elem).asString() == "solidity" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsSolidity[0]);
+                output.addFloat64(blobsSolidity[0]);
             } else {
                 Bottle solidities;
                 for (int i = 0; i < blobsSolidity.size(); i++)
-                    solidities.addDouble(blobsSolidity[i]);
+                    solidities.addFloat64(blobsSolidity[i]);
                 output.addList() = solidities;
             }
         } else if ( outFeatures.get(elem).asString() == "hue" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsHue[0]);
+                output.addFloat64(blobsHue[0]);
             } else {
                 Bottle hues;
                 for (int i = 0; i < blobsHue.size(); i++)
-                    hues.addDouble(blobsHue[i]);
+                    hues.addFloat64(blobsHue[i]);
                 output.addList() = hues;
             }
         } else if ( outFeatures.get(elem).asString() == "sat" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsSat[0]);
+                output.addFloat64(blobsSat[0]);
             } else {
                 Bottle sats;
                 for (int i = 0; i < blobsSat.size(); i++)
-                    sats.addDouble(blobsSat[i]);
+                    sats.addFloat64(blobsSat[i]);
                 output.addList() = sats;
             }
         } else if ( outFeatures.get(elem).asString() == "val" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsVal[0]);
+                output.addFloat64(blobsVal[0]);
             } else {
                 Bottle vals;
                 for (int i = 0; i < blobsVal.size(); i++)
-                    vals.addDouble(blobsVal[i]);
+                    vals.addFloat64(blobsVal[i]);
                 output.addList() = vals;
             }
         } else if ( outFeatures.get(elem).asString() == "hueStdDev" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsHueStdDev[0]);
+                output.addFloat64(blobsHueStdDev[0]);
             } else {
                 Bottle hueStdDevs;
                 for (int i = 0; i < blobsHueStdDev.size(); i++)
-                    hueStdDevs.addDouble(blobsHueStdDev[i]);
+                    hueStdDevs.addFloat64(blobsHueStdDev[i]);
                 output.addList() = hueStdDevs;
             }
         } else if ( outFeatures.get(elem).asString() == "satStdDev" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsSatStdDev[0]);
+                output.addFloat64(blobsSatStdDev[0]);
             } else {
                 Bottle satStdDevs;
                 for (int i = 0; i < blobsSatStdDev.size(); i++)
-                    satStdDevs.addDouble(blobsSatStdDev[i]);
+                    satStdDevs.addFloat64(blobsSatStdDev[i]);
                 output.addList() = satStdDevs;
             }
         } else if ( outFeatures.get(elem).asString() == "valStdDev" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsValStdDev[0]);
+                output.addFloat64(blobsValStdDev[0]);
             } else {
                 Bottle valStdDevs;
                 for (int i = 0; i < blobsValStdDev.size(); i++)
-                    valStdDevs.addDouble(blobsValStdDev[i]);
+                    valStdDevs.addFloat64(blobsValStdDev[i]);
                 output.addList() = valStdDevs;
             }
         } else if ( outFeatures.get(elem).asString() == "time" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(Time::now());
+                output.addFloat64(Time::now());
             } else {
                 Bottle times;
                 for (int i = 0; i < blobsArea.size(); i++)
-                    times.addDouble(Time::now());
+                    times.addFloat64(Time::now());
                 output.addList() = times;
             }
         } else fprintf(stderr,"[SegmentorThread] warning: bogus outFeatures.\n");
@@ -382,29 +382,29 @@ void SegmentorThread::run() {
     printf("Contour Location (x,y): (%f, %f)\n",locX,locY);*/
 
 /*    Bottle b;
-    b.addDouble(massCenterlocX);  // 1
-    b.addDouble(massCenterlocY);  // 2
-    b.addDouble(aspectRatio);  // 3
-    b.addDouble(area);  // 4
-    b.addDouble(rectangularity);  // 5
-    b.addDouble(axisFirst);  // 6
-    b.addDouble(axisSecond);  // 7
-    b.addDouble(solidity);  // 8
-    b.addDouble(arc);  // 9
-    b.addDouble(radius);  // 10
-    b.addDouble(hue_peak);  // 11
-    b.addDouble(value_peak); */ // 12
-    /*b.addDouble(hue_mean);  // 13
-    b.addDouble(hue_stddev);  // 14
-    b.addDouble(saturation_peak);  // 15
-    b.addDouble(saturation_mean);  // 16
-    b.addDouble(saturation_stddev);  // 17
-    b.addDouble(value_mean);  // 18
-    b.addDouble(value_stddev);  // 19
-    b.addDouble(locX);  // 20
-    b.addDouble(locY);  // 21
-    b.addDouble(value_mode);  // 22
-    b.addDouble(hue_mode);  // 23
+    b.addFloat64(massCenterlocX);  // 1
+    b.addFloat64(massCenterlocY);  // 2
+    b.addFloat64(aspectRatio);  // 3
+    b.addFloat64(area);  // 4
+    b.addFloat64(rectangularity);  // 5
+    b.addFloat64(axisFirst);  // 6
+    b.addFloat64(axisSecond);  // 7
+    b.addFloat64(solidity);  // 8
+    b.addFloat64(arc);  // 9
+    b.addFloat64(radius);  // 10
+    b.addFloat64(hue_peak);  // 11
+    b.addFloat64(value_peak); */ // 12
+    /*b.addFloat64(hue_mean);  // 13
+    b.addFloat64(hue_stddev);  // 14
+    b.addFloat64(saturation_peak);  // 15
+    b.addFloat64(saturation_mean);  // 16
+    b.addFloat64(saturation_stddev);  // 17
+    b.addFloat64(value_mean);  // 18
+    b.addFloat64(value_stddev);  // 19
+    b.addFloat64(locX);  // 20
+    b.addFloat64(locY);  // 21
+    b.addFloat64(value_mode);  // 22
+    b.addFloat64(hue_mode);  // 23
 */
 
     //pOutPort->write(b);

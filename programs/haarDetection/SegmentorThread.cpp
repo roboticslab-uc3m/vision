@@ -66,7 +66,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
         fx_d,fy_d,cx_d,cy_d);
 
-    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt();
+    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt32();
     if (rf.check("xmlCascade")) xmlCascade = rf.find("xmlCascade").asString();
 
     printf("--------------------------------------------------------------\n");
@@ -176,9 +176,9 @@ void SegmentorThread::run() {
             yarp::sig::draw::addRectangleOutline(outYarpImg,green,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
                                 faces[i].width/2,faces[i].height/2);
 
-            output.addDouble( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
-            output.addDouble( mmY_tmp );    // Points down.
-            output.addDouble( mmZ_tmp );    // Points forward.
+            output.addFloat64( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
+            output.addFloat64( mmY_tmp );    // Points down.
+            output.addFloat64( mmZ_tmp );    // Points forward.
         }
         else
         {

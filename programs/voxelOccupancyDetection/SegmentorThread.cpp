@@ -93,10 +93,10 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 
     if (rf.check("algorithm")) algorithm = rf.find("algorithm").asString();
     if (rf.check("locate")) locate = rf.find("locate").asString();
-    if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt();
-    if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asDouble();
-    if (rf.check("morphOpening")) morphOpening = rf.find("morphOpening").asDouble();
-    if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt();
+    if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt32();
+    if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asFloat64();
+    if (rf.check("morphOpening")) morphOpening = rf.find("morphOpening").asFloat64();
+    if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt32();
 
     printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
         fx_d,fy_d,cx_d,cy_d);
@@ -112,10 +112,10 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
     }
     printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
 
-    if (rf.check("outImage")) outImage = rf.find("outImage").asInt();
-    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt();
-    if (rf.check("threshold")) threshold = rf.find("threshold").asInt();
-    if (rf.check("seeBounding")) seeBounding = rf.find("seeBounding").asInt();
+    if (rf.check("outImage")) outImage = rf.find("outImage").asInt32();
+    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt32();
+    if (rf.check("threshold")) threshold = rf.find("threshold").asInt32();
+    if (rf.check("seeBounding")) seeBounding = rf.find("seeBounding").asInt32();
     printf("SegmentorThread using outImage: %d, rateMs: %d, seeBounding: %d, threshold: %d.\n",
         outImage, rateMs, seeBounding, threshold);
 
@@ -222,8 +222,8 @@ void SegmentorThread::run() {
                     std::cout<<" Y "<<y<<std::endl;
                     std::cout<<" Z "<<depth.pixel(j,i)<<std::endl;
                     //std::cout<<" Incremento "<<ix<<std::endl;
-                    //output.addDouble(x);
-                    //output.addDouble(y);
+                    //output.addFloat64(x);
+                    //output.addFloat64(y);
                     //std::cout<<" PIXEL "<<x<<" "<<y<<" is considered occupied"<<std::endl;
                     pOutPort->write(output);
 
@@ -240,8 +240,8 @@ void SegmentorThread::run() {
                                 if(depth.pixel(j,i)<((float(r+1)/voxelResolution)*areaRegion+areaLowThreshold)){
                                     std::cout<<"I AM IN A VOXEL "<<std::endl;
                                     output.clear(); //Clear bottle
-                                    output.addInt(c);
-                                    output.addInt(r);
+                                    output.addInt32(c);
+                                    output.addInt32(r);
                                     pOutPort->write(output);
                                     yarp::os::Time::delay(0.1);
                                     std::cout<<"!!!!!!!!!!!!!!!!!!!!!ENTRE EN EL VOXEL"<<c<<" "<<r<<std::endl;
@@ -294,8 +294,8 @@ void SegmentorThread::run() {
                     std::cout<<" Y "<<y<<std::endl;
                     std::cout<<" Z "<<depth.pixel(j,i)<<std::endl;
                     //std::cout<<" Incremento "<<ix<<std::endl;
-                    //output.addInt(x);
-                    //output.addInt(y);
+                    //output.addInt32(x);
+                    //output.addInt32(y);
                     int uix=(highXBox-lowXBox)/numberUtilityVoxels;
                     //std::cout<<" PIXEL "<<x<<" "<<y<<" is considered occupied"<<std::endl;
                     pOutPort->write(output);
@@ -304,8 +304,8 @@ void SegmentorThread::run() {
                         if(lowXBox<x && x<(lowXBox+(c+1)*uix) && lowYBox<y && y<highYBox){ //Voxel_column
                             std::cout<<"UTILITY VOXEL "<<std::endl;
                             output.clear(); //Clear bottle
-                            output.addInt(c);
-                            output.addInt(voxelResolution);
+                            output.addInt32(c);
+                            output.addInt32(voxelResolution);
                             pOutPort->write(output);
                             yarp::os::Time::delay(0.1);
                             std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ENTRE EN EL VOXEL"<<" "<<c<<voxelResolution<<std::endl;

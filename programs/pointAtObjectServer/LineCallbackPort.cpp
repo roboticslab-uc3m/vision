@@ -14,7 +14,7 @@ void LineCallbackPort::onRead(yarp::os::Bottle& b) {
         return;
     }
     double lineCoords[6];
-/*    for(int i=0;i<6;i++) lineCoords[i] = b.get(i).asDouble(); */
+/*    for(int i=0;i<6;i++) lineCoords[i] = b.get(i).asFloat64(); */
 ///////////////////////////////////////////////////
     for (int i=0; i<b.size(); i++) {  // Parse each of the 2 elements
         if(!b.get(i).isList()) {  // Check if element is a list
@@ -26,8 +26,8 @@ void LineCallbackPort::onRead(yarp::os::Bottle& b) {
             fprintf(stderr,"[error] for now only parsing 3-double lists\n");
             return;  // case: other --> still not implemented
         }
-        if(i==0) for(int i=0;i<3;i++) lineCoords[i] = inListElement->get(i).asDouble();
-        else for(int i=0;i<3;i++) lineCoords[i+3] = inListElement->get(i).asDouble();
+        if(i==0) for(int i=0;i<3;i++) lineCoords[i] = inListElement->get(i).asFloat64();
+        else for(int i=0;i<3;i++) lineCoords[i+3] = inListElement->get(i).asFloat64();
     }
 ///////////////////////////////////////////////
     printf("[LineCallbackPort] coord1: %f %f %f\t",lineCoords[0],lineCoords[1],lineCoords[2]);

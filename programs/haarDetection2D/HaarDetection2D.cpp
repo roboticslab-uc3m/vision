@@ -36,7 +36,7 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
 
     if (rf.check("cropSelector"))
     {
-        cropSelector = rf.find("cropSelector").asInt();
+        cropSelector = rf.find("cropSelector").asInt32();
     }
 
     CD_INFO("Using cropSelector: %d.\n", cropSelector);
@@ -58,7 +58,7 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
 
     if (rf.check("watchdog"))
     {
-        watchdog = rf.find("watchdog").asDouble();
+        watchdog = rf.find("watchdog").asFloat64();
     }
 
     CD_INFO("Using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s.\n",

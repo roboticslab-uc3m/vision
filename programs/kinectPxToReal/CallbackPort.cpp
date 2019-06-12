@@ -45,10 +45,10 @@ void CallbackPort::onRead(yarp::os::Bottle& b) {
     yarp::os::Bottle outLists;
     for (int i=0; i<b.size(); i++) {
         yarp::os::Bottle* pxCoords = b.get(i).asList();
-        int pxX = pxCoords->get(0).asDouble();
-        int pxY = pxCoords->get(1).asDouble();
-        int width = pxCoords->get(2).asInt();
-        int height = pxCoords->get(3).asInt();
+        int pxX = pxCoords->get(0).asFloat64();
+        int pxY = pxCoords->get(1).asFloat64();
+        int width = pxCoords->get(2).asInt32();
+        int height = pxCoords->get(3).asInt32();
         yarp::sig::ImageOf<yarp::sig::PixelFloat> depth;
         if (!irgbdSensor->getDepthImage(depth)) {
             printf("[CallbackPort] No depth image yet.\n");
@@ -61,9 +61,9 @@ void CallbackPort::onRead(yarp::os::Bottle& b) {
         yarp::os::Bottle mmOut;
         double mmX = 1000.0 * (pxX - (cx * mmZ/1000.0)) / fx;
         double mmY = 1000.0 * (pxY - (cy * mmZ/1000.0)) / fy;
-        mmOut.addDouble(mmX);
-        mmOut.addDouble(mmY);
-        mmOut.addDouble(mmZ);
+        mmOut.addFloat64(mmX);
+        mmOut.addFloat64(mmY);
+        mmOut.addFloat64(mmZ);
         if(mmZ != 0) outLists.addList() = mmOut;
     }
     outPort->write(outLists);

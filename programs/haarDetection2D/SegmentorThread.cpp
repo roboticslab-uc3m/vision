@@ -58,7 +58,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     if (rf.check("rateMs"))
     {
-        rateMs = rf.find("rateMs").asInt();
+        rateMs = rf.find("rateMs").asInt32();
     }
 
     if (rf.check("xmlCascade"))
@@ -148,8 +148,8 @@ void SegmentorThread::run()
             double cX = 2.0 * pxX / inCvMat.rows - 1.0;
             double cY = 2.0 * pxY / inCvMat.cols - 1.0;
 
-            output.addDouble(cX); // Points right
-            output.addDouble(cY); // Points down
+            output.addFloat64(cX); // Points right
+            output.addFloat64(cY); // Points down
         }
         else
         {

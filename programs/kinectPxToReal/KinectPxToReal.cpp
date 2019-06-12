@@ -39,7 +39,7 @@ bool KinectPxToReal::configure(yarp::os::ResourceFinder &rf) {
     if(rf.check("RGBDDevice")) strRGBDDevice = rf.find("RGBDDevice").asString();
     if(rf.check("RGBDLocal")) strRGBDLocal = rf.find("RGBDLocal").asString();
     if(rf.check("RGBDRemote")) strRGBDRemote = rf.find("RGBDRemote").asString();
-    if(rf.check("watchdog")) watchdog = rf.find("watchdog").asDouble();
+    if(rf.check("watchdog")) watchdog = rf.find("watchdog").asFloat64();
 
     fprintf(stdout,"KinectPxToReal using watchdog [s]: %f.\n",watchdog);
     fprintf(stdout,"--------------------------------------------------------------\n");
