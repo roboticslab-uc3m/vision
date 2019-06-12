@@ -8,6 +8,7 @@
 #include <yarp/os/Port.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/PeriodicThread.h>
+#include <yarp/os/Property.h>
 
 #include <yarp/dev/all.h>
 #include <yarp/dev/IRGBDSensor.h>
@@ -21,12 +22,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
-
-// thanks! https://web.stanford.edu/~qianyizh/projects/scenedata.html
-#define DEFAULT_FX_D          525.0  // 640x480
-#define DEFAULT_FY_D          525.0  //
-#define DEFAULT_CX_D          319.5  //
-#define DEFAULT_CY_D          239.5  //
 
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_SEE_BOUNDING 3

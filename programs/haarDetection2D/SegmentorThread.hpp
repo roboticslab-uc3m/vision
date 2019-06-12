@@ -19,12 +19,6 @@
 
 #include <ColorDebug.h>
 
-// http://web.archive.org/web/20150524152748/https://web.stanford.edu/~qianyizh/projects/scenedata.html
-#define DEFAULT_FX_D          525.0  // 640x480
-#define DEFAULT_FY_D          525.0  //
-#define DEFAULT_CX_D          319.5  //
-#define DEFAULT_CY_D          239.5  //
-
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
 
@@ -99,7 +93,6 @@ private:
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
 
-    double fx_d, fy_d, cx_d, cy_d;
     int cropSelector;
 
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *outCropSelectorImg;

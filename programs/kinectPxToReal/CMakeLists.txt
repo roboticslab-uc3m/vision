@@ -10,7 +10,7 @@ add_executable(kinectPxToReal main.cpp
 
 target_link_libraries(kinectPxToReal YARP::YARP_OS
                                      YARP::YARP_init
-                                     YARP::YARP_sig)
+                                     YARP::YARP_dev)
 
 install(TARGETS kinectPxToReal
         DESTINATION ${CMAKE_INSTALL_BINDIR})
