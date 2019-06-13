@@ -1,9 +1,9 @@
 <application>
-<name>example colorRegionDetection local App</name>
+    <name>example colorRegionDetection local App</name>
 
     <module>
         <name>colorRegionDetection</name>
-        <parameters>--kinectDevice OpenNI2DeviceServer --depthVideoMode 4 --colorVideoMode 9 --noRGBMirror --noDepthMirror --maxNumBlobs 1 --algorithm redMinusGreen --outFeaturesFormat 1</parameters>
+        <parameters>--context sensors --from asus-xtion.ini --RGBDDevice RGBDSensorWrapper --maxNumBlobs 1 --algorithm redMinusGreen --outFeaturesFormat 1</parameters>
         <node>localhost</node>
     </module>
     <module>
@@ -17,4 +17,3 @@
     </connection>
 
 </application>
-
