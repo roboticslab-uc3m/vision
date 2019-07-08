@@ -8,7 +8,7 @@
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
 #define DEFAULT_RGBD_DEVICE "RGBDSensorClient"
 #define DEFAULT_RGBD_LOCAL "/voxelOccupancyDetection"
-#define DEFAULT_RGBD_REMOTE "/rgbd"
+#define DEFAULT_RGBD_REMOTE "/xtion"
 #define DEFAULT_WATCHDOG    2       // [s]
 
 
