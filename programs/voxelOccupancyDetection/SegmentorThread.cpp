@@ -68,16 +68,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     highHThreshold= DEFAULT_HIGH_H_THRESHOLD;
 
 
-
-    RGBDCalibrationValue=DEFAULT_CALIBRATION_VALUE_KINECT;
-    lowXBox=DEFAULT_LOW_X_BOX_VALUE;
-    highXBox=DEFAULT_HIGH_X_BOX_VALUE;
-    lowYBox=DEFAULT_LOW_Y_BOX_VALUE;
-    highYBox=DEFAULT_HIGH_Y_BOX_VALUE;
-
-
-
-
     printf("--------------------------------------------------------------\n");
     if (rf.check("help")) {
         printf("SegmentorThread options:\n");
