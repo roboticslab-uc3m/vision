@@ -29,9 +29,20 @@
 
 //VoxelOccupancy Constants
 #define DEFAULT_SEARCH_AREA_DILATATION 10
-#define DEFAULT_AREA_LOW_THRESHOLD 0.730 //m; TV Dimensions
-#define DEFAULT_AREA_HIGH_THRESHOLD 1.250 //m; TV Dimensions
+#define DEFAULT_DEPTH_LOW_THRESHOLD 0.730 //m; TV Dimensions
+#define DEFAULT_DEPTH_HIGH_THRESHOLD 1.250 //m; TV Dimensions
 #define DEFAULT_OCCUPANCY_THRESHOLD 100
+#define DEFAULT_VOXEL_RESOLUTION 4 //this is the number of voxel per row.
+#define DEFAULT_UTILITY_DEPTH_LOW_THRESHOLD 1.350 //m;
+#define DEFAULT_UTILITY_DEPTH_HIGH_THRESHOLD 1.450 //mm;
+#define DEFAULT_NUMBER_UTILITY_VOXELS 4
+// W and H threshold are as a function of the total value.
+#define DEFAULT_LOW_W_THRESHOLD 0.2
+#define DEFAULT_HIGH_W_THRESHOLD 0.8
+#define DEFAULT_LOW_H_THRESHOLD 0.45
+#define DEFAULT_HIGH_H_THRESHOLD 0.54
+
+
 //#define DEFAULT_CALIBRATION_VALUE_KINECT 0.001923 //This is an approximation (for better results a calibration may be needed)
 //#define DEFAULT_CALIBRATION_VALUE_KINECT 1.923
 #define DEFAULT_CALIBRATION_VALUE_KINECT 1.923
@@ -41,10 +52,6 @@
 //#define DEFAULT_HIGH_X_BOX_VALUE 184
 #define DEFAULT_LOW_X_BOX_VALUE -400
 #define DEFAULT_HIGH_X_BOX_VALUE 325
-#define DEFAULT_VOXEL_RESOLUTION 4 //this is the number of voxel per row.
-#define DEFAULT_UTILITY_AREA_LOW_THRESHOLD 1.350 //m;
-#define DEFAULT_UTILITY_AREA_HIGH_THRESHOLD 1.450 //mm;
-#define DEFAULT_NUMBER_UTILITY_VOXELS 4
 
 namespace roboticslab
 {
@@ -128,18 +135,23 @@ private:
 
     //VoxelOccupancy specific variables
     int searchAreaDilatation;
-    int areaLowThreshold;
-    int areaHighThreshold;
+    float depthLowThreshold;
+    float depthHighThreshold;
     int occupancyThreshold;
+    int voxelResolution;
+    float utilityDepthLowThreshold;
+    float utilityDepthHighThreshold;
+    int numberUtilityVoxels;
+    float lowWThreshold;
+    float highWThreshold;
+    float lowHThreshold;
+    float highHThreshold;
+
     double RGBDCalibrationValue;
     int lowXBox;
     int highXBox;
     int lowYBox;
     int highYBox;
-    int voxelResolution;
-    int utilityAreaLowThreshold;
-    int utilityAreaHighThreshold;
-    int numberUtilityVoxels;
 
 public:
     SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}

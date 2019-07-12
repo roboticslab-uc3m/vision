@@ -55,18 +55,25 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     threshold = DEFAULT_THRESHOLD;
     //VoxelOccupancy
     searchAreaDilatation=DEFAULT_SEARCH_AREA_DILATATION;
-    areaLowThreshold=DEFAULT_AREA_LOW_THRESHOLD;
-    areaHighThreshold=DEFAULT_AREA_HIGH_THRESHOLD;
+    depthLowThreshold=DEFAULT_DEPTH_LOW_THRESHOLD;
+    depthHighThreshold=DEFAULT_DEPTH_HIGH_THRESHOLD;
     occupancyThreshold=DEFAULT_OCCUPANCY_THRESHOLD;
+    voxelResolution=DEFAULT_VOXEL_RESOLUTION;
+    utilityDepthLowThreshold=DEFAULT_UTILITY_DEPTH_LOW_THRESHOLD;
+    utilityDepthHighThreshold=DEFAULT_UTILITY_DEPTH_HIGH_THRESHOLD;
+    numberUtilityVoxels=DEFAULT_NUMBER_UTILITY_VOXELS;
+    lowWThreshold= DEFAULT_LOW_W_THRESHOLD;
+    highWThreshold= DEFAULT_HIGH_W_THRESHOLD;
+    lowHThreshold= DEFAULT_LOW_H_THRESHOLD;
+    highHThreshold= DEFAULT_HIGH_H_THRESHOLD;
+
+
+
     RGBDCalibrationValue=DEFAULT_CALIBRATION_VALUE_KINECT;
     lowXBox=DEFAULT_LOW_X_BOX_VALUE;
     highXBox=DEFAULT_HIGH_X_BOX_VALUE;
     lowYBox=DEFAULT_LOW_Y_BOX_VALUE;
     highYBox=DEFAULT_HIGH_Y_BOX_VALUE;
-    voxelResolution=DEFAULT_VOXEL_RESOLUTION;
-    utilityAreaLowThreshold=DEFAULT_UTILITY_AREA_LOW_THRESHOLD;
-    utilityAreaHighThreshold=DEFAULT_UTILITY_AREA_HIGH_THRESHOLD;
-    numberUtilityVoxels=DEFAULT_NUMBER_UTILITY_VOXELS;
 
 
 
@@ -181,64 +188,44 @@ void SegmentorThread::run() {
     yarp::os::Bottle output;
     output.clear(); //Clear bottle
 
-    //Find pixels with a depth inside the interest area (occupancy pixels)
+    //Define bounds
+    int lowH= floor(lowHThreshold*H);
+    int highH= ceil(highHThreshold*H);
+    int lowW= floor(lowWThreshold*W);
+    int highW= ceil(highWThreshold*W);
 
     //"Explore" loop
-    for(int i=floor(0.45*H); i<ceil(0.54*H); i++){ //Camera H umbral (0.45,0.54)H. The region of search is something like a horizontal line.
-        for(int j=0; j<W;j++){
-            //if(!depth.pixel(j,i)){
-            //    printf("pixel vacio \n");
-            //}
-            //First convert to REAL WORLD coordinates to use the real area
-            double x = (j-W/2)*depth.pixel(j,i)*RGBDCalibrationValue;
-            double y = (i-H/2)*depth.pixel(j,i)*RGBDCalibrationValue;
+    for(int i=lowH; i<highH; i++){ //Camera H umbral (lowHThreshold,highHThreshold)H. The region of search is something like a horizontal line.
+        for(int j=lowW; j<highW;j++){
+
+            //double x = (j-W/2);
 
             //We have 4 voxel.
-            int ix=(highXBox-lowXBox)/voxelResolution;
-            int areaRegion=areaHighThreshold-areaLowThreshold;
-
-            //Is inside the search area?
-            //if(depth.pixel(j,i)<2.0){
-            //    printf("%f \n",depth.pixel(j,i));
-            //}
-            //yarp::os::Time::delay(0.1);
-            /*
-            printf("ix is %d \n",ix);
-            printf("areaRegion is %d \n",areaRegion);
-            */
-
-            //if(lowXBox<x && x<highXBox){
-            //    printf("x is %f \n",x);
-            //    printf("y is %f \n",y);
-            //}
-            /*
-            printf("lowXBox is %d \n",lowXBox);
-            printf("highXBox is %d \n",highXBox);
-            printf("lowYBox is %d \n",lowYBox);
-            printf("highYBox is %d \n",highYBox);
-            printf("areaLowThreshold is %d \n",areaLowThreshold);
-            printf("areaHighThreshold is %d \n",areaHighThreshold);
-            */
-
+            int ix=(highW-lowW)/voxelResolution;
+            int depthRegion=depthHighThreshold-depthLowThreshold;
             //yarp::os::Time::delay();
-            if(lowXBox<x && x<highXBox && lowYBox<y && y<highYBox && areaLowThreshold<depth.pixel(j,i) && depth.pixel(j,i)<areaHighThreshold){
+
+            //check depth
+            if(depthLowThreshold<depth.pixel(j,i) && depth.pixel(j,i)<depthHighThreshold){
                 //Calculate the number of occupancy pixels around that pixel.
+                //std::cout<<"Entre con una depth de "<<depth.pixel(j,i)<<" en "<<depthLowThreshold<<" y "<<depthHighThreshold<<std::endl;
                 int numberOccupancyIndices=0;
 
                 //Define a search area to see the occupancy around that pixel.
-                int lowX=j-searchAreaDilatation;
-                int highX=j+searchAreaDilatation;
-                if(lowX<0){
-                    lowX=0;
+                int lowWOcCheck=j-searchAreaDilatation;
+                int highWOcCheck=j+searchAreaDilatation;
+                if(lowWOcCheck<0){
+                    lowWOcCheck=0;
                 }
-                if(highX>W){
-                    highX=W;
+                if(highWOcCheck>W){
+                    highWOcCheck=W;
                 }
 
                 //Check area around detected pixel for pixel occupancy.
-                for(int k=floor(0.45*H); k<ceil(0.54*H); k++){
-                    for(int l=lowX; l<highX;l++){
-                        if(depth.pixel(l,k)<areaHighThreshold && depth.pixel(l,k)>areaLowThreshold){
+                for(int k=lowH; k<highH; k++){
+                    for(int l=lowWOcCheck; l<highWOcCheck;l++){
+                        std::cout<<"Hasta aqui llego "<<std::endl;
+                        if(depth.pixel(l,k)<depthHighThreshold && depth.pixel(l,k)>depthLowThreshold){
                             numberOccupancyIndices++;
                         }
                     }
@@ -246,29 +233,16 @@ void SegmentorThread::run() {
 
                 //If we have more occupancy pixels than the threshold, that pixel is considered occupied.
                 if(numberOccupancyIndices>occupancyThreshold){
-                    //std::cout<<" X "<<x<<std::endl;
-                    //std::cout<<" Y "<<y<<std::endl;
-                    //std::cout<<" Z "<<depth.pixel(j,i)<<std::endl;
-                    //std::cout<<" Incremento "<<ix<<std::endl;
-                    //output.addFloat64(x);
-                    //output.addFloat64(y);
-                    //std::cout<<" PIXEL "<<x<<" "<<y<<" is considered occupied"<<std::endl;
-                    pOutPort->write(output);
 
-                    //std::cout<<"The x limits are: "<<lowXBox<<" "<<highXBox<<std::endl;
-                    //std::cout<<"The y limits are: "<<lowYBox<<" "<<highYBox<<std::endl;
-
+                    //????pOutPort->write(output);
+                    //Find the voxel it belongs
                     for(int c=0;c<voxelResolution;c++){
-                        if(lowXBox<x && x<(lowXBox+(c+1)*ix) && lowYBox<y && y<highYBox){ //Voxel_column
-                            //std::cout<<"I AM IN A ROW"<<std::endl;
+                        if(j<(lowW+(c+1)*ix)){ //Find Voxel_column
                             for(int r=0; r<voxelResolution; r++){
-                                //std::cout<<c<<std::endl;
-                                //double bonud=(float(c+1)/(voxelResolution*2))*areaRegion+areaLowThreshold;
-                                //std::cout<<"Has to be lower than "<<bonud<<std::endl;
-                                if(depth.pixel(j,i)<((float(r+1)/voxelResolution)*areaRegion+areaLowThreshold)){
-                                    //std::cout<<"I AM IN A VOXEL "<<std::endl;
-                                    //std::cout<<"Tengo una depth de: "<<depth.pixel(j,i)<<std::endl;
+                                if(depth.pixel(j,i)<((float(r+1)/voxelResolution)*depthRegion+depthLowThreshold)){ //Find voxel row
+                                    std::cout<<"Con una depth de "<<depth.pixel(j,i)<<" entre en "<<r<<std::endl;
                                     output.clear(); //Clear bottle
+                                    // Send it out
                                     output.addInt32(c);
                                     output.addInt32(r);
                                     pOutPort->write(output);
@@ -291,26 +265,24 @@ void SegmentorThread::run() {
 
 
             //Is inside the utility area
-            else if(lowXBox<x && x<highXBox && lowYBox<y && y<highYBox && utilityAreaLowThreshold<depth.pixel(j,i) && depth.pixel(j,i)<utilityAreaHighThreshold){
+            else if(utilityDepthLowThreshold<depth.pixel(j,i) && depth.pixel(j,i)<utilityDepthHighThreshold){
                 //Calculate the number of occupancy pixels around that pixel.
                 int numberOccupancyIndices=0;
-                //std::cout<<" VAMOS CON LOS UTILITY PIXELS "<<std::endl;
-
 
                 //Define a search area to see the occupancy around that pixel.
-                int lowX=j-searchAreaDilatation;
-                int highX=j+searchAreaDilatation;
-                if(lowX<0){
-                    lowX=0;
+                int lowWOcCheck=j-searchAreaDilatation;
+                int highWOcCheck=j+searchAreaDilatation;
+                if(lowWOcCheck<0){
+                    lowWOcCheck=0;
                 }
-                if(highX>W){
-                    highX=W;
+                if(highWOcCheck>W){
+                    highWOcCheck=W;
                 }
 
                 //Check area around detected pixel for pixel occupancy.
-                for(int k=floor(0.45*H); k<ceil(0.54*H); k++){
-                    for(int l=lowX; l<highX;l++){
-                        if(depth.pixel(l,k)<utilityAreaHighThreshold && depth.pixel(l,k)>utilityAreaLowThreshold){
+                for(int k=lowH; k<highH; k++){
+                    for(int l=lowWOcCheck; l<highWOcCheck;l++){
+                        if(depth.pixel(l,k)<depthHighThreshold && depth.pixel(l,k)>depthLowThreshold){
                             numberOccupancyIndices++;
                         }
                     }
@@ -318,20 +290,12 @@ void SegmentorThread::run() {
 
                 //If we have more occupancy pixels than the threshold, that pixel is considered occupied.
                 if(numberOccupancyIndices>occupancyThreshold){
-                    /*
-                    std::cout<<" X "<<x<<std::endl;
-                    std::cout<<" Y "<<y<<std::endl;
-                    std::cout<<" Z "<<depth.pixel(j,i)<<std::endl;
-                    */
-                    //std::cout<<" Incremento "<<ix<<std::endl;
-                    //output.addInt32(x);
-                    //output.addInt32(y);
-                    int uix=(highXBox-lowXBox)/numberUtilityVoxels;
-                    //std::cout<<" PIXEL "<<x<<" "<<y<<" is considered occupied"<<std::endl;
-                    pOutPort->write(output);
+
+                    int uix=(highW-lowW)/numberUtilityVoxels;
+                    //pOutPort->write(output);
 
                     for(int c=0;c<numberUtilityVoxels;c++){
-                        if(lowXBox<x && x<(lowXBox+(c+1)*uix) && lowYBox<y && y<highYBox){ //Voxel_column
+                        if(j<(lowW+(c+1)*uix)){ //Voxel_column
                             std::cout<<"UTILITY VOXEL "<<std::endl;
                             output.clear(); //Clear bottle
                             output.addInt32(c);
@@ -349,7 +313,7 @@ void SegmentorThread::run() {
         //*****Delete the area pixels that have already been searched without success*****
         if(!occupancy_indices.empty()){
             for(int m=0; m<(occupancy_indices.size()-1); m++){
-                for(int k=floor(0.45*H); k<ceil(0.54*H); k++){
+                for(int k=lowH; k<highH; k++){
                     for(int l=occupancy_indices[m]-searchAreaDilatation; l<occupancy_indices[m]+searchAreaDilatation;l++){
                         //Reset all the pixels in the areas already searched
                         depth.pixel(l,k)=0;
