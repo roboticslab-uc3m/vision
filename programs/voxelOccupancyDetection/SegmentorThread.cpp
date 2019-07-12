@@ -202,7 +202,7 @@ void SegmentorThread::run() {
 
             //We have 4 voxel.
             int ix=(highW-lowW)/voxelResolution;
-            int depthRegion=depthHighThreshold-depthLowThreshold;
+            float depthRegion=depthHighThreshold-depthLowThreshold;
             //yarp::os::Time::delay();
 
             //check depth
@@ -214,17 +214,24 @@ void SegmentorThread::run() {
                 //Define a search area to see the occupancy around that pixel.
                 int lowWOcCheck=j-searchAreaDilatation;
                 int highWOcCheck=j+searchAreaDilatation;
+                int lowHOcCheck=i-searchAreaDilatation;
+                int highHOcCheck=i+searchAreaDilatation;
                 if(lowWOcCheck<0){
                     lowWOcCheck=0;
                 }
                 if(highWOcCheck>W){
                     highWOcCheck=W;
                 }
-
+                if(lowHOcCheck<0){
+                    lowHOcCheck=0;
+                }
+                if(highHOcCheck>H){
+                    highHOcCheck=H;
+                }
+                //std::cout<<"Los bordes son "<<depthHighThreshold<<"y por abajo "<<depthLowThreshold<<std::endl;
                 //Check area around detected pixel for pixel occupancy.
-                for(int k=lowH; k<highH; k++){
+                for(int k=lowHOcCheck; k<highHOcCheck; k++){
                     for(int l=lowWOcCheck; l<highWOcCheck;l++){
-                        std::cout<<"Hasta aqui llego "<<std::endl;
                         if(depth.pixel(l,k)<depthHighThreshold && depth.pixel(l,k)>depthLowThreshold){
                             numberOccupancyIndices++;
                         }
@@ -233,14 +240,13 @@ void SegmentorThread::run() {
 
                 //If we have more occupancy pixels than the threshold, that pixel is considered occupied.
                 if(numberOccupancyIndices>occupancyThreshold){
-
                     //????pOutPort->write(output);
                     //Find the voxel it belongs
                     for(int c=0;c<voxelResolution;c++){
                         if(j<(lowW+(c+1)*ix)){ //Find Voxel_column
                             for(int r=0; r<voxelResolution; r++){
                                 if(depth.pixel(j,i)<((float(r+1)/voxelResolution)*depthRegion+depthLowThreshold)){ //Find voxel row
-                                    std::cout<<"Con una depth de "<<depth.pixel(j,i)<<" entre en "<<r<<std::endl;
+                                    //std::cout<<"Con una depth de "<<depth.pixel(j,i)<<" entre en "<<r<<std::endl;
                                     output.clear(); //Clear bottle
                                     // Send it out
                                     output.addInt32(c);
@@ -272,15 +278,23 @@ void SegmentorThread::run() {
                 //Define a search area to see the occupancy around that pixel.
                 int lowWOcCheck=j-searchAreaDilatation;
                 int highWOcCheck=j+searchAreaDilatation;
+                int lowHOcCheck=i-searchAreaDilatation;
+                int highHOcCheck=i+searchAreaDilatation;
                 if(lowWOcCheck<0){
                     lowWOcCheck=0;
                 }
                 if(highWOcCheck>W){
                     highWOcCheck=W;
                 }
-
+                if(lowHOcCheck<0){
+                    lowHOcCheck=0;
+                }
+                if(highHOcCheck>H){
+                    highHOcCheck=H;
+                }
+                //std::cout<<"Los bordes son "<<depthHighThreshold<<"y por abajo "<<depthLowThreshold<<std::endl;
                 //Check area around detected pixel for pixel occupancy.
-                for(int k=lowH; k<highH; k++){
+                for(int k=lowHOcCheck; k<highHOcCheck; k++){
                     for(int l=lowWOcCheck; l<highWOcCheck;l++){
                         if(depth.pixel(l,k)<depthHighThreshold && depth.pixel(l,k)>depthLowThreshold){
                             numberOccupancyIndices++;
