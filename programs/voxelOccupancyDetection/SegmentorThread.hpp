@@ -42,17 +42,6 @@
 #define DEFAULT_LOW_H_THRESHOLD 0.45
 #define DEFAULT_HIGH_H_THRESHOLD 0.54
 
-
-//#define DEFAULT_CALIBRATION_VALUE_KINECT 0.001923 //This is an approximation (for better results a calibration may be needed)
-//#define DEFAULT_CALIBRATION_VALUE_KINECT 1.923
-#define DEFAULT_CALIBRATION_VALUE_KINECT 1.923
-#define DEFAULT_LOW_Y_BOX_VALUE -15
-#define DEFAULT_HIGH_Y_BOX_VALUE 20
-//#define DEFAULT_LOW_X_BOX_VALUE -184
-//#define DEFAULT_HIGH_X_BOX_VALUE 184
-#define DEFAULT_LOW_X_BOX_VALUE -400
-#define DEFAULT_HIGH_X_BOX_VALUE 325
-
 namespace roboticslab
 {
 
@@ -146,13 +135,6 @@ private:
     float highWThreshold;
     float lowHThreshold;
     float highHThreshold;
-
-    double RGBDCalibrationValue;
-    int lowXBox;
-    int highXBox;
-    int lowYBox;
-    int highYBox;
-
 public:
     SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
