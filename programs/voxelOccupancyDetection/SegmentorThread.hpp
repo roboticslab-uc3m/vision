@@ -30,17 +30,18 @@
 //VoxelOccupancy Constants
 #define DEFAULT_SEARCH_AREA_DILATATION 10
 #define DEFAULT_DEPTH_LOW_THRESHOLD 0.730 //m; TV Dimensions
-#define DEFAULT_DEPTH_HIGH_THRESHOLD 1.250 //m; TV Dimensions
+#define DEFAULT_DEPTH_HIGH_THRESHOLD 1.25 //m; TV Dimensions
 #define DEFAULT_OCCUPANCY_THRESHOLD 100
 #define DEFAULT_VOXEL_RESOLUTION 4 //this is the number of voxel per row.
 #define DEFAULT_UTILITY_DEPTH_LOW_THRESHOLD 1.350 //m;
 #define DEFAULT_UTILITY_DEPTH_HIGH_THRESHOLD 1.450 //mm;
 #define DEFAULT_NUMBER_UTILITY_VOXELS 4
 // W and H threshold are as a function of the total value.
-#define DEFAULT_LOW_W_THRESHOLD 0.2
-#define DEFAULT_HIGH_W_THRESHOLD 0.8
+#define DEFAULT_LOW_W_THRESHOLD 0.17
+#define DEFAULT_HIGH_W_THRESHOLD 0.87
 #define DEFAULT_LOW_H_THRESHOLD 0.45
-#define DEFAULT_HIGH_H_THRESHOLD 0.54
+#define DEFAULT_HIGH_H_THRESHOLD 0.52
+
 
 namespace roboticslab
 {
