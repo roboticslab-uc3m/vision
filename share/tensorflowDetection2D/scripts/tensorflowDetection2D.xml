@@ -32,7 +32,7 @@
         </connection>
         <connection>
                 <from>/grabber/img:i</from>
-                <to>/tensorflowDetection2D/</to>
+                <to>/tensorflowDetection2D</to>
         </connection>
         <connection>
                 <from>/tensorflowDetection2D/img:o</from>
