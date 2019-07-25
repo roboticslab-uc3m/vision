@@ -69,10 +69,6 @@ void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
 
 void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 {
-    fx_d = DEFAULT_FX_D;
-    fy_d = DEFAULT_FY_D;
-    cx_d = DEFAULT_CX_D;
-    cy_d = DEFAULT_CY_D;
 
     int rateMs = DEFAULT_RATE_MS;
 
@@ -83,37 +79,12 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
     {
         std::printf("SegmentorThread options:\n");
         std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-        std::printf("\t--fx_d (default: \"%f\")\n", fx_d);
-        std::printf("\t--fy_d (default: \"%f\")\n", fy_d);
-        std::printf("\t--cx_d (default: \"%f\")\n", cx_d);
-        std::printf("\t--cy_d (default: \"%f\")\n", cy_d);
         std::printf("\t--rateMs (default: \"%d\")\n", rateMs);
         std::printf("\t--pbTrainedModel [file.pb] (default: \"%s\")\n", trainedModel.c_str());
         std::printf("\t--pbtxtTrainedModelLabels [file.pbtxt] (default: \"%s\")\n", trainedModelLabels.c_str());
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
 
-    if (rf.check("fx_d"))
-    {
-        fx_d = rf.find("fx_d").asDouble();
-    }
-
-    if (rf.check("fy_d"))
-    {
-        fy_d = rf.find("fy_d").asDouble();
-    }
-
-    if (rf.check("cx_d"))
-    {
-        cx_d = rf.find("cx_d").asDouble();
-    }
-
-    if (rf.check("cy_d"))
-    {
-        cy_d = rf.find("cy_d").asDouble();
-    }
-
-    CD_INFO("Using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n", fx_d, fy_d, cx_d, cy_d);
 
     if (rf.check("rateMs"))
     {
