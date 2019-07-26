@@ -12,7 +12,7 @@
 `tensorflowDetection2D` module use `tensorflow` C++ API. The module detects using pre-trained models like `VGG16`, `Inception`, `ResNet`, `MobileNet` and other [pre-trained models](https://github.com/tensorflow/models/tree/master/research/slim#pre-trained-models). The module build with `cmake` instead of `bazel` using [tensorflow_cc](https://github.com/FloopCZ/tensorflow_cc). Also use `YARP` to send video source pre and post-procesed. Also admits `YARP` source video like input. The module has been tested with [handstracking model](https://github.com/victordibia/handtracking) and [ssd_mobilenet_v1_coco](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md). This module also publish detection results in `YARP` port.
 
 <p align="center">
-  <img width="400" src="./images/detection_example.png">
+  <img width="600" src="./images/detection_example.png">
   <br>Figure 1. Detection example</br>
 </p>
 
