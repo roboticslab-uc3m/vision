@@ -13,7 +13,7 @@
 
 <p align="center">
   <img src="./images/detection_example.png">
-  <br>Figura 1. Detection example</br>
+  <br>Figure 1. Detection example</br>
 </p>
 
 
