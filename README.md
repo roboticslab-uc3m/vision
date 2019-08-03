@@ -25,7 +25,7 @@ Installation instructions for installing from source can be found [here]( doc/vi
 
 ## Status
 
-[![Build Status (Linux/OSX)](https://travis-ci.org/roboticslab-uc3m/vision.svg?branch=develop)](https://travis-ci.org/roboticslab-uc3m/vision)
+[![Build Status (Linux)](https://travis-ci.com/roboticslab-uc3m/vision.svg?branch=develop)](https://travis-ci.com/roboticslab-uc3m/vision)
 
 [![Coverage Status](https://coveralls.io/repos/roboticslab-uc3m/vision/badge.svg)](https://coveralls.io/r/roboticslab-uc3m/vision)
 
