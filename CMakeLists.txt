@@ -44,6 +44,7 @@ find_package(COLOR_DEBUG REQUIRED)
 find_package(Doxygen QUIET)
 find_package(OpenCV QUIET)
 find_package(PCL 1.6 QUIET)
+find_package(TensorflowCC 1.12 QUIET)
 
 # Xenial + PCL 1.7 bug
 # https://github.com/PointCloudLibrary/pcl/issues/2406
