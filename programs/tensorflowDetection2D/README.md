@@ -33,7 +33,7 @@ yarp resource
 
 * [Install OpenCV 3.0.0+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-opencv.md)
 * [Install YARP 2.3.XX+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-yarp.md)
-* [Install tensorflow_cc: Shared library](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-opencv.md)
+* [Install tensorflow_cc: Shared library](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-tensorflow_cc.md)
 * [Install Bazel](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-bazel.md)
 
 Tested on: `ubuntu 14.04`, `ubuntu 16.04`, `ubuntu 18.04` and `lubuntu 18.04`.
@@ -44,7 +44,7 @@ Tested on: `ubuntu 14.04`, `ubuntu 16.04`, `ubuntu 18.04` and `lubuntu 18.04`.
 
 ## Related projects
 
-* [victordibia: handtracking project](https://github.com/victordibia/handtracking)[
+* [victordibia: handtracking project](https://github.com/victordibia/handtracking)
 * [lysukhin: tensorflow-object-detection-cpp example](https://github.com/lysukhin/tensorflow-object-detection-cpp)
 * [FloopCZ: tensorflow_cc project](https://github.com/FloopCZ/tensorflow_cc)
 * [Tensorflow: #1741 C++ Example to tun object detection models](https://github.com/tensorflow/models/issues/1741#issuecomment-318613222)
