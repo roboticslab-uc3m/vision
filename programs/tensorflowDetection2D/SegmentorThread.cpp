@@ -235,7 +235,10 @@ void SegmentorThread::run()
         bottle.addDouble(score_detection);
 
         std::cout<<std::endl;
-        drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
+        double *positions;
+        positions=drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
+        std::cout<<"End:"<<std::endl;
+        std::cout<<"X: "<<positions[0]<<" y: "<<positions[1]<<std::endl;
         cv::putText(inCvMat, std::to_string(fps).substr(0, 5), cv::Point(0, inCvMat.rows), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 255));
         cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
 
