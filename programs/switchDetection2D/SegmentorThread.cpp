@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include <yarp/os/Bottle.h>
 #include <yarp/sig/ImageDraw.h>
@@ -43,8 +44,8 @@ void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
 
 void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 {
+    std::string strSwitchMode;
     int rateMs = DEFAULT_RATE_MS;
-
     std::string xmlCascade = DEFAULT_XMLCASCADE;
 
     if (rf.check("help"))
@@ -53,17 +54,8 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
         std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
         std::printf("\t--rateMs (default: \"%d\")\n", rateMs);
         std::printf("\t--xmlCascade [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
+
         // Do not exit: let last layer exit so we get help from the complete chain.
-    }
-
-    if (rf.check("rateMs"))
-    {
-        rateMs = rf.find("rateMs").asInt32();
-    }
-
-    if (rf.check("xmlCascade"))
-    {
-        xmlCascade = rf.find("xmlCascade").asString();
     }
 
     if (rf.check("help"))
@@ -71,12 +63,32 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
         std::exit(1);
     }
 
-    std::string cascade = rf.findFileByName(xmlCascade);
 
-    if (cascade.empty() || !object_cascade.load(cascade))
+    if (rf.check("rateMs"))
     {
-        CD_ERROR("No cascade!\n");
-        std::exit(1);
+        rateMs = rf.find("rateMs").asInt32();
+    }
+
+    if (rf.check("switchMode"))
+    {
+        strSwitchMode = rf.find("switchMode").asString();
+    }
+
+    if(strSwitchMode=="haarDetection"){
+
+      if (rf.check("xmlCascade"))
+      {
+          xmlCascade = rf.find("xmlCascade").asString();
+      }
+      std::string cascade = rf.findFileByName(xmlCascade);
+
+      if (cascade.empty() || !object_cascade.load(cascade))
+      {
+          CD_ERROR("No cascade!\n");
+          std::exit(1);
+      }
+      std::cout<<"Modo haar"<<std::endl;
+
     }
 
     if (cropSelector != 0)
@@ -93,6 +105,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
 void SegmentorThread::run()
 {
+  /*
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
 
     if (!camera->getImage(inYarpImg))
@@ -164,5 +177,5 @@ void SegmentorThread::run()
     if (output.size() > 0)
     {
         pOutPort->write(output);
-    }
+    }*/
 }

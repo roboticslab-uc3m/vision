@@ -1,6 +1,6 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "HaarDetection2D.hpp"
+#include "SwitchDetection2D.hpp"
 
 #include <cstdio>
 #include <string>
@@ -15,7 +15,7 @@ using namespace roboticslab;
 
 /************************************************************************/
 
-bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
+bool SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
 {
     cropSelector = DEFAULT_CROP_SELECTOR;
     std::string strCameraDevice = DEFAULT_CAMERA_DEVICE;
@@ -27,7 +27,7 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
 
     if (rf.check("help"))
     {
-        std::printf("HaarDetection2D options:\n");
+        std::printf("SwitchDetection2D options:\n");
         std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
         std::printf("\t--cropSelector (default: \"%d\")\n", cropSelector);
         std::printf("\t--cameraDevice (device we create, default: \"%s\")\n", strCameraDevice.c_str());
@@ -68,7 +68,8 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
     if (rf.check("switchMode"))
     {
         strSwitchMode = rf.find("switchMode").asString();
-        strCameraLocal ="/"+strSwitchMode;
+        strCameraLocal ="/"+strSwitchMode+"2D";
+        rf.setDefaultContext(strSwitchMode);
     }
 
     CD_INFO("Using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s.\n",
@@ -132,14 +133,14 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
 
 /*****************************************************************/
 
-double HaarDetection2D::getPeriod()
+double SwitchDetection2D::getPeriod()
 {
     return watchdog;  // [s]
 }
 
 /************************************************************************/
 
-bool HaarDetection2D::updateModule()
+bool SwitchDetection2D::updateModule()
 {
     CD_INFO("Alive...\n");
     return true;
@@ -147,7 +148,7 @@ bool HaarDetection2D::updateModule()
 
 /************************************************************************/
 
-bool HaarDetection2D::interruptModule()
+bool SwitchDetection2D::interruptModule()
 {
     outImg.interrupt();
     outPort.interrupt();
@@ -163,7 +164,7 @@ bool HaarDetection2D::interruptModule()
 
 /************************************************************************/
 
-bool HaarDetection2D::close()
+bool SwitchDetection2D::close()
 {
     CD_INFO("Closing...\n");
 

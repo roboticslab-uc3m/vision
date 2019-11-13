@@ -2,8 +2,8 @@
 # Author: Juan G Victores
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
-yarp_install(FILES conf/haarDetection.ini
-                   conf/haarDetection2D.ini
+yarp_install(FILES conf/switchDetection2D.ini
+                   conf/switchDetection2D.ini
                    conf/haarcascade_cocacola_can.xml
                    conf/haarcascade_frontalface_alt.xml
                    conf/haarcascade_car.xml  
@@ -23,6 +23,6 @@ yarp_install(FILES conf/haarDetection.ini
                    conf/haarcascade_lamp.xml  
              DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/haarDetection)
 
-yarp_install(FILES scripts/example_haarDetection.xml
-                   scripts/example_haarDetection2D.xml
+yarp_install(FILES scripts/example_switchDetection.xml
+                   scripts/example_switchDetection2D.xml
              DESTINATION ${ROBOTICSLAB-VISION_APPLICATIONS_TEMPLATES_INSTALL_DIR})

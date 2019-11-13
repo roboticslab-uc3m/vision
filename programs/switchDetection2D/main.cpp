@@ -5,9 +5,9 @@
  *
  * @defgroup SwitchDetection2D SwitchDetection2D
  *
- * @brief Creates an instance of roboticslab::HaarDetection2D.
+ * @brief Creates an instance of roboticslab::SwitchDetection2D.
  *
- * @section switchDetection2DOptions SwitchDetection2D options:
+ * @section switchDetection2DOptions switchDetection2D options:
  *
  * | PROPERTY     | DESCRIPTION                          | DEFAULT          |
  * |--------------|--------------------------------------|------------------|
@@ -35,23 +35,27 @@
  * | help       |             |                              |
  * | from       | file.ini    |                              |
  * | context    | path        |                              |
+ * | switchMode |             | haarDetection                |
  * | rateMs     |             | 20                           |
  * | xmlCascade | file.xml    | haarcascade_cocacola_can.xml |
  */
 
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
-
+#include <iostream>
 #include <ColorDebug.h>
 
 #include "SwitchDetection2D.hpp"
 
+
+
 int main(int argc, char** argv)
 {
+
     yarp::os::ResourceFinder rf;
-    rf.setVerbose(true);
-    rf.setDefaultContext("switchDetection");
-    rf.setDefaultConfigFile("switchDetection2D.ini");
+    rf.setVerbose(true);;
+    rf.setDefaultContext(DEFAULT_CONTEXT_MODE);
+    rf.setDefaultConfigFile(DEFAULT_CONFIG_FILE);
     rf.configure(argc, argv);
 
     roboticslab::SwitchDetection2D mod;

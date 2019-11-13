@@ -1,5 +1,5 @@
 <application>
-    <name>example haarDetection App</name>
+    <name>example switchDetection App</name>
 
     <module>
         <name>yarpdev</name>
@@ -8,7 +8,7 @@
     </module>
 
     <module>
-        <name>haarDetection</name>
+        <name>switchDetection</name>
         <parameters>--RGBDLocal /xtion</parameters>
         <node>localhost</node>
     </module>

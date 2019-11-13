@@ -1,5 +1,5 @@
 <application>
-    <name>example haarDetection2D App</name>
+    <name>example switchDetection2D App</name>
 
     <module>
         <name>yarpdev</name>
@@ -8,7 +8,7 @@
     </module>
 
     <module>
-        <name>haarDetection2D</name>
+        <name>switchDetection2D</name>
         <parameters></parameters>
         <node>localhost</node>
     </module>

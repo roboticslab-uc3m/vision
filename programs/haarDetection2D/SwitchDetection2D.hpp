@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __HAAR_DETECTION_2D_HPP__
-#define __HAAR_DETECTION_2D_HPP__
+#ifndef __SWITCH_DETECTION_2D_HPP__
+#define __SWITCH_DETECTION_2D_HPP__
 
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/Port.h>
@@ -20,17 +20,17 @@
 #define DEFAULT_CAMERA_LOCAL "/haarDetection2D"
 #define DEFAULT_CAMERA_REMOTE "/frameGrabber2D"
 #define DEFAULT_WATCHDOG    2       // [s]
-#define DEFAULT_SWITCH_MODE    "haarDetection2D"  
+#define DEFAULT_SWITCH_MODE    "haarDetection2D"
 
 namespace roboticslab
 {
 
 /**
- * @ingroup haarDetection2D
+ * @ingroup switchDetection2D
  *
  * @brief Computer Vision segment faces.
  */
-class HaarDetection2D : public yarp::os::RFModule
+class SwitchDetection2D : public yarp::os::RFModule
 {
 private:
     SegmentorThread segmentorThread;
@@ -58,4 +58,4 @@ public:
 
 }  // namespace roboticslab
 
-#endif  // __HAAR_DETECTION_2D_HPP__
+#endif  // __SWITCH_DETECTION_2D_HPP__
