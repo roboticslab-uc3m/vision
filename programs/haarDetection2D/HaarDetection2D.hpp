@@ -20,6 +20,7 @@
 #define DEFAULT_CAMERA_LOCAL "/haarDetection2D"
 #define DEFAULT_CAMERA_REMOTE "/frameGrabber2D"
 #define DEFAULT_WATCHDOG    2       // [s]
+#define DEFAULT_SWITCH_MODE    "haarDetection2D"  
 
 namespace roboticslab
 {

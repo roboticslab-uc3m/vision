@@ -4,6 +4,7 @@
 
 #include <cstdio>
 #include <string>
+#include <iostream>
 
 #include <yarp/os/Property.h>
 #include <yarp/os/Time.h>
@@ -20,7 +21,9 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
     std::string strCameraDevice = DEFAULT_CAMERA_DEVICE;
     std::string strCameraLocal = DEFAULT_CAMERA_LOCAL;
     std::string strCameraRemote = DEFAULT_CAMERA_REMOTE;
+    std::string strSwitchMode = DEFAULT_SWITCH_MODE;
     watchdog = DEFAULT_WATCHDOG;  // double
+
 
     if (rf.check("help"))
     {
@@ -30,6 +33,7 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
         std::printf("\t--cameraDevice (device we create, default: \"%s\")\n", strCameraDevice.c_str());
         std::printf("\t--cameraLocal (if accesing remote, local port name, default: \"%s\")\n", strCameraLocal.c_str());
         std::printf("\t--cameraRemote (if accesing remote, remote port name, default: \"%s\")\n", strCameraRemote.c_str());
+        std::printf("\t--switchMode (default: \"%s\")\n", strSwitchMode.c_str());
         std::printf("\t--watchdog ([s] default: \"%f\")\n", watchdog);
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
@@ -61,10 +65,17 @@ bool HaarDetection2D::configure(yarp::os::ResourceFinder &rf)
         watchdog = rf.find("watchdog").asFloat64();
     }
 
+    if (rf.check("switchMode"))
+    {
+        strSwitchMode = rf.find("switchMode").asString();
+        strCameraLocal ="/"+strSwitchMode;
+    }
+
     CD_INFO("Using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s.\n",
         strCameraDevice.c_str(), strCameraLocal.c_str(), strCameraRemote.c_str());
-
+    CD_INFO("Using switchMode: %s.\n", strSwitchMode.c_str());
     CD_INFO("Using watchdog: %f.\n", watchdog);
+
 
     if (!rf.check("help"))
     {
