@@ -44,7 +44,6 @@ void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
 
 void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 {
-    std::string strSwitchMode;
     int rateMs = DEFAULT_RATE_MS;
     std::string xmlCascade = DEFAULT_XMLCASCADE;
 
@@ -87,7 +86,9 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
           CD_ERROR("No cascade!\n");
           std::exit(1);
       }
-      std::cout<<"Modo haar"<<std::endl;
+    }else if(strSwitchMode=="colorRegionDetection"){
+
+    }else if(strSwitchMode=="tensorflowDetection"){
 
     }
 
@@ -105,6 +106,17 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
 void SegmentorThread::run()
 {
+
+  if(strSwitchMode=="haarDetection"){
+
+    std::cout<<"Ejecutando haarDetection2D"<<std::endl;
+  }else if(strSwitchMode=="colorRegionDetection"){
+
+std::cout<<"Ejecutando colorRegionDetection2D"<<std::endl;
+}else if(strSwitchMode=="tensorflowDetection"){
+
+std::cout<<"Ejecutando tensorflowDetection2D"<<std::endl;
+  }
   /*
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
 

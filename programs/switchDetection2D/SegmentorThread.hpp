@@ -26,9 +26,9 @@ namespace roboticslab
 {
 
 /**
- * @ingroup haarDetection2D
+ * @ingroup switchDetection2D
  *
- * @brief Implements haarDetection2D callback on Bottle.
+ * @brief Implements switchDetection2D callback on Bottle.
  */
 class DataProcessor : public yarp::os::PortReader
 {
@@ -79,12 +79,13 @@ public:
     int x, y, w, h;
 
     bool waitForFirst;
+
 };
 
 /**
- * @ingroup haarDetection2D
+ * @ingroup switchDetection2D
  *
- * @brief Implements haarDetection2D PeriodicThread.
+ * @brief Implements switchDetection2D PeriodicThread.
  */
 class SegmentorThread : public yarp::os::PeriodicThread
 {
@@ -101,6 +102,7 @@ private:
     DataProcessor processor;
 
     cv::CascadeClassifier object_cascade;
+    std::string strSwitchMode="haarDetection";
 
 public:
     SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}

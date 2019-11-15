@@ -28,7 +28,7 @@ namespace roboticslab
 {
 
 /**
- * @ingroup haarDetection2D
+ * @ingroup switchDetection2D
  *
  * @brief Computer Vision segment faces.
  */
