@@ -75,6 +75,10 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
     if (rf.check("switchMode"))
     {
         strSwitchMode = rf.find("switchMode").asString();
+        if(strSwitchMode!="haarDetection"||strSwitchMode!="tensorflowDetection"||strSwitchMode!="colorRegionDetection"){
+          std::cout<<strSwitchMode<<" mode not allowed"<<std::endl;
+          std::exit(1);
+        }
     }
 
     if(strSwitchMode=="haarDetection"){
@@ -102,23 +106,24 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
         if (rf.check("trainedModelLabels"))
         {
             trainedModelLabels = rf.find("trainedModelLabels").asString();
-    }
+        }
 
     model = rf.findFileByName(trainedModel);
     labels = rf.findFileByName(trainedModelLabels);
 
 
-    if (model.empty())
-    {
-        CD_ERROR("No trained model!\n");
-        std::exit(1);
-    }
+       if (model.empty())
+       {
+           CD_ERROR("No trained model!\n");
+           std::exit(1);
+       }
 
-    if (labels.empty())
-    {
-        CD_ERROR("No trained model labels!\n");
-        std::exit(1);
-    }
+       if (labels.empty())
+       {
+           CD_ERROR("No trained model labels!\n");
+           std::exit(1);
+       }
+
     }
 
     if (cropSelector != 0)
