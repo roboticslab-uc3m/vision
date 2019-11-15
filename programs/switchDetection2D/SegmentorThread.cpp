@@ -46,6 +46,8 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 {
     int rateMs = DEFAULT_RATE_MS;
     std::string xmlCascade = DEFAULT_XMLCASCADE;
+    std::string trainedModel = DEFAULT_TRAINEDMODEL;
+    std::string trainedModelLabels = DEFAULT_TRAINEDMODEL_LABELS;
 
     if (rf.check("help"))
     {
@@ -53,6 +55,8 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
         std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
         std::printf("\t--rateMs (default: \"%d\")\n", rateMs);
         std::printf("\t--xmlCascade [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
+        std::printf("\t--pbTrainedModel [file.pb] (default: \"%s\")\n", trainedModel.c_str());
+        std::printf("\t--pbtxtTrainedModelLabels [file.pbtxt] (default: \"%s\")\n", trainedModelLabels.c_str());
 
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
@@ -90,6 +94,31 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     }else if(strSwitchMode=="tensorflowDetection"){
 
+      if (rf.check("trainedModel"))
+        {
+            trainedModel = rf.find("trainedModel").asString();
+        }
+
+        if (rf.check("trainedModelLabels"))
+        {
+            trainedModelLabels = rf.find("trainedModelLabels").asString();
+    }
+
+    model = rf.findFileByName(trainedModel);
+    labels = rf.findFileByName(trainedModelLabels);
+
+
+    if (model.empty())
+    {
+        CD_ERROR("No trained model!\n");
+        std::exit(1);
+    }
+
+    if (labels.empty())
+    {
+        CD_ERROR("No trained model labels!\n");
+        std::exit(1);
+    }
     }
 
     if (cropSelector != 0)

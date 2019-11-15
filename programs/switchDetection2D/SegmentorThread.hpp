@@ -21,6 +21,8 @@
 
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
+#define DEFAULT_TRAINEDMODEL "frozen_inference_graph.pb"
+#define DEFAULT_TRAINEDMODEL_LABELS "labels_map.pbtxt"
 
 namespace roboticslab
 {
@@ -103,6 +105,9 @@ private:
 
     cv::CascadeClassifier object_cascade;
     std::string strSwitchMode="haarDetection";
+    std::string model;
+    std::string labels;
+
 
 public:
     SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
