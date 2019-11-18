@@ -18,6 +18,7 @@
 #include <opencv2/objdetect/objdetect.hpp>
 
 #include <ColorDebug.h>
+#include "HaarDetection2D.hpp"
 
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
@@ -103,13 +104,16 @@ private:
 
     DataProcessor processor;
 
-    cv::CascadeClassifier object_cascade;
+
     std::string strSwitchMode="haarDetection";
     std::string model;
     std::string labels;
 
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
+
 
 public:
+    cv::CascadeClassifier object_cascade;
     SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
     void setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage * _camera);

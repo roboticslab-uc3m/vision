@@ -12,6 +12,10 @@ if(ENABLE_switchDetection2D)
     add_executable(switchDetection2D main.cpp
                                    SwitchDetection2D.hpp
                                    SwitchDetection2D.cpp
+                                   ColorRegionDetection2D.hpp
+                                   ColorRegionDetection2D.cpp
+                                   HaarDetection2D.hpp
+                                   HaarDetection2D.cpp
                                    SegmentorThread.hpp
                                    SegmentorThread.cpp)
 

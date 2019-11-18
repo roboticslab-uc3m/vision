@@ -68,8 +68,9 @@ bool SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
     if (rf.check("switchMode"))
     {
         strSwitchMode = rf.find("switchMode").asString();
+        std::cout<<"el modo es: "<<strSwitchMode<<" mode"<<std::endl;
 
-        if(strSwitchMode!="haarDetection"||strSwitchMode!="tensorflowDetection"||strSwitchMode!="colorRegionDetection"){
+        if((strSwitchMode!="haarDetection")&&(strSwitchMode!="tensorflowDetection")&&(strSwitchMode!="colorRegionDetection")){
           std::cout<<strSwitchMode<<" mode not allowed"<<std::endl;
           std::exit(1);
         }

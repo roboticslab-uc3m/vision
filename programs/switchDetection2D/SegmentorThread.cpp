@@ -17,6 +17,10 @@
 
 #include <ColorDebug.h>
 
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <iostream>
+
 using namespace roboticslab;
 
 /************************************************************************/
@@ -75,7 +79,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
     if (rf.check("switchMode"))
     {
         strSwitchMode = rf.find("switchMode").asString();
-        if(strSwitchMode!="haarDetection"||strSwitchMode!="tensorflowDetection"||strSwitchMode!="colorRegionDetection"){
+        if((strSwitchMode!="haarDetection")&&(strSwitchMode!="tensorflowDetection")&&(strSwitchMode!="colorRegionDetection")){
           std::cout<<strSwitchMode<<" mode not allowed"<<std::endl;
           std::exit(1);
         }
@@ -141,9 +145,20 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 void SegmentorThread::run()
 {
 
+  yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
+  yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
+
+  if (!camera->getImage(inYarpImg))
+  {
+      return;
+  }
+
   if(strSwitchMode=="haarDetection"){
 
-    std::cout<<"Ejecutando haarDetection2D"<<std::endl;
+    std::cout<<"Executing haarDetection2D..."<<std::endl;
+    HaarDetection2D haarDetector;
+    outYarpImg=haarDetector.run(inYarpImg, object_cascade);
+
   }else if(strSwitchMode=="colorRegionDetection"){
 
 std::cout<<"Ejecutando colorRegionDetection2D"<<std::endl;
@@ -151,77 +166,13 @@ std::cout<<"Ejecutando colorRegionDetection2D"<<std::endl;
 
 std::cout<<"Ejecutando tensorflowDetection2D"<<std::endl;
   }
-  /*
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
 
-    if (!camera->getImage(inYarpImg))
-    {
-        return;
-    }
+  pOutImg->prepare() = outYarpImg;
+  pOutImg->write();
 
-    // {yarp ImageOf Rgb -> openCv Mat Bgr}
-    cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
-    cv::cvtColor(inCvMat, inCvMat, CV_RGB2GRAY);
+  /*if (output.size() > 0)
+  {
+      pOutPort->write(output);
+  }*/
 
-    std::vector<cv::Rect> objects;
-
-    object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, cv::Size(30, 30));
-
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
-    yarp::sig::PixelRgb red(255, 0, 0);
-    yarp::sig::PixelRgb green(0, 255, 0);
-
-    yarp::os::Bottle output;
-
-    int closestObject = 999999;
-    int minimumDistance = 999999;
-
-    for (int i = 0; i < objects.size(); i++)
-    {
-        const int pxX = objects[i].x + objects[i].width / 2;
-        const int pxY = objects[i].y + objects[i].height / 2;
-
-        int centerX = inCvMat.cols / 2;
-        int centerY = inCvMat.rows / 2;
-
-        int distance = std::sqrt(std::pow(pxX - centerX, 2) + std::pow(pxY - centerY, 2));
-
-        if (distance < minimumDistance)
-        {
-            minimumDistance = distance;
-            closestObject = i;
-        }
-    }
-
-    for (int i = 0; i < objects.size(); i++)
-    {
-        const int pxX = objects[i].x + objects[i].width / 2;
-        const int pxY = objects[i].y + objects[i].height / 2;
-
-        if (i == closestObject)
-        {
-            yarp::sig::draw::addRectangleOutline(outYarpImg, green, pxX, pxY,
-                    objects[i].width / 2, objects[i].height / 2);
-
-            // scale centroids and fit into [-1, 1] range
-            double cX = 2.0 * pxX / inCvMat.cols - 1.0;
-            double cY = 2.0 * pxY / inCvMat.rows - 1.0;
-
-            output.addFloat64(cX); // Points right
-            output.addFloat64(cY); // Points down
-        }
-        else
-        {
-            yarp::sig::draw::addRectangleOutline(outYarpImg, red, pxX, pxY,
-                    objects[i].width / 2, objects[i].height / 2);
-        }
-    }
-
-    pOutImg->prepare() = outYarpImg;
-    pOutImg->write();
-
-    if (output.size() > 0)
-    {
-        pOutPort->write(output);
-    }*/
 }
