@@ -127,7 +127,13 @@ bool SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
     //-----------------OPEN LOCAL PORTS------------//
 
     outImg.open(strCameraLocal + "/img:o");
-    outPort.open(strCameraLocal + "/state:o");
+
+    if((strSwitchMode=="colorRegionDetection")){
+      outPort.open(strCameraLocal + "/features:o");
+    }else{
+      outPort.open(strCameraLocal + "/state:o");
+    }
+
 
     if (cropSelector != 0)
     {
