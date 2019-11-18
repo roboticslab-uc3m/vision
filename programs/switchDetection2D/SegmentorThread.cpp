@@ -52,15 +52,39 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
     std::string xmlCascade = DEFAULT_XMLCASCADE;
     std::string trainedModel = DEFAULT_TRAINEDMODEL;
     std::string trainedModelLabels = DEFAULT_TRAINEDMODEL_LABELS;
+    algorithm = DEFAULT_ALGORITHM;
+    locate = DEFAULT_LOCATE;
+    maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
+    morphClosing = DEFAULT_MORPH_CLOSING;
+    outImage = DEFAULT_OUT_IMAGE;
+    outFeatures.fromString(DEFAULT_OUT_FEATURES);  // it's a bottle!!
+    outFeaturesFormat = DEFAULT_OUT_FEATURES_FORMAT;
+    seeBounding = DEFAULT_SEE_BOUNDING;
+    threshold = DEFAULT_THRESHOLD;
 
     if (rf.check("help"))
     {
         std::printf("SegmentorThread options:\n");
         std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
         std::printf("\t--rateMs (default: \"%d\")\n", rateMs);
+
+        //haarDetection
         std::printf("\t--xmlCascade [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
+
+        //tensorflowDetection
         std::printf("\t--pbTrainedModel [file.pb] (default: \"%s\")\n", trainedModel.c_str());
         std::printf("\t--pbtxtTrainedModelLabels [file.pbtxt] (default: \"%s\")\n", trainedModelLabels.c_str());
+
+        //colorRegion
+        std::printf("\t--algorithm (redMinusBlue,greenMinusRed...; default: \"%s\")\n",algorithm.c_str());
+        std::printf("\t--locate (centroid,bottom; default: \"%s\")\n",locate.c_str());
+        std::printf("\t--morphClosing (percentage, 2 or 4 okay; default: \"%f\")\n",morphClosing);
+        std::printf("\t--maxNumBlobs (default: \"%d\")\n",maxNumBlobs);
+        std::printf("\t--outFeatures (default: \"(%s)\")\n",outFeatures.toString().c_str());
+        std::printf("\t--outFeaturesFormat (0=bottled,1=minimal; default: \"%d\")\n",outFeaturesFormat);
+        std::printf("\t--outImage (0=rgb,1=bw; default: \"%d\")\n",outImage);
+        std::printf("\t--seeBounding (0=none,1=contour,2=box,3=both; default: \"%d\")\n",seeBounding);
+        std::printf("\t--threshold (default: \"%d\")\n",threshold);
 
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
@@ -99,6 +123,25 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
           std::exit(1);
       }
     }else if(strSwitchMode=="colorRegionDetection"){
+
+      if (rf.check("algorithm")) algorithm = rf.find("algorithm").asString();
+      if (rf.check("locate")) locate = rf.find("locate").asString();
+      if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt32();
+      if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asFloat64();
+      if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt32();
+     std::printf("SegmentorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
+     algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);
+
+     if (rf.check("outFeatures")) {
+     outFeatures = *(rf.find("outFeatures").asList());  // simple overrride
+     }
+    std::printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
+
+   if (rf.check("outImage")) outImage = rf.find("outImage").asInt32();
+   if (rf.check("threshold")) threshold = rf.find("threshold").asInt32();
+   if (rf.check("seeBounding")) seeBounding = rf.find("seeBounding").asInt32();
+   std::printf("SegmentorThread using outImage: %d, rateMs: %d, seeBounding: %d, threshold: %d.\n",
+   outImage, rateMs, seeBounding, threshold);
 
     }else if(strSwitchMode=="tensorflowDetection"){
 
@@ -147,6 +190,7 @@ void SegmentorThread::run()
 
   yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
   yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
+  Bottle output;
 
   if (!camera->getImage(inYarpImg))
   {
@@ -161,8 +205,13 @@ void SegmentorThread::run()
 
   }else if(strSwitchMode=="colorRegionDetection"){
 
-std::cout<<"Ejecutando colorRegionDetection2D"<<std::endl;
-}else if(strSwitchMode=="tensorflowDetection"){
+    std::cout<<"Executing ColorRegionDetection2D..."<<std::endl;
+    ColorRegionDetection2D colorRegionDetector;
+    /*outYarpImg=*/colorRegionDetector.run(inYarpImg, algorithm, locate, morphClosing, maxNumBlobs,threshold);
+    outYarpImg=colorRegionDetector.outImageProcessed;
+    output=colorRegionDetector.outputProcessed;
+
+  }else if(strSwitchMode=="tensorflowDetection"){
 
 std::cout<<"Ejecutando tensorflowDetection2D"<<std::endl;
   }
@@ -170,9 +219,9 @@ std::cout<<"Ejecutando tensorflowDetection2D"<<std::endl;
   pOutImg->prepare() = outYarpImg;
   pOutImg->write();
 
-  /*if (output.size() > 0)
+  if (output.size() > 0)
   {
       pOutPort->write(output);
-  }*/
+  }
 
 }

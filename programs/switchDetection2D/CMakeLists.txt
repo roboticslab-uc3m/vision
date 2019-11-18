@@ -1,9 +1,9 @@
 if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_switchDetection2D OR ENABLE_switchDetection2D))
     message(WARNING "OpenCV package not found, disabling switchDetection2D program")
 endif()
-
+                 
 cmake_dependent_option(ENABLE_switchDetection2D "Enable/disable switchDetection2D program" ON
-                       OpenCV_FOUND OFF)
+"ENABLE_TravisLib;OpenCV_FOUND" OFF)
 
 if(ENABLE_switchDetection2D)
 
@@ -24,7 +24,8 @@ if(ENABLE_switchDetection2D)
                                           YARP::YARP_dev
                                           YARP::YARP_sig
                                           ${OpenCV_LIBS}
-                                          ROBOTICSLAB::ColorDebug)
+                                          ROBOTICSLAB::ColorDebug
+                                          TravisLib)
 
     install(TARGETS switchDetection2D
             DESTINATION ${CMAKE_INSTALL_BINDIR})

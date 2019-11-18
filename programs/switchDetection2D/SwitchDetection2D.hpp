@@ -15,8 +15,6 @@
 
 #include "SegmentorThread.hpp"
 
-
-
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
 #define DEFAULT_CAMERA_DEVICE "remote_grabber"
 #define DEFAULT_CAMERA_LOCAL "/haarDetection2D"
