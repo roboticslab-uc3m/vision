@@ -170,6 +170,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
            CD_ERROR("No trained model labels!\n");
            std::exit(1);
        }
+       outPortShape.open("/tensorflowDetection2D/shape");
 
     }
 
@@ -214,6 +215,9 @@ void SegmentorThread::run()
   }else if(strSwitchMode=="tensorflowDetection"){
 
 std::cout<<"Ejecutando tensorflowDetection2D"<<std::endl;
+TensorflowDetection2D tensorflowDetector;
+tensorflowDetector.configuration(trainedModel, trainedModelLabels, inYarpImg, outPortShape);
+outYarpImg=tensorflowDetector.run(inYarpImg);
   }
 
   pOutImg->prepare() = outYarpImg;

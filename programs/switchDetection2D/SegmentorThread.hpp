@@ -20,6 +20,7 @@
 #include <ColorDebug.h>
 #include "HaarDetection2D.hpp"
 #include "ColorRegionDetection2D.hpp"
+#include "TensorflowDetection2D.hpp"
 
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
@@ -151,6 +152,7 @@ aspectRatio, solidity, massCenterlocX, massCenterlocY, arc, radius;
     yarp::dev::IFrameGrabberImage *camera;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
+    yarp::os::Port outPortShape;
 
     int cropSelector;
 
