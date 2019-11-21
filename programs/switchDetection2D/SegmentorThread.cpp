@@ -45,7 +45,7 @@ void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
 }
 
 /************************************************************************/
-
+TensorflowDetection2D tensorflowDetector;
 void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 {
     int rateMs = DEFAULT_RATE_MS;
@@ -171,6 +171,8 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
            std::exit(1);
        }
        outPortShape.open("/tensorflowDetection2D/shape");
+       yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg=outPortShape.read();;
+       tensorflowDetector.configuration(model, labels, inYarpImg);
 
     }
 
@@ -188,7 +190,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
 void SegmentorThread::run()
 {
-
   yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
   yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
   Bottle output;
@@ -214,10 +215,10 @@ void SegmentorThread::run()
 
   }else if(strSwitchMode=="tensorflowDetection"){
 
-std::cout<<"Ejecutando tensorflowDetection2D"<<std::endl;
-TensorflowDetection2D tensorflowDetector;
-tensorflowDetector.configuration(trainedModel, trainedModelLabels, inYarpImg, outPortShape);
-outYarpImg=tensorflowDetector.run(inYarpImg);
+    std::cout<<"Ejecutando tensorflowDetection2D"<<std::endl;
+    outYarpImg=tensorflowDetector.run(inYarpImg);
+    output=tensorflowDetector.bottle;
+
   }
 
   pOutImg->prepare() = outYarpImg;

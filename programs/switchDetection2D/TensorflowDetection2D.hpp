@@ -52,11 +52,12 @@ class TensorflowDetection2D {
 
   public:
     yarp::sig::ImageOf<yarp::sig::PixelRgb> run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg);
-    void configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yarp::os::Port inputPort);
-
+    void configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg/*, yarp::os::BufferedPort<ImageOf<PixelRgb> > inputPort*/);
+  
+int initDetector=0;
 
     // Tensorflow: Session object instance
- yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inputPort;
+ //yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inputPort;
  tensorflow::Status readLabelsMapStatus;
  tensorflow::Status loadGraphStatus;
  tensorflow::string inputLayer;

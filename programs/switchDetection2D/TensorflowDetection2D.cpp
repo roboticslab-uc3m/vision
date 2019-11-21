@@ -56,13 +56,12 @@
 namespace roboticslab
 {
 
-void TensorflowDetection2D::configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yarp::os::Port inputPort){
+void TensorflowDetection2D::configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg/*, yarp::os::BufferedPort<ImageOf<PixelRgb> > inputPort*/){
 
 
+    //yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImgShape = inputPort.read();
 
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImgShape = inputPort.read();
-
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
+    //yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg=&inYarpImg;
     Bottle output;
 
     std::string LABELS = trainedModelLabels;
@@ -94,8 +93,8 @@ void TensorflowDetection2D::configuration(std::string trainedModel, std::string 
     time(&start);
     shape = tensorflow::TensorShape();
     shape.AddDim(1);
-    shape.AddDim((tensorflow::int64)inYarpImg.height());
-    shape.AddDim((tensorflow::int64)inYarpImg.width());
+    shape.AddDim((tensorflow::int64)inYarpImg->height());
+    shape.AddDim((tensorflow::int64)inYarpImg->width());
     shape.AddDim(3);
     std::cout<<"Taking frames..."<<std::endl;
 
@@ -103,11 +102,13 @@ void TensorflowDetection2D::configuration(std::string trainedModel, std::string 
 
 
 }
+
 /*****************************************************************/
 yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorflowDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) {
 
    cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
    cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
+
    std::cout << "Frame: " << iFrame << std::endl;
 
        if (nFrames % (iFrame + 1) == 0) {
@@ -126,6 +127,7 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorflowDetection2D::run(yarp::sig::Im
            std::cout<<"Mat OpenCV -> Tensor : FAIL"<<std::endl;
        }
 
+
        // Execute graph
        outputs.clear();
        tensorflow::Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
@@ -134,6 +136,7 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorflowDetection2D::run(yarp::sig::Im
            std::cout<<std::endl;
            std::cout<<"Running model status: FAIL"<<std::endl;
        }
+
 
        // Extract results
        tensorflow::TTypes<float>::Flat scores = outputs[1].flat<float>();
@@ -159,17 +162,17 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorflowDetection2D::run(yarp::sig::Im
        bottle.addDouble(score_detection);
 
        std::cout<<std::endl;
-       double *positions;
-       positions=drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
-       std::cout<<"End:"<<std::endl;
-       std::cout<<"X: "<<positions[0]<<" y: "<<positions[1]<<std::endl;
+       drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
        cv::putText(inCvMat, std::to_string(fps).substr(0, 5), cv::Point(0, inCvMat.rows), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 255));
        cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
 
-       yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
-       outYarpImg.setExternal(inCvMat.data,inCvMat.size[1],inCvMat.size[0]);
+}
 
-       return outYarpImg;
+yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
+outYarpImg.setExternal(inCvMat.data,inCvMat.size[1],inCvMat.size[0]);
+
+return outYarpImg;
+}
 
 
-}}}// namespace roboticslab
+}// namespace roboticslab

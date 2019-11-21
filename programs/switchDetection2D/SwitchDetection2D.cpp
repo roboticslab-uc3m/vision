@@ -130,6 +130,8 @@ bool SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
 
     if((strSwitchMode=="colorRegionDetection")){
       outPort.open(strCameraLocal + "/features:o");
+    }else if((strSwitchMode=="tensorflowDetection")){
+      outPort.open(strCameraLocal + "/results:o");
     }else{
       outPort.open(strCameraLocal + "/state:o");
     }

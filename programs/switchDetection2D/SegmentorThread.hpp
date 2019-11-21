@@ -21,6 +21,7 @@
 #include "HaarDetection2D.hpp"
 #include "ColorRegionDetection2D.hpp"
 #include "TensorflowDetection2D.hpp"
+#include "TensorflowDetector.hpp"
 
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
@@ -62,7 +63,6 @@ using namespace yarp::sig;
 using namespace yarp::sig::draw;
 
 using namespace cv;
-
 
 namespace roboticslab
 {
@@ -149,10 +149,11 @@ private:
 aspectRatio, solidity, massCenterlocX, massCenterlocY, arc, radius;
 
 
+
     yarp::dev::IFrameGrabberImage *camera;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
-    yarp::os::Port outPortShape;
+    yarp::os::BufferedPort<ImageOf<PixelRgb> > outPortShape;
 
     int cropSelector;
 
@@ -170,6 +171,7 @@ aspectRatio, solidity, massCenterlocX, massCenterlocY, arc, radius;
 
 
 public:
+
     cv::CascadeClassifier object_cascade;
     SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001),
     area(-1), hue_peak(-1), hue_mode(-1), hue_mean(-1), hue_stddev(-1),
@@ -179,7 +181,6 @@ public:
     rectangularity(-1), axisFirst(-1), axisSecond(-1),
     aspectRatio(-1), solidity(-1), massCenterlocX(-1), massCenterlocY(-1),
 arc(-1), radius(-1) {}
-
     void setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage * _camera);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
     void setOutPort(yarp::os::Port *_pOutPort);
