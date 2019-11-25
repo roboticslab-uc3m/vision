@@ -43,6 +43,7 @@ Installation instructions for installing from source can be found [here]( doc/vi
 - [PCL](http://pointclouds.org): 2D/3D image and point cloud processing
    - [github](https://github.com/PointCloudLibrary/pcl)
 - [CloudCompare/CloudCompare](https://github.com/CloudCompare/CloudCompare): A 3D point cloud (and triangular mesh) processing software
+- [MIT-SPARK/Kimera-VIO](https://github.com/MIT-SPARK/Kimera-VIO): Visual Inertial Odometry with SLAM capabilities and 3D Mesh generation
 ### Visual Servoing
 - [robotology/visual-tracking-control](https://github.com/robotology/visual-tracking-control): https://robotology.github.io/visual-tracking-control
 - [ViSP](http://visp.inria.fr/): Visual Servoing Platform
