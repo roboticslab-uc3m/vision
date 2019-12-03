@@ -26,7 +26,9 @@ if(ENABLE_switchDetection2D)
                                    TensorflowDetector.hpp
                                    TensorflowDetector.cpp
                                    SegmentorThread.hpp
-                                   SegmentorThread.cpp)
+                                   SegmentorThread.cpp
+                                   Transformation.hpp
+                                   Transformation.cpp)
 
     target_link_libraries(switchDetection2D YARP::YARP_OS
                                           YARP::YARP_init

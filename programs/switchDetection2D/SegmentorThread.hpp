@@ -22,6 +22,7 @@
 #include "ColorRegionDetection2D.hpp"
 #include "TensorflowDetection2D.hpp"
 #include "TensorflowDetector.hpp"
+#include "Transformation.hpp"
 
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"

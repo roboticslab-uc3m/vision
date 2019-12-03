@@ -26,7 +26,6 @@
 
 namespace roboticslab
 {
-
 /**
  * @ingroup switchDetection2D
  *
@@ -42,7 +41,7 @@ private:
 
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outImg;
     yarp::os::Port outPort;
-  
+
 
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outCropSelectorImg;
     yarp::os::Port inCropSelectorPort;
