@@ -155,12 +155,9 @@ private:
     yarp::os::BufferedPort<ImageOf<PixelRgb> > outPortShape;
 
     int cropSelector;
-
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *outCropSelectorImg;
     yarp::os::Port *inCropSelectorPort;
-
     CropSelectorProcessor cropSelectorProcessor;
-
 
     std::string strSwitchMode="haarDetection";
     std::string model;
@@ -168,9 +165,9 @@ private:
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
 
-
 public:
-    std::vector<Transformation*> transformations;
+    Transformation* transformation;
+
     cv::CascadeClassifier object_cascade;
     SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001),
     area(-1), hue_peak(-1), hue_mode(-1), hue_mean(-1), hue_stddev(-1),

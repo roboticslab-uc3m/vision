@@ -126,16 +126,10 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
             std::exit(1);
         }
 
-        Transformation* transformation = new HaarDetectionTransformation(&rf);
+        transformation = new HaarDetectionTransformation(&rf);
         if(!transformation->isValid())
         {
-            transformations.push_back(transformation);
-            for(size_t i=0;i<transformations.size();i++)
-            {
-                std::cout<<"Hola caracola"<<std::endl;
-                std::cout<<transformations[i]<<std::endl;
-
-            }
+            CD_ERROR("\n");
         }
     }
     else if(strSwitchMode=="colorRegionDetection")
