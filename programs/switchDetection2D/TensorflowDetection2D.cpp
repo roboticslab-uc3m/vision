@@ -95,72 +95,73 @@ void TensorflowDetection2D::configuration(std::string trainedModel, std::string 
 /*****************************************************************/
 yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorflowDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) {
 
-   cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
-   cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
+    cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
+    cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
 
-   std::cout << "Frame: " << iFrame << std::endl;
+    std::cout << "Frame: " << iFrame << std::endl;
 
-       if (nFrames % (iFrame + 1) == 0) {
-           time(&end);
-           fps = 1. * nFrames / difftime(end, start);
-           time(&start);
-       }
-       iFrame++;
+    if (nFrames % (iFrame + 1) == 0)
+    {
+        time(&end);
+        fps = 1. * nFrames / difftime(end, start);
+        time(&start);
+    }
+    iFrame++;
 
-       // Mat -> Tensor
-       tensor = tensorflow::Tensor(tensorflow::DT_FLOAT, shape);
-       tensorflow::Status readTensorStatus = readTensorFromMat(inCvMat, tensor);
-       if (!readTensorStatus.ok()) {;
-           std::cout<<std::endl;
-           std::cout<<std::endl;
-           std::cout<<"Mat OpenCV -> Tensor : FAIL"<<std::endl;
-       }
+    // Mat -> Tensor
+    tensor = tensorflow::Tensor(tensorflow::DT_FLOAT, shape);
+    tensorflow::Status readTensorStatus = readTensorFromMat(inCvMat, tensor);
+    if (!readTensorStatus.ok())
+    {
+        std::cout<<std::endl;
+        std::cout<<std::endl;
+        std::cout<<"Mat OpenCV -> Tensor : FAIL"<<std::endl;
+    }
+
+    // Execute graph
+    outputs.clear();
+    tensorflow::Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
+    if (!runStatus.ok())
+    {
+        std::cout<<std::endl;
+        std::cout<<std::endl;
+        std::cout<<"Running model status: FAIL"<<std::endl;
+    }
+
+    // Extract results
+    tensorflow::TTypes<float>::Flat scores = outputs[1].flat<float>();
+    tensorflow::TTypes<float>::Flat classes = outputs[2].flat<float>();
+    tensorflow::TTypes<float>::Flat numDetections = outputs[3].flat<float>();
+    tensorflow::TTypes<float, 3>::Tensor boxes = outputs[0].flat_outer_dims<float,3>();
+
+    std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
+    for (size_t i = 0; i < goodIdxs.size(); i++){
+    std::cout<<std::endl;
+    std::cout<<std::endl;
+    std::cout<<"Detection: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Score: "<<scores(goodIdxs.at(i))<<std::endl;
 
 
-       // Execute graph
-       outputs.clear();
-       tensorflow::Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
-       if (!runStatus.ok()) {
-           std::cout<<std::endl;
-           std::cout<<std::endl;
-           std::cout<<"Running model status: FAIL"<<std::endl;
-       }
+    double score_detection=scores(goodIdxs.at(i));
+    std::string class_name=std::string(labelsMap[classes(goodIdxs.at(i))]);
+    bottle.clear();
+    bottle.addString(" Detection number: ");
+    bottle.addInt(goodIdxs.size());
+    bottle.addString(" Detection: ");
+    bottle.addString(class_name);
+    bottle.addString(" Score: ");
+    bottle.addDouble(score_detection);
 
-
-       // Extract results
-       tensorflow::TTypes<float>::Flat scores = outputs[1].flat<float>();
-       tensorflow::TTypes<float>::Flat classes = outputs[2].flat<float>();
-       tensorflow::TTypes<float>::Flat numDetections = outputs[3].flat<float>();
-       tensorflow::TTypes<float, 3>::Tensor boxes = outputs[0].flat_outer_dims<float,3>();
-
-       std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
-       for (size_t i = 0; i < goodIdxs.size(); i++){
-       std::cout<<std::endl;
-       std::cout<<std::endl;
-       std::cout<<"Detection: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Score: "<<scores(goodIdxs.at(i))<<std::endl;
-
-
-       double score_detection=scores(goodIdxs.at(i));
-       std::string class_name=std::string(labelsMap[classes(goodIdxs.at(i))]);
-       bottle.clear();
-       bottle.addString(" Detection number: ");
-       bottle.addInt(goodIdxs.size());
-       bottle.addString(" Detection: ");
-       bottle.addString(class_name);
-       bottle.addString(" Score: ");
-       bottle.addDouble(score_detection);
-
-       std::cout<<std::endl;
-       drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
-       cv::putText(inCvMat, std::to_string(fps).substr(0, 5), cv::Point(0, inCvMat.rows), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 255));
-       cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
+    std::cout<<std::endl;
+    drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
+    cv::putText(inCvMat, std::to_string(fps).substr(0, 5), cv::Point(0, inCvMat.rows), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 255));
+    cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
 
 }
 
-yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
-outYarpImg.setExternal(inCvMat.data,inCvMat.size[1],inCvMat.size[0]);
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
+    outYarpImg.setExternal(inCvMat.data,inCvMat.size[1],inCvMat.size[0]);
 
-return outYarpImg;
+    return outYarpImg;
 }
 
 
