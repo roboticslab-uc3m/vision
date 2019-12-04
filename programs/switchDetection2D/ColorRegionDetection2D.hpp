@@ -39,8 +39,6 @@
 #define DEFAULT_SEE_BOUNDING 3
 #define DEFAULT_THRESHOLD 55
 
-using namespace cv;
-
 namespace roboticslab
 {
 

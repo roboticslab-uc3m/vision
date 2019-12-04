@@ -17,8 +17,6 @@
 
 #include <ColorDebug.h>
 
-using namespace std;
-
 namespace roboticslab
 {
 
@@ -40,7 +38,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
     IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
                                          IPL_DEPTH_8U, 3 );
     cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2BGR);
-    Mat inCvMat = cvarrToMat(inIplImage);
+    cv::Mat inCvMat = cv::cvarrToMat(inIplImage);
 
     // Because Travis stuff goes with [openCv Mat Bgr] for now
         Travis travis(false,true);    // ::Travis(quiet=true, overwrite=true);
@@ -55,15 +53,15 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             travis.release();
             return;
         }
-        vector<cv::Point2d> blobsXY;
+        std::vector<cv::Point2d> blobsXY;
         if( ! travis.getBlobsXY(blobsXY) )
         {
             travis.release();
             return;
         }
-        vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond,blobsPerimeter;
-        vector<double> blobsRectangularity,blobsSolidity;
-        vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
+        std::vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond,blobsPerimeter;
+        std::vector<double> blobsRectangularity,blobsSolidity;
+        std::vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
         travis.getBlobsArea(blobsArea);
         travis.getBlobsPerimeter(blobsPerimeter);
         travis.getBlobsSolidity(blobsSolidity);
@@ -75,7 +73,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
         }
         travis.getBlobsAspectRatio(blobsAspectRatio,blobsAxisFirst,blobsAxisSecond);  // must be called after getBlobsAngle!!!!
         travis.getBlobsRectangularity(blobsRectangularity);  // must be called after getBlobsAngle!!!!
-        Mat outCvMat = travis.getCvMat(outImage,seeBounding);
+        cv::Mat outCvMat = travis.getCvMat(outImage,seeBounding);
         travis.release();
 
         // { openCv Mat Bgr -> yarp ImageOf Rgb}
