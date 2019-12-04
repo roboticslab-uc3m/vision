@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 #include <yarp/os/Bottle.h>
 #include <yarp/sig/ImageDraw.h>
@@ -45,7 +46,8 @@ void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
 }
 
 /************************************************************************/
-TensorflowDetection2D tensorflowDetector;
+//TensorflowDetection2D tensorflowDetector;
+
 void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 {
     int rateMs = DEFAULT_RATE_MS;
@@ -103,27 +105,41 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
     if (rf.check("switchMode"))
     {
         strSwitchMode = rf.find("switchMode").asString();
-        if((strSwitchMode!="haarDetection")&&(strSwitchMode!="tensorflowDetection")&&(strSwitchMode!="colorRegionDetection")){
-          std::cout<<strSwitchMode<<" mode not allowed"<<std::endl;
-          std::exit(1);
+        if((strSwitchMode!="haarDetection")&&(strSwitchMode!="tensorflowDetection")&&(strSwitchMode!="colorRegionDetection"))
+        {
+            std::cout<<strSwitchMode<<" mode not allowed"<<std::endl;
+            std::exit(1);
         }
     }
 
-    if(strSwitchMode=="haarDetection"){
+    if(strSwitchMode=="haarDetection")
+    {
+        if (rf.check("xmlCascade"))
+        {
+            xmlCascade = rf.find("xmlCascade").asString();
+        }
+        std::string cascade = rf.findFileByName(xmlCascade);
 
-      if (rf.check("xmlCascade"))
-      {
-          xmlCascade = rf.find("xmlCascade").asString();
-      }
-      std::string cascade = rf.findFileByName(xmlCascade);
+        if (cascade.empty() || !object_cascade.load(cascade))
+        {
+            CD_ERROR("No cascade!\n");
+            std::exit(1);
+        }
 
-      if (cascade.empty() || !object_cascade.load(cascade))
-      {
-          CD_ERROR("No cascade!\n");
-          std::exit(1);
-      }
-    }else if(strSwitchMode=="colorRegionDetection"){
+        Transformation* transformation = new HaarDetectionTransformation(&rf);
+        if(!transformation->isValid())
+        {
+            transformations.push_back(transformation);
+            for(size_t i=0;i<transformations.size();i++)
+            {
+                std::cout<<"Hola caracola"<<std::endl;
+                std::cout<<transformations[i]<<std::endl;
 
+            }
+        }
+    }
+    else if(strSwitchMode=="colorRegionDetection")
+    {
       if (rf.check("algorithm")) algorithm = rf.find("algorithm").asString();
       if (rf.check("locate")) locate = rf.find("locate").asString();
       if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt32();
@@ -172,7 +188,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
        }
        outPortShape.open("/tensorflowDetection2D/shape");
        yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg=outPortShape.read();;
-       tensorflowDetector.configuration(model, labels, inYarpImg);
+       //j//tensorflowDetector.configuration(model, labels, inYarpImg);
 
     }
 
@@ -190,43 +206,43 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
 void SegmentorThread::run()
 {
-  yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
-  yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
-  Bottle output;
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
+    Bottle output;
 
-  if (!camera->getImage(inYarpImg))
-  {
-      return;
-  }
+    if (!camera->getImage(inYarpImg))
+    {
+        return;
+    }
 
-  if(strSwitchMode=="haarDetection"){
+    /*
+    if(strSwitchMode=="haarDetection")
+    {
+        std::cout<<"Executing haarDetection2D..."<<std::endl;
+        HaarDetection2D haarDetector;
+        outYarpImg=haarDetector.run(inYarpImg, object_cascade);
+    }
+    else if(strSwitchMode=="colorRegionDetection")
+    {
+        std::cout<<"Executing ColorRegionDetection2D..."<<std::endl;
+        ColorRegionDetection2D colorRegionDetector;
+        //    /outYarpImg=/
+        colorRegionDetector.run(inYarpImg, algorithm, locate, morphClosing, maxNumBlobs,threshold);
+        outYarpImg=colorRegionDetector.outImageProcessed;
+        output=colorRegionDetector.outputProcessed;
+    }
+    else if(strSwitchMode=="tensorflowDetection")
+    {
+        std::cout<<"Ejecutando tensorflowDetection2D"<<std::endl;
+        outYarpImg=tensorflowDetector.run(inYarpImg);
+        output=tensorflowDetector.bottle;
+    }
+    */
+    pOutImg->prepare() = outYarpImg;
+    pOutImg->write();
 
-    std::cout<<"Executing haarDetection2D..."<<std::endl;
-    HaarDetection2D haarDetector;
-    outYarpImg=haarDetector.run(inYarpImg, object_cascade);
-
-  }else if(strSwitchMode=="colorRegionDetection"){
-
-    std::cout<<"Executing ColorRegionDetection2D..."<<std::endl;
-    ColorRegionDetection2D colorRegionDetector;
-    /*outYarpImg=*/colorRegionDetector.run(inYarpImg, algorithm, locate, morphClosing, maxNumBlobs,threshold);
-    outYarpImg=colorRegionDetector.outImageProcessed;
-    output=colorRegionDetector.outputProcessed;
-
-  }else if(strSwitchMode=="tensorflowDetection"){
-
-    std::cout<<"Ejecutando tensorflowDetection2D"<<std::endl;
-    outYarpImg=tensorflowDetector.run(inYarpImg);
-    output=tensorflowDetector.bottle;
-
-  }
-
-  pOutImg->prepare() = outYarpImg;
-  pOutImg->write();
-
-  if (output.size() > 0)
-  {
-      pOutPort->write(output);
-  }
-
+    if (output.size() > 0)
+    {
+        pOutPort->write(output);
+    }
 }

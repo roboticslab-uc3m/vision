@@ -23,6 +23,7 @@
 #include "TensorflowDetection2D.hpp"
 #include "TensorflowDetector.hpp"
 #include "Transformation.hpp"
+#include <vector>
 
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
@@ -172,7 +173,7 @@ aspectRatio, solidity, massCenterlocX, massCenterlocY, arc, radius;
 
 
 public:
-
+    std::vector<Transformation*> transformations;
     cv::CascadeClassifier object_cascade;
     SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001),
     area(-1), hue_peak(-1), hue_mode(-1), hue_mean(-1), hue_stddev(-1),

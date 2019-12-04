@@ -12,12 +12,13 @@ namespace roboticslab
 
 HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* parameters)
 {
-   if(!parameters->check("context"))
+    if(!parameters->check("switchMode"))
+
     {
       CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
       return;
     }
-    std::string context = parameters->find("context").asString();
+    std::string context = parameters->find("swicthMode").asString();
 
     if(!parameters->check("xmlCascade"))
     {
@@ -26,12 +27,6 @@ HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* p
     }
     std::string xmlCascade = parameters->find("xmlCascade").asString();
     CD_DEBUG("**** \"xmlCascade\" parameter for HaarDetectionTransformation found: \"%s\"\n", xmlCascade.c_str());
-
-    if(!parameters->check("context"))
-    {
-        CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
-        return;
-    }
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
@@ -156,7 +151,7 @@ TensorflowDetectionTransformation::TensorflowDetectionTransformation(yarp::os::S
       return;
     }
     std::string context = parameters->find("context").asString();
-    
+
     if(!parameters->check("trainedModel"))
     {
         CD_ERROR("**** \"trainedModel\" parameter for TensorflowDetectionTransformation NOT found\n");

@@ -2,7 +2,6 @@
 
 #include "SwitchDetection2D.hpp"
 
-#include <cstdio>
 #include <string>
 #include <iostream>
 
@@ -23,7 +22,6 @@ bool SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
     std::string strCameraRemote = DEFAULT_CAMERA_REMOTE;
     std::string strSwitchMode = DEFAULT_SWITCH_MODE;
     watchdog = DEFAULT_WATCHDOG;  // double
-
 
     if (rf.check("help"))
     {
@@ -70,9 +68,10 @@ bool SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
         strSwitchMode = rf.find("switchMode").asString();
         std::cout<<"el modo es: "<<strSwitchMode<<" mode"<<std::endl;
 
-        if((strSwitchMode!="haarDetection")&&(strSwitchMode!="tensorflowDetection")&&(strSwitchMode!="colorRegionDetection")){
-          std::cout<<strSwitchMode<<" mode not allowed"<<std::endl;
-          std::exit(1);
+        if((strSwitchMode!="haarDetection")&&(strSwitchMode!="tensorflowDetection")&&(strSwitchMode!="colorRegionDetection"))
+        {
+            std::cout<<strSwitchMode<<" mode not allowed"<<std::endl;
+            return false;
         }
 
         strCameraLocal ="/"+strSwitchMode+"2D";
