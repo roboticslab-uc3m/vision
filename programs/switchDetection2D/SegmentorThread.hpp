@@ -74,7 +74,7 @@ namespace roboticslab
  *
  * @brief Implements switchDetection2D callback on Bottle.
  */
-class DataProcessor : public yarp::os::PortReader
+class CropSelectorProcessor : public yarp::os::PortReader
 {
 private:
     virtual bool read(yarp::os::ConnectionReader& connection)
@@ -162,7 +162,7 @@ aspectRatio, solidity, massCenterlocX, massCenterlocY, arc, radius;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *outCropSelectorImg;
     yarp::os::Port *inCropSelectorPort;
 
-    DataProcessor processor;
+    CropSelectorProcessor cropSelectorProcessor;
 
 
     std::string strSwitchMode="haarDetection";

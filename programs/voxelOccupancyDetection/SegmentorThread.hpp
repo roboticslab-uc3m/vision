@@ -51,7 +51,7 @@ namespace roboticslab
  *
  * @brief Implements voxelOccupancyDetection callback on Bottle.
  */
-class DataProcessor : public yarp::os::PortReader {
+class CropSelectorDataProcessor : public yarp::os::PortReader {
     virtual bool read(yarp::os::ConnectionReader& connection) {
         yarp::os::Bottle b;
         b.read(connection);
@@ -121,7 +121,7 @@ private:
     int cropSelector;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg;
     yarp::os::Port* inCropSelectorPort;
-    DataProcessor processor;
+    CropSelectorDataProcessor processor;
 
     //VoxelOccupancy specific variables
     int searchAreaDilatation;

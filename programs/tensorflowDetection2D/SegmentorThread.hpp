@@ -53,7 +53,7 @@ namespace roboticslab
  *
  * @brief Implements tensorflowDetection2D callback on Bottle.
  */
-class DataProcessor : public yarp::os::PortReader
+class CropSelectorDataProcessor : public yarp::os::PortReader
 {
 private:
     virtual bool read(yarp::os::ConnectionReader& connection)
@@ -121,7 +121,7 @@ private:
     yarp::os::Port *inCropSelectorPort;
     yarp::os::Port resultsPort;
     yarp::os::Bottle bottle;
-    DataProcessor processor;
+    CropSelectorDataProcessor processor;
 
 
 public:

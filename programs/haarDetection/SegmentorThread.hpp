@@ -37,7 +37,7 @@ namespace roboticslab
  *
  * @brief Implements haarDetection callback on Bottle.
  */
-class DataProcessor : public yarp::os::PortReader {
+class CropSelectorProcessor : public yarp::os::PortReader {
     virtual bool read(yarp::os::ConnectionReader& connection) {
         yarp::os::Bottle b;
         b.read(connection);
@@ -95,7 +95,7 @@ private:
     int cropSelector;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg;
     yarp::os::Port* inCropSelectorPort;
-    DataProcessor processor;
+    CropSelectorProcessor processor;
 
     cv::CascadeClassifier face_cascade;
 

@@ -45,7 +45,7 @@ namespace roboticslab
  *
  * @brief Implements colorRegionDetection callback on Bottle.
  */
-class DataProcessor : public yarp::os::PortReader {
+class CropSelectorDataProcessor : public yarp::os::PortReader {
     virtual bool read(yarp::os::ConnectionReader& connection) {
         yarp::os::Bottle b;
         b.read(connection);
@@ -115,7 +115,7 @@ private:
     int cropSelector;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg;
     yarp::os::Port* inCropSelectorPort;
-    DataProcessor processor;
+    CropSelectorDataProcessor processor;
 
 public:
     SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}

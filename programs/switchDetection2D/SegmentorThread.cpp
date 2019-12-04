@@ -194,8 +194,8 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     if (cropSelector != 0)
     {
-        processor.reset();
-        inCropSelectorPort->setReader(processor);
+        cropSelectorProcessor.reset();
+        inCropSelectorPort->setReader(cropSelectorProcessor);
     }
 
     PeriodicThread::setPeriod(rateMs * 0.001);
