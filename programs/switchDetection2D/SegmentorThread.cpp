@@ -140,28 +140,29 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
     }
     else if(strSwitchMode=="colorRegionDetection")
     {
-      if (rf.check("algorithm")) algorithm = rf.find("algorithm").asString();
-      if (rf.check("locate")) locate = rf.find("locate").asString();
-      if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt32();
-      if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asFloat64();
-      if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt32();
-     std::printf("SegmentorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
-     algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);
+        if (rf.check("algorithm")) algorithm = rf.find("algorithm").asString();
+        if (rf.check("locate")) locate = rf.find("locate").asString();
+        if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt32();
+        if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asFloat64();
+        if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt32();
+        std::printf("SegmentorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
+        algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);
 
-     if (rf.check("outFeatures")) {
-     outFeatures = *(rf.find("outFeatures").asList());  // simple overrride
-     }
-    std::printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
+        if (rf.check("outFeatures"))
+        {
+            outFeatures = *(rf.find("outFeatures").asList());  // simple overrride
+        }
+        std::printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
 
-   if (rf.check("outImage")) outImage = rf.find("outImage").asInt32();
-   if (rf.check("threshold")) threshold = rf.find("threshold").asInt32();
-   if (rf.check("seeBounding")) seeBounding = rf.find("seeBounding").asInt32();
-   std::printf("SegmentorThread using outImage: %d, rateMs: %d, seeBounding: %d, threshold: %d.\n",
-   outImage, rateMs, seeBounding, threshold);
-
-    }else if(strSwitchMode=="tensorflowDetection"){
-
-      if (rf.check("trainedModel"))
+        if (rf.check("outImage")) outImage = rf.find("outImage").asInt32();
+        if (rf.check("threshold")) threshold = rf.find("threshold").asInt32();
+        if (rf.check("seeBounding")) seeBounding = rf.find("seeBounding").asInt32();
+        std::printf("SegmentorThread using outImage: %d, rateMs: %d, seeBounding: %d, threshold: %d.\n",
+        outImage, rateMs, seeBounding, threshold);
+    }
+    else if(strSwitchMode=="tensorflowDetection")
+    {
+        if (rf.check("trainedModel"))
         {
             trainedModel = rf.find("trainedModel").asString();
         }
@@ -171,9 +172,8 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
             trainedModelLabels = rf.find("trainedModelLabels").asString();
         }
 
-    model = rf.findFileByName(trainedModel);
-    labels = rf.findFileByName(trainedModelLabels);
-
+        model = rf.findFileByName(trainedModel);
+        labels = rf.findFileByName(trainedModelLabels);
 
        if (model.empty())
        {
@@ -186,10 +186,10 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
            CD_ERROR("No trained model labels!\n");
            std::exit(1);
        }
+
        outPortShape.open("/tensorflowDetection2D/shape");
        yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg=outPortShape.read();;
        //j//tensorflowDetector.configuration(model, labels, inYarpImg);
-
     }
 
     if (cropSelector != 0)
