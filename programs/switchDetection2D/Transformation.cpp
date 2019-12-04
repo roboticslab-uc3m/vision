@@ -14,8 +14,8 @@ HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* p
 {
     if(!parameters->check("switchMode"))
     {
-      CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
-      return;
+        CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
+        return;
     }
     std::string context = parameters->find("swicthMode").asString();
 
@@ -55,8 +55,8 @@ ColorRegionDetectionTransformation::ColorRegionDetectionTransformation(yarp::os:
 {
     if(!parameters->check("context"))
     {
-     CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
-     return;
+         CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
+         return;
     }
     std::string context = parameters->find("context").asString();
 
@@ -121,7 +121,7 @@ ColorRegionDetectionTransformation::ColorRegionDetectionTransformation(yarp::os:
         CD_ERROR("**** \"outFeatures\" parameter for ColorRegionDetectionTransformation NOT found\n");
         return;
     }
-  //  yarp::os::Bottle outFeatures = parameters->find("outFeatures").asList();
+    //  yarp::os::Bottle outFeatures = parameters->find("outFeatures").asList();
 
 
     yarp::os::ResourceFinder rf;
@@ -146,8 +146,8 @@ TensorflowDetectionTransformation::TensorflowDetectionTransformation(yarp::os::S
 
     if(!parameters->check("context"))
     {
-      CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
-      return;
+        CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
+        return;
     }
     std::string context = parameters->find("context").asString();
 

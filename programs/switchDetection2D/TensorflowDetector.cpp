@@ -38,17 +38,20 @@
 /************************************************************************/
 
 tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
-              std::unique_ptr<tensorflow::Session> *session) {
+std::unique_ptr<tensorflow::Session> *session)
+{
     tensorflow::GraphDef graph_def;
     tensorflow::Status load_graph_status =
-            ReadBinaryProto(tensorflow::Env::Default(), graph_file_name, &graph_def);
-    if (!load_graph_status.ok()) {
+    ReadBinaryProto(tensorflow::Env::Default(), graph_file_name, &graph_def);
+    if (!load_graph_status.ok())
+    {
         return tensorflow::errors::NotFound("Fail loading graph: '",
-                                            graph_file_name, "'");
+                                    graph_file_name, "'");
     }
     session->reset(tensorflow::NewSession(tensorflow::SessionOptions()));
     tensorflow::Status session_create_status = (*session)->Create(graph_def);
-    if (!session_create_status.ok()) {
+    if (!session_create_status.ok())
+    {
         return session_create_status;
     }
     return tensorflow::Status::OK();
@@ -59,8 +62,6 @@ tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
 /************************************************************************/
 
 tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::map<int, tensorflow::string> &labelsMap) {
-
-
     std::ifstream t(fileName);
     if (t.bad())
         return tensorflow::errors::NotFound("Fail loading labels: '", fileName, "'");
@@ -82,7 +83,8 @@ tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::ma
 
     int id;
     std::string name;
-    for (std::sregex_iterator i = stringBegin; i != stringEnd; i++) {
+    for (std::sregex_iterator i = stringBegin; i != stringEnd; i++)
+    {
         matcherEntry = *i;
         entry = matcherEntry.str();
         std::regex_search(entry, matcherId, reId);
@@ -139,10 +141,12 @@ tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &out
 void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMax, double xMax, double score, std::string label, bool scaled=true) {
     cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
     cv::Point tl, br;
-    if (scaled) {
+    if (scaled)
+    {
         tl = cv::Point((int) (xMin * image.cols), (int) (yMin * image.rows));
         br = cv::Point((int) (xMax * image.cols), (int) (yMax * image.rows));
-    } else {
+    } else
+    {
         tl = cv::Point((int) xMin, (int) yMin);
         br = cv::Point((int) xMax, (int) yMax);
     }
@@ -207,15 +211,18 @@ std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
     while (i < sortIdxs.size()) {
         if (scores(sortIdxs.at(i)) < thresholdScore)
             badIdxs.insert(sortIdxs[i]);
-        if (badIdxs.find(sortIdxs.at(i)) != badIdxs.end()) {
+        if (badIdxs.find(sortIdxs.at(i)) != badIdxs.end())
+        {
             i++;
             continue;
         }
 
         cv::Rect2f box1 = cv::Rect2f(cv::Point2f(boxes(0, sortIdxs.at(i), 1), boxes(0, sortIdxs.at(i), 0)),
                              cv::Point2f(boxes(0, sortIdxs.at(i), 3), boxes(0, sortIdxs.at(i), 2)));
-        for (size_t j = i + 1; j < sortIdxs.size(); j++) {
-            if (scores(sortIdxs.at(j)) < thresholdScore) {
+        for (size_t j = i + 1; j < sortIdxs.size(); j++)
+        {
+            if (scores(sortIdxs.at(j)) < thresholdScore)
+            {
                 badIdxs.insert(sortIdxs[j]);
                 continue;
             }
