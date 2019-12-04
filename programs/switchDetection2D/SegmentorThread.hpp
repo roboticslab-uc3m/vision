@@ -134,23 +134,20 @@ public:
 class SegmentorThread : public yarp::os::PeriodicThread
 {
 private:
-  //colorRegion
-      std::string algorithm;
-      std::string locate;
-      int maxNumBlobs;
-      double morphClosing;
-      Bottle outFeatures;
-      int outFeaturesFormat;
-      int outImage;
-      int seeBounding;
-      int threshold;
-      float area, hue_peak, hue_mode, hue_mean, hue_stddev,
-    saturation_peak, saturation_mean, saturation_stddev,
-    value_peak, value_mode, value_mean, value_stddev, locX, locY,
-    rectangularity, axisFirst, axisSecond,
-aspectRatio, solidity, massCenterlocX, massCenterlocY, arc, radius;
-
-
+    //colorRegion
+    std::string algorithm;
+    std::string locate;
+    int maxNumBlobs;
+    double morphClosing;
+    Bottle outFeatures;
+    int outFeaturesFormat;
+    int outImage;
+    int seeBounding;
+    int threshold;
+    float area, hue_peak, hue_mode, hue_mean, hue_stddev, saturation_peak,
+        saturation_mean, saturation_stddev, value_peak, value_mode, value_mean,
+        value_stddev, locX, locY, rectangularity, axisFirst, axisSecond,
+        aspectRatio, solidity, massCenterlocX, massCenterlocY, arc, radius;
 
     yarp::dev::IFrameGrabberImage *camera;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
