@@ -13,7 +13,6 @@ namespace roboticslab
 HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* parameters)
 {
     if(!parameters->check("switchMode"))
-
     {
       CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
       return;
