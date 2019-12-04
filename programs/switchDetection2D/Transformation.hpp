@@ -3,9 +3,9 @@
 #ifndef __TRANSFORMATION_HPP__
 #define __TRANSFORMATION_HPP__
 
-#include <yarp/os/all.h>
-
 #include <vector>
+
+#include <yarp/os/all.h>
 
 #include "ColorDebug.h"
 
