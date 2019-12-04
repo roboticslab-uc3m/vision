@@ -1,14 +1,13 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "SwitchDetection2D.hpp"
-
-#include <string>
 #include <iostream>
+#include <string>
 
 #include <yarp/os/Property.h>
 #include <yarp/os/Time.h>
 
 #include <ColorDebug.h>
+#include "SwitchDetection2D.hpp"
 
 using namespace roboticslab;
 

@@ -1,12 +1,17 @@
 
 // Libraries
 
-#include <math.h>
 #include <fstream>
+#include <iostream>
+#include <math.h>
+#include <regex>
 #include <utility>
 #include <vector>
-#include <iostream>
-#include <regex>
+
+#include <cv.hpp>
+#include <opencv2/core/mat.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
 #include "tensorflow/cc/ops/const_op.h"
 #include "tensorflow/cc/ops/image_ops.h"
 #include "tensorflow/cc/ops/standard_ops.h"
@@ -25,9 +30,7 @@
 #include "tensorflow/core/platform/types.h"
 #include "tensorflow/core/public/session.h"
 #include "tensorflow/core/util/command_line_flags.h"
-#include <cv.hpp>
-#include <opencv2/core/mat.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+
 #include "TensorflowDetector.hpp"
 
 /************************************************************************/

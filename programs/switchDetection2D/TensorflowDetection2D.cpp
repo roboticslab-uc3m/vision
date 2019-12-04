@@ -1,30 +1,32 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
-
-#include "TensorflowDetection2D.hpp"
-#include "TensorflowDetector.hpp"
-#include "SegmentorThread.hpp"
-
-#include <cstdio>
-#include <string>
-#include <yarp/os/Property.h>
-#include <yarp/os/Time.h>
-#include <ColorDebug.h>
-
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
-#include <string>
-#include <vector>
-#include <yarp/os/Bottle.h>
-#include <yarp/os/Network.h>
-#include <yarp/sig/ImageDraw.h>
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <ColorDebug.h>
 #include <fstream>
-#include <utility>
 #include <iostream>
+#include <string>
 #include <time.h>
+#include <utility>
+#include <vector>
+
+#include <yarp/os/Bottle.h>
+#include <yarp/os/BufferedPort.h>
+#include <yarp/os/ConnectionReader.h>
+#include <yarp/os/Port.h>
+#include <yarp/os/PortReader.h>
+#include <yarp/os/Property.h>
+#include <yarp/os/Network.h>
+#include <yarp/os/Time.h>
+#include <yarp/sig/Image.h>
+#include <yarp/sig/ImageDraw.h>
+
+#include <cv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/core/mat.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/videoio.hpp>
+
 #include "tensorflow/cc/ops/const_op.h"
 #include "tensorflow/cc/ops/image_ops.h"
 #include "tensorflow/cc/ops/standard_ops.h"
@@ -37,19 +39,12 @@
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/public/session.h"
 #include "tensorflow/core/util/command_line_flags.h"
-#include <yarp/os/Bottle.h>
-#include <yarp/os/BufferedPort.h>
-#include <yarp/os/ConnectionReader.h>
-#include <yarp/os/Port.h>
-#include <yarp/os/PortReader.h>
-#include <yarp/sig/Image.h>
-#include <opencv2/core/mat.hpp>
-#include <opencv2/videoio.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <cv.hpp>
-#include "TensorflowDetector.hpp"
 
+#include <ColorDebug.h>
+#include "SegmentorThread.hpp"
+#include "TensorflowDetector.hpp"
+#include "TensorflowDetector.hpp"
+#include "TensorflowDetection2D.hpp"
 
 namespace roboticslab
 {

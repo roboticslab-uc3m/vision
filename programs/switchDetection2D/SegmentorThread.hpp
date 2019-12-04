@@ -5,6 +5,7 @@
 
 #include <vector>
 
+#include <yarp/dev/FrameGrabberInterfaces.h>
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
@@ -14,7 +15,6 @@
 #include <yarp/os/PortReader.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/os/Time.h>
-#include <yarp/dev/FrameGrabberInterfaces.h>
 #include <yarp/sig/all.h>
 #include <yarp/sig/Image.h>
 

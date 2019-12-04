@@ -3,35 +3,30 @@
 #ifndef __TENSORFLOW_DETECTION_2D_HPP__
 #define __TENSORFLOW_DETECTION_2D_HPP__
 
-#include <yarp/os/Port.h>
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <string.h>
+#include <time.h>
+#include <utility>
+#include <vector>
+
+#include <yarp/dev/FrameGrabberInterfaces.h>
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
+#include <yarp/os/Port.h>
 #include <yarp/os/PortReader.h>
 #include <yarp/os/RateThread.h>
 #include <yarp/os/ResourceFinder.h>
-
-#include <yarp/dev/FrameGrabberInterfaces.h>
-
 #include <yarp/sig/Image.h>
 
-#include <fstream>
-#include <utility>
-#include <vector>
-#include <iostream>
-#include <time.h>
-#include <cstdlib>
-
+#include <cv.hpp>
 #include <opencv2/core/mat.hpp>
-#include <opencv2/videoio.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <cv.hpp>
-
-#include <map>
-#include <string.h>
-
-#include <ColorDebug.h>
+#include <opencv2/videoio.hpp>
 
 #include "tensorflow/cc/ops/const_op.h"
 #include "tensorflow/cc/ops/image_ops.h"
@@ -47,8 +42,8 @@
 #include "tensorflow/core/util/command_line_flags.h"
 #include "TensorflowDetector.hpp"
 
+#include <ColorDebug.h>
 #include "SegmentorThread.hpp" // MUST GO AWAY!!
-
 #include "Transformation.hpp"
 
 namespace roboticslab
@@ -59,7 +54,7 @@ class TensorflowDetection2D
 public:
     yarp::sig::ImageOf<yarp::sig::PixelRgb> run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg);
     void configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg/*, yarp::os::BufferedPort<ImageOf<PixelRgb> > inputPort*/);
-  
+
 private:
     int initDetector=0;
 
