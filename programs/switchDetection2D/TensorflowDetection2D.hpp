@@ -7,24 +7,32 @@
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
-#include <yarp/os/Port.h>
 #include <yarp/os/PortReader.h>
 #include <yarp/os/RateThread.h>
 #include <yarp/os/ResourceFinder.h>
+
 #include <yarp/dev/FrameGrabberInterfaces.h>
+
 #include <yarp/sig/Image.h>
-#include <ColorDebug.h>
+
 #include <fstream>
 #include <utility>
 #include <vector>
 #include <iostream>
 #include <time.h>
 #include <cstdlib>
+
 #include <opencv2/core/mat.hpp>
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <cv.hpp>
+
+#include <map>
+#include <string.h>
+
+#include <ColorDebug.h>
+
 #include "tensorflow/cc/ops/const_op.h"
 #include "tensorflow/cc/ops/image_ops.h"
 #include "tensorflow/cc/ops/standard_ops.h"
@@ -38,8 +46,6 @@
 #include "tensorflow/core/public/session.h"
 #include "tensorflow/core/util/command_line_flags.h"
 #include "TensorflowDetector.hpp"
-#include <map>
-#include <string.h>
 
 #include "SegmentorThread.hpp" // MUST GO AWAY!!
 

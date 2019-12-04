@@ -3,10 +3,10 @@
 
 // Libraries
 #include <vector>
-#include "tensorflow/core/framework/tensor.h"
-#include "tensorflow/core/public/session.h"
 #include <opencv2/core/mat.hpp>
 
+#include "tensorflow/core/framework/tensor.h"
+#include "tensorflow/core/public/session.h"
 
 tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::map<int, tensorflow::string> &labelsMap);
 
