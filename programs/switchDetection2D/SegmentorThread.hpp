@@ -57,7 +57,6 @@
 #include "TravisLib.hpp"
 
 
-using namespace yarp::sig;
 using namespace yarp::sig::draw;
 
 using namespace cv;
@@ -181,7 +180,7 @@ private:
     yarp::dev::IFrameGrabberImage *camera;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
-    yarp::os::BufferedPort<ImageOf<PixelRgb> > outPortShape;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outPortShape;
 
     int cropSelector;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *outCropSelectorImg;

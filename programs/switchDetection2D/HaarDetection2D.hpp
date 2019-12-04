@@ -15,10 +15,12 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include "SegmentorThread.hpp"
+
+#include "SegmentorThread.hpp" // MUST GO AWAY!!
+
 #include <ColorDebug.h>
 
-using namespace yarp::sig;
+#include "Transformation.hpp"
 
 namespace roboticslab
 {

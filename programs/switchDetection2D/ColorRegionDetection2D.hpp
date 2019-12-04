@@ -50,16 +50,13 @@
 #define DEFAULT_SEE_BOUNDING 3
 #define DEFAULT_THRESHOLD 55
 
-using namespace yarp::sig;
-using namespace yarp::sig::draw;
-
 using namespace cv;
 
 namespace roboticslab
 {
 
-class ColorRegionDetection2D {
-
+class ColorRegionDetection2D
+{
 public:
     void run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, std::string algorithm, std::string locate, double morphClosing, int maxNumBlobs, int threshold);
     yarp::os::Bottle outFeatures;

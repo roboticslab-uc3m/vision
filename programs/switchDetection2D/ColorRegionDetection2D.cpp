@@ -23,24 +23,21 @@ namespace roboticslab
 {
 
 /*****************************************************************/
-void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, std::string algorithm, std::string locate, double morphClosing, int maxNumBlobs, int threshold) {
-
-
+void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, std::string algorithm, std::string locate, double morphClosing, int maxNumBlobs, int threshold)
+{
 
 /***************************/
-
-  outImage = DEFAULT_OUT_IMAGE;
-  outFeatures.fromString(DEFAULT_OUT_FEATURES);  // it's a bottle!!
-  outFeaturesFormat = DEFAULT_OUT_FEATURES_FORMAT;
-  int rateMs = DEFAULT_RATE_MS;
-  seeBounding = DEFAULT_SEE_BOUNDING;
-
+    outImage = DEFAULT_OUT_IMAGE;
+    outFeatures.fromString(DEFAULT_OUT_FEATURES); // it's a bottle!!
+    outFeaturesFormat = DEFAULT_OUT_FEATURES_FORMAT;
+    int rateMs = DEFAULT_RATE_MS;
+    seeBounding = DEFAULT_SEE_BOUNDING;
 
 //********************
 
 
     // {yarp ImageOf Rgb -> openCv Mat Bgr}
-   IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
+    IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
                                          IPL_DEPTH_8U, 3 );
     cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2BGR);
     Mat inCvMat = cvarrToMat(inIplImage);
@@ -86,11 +83,11 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
         cvCvtColor(&outIplImage,&outIplImage, CV_BGR2RGB);
         char sequence[] = "RGB";
         strcpy (outIplImage.channelSeq,sequence);
-        ImageOf<PixelRgb> outYarpImg;
+        yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
         outYarpImg.wrapIplImage(&outIplImage);
-        PixelRgb blue(0,0,255);
+        yarp::sig::PixelRgb blue(0,0,255);
         for( int i = 0; i < blobsXY.size(); i++)
-           addCircle(outYarpImg,blue,blobsXY[i].x,blobsXY[i].y,3);
+           yarp::sig::draw::addCircle(outYarpImg,blue,blobsXY[i].x,blobsXY[i].y,3);
         outImageProcessed=outYarpImg;
 
         //return outYarpImg; crea conflicto con return; de funciones travis

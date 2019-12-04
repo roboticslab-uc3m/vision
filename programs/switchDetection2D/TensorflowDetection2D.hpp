@@ -3,7 +3,6 @@
 #ifndef __TENSORFLOW_DETECTION_2D_HPP__
 #define __TENSORFLOW_DETECTION_2D_HPP__
 
-#include "SegmentorThread.hpp"
 #include <yarp/os/Port.h>
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
@@ -42,6 +41,9 @@
 #include <map>
 #include <string.h>
 
+#include "SegmentorThread.hpp" // MUST GO AWAY!!
+
+#include "Transformation.hpp"
 
 namespace roboticslab
 {
