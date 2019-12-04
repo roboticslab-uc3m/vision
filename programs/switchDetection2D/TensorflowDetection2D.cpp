@@ -67,9 +67,11 @@ void TensorflowDetection2D::configuration(std::string trainedModel, std::string 
     // Load .pb frozen model
     tensorflow::string graphPath = GRAPH;
     loadGraphStatus = loadGraph(graphPath, &session);
-    if (!loadGraphStatus.ok()) {
+    if (!loadGraphStatus.ok())
+    {
         std::cout<<"Fail loading graph "<<graphPath<<"."<<std::endl;
-    } else
+    }
+    else
         std::cout<<"Graph "<<graphPath<<" loaded correctly."<<std::endl;
 
 
@@ -77,7 +79,8 @@ void TensorflowDetection2D::configuration(std::string trainedModel, std::string 
     labelsMap = std::map<int,std::string>();
     std::cout<<"Labels "<<LABELS<<" are going to be loaded."<<std::endl;
     readLabelsMapStatus = readLabelsMapFile(LABELS, labelsMap);
-    if (!readLabelsMapStatus.ok()) {
+    if (!readLabelsMapStatus.ok())
+    {
         std::cout<<"Fail loading labels "<<LABELS<<"."<<std::endl;
     } else
         std::cout<<"Labels "<<LABELS<<" loaded correctly."<<std::endl;
@@ -135,28 +138,29 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorflowDetection2D::run(yarp::sig::Im
     tensorflow::TTypes<float, 3>::Tensor boxes = outputs[0].flat_outer_dims<float,3>();
 
     std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
-    for (size_t i = 0; i < goodIdxs.size(); i++){
-    std::cout<<std::endl;
-    std::cout<<std::endl;
-    std::cout<<"Detection: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Score: "<<scores(goodIdxs.at(i))<<std::endl;
+    for (size_t i = 0; i < goodIdxs.size(); i++)
+    {
+        std::cout<<std::endl;
+        std::cout<<std::endl;
+        std::cout<<"Detection: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Score: "<<scores(goodIdxs.at(i))<<std::endl;
 
 
-    double score_detection=scores(goodIdxs.at(i));
-    std::string class_name=std::string(labelsMap[classes(goodIdxs.at(i))]);
-    bottle.clear();
-    bottle.addString(" Detection number: ");
-    bottle.addInt(goodIdxs.size());
-    bottle.addString(" Detection: ");
-    bottle.addString(class_name);
-    bottle.addString(" Score: ");
-    bottle.addDouble(score_detection);
+        double score_detection=scores(goodIdxs.at(i));
+        std::string class_name=std::string(labelsMap[classes(goodIdxs.at(i))]);
+        bottle.clear();
+        bottle.addString(" Detection number: ");
+        bottle.addInt(goodIdxs.size());
+        bottle.addString(" Detection: ");
+        bottle.addString(class_name);
+        bottle.addString(" Score: ");
+        bottle.addDouble(score_detection);
 
-    std::cout<<std::endl;
-    drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
-    cv::putText(inCvMat, std::to_string(fps).substr(0, 5), cv::Point(0, inCvMat.rows), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 255));
-    cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
+        std::cout<<std::endl;
+        drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
+        cv::putText(inCvMat, std::to_string(fps).substr(0, 5), cv::Point(0, inCvMat.rows), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 255));
+        cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
 
-}
+    }
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
     outYarpImg.setExternal(inCvMat.data,inCvMat.size[1],inCvMat.size[0]);
