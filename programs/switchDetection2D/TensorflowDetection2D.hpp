@@ -46,36 +46,35 @@
 namespace roboticslab
 {
 
-class TensorflowDetection2D {
-  private:
-
-
-  public:
+class TensorflowDetection2D
+{
+public:
     yarp::sig::ImageOf<yarp::sig::PixelRgb> run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg);
     void configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg/*, yarp::os::BufferedPort<ImageOf<PixelRgb> > inputPort*/);
   
-int initDetector=0;
+private:
+    int initDetector=0;
 
     // Tensorflow: Session object instance
- //yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inputPort;
- tensorflow::Status readLabelsMapStatus;
- tensorflow::Status loadGraphStatus;
- tensorflow::string inputLayer;
- tensorflow::TensorShape shape;
- tensorflow::Tensor tensor;
- std::vector<tensorflow::Tensor> outputs;
- std::unique_ptr<tensorflow::Session> session;
- std::map<int, std::string> labelsMap;
- std::vector<std::string> outputLayer;
- std::string model;
- std::string labels;
- time_t start, end;
- int nFrames = 25;
- int iFrame = 0;
- double fps = 0.;
- double thresholdScore = 0.5;
- double thresholdIOU = 0.8;
- Bottle bottle;
+    //yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inputPort;
+    tensorflow::Status readLabelsMapStatus;
+    tensorflow::Status loadGraphStatus;
+    tensorflow::string inputLayer;
+    tensorflow::TensorShape shape;
+    tensorflow::Tensor tensor;
+    std::vector<tensorflow::Tensor> outputs;
+    std::unique_ptr<tensorflow::Session> session;
+    std::map<int, std::string> labelsMap;
+    std::vector<std::string> outputLayer;
+    std::string model;
+    std::string labels;
+    time_t start, end;
+    int nFrames = 25;
+    int iFrame = 0;
+    double fps = 0.;
+    double thresholdScore = 0.5;
+    double thresholdIOU = 0.8;
+    yarp::os::Bottle bottle;
 };
 
 }  // namespace roboticslab

@@ -50,7 +50,6 @@
 #define DEFAULT_SEE_BOUNDING 3
 #define DEFAULT_THRESHOLD 55
 
-using namespace yarp::os;
 using namespace yarp::sig;
 using namespace yarp::sig::draw;
 
@@ -60,24 +59,22 @@ namespace roboticslab
 {
 
 class ColorRegionDetection2D {
-  private:
 
-  public:
+public:
     void run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, std::string algorithm, std::string locate, double morphClosing, int maxNumBlobs, int threshold);
-    Bottle outFeatures;
+    yarp::os::Bottle outFeatures;
     int outFeaturesFormat;
     int outImage;
     int seeBounding;
 
-//
-float area, hue_peak, hue_mode, hue_mean, hue_stddev,
-    saturation_peak, saturation_mean, saturation_stddev,
-    value_peak, value_mode, value_mean, value_stddev, locX, locY,
-    rectangularity, axisFirst, axisSecond,
-aspectRatio, solidity, massCenterlocX, massCenterlocY, arc, radius;
+private:
+    float area, hue_peak, hue_mode, hue_mean, hue_stddev,
+        saturation_peak, saturation_mean, saturation_stddev,
+        value_peak, value_mode, value_mean, value_stddev, locX, locY,
+        rectangularity, axisFirst, axisSecond, aspectRatio, solidity, massCenterlocX, massCenterlocY, arc, radius;
 
-  yarp::sig::ImageOf<yarp::sig::PixelRgb> outImageProcessed;
-  Bottle outputProcessed;
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> outImageProcessed;
+    yarp::os::Bottle outputProcessed;
 };
 
 }  // namespace roboticslab

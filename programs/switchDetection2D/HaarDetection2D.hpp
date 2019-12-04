@@ -18,21 +18,19 @@
 #include "SegmentorThread.hpp"
 #include <ColorDebug.h>
 
-using namespace yarp::os;
 using namespace yarp::sig;
 
 namespace roboticslab
 {
 
-class HaarDetection2D {
-  private:
-
-
-  public:
+class HaarDetection2D
+{
+public:
     yarp::sig::ImageOf<yarp::sig::PixelRgb> run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, cv::CascadeClassifier object_cascade);
     cv::Mat inCvMatPost;
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImgPre;
     cv::CascadeClassifier object_cascadeFile;
+private:
 
 };
 
