@@ -6,24 +6,30 @@
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
+#include <yarp/os/Network.h>
 #include <yarp/os/PeriodicThread.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/PortReader.h>
 #include <yarp/os/ResourceFinder.h>
+#include <yarp/os/Time.h>
 
 #include <yarp/dev/FrameGrabberInterfaces.h>
 
+#include <yarp/sig/all.h>
 #include <yarp/sig/Image.h>
 
 #include <opencv2/objdetect/objdetect.hpp>
 
+#include <vector>
+
 #include <ColorDebug.h>
+
 #include "HaarDetection2D.hpp"
 #include "ColorRegionDetection2D.hpp"
 #include "TensorflowDetection2D.hpp"
 #include "TensorflowDetector.hpp"
 #include "Transformation.hpp"
-#include <vector>
+
 
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
@@ -41,15 +47,6 @@
 #define DEFAULT_SEE_BOUNDING 3
 #define DEFAULT_THRESHOLD 55
 
-
-#include <yarp/os/Network.h>
-#include <yarp/os/Port.h>
-#include <yarp/os/BufferedPort.h>
-#include <yarp/os/PeriodicThread.h>
-#include <yarp/os/Time.h>
-
-#include <yarp/sig/all.h>
-
 #include "cv.h"
 //#include "highgui.h" // to show windows
 
@@ -60,7 +57,6 @@
 #include "TravisLib.hpp"
 
 
-using namespace yarp::os;
 using namespace yarp::sig;
 using namespace yarp::sig::draw;
 
@@ -172,7 +168,7 @@ private:
     std::string locate;
     int maxNumBlobs;
     double morphClosing;
-    Bottle outFeatures;
+    yarp::os::Bottle outFeatures;
     int outFeaturesFormat;
     int outImage;
     int seeBounding;

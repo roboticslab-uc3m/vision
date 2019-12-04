@@ -97,13 +97,13 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
 
 
     // Take advantage we have the travis object and get features for text output
-    Bottle output;
+    yarp::os::Bottle output;
     for (int elem = 0; elem < outFeatures.size() ; elem++) {
         if ( outFeatures.get(elem).asString() == "locX" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsXY[0].x);
             } else {
-                Bottle locXs;
+                yarp::os::Bottle locXs;
                 for (int i = 0; i < blobsXY.size(); i++)
                     locXs.addFloat64(blobsXY[i].x);
                 output.addList() = locXs;
@@ -112,7 +112,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsXY[0].y);
             } else {
-                Bottle locYs;
+                yarp::os::Bottle locYs;
                 for (int i = 0; i < blobsXY.size(); i++)
                     locYs.addFloat64(blobsXY[i].y);
                 output.addList() = locYs;
@@ -121,7 +121,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsAngle[0]);
             } else {
-                Bottle angles;
+                yarp::os::Bottle angles;
                 for (int i = 0; i < blobsAngle.size(); i++)
                     angles.addFloat64(blobsAngle[i]);
                 output.addList() = angles;
@@ -130,7 +130,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsArea[0]);
             } else {
-                Bottle areas;
+                yarp::os::Bottle areas;
                 for (int i = 0; i < blobsArea.size(); i++)
                     areas.addFloat64(blobsArea[i]);
                 output.addList() = areas;
@@ -139,7 +139,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsPerimeter[0]);
             } else {
-                Bottle areas;
+                yarp::os::Bottle areas;
                 for (int i = 0; i < blobsPerimeter.size(); i++)
                     areas.addFloat64(blobsPerimeter[i]);
                 output.addList() = areas;
@@ -148,7 +148,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsAspectRatio[0]);
             } else {
-                Bottle aspectRatios;
+                yarp::os::Bottle aspectRatios;
                 for (int i = 0; i < blobsAspectRatio.size(); i++)
                     aspectRatios.addFloat64(blobsAspectRatio[i]);
                 output.addList() = aspectRatios;
@@ -157,7 +157,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsRectangularity[0]);
             } else {
-                Bottle rectangularities;
+                yarp::os::Bottle rectangularities;
                 for (int i = 0; i < blobsRectangularity.size(); i++)
                     rectangularities.addFloat64(blobsRectangularity[i]);
                 output.addList() = rectangularities;
@@ -166,7 +166,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsAxisFirst[0]);
             } else {
-                Bottle axisFirsts;
+                yarp::os::Bottle axisFirsts;
                 for (int i = 0; i < blobsAxisFirst.size(); i++)
                     axisFirsts.addFloat64(blobsAxisFirst[i]);
                 output.addList() = axisFirsts;
@@ -175,7 +175,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsAxisSecond[0]);
             } else {
-                Bottle axisSeconds;
+                yarp::os::Bottle axisSeconds;
                 for (int i = 0; i < blobsAxisSecond.size(); i++)
                     axisSeconds.addFloat64(blobsAxisSecond[i]);
                 output.addList() = axisSeconds;
@@ -184,7 +184,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsSolidity[0]);
             } else {
-                Bottle solidities;
+                yarp::os::Bottle solidities;
                 for (int i = 0; i < blobsSolidity.size(); i++)
                     solidities.addFloat64(blobsSolidity[i]);
                 output.addList() = solidities;
@@ -193,7 +193,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsHue[0]);
             } else {
-                Bottle hues;
+                yarp::os::Bottle hues;
                 for (int i = 0; i < blobsHue.size(); i++)
                     hues.addFloat64(blobsHue[i]);
                 output.addList() = hues;
@@ -202,7 +202,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsSat[0]);
             } else {
-                Bottle sats;
+                yarp::os::Bottle sats;
                 for (int i = 0; i < blobsSat.size(); i++)
                     sats.addFloat64(blobsSat[i]);
                 output.addList() = sats;
@@ -211,7 +211,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsVal[0]);
             } else {
-                Bottle vals;
+                yarp::os::Bottle vals;
                 for (int i = 0; i < blobsVal.size(); i++)
                     vals.addFloat64(blobsVal[i]);
                 output.addList() = vals;
@@ -220,7 +220,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsHueStdDev[0]);
             } else {
-                Bottle hueStdDevs;
+                yarp::os::Bottle hueStdDevs;
                 for (int i = 0; i < blobsHueStdDev.size(); i++)
                     hueStdDevs.addFloat64(blobsHueStdDev[i]);
                 output.addList() = hueStdDevs;
@@ -229,7 +229,7 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsSatStdDev[0]);
             } else {
-                Bottle satStdDevs;
+                yarp::os::Bottle satStdDevs;
                 for (int i = 0; i < blobsSatStdDev.size(); i++)
                     satStdDevs.addFloat64(blobsSatStdDev[i]);
                 output.addList() = satStdDevs;
@@ -238,18 +238,18 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
                 output.addFloat64(blobsValStdDev[0]);
             } else {
-                Bottle valStdDevs;
+                yarp::os::Bottle valStdDevs;
                 for (int i = 0; i < blobsValStdDev.size(); i++)
                     valStdDevs.addFloat64(blobsValStdDev[i]);
                 output.addList() = valStdDevs;
             }
         } else if ( outFeatures.get(elem).asString() == "time" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addFloat64(Time::now());
+                output.addFloat64(yarp::os::Time::now());
             } else {
-                Bottle times;
+                yarp::os::Bottle times;
                 for (int i = 0; i < blobsArea.size(); i++)
-                    times.addFloat64(Time::now());
+                    times.addFloat64(yarp::os::Time::now());
                 output.addList() = times;
             }
         } else fprintf(stderr,"[SegmentorThread] warning: bogus outFeatures.\n");
@@ -261,29 +261,8 @@ void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
     cvReleaseImage( &inIplImage );  // release the memory for the image
     outCvMat.release();  // cvReleaseImage( &outIplImage );  // release the memory for the image
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*********************************/
-
-
-
-
-  //return outYarpImg;
-
+    //return outYarpImg;
 }
-
-
 
 /************************************************************************/
 

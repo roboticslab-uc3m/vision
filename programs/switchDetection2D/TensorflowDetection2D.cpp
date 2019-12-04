@@ -23,7 +23,6 @@
 #include <ColorDebug.h>
 #include <fstream>
 #include <utility>
-#include <vector>
 #include <iostream>
 #include <time.h>
 #include "tensorflow/cc/ops/const_op.h"
@@ -52,7 +51,6 @@
 #include "TensorflowDetector.hpp"
 
 
-
 namespace roboticslab
 {
 
@@ -62,7 +60,7 @@ void TensorflowDetection2D::configuration(std::string trainedModel, std::string 
     //yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImgShape = inputPort.read();
 
     //yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg=&inYarpImg;
-    Bottle output;
+    yarp::os::Bottle output;
 
     std::string LABELS = trainedModelLabels;
     std::string GRAPH = trainedModel;

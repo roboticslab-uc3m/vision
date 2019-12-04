@@ -202,7 +202,7 @@ void SegmentorThread::run()
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
-    Bottle output;
+    yarp::os::Bottle output;
 
     if (!camera->getImage(inYarpImg))
     {
