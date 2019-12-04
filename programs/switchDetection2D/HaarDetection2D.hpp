@@ -6,9 +6,10 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
+
 
 #include <yarp/os/Bottle.h>
 #include <yarp/sig/ImageDraw.h>
@@ -16,10 +17,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "SegmentorThread.hpp" // MUST GO AWAY!!
-
 #include <ColorDebug.h>
-
+#include "SegmentorThread.hpp" // MUST GO AWAY!!
 #include "Transformation.hpp"
 
 namespace roboticslab

@@ -40,14 +40,13 @@
  * | xmlCascade | file.xml    | haarcascade_cocacola_can.xml |
  */
 
+ #include <iostream>
+
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
-#include <iostream>
+
 #include <ColorDebug.h>
-
 #include "SwitchDetection2D.hpp"
-
-
 
 int main(int argc, char** argv)
 {

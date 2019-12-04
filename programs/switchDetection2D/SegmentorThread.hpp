@@ -3,6 +3,8 @@
 #ifndef __SEGMENTOR_THREAD_HPP__
 #define __SEGMENTOR_THREAD_HPP__
 
+#include <vector>
+
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
@@ -12,23 +14,24 @@
 #include <yarp/os/PortReader.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/os/Time.h>
-
 #include <yarp/dev/FrameGrabberInterfaces.h>
-
 #include <yarp/sig/all.h>
 #include <yarp/sig/Image.h>
 
 #include <opencv2/objdetect/objdetect.hpp>
-
-#include <vector>
+#include "opencv2/core/core.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "cv.h"
+//#include "highgui.h" // to show windows
 
 #include <ColorDebug.h>
-
-#include "HaarDetection2D.hpp"
 #include "ColorRegionDetection2D.hpp"
+#include "HaarDetection2D.hpp"
 #include "TensorflowDetection2D.hpp"
 #include "TensorflowDetector.hpp"
 #include "Transformation.hpp"
+#include "TravisLib.hpp"
 
 
 #define DEFAULT_RATE_MS 20
@@ -46,15 +49,6 @@
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_SEE_BOUNDING 3
 #define DEFAULT_THRESHOLD 55
-
-#include "cv.h"
-//#include "highgui.h" // to show windows
-
-#include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-
-#include "TravisLib.hpp"
 
 
 using namespace yarp::sig::draw;
