@@ -10,7 +10,6 @@
 #include <string>
 #include <vector>
 
-
 #include <yarp/os/Bottle.h>
 #include <yarp/sig/ImageDraw.h>
 

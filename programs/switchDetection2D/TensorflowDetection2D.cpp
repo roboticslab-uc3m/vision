@@ -90,10 +90,6 @@ void TensorflowDetection2D::configuration(std::string trainedModel, std::string 
     shape.AddDim((tensorflow::int64)inYarpImg->width());
     shape.AddDim(3);
     std::cout<<"Taking frames..."<<std::endl;
-
-
-
-
 }
 
 /*****************************************************************/

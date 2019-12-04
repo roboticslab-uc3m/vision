@@ -3,7 +3,6 @@
 #ifndef __COLOR_REGION_DETECTION_2D_HPP__
 #define __COLOR_REGION_DETECTION_2D_HPP__
 
-// STL
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
