@@ -3,40 +3,30 @@
 #ifndef __COLOR_REGION_DETECTION_2D_HPP__
 #define __COLOR_REGION_DETECTION_2D_HPP__
 
-
+// STL
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include <yarp/os/Bottle.h>
+#include <yarp/os/BufferedPort.h>
+#include <yarp/os/Network.h>
+#include <yarp/os/PeriodicThread.h>
+#include <yarp/os/Port.h>
+#include <yarp/os/Time.h>
+#include <yarp/sig/all.h>
 #include <yarp/sig/ImageDraw.h>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include "SegmentorThread.hpp"
-#include <ColorDebug.h>
-
-
-#include "SegmentorThread.hpp"
-
-#include <yarp/os/Network.h>
-#include <yarp/os/Port.h>
-#include <yarp/os/BufferedPort.h>
-#include <yarp/os/PeriodicThread.h>
-#include <yarp/os/Time.h>
-
-#include <yarp/sig/all.h>
-
 #include "cv.h"
-//#include "highgui.h" // to show windows
+#include "highgui.h" // to show windows
 
-#include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-
+#include <ColorDebug.h>
+#include "SegmentorThread.hpp"
 #include "TravisLib.hpp"
 
 #define DEFAULT_ALGORITHM "blueMinusRed"
