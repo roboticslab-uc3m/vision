@@ -9,11 +9,9 @@
 #include <ColorDebug.h>
 #include "SwitchDetection2D.hpp"
 
-using namespace roboticslab;
-
 /************************************************************************/
 
-bool SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
+bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
 {
     cropSelector = DEFAULT_CROP_SELECTOR;
     std::string strCameraDevice = DEFAULT_CAMERA_DEVICE;
@@ -151,14 +149,14 @@ bool SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
 
 /*****************************************************************/
 
-double SwitchDetection2D::getPeriod()
+double roboticslab::SwitchDetection2D::getPeriod()
 {
     return watchdog;  // [s]
 }
 
 /************************************************************************/
 
-bool SwitchDetection2D::updateModule()
+bool roboticslab::SwitchDetection2D::updateModule()
 {
     CD_INFO("Alive...\n");
     return true;
@@ -166,7 +164,7 @@ bool SwitchDetection2D::updateModule()
 
 /************************************************************************/
 
-bool SwitchDetection2D::interruptModule()
+bool roboticslab::SwitchDetection2D::interruptModule()
 {
     outImg.interrupt();
     outPort.interrupt();
@@ -182,7 +180,7 @@ bool SwitchDetection2D::interruptModule()
 
 /************************************************************************/
 
-bool SwitchDetection2D::close()
+bool roboticslab::SwitchDetection2D::close()
 {
     CD_INFO("Closing...\n");
 

@@ -17,25 +17,23 @@
 #include <ColorDebug.h>
 #include "SegmentorThread.hpp"
 
-using namespace roboticslab;
-
 /************************************************************************/
 
-void SegmentorThread::setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage *_camera)
+void roboticslab::SegmentorThread::setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage *_camera)
 {
     camera = _camera;
 }
 
 /************************************************************************/
 
-void SegmentorThread::setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg)
+void roboticslab::SegmentorThread::setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg)
 {
     pOutImg = _pOutImg;
 }
 
 /************************************************************************/
 
-void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
+void roboticslab::SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
 {
     pOutPort = _pOutPort;
 }
@@ -43,7 +41,7 @@ void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
 /************************************************************************/
 //TensorflowDetection2D tensorflowDetector;
 
-void SegmentorThread::init(yarp::os::ResourceFinder &rf)
+void roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
 {
     int rateMs = DEFAULT_RATE_MS;
     std::string xmlCascade = DEFAULT_XMLCASCADE;
@@ -193,7 +191,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
 /************************************************************************/
 
-void SegmentorThread::run()
+void roboticslab::SegmentorThread::run()
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
