@@ -7,6 +7,12 @@
 
 #include <yarp/os/all.h>
 
+//#include "ColorRegionDetection2D.hpp"
+//#include "HaarDetection2D.hpp"
+//#include "TensorflowDetection2D.hpp"
+//#include "TensorflowDetector.hpp"
+//#include "TravisLib.hpp"
+
 #include "ColorDebug.h"
 
 namespace roboticslab

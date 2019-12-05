@@ -27,12 +27,6 @@
 
 #include <ColorDebug.h>
 
-//#include "ColorRegionDetection2D.hpp"
-//#include "HaarDetection2D.hpp"
-//#include "TensorflowDetection2D.hpp"
-//#include "TensorflowDetector.hpp"
-//#include "TravisLib.hpp"
-
 #include "Transformation.hpp"
 
 
