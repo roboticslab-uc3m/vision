@@ -15,18 +15,18 @@ if(ENABLE_switchDetection2D)
     include_directories(${OpenCV_INCLUDE_DIRS})
 
     # ColorRegionDetection
-    #add_library(ColorRegionDetection Transformation.hpp
-    #                                 ColorRegionDetection2D.hpp
-    #                                 ColorRegionDetection2D.cpp)
+    add_library(ColorRegionDetection Transformation.hpp
+                                     ColorRegionDetection2D.hpp
+                                     ColorRegionDetection2D.cpp)
 
-    #target_link_libraries(ColorRegionDetection YARP::YARP_OS
-    #                                           YARP::YARP_init
-    #                                           YARP::YARP_dev
-    #                                           YARP::YARP_sig
-    #                                           ${OpenCV_LIBS}
-    #                                           ROBOTICSLAB::ColorDebug
-    #                                           TravisLib
-    #                                           TensorflowCC::Shared)
+    target_link_libraries(ColorRegionDetection YARP::YARP_OS
+                                               YARP::YARP_init
+                                               YARP::YARP_dev
+                                               YARP::YARP_sig
+                                               ${OpenCV_LIBS}
+                                               ROBOTICSLAB::ColorDebug
+                                               TravisLib
+                                               TensorflowCC::Shared)
 
     # HaarDetection
     add_library(HaarDetection Transformation.hpp

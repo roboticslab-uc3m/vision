@@ -23,125 +23,80 @@ namespace roboticslab
 ColorRegionDetectionTransformation::ColorRegionDetectionTransformation(yarp::os::Searchable* parameters)
 {
     algorithm = DEFAULT_ALGORITHM;
+    CD_DEBUG("*** \"algorithm\" (default: \"%s\")\n", algorithm.c_str());
+    if(parameters->check("algorithm"))
+    {
+        CD_INFO("**** \"algorithm\" parameter for ColorRegionDetectionTransformation found\n");
+        algorithm = parameters->find("algorithm").asString();
+    }
+
     locate = DEFAULT_LOCATE;
+    if(parameters->check("locate"))
+    {
+        CD_INFO("**** \"locate\" parameter for ColorRegionDetectionTransformation found\n");
+        locate = parameters->find("locate").asString();
+    }
+
     maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
+    if(parameters->check("maxNumBlobs"))
+    {
+        CD_INFO("**** \"maxNumBlobs\" parameter for ColorRegionDetectionTransformation found\n");
+        maxNumBlobs = parameters->find("maxNumBlobs").asInt32();
+    }
+
     morphClosing = DEFAULT_MORPH_CLOSING;
-    outImage = DEFAULT_OUT_IMAGE;
-    outFeatures.fromString(DEFAULT_OUT_FEATURES);  // it's a bottle!!
+    if(parameters->check("morphClosing"))
+    {
+        CD_INFO("**** \"morphClosing\" parameter for ColorRegionDetectionTransformation found\n");
+        morphClosing = parameters->find("morphClosing").asFloat64();
+    }
+
     outFeaturesFormat = DEFAULT_OUT_FEATURES_FORMAT;
-    seeBounding = DEFAULT_SEE_BOUNDING;
+    if(parameters->check("outFeaturesFormat"))
+    {
+        CD_INFO("**** \"outFeaturesFormat\" parameter for ColorRegionDetectionTransformation found\n");
+        outFeaturesFormat = parameters->find("outFeaturesFormat").asInt32();
+    }
+
+    outImage = DEFAULT_OUT_IMAGE;
+    if(parameters->check("outImage"))
+    {
+        CD_INFO("**** \"outImage\" parameter for ColorRegionDetectionTransformation found\n");
+        outImage = parameters->find("outImage").asInt32();
+    }
+
     threshold = DEFAULT_THRESHOLD;
-
-    if(!parameters->check("context"))
+    if(parameters->check("threshold"))
     {
-         CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
-         return;
+        CD_INFO("**** \"threshold\" parameter for ColorRegionDetectionTransformation found\n");
+        threshold = parameters->find("threshold").asInt32();
     }
-    std::string context = parameters->find("context").asString();
 
-    if(!parameters->check("algorithm"))
+    seeBounding = DEFAULT_SEE_BOUNDING;
+    if(parameters->check("seeBounding"))
     {
-        CD_ERROR("**** \"algorithm\" parameter for ColorRegionDetectionTransformation NOT found\n");
-        return;
+        CD_INFO("**** \"seeBounding\" parameter for ColorRegionDetectionTransformation found\n");
+        seeBounding = parameters->find("seeBounding").asInt32();
     }
-    std::string algorithm = parameters->find("algorithm").asString();
 
-    if(!parameters->check("locate"))
+    outFeatures.fromString(DEFAULT_OUT_FEATURES);  // it's a bottle!!
+    if(parameters->check("outFeatures"))
     {
-        CD_ERROR("**** \"locate\" parameter for ColorRegionDetectionTransformation NOT found\n");
-        return;
+        CD_INFO("**** \"outFeatures\" parameter for ColorRegionDetectionTransformation found\n");
+        outFeatures = *(parameters->find("outFeatures").asList());  // simple overrride
     }
-    std::string locate = parameters->find("locate").asString();
 
-    if(!parameters->check("maxNumBlobs"))
-    {
-        CD_ERROR("**** \"maxNumBlobs\" parameter for ColorRegionDetectionTransformation NOT found\n");
-        return;
-    }
-    int maxNumBlobs = parameters->find("maxNumBlobs").asInt32();
-
-    if(!parameters->check("morphClosing"))
-    {
-        CD_ERROR("**** \"morphClosing\" parameter for ColorRegionDetectionTransformation NOT found\n");
-        return;
-    }
-    double morphClosing = parameters->find("morphClosing").asFloat64();
-
-    if(!parameters->check("outFeaturesFormat"))
-    {
-        CD_ERROR("**** \"outFeaturesFormat\" parameter for ColorRegionDetectionTransformation NOT found\n");
-        return;
-    }
-    int outFeaturesFormat = parameters->find("outFeaturesFormat").asInt32();
-
-    if(!parameters->check("outImage"))
-    {
-        CD_ERROR("**** \"outImage\" parameter for ColorRegionDetectionTransformation NOT found\n");
-        return;
-    }
-    int outImage = parameters->find("outImage").asInt32();
-
-    if(!parameters->check("threshold"))
-    {
-        CD_ERROR("**** \"threshold\" parameter for ColorRegionDetectionTransformation NOT found\n");
-        return;
-    }
-    int threshold = parameters->find("threshold").asInt32();
-
-    if(!parameters->check("seeBounding"))
-    {
-        CD_ERROR("**** \"seeBounding\" parameter for ColorRegionDetectionTransformation NOT found\n");
-        return;
-    }
-    int seeBounding = parameters->find("seeBounding").asInt32();
-
-    if(!parameters->check("outFeatures"))
-    {
-        CD_ERROR("**** \"outFeatures\" parameter for ColorRegionDetectionTransformation NOT found\n");
-        return;
-    }
-    //  yarp::os::Bottle outFeatures = parameters->find("outFeatures").asList();
-
-    if (rf.check("outFeatures"))
-    {
-        outFeatures = *(rf.find("outFeatures").asList());  // simple overrride
-    }
-    std::printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
-
-    if (rf.check("outImage")) outImage = rf.find("outImage").asInt32();
-    if (rf.check("threshold")) threshold = rf.find("threshold").asInt32();
-    if (rf.check("seeBounding")) seeBounding = rf.find("seeBounding").asInt32();
-    std::printf("SegmentorThread using outImage: %d, rateMs: %d, seeBounding: %d, threshold: %d.\n",
-    outImage, rateMs, seeBounding, threshold);
-    yarp::os::ResourceFinder rf;
-    rf.setVerbose(false);
-    rf.setDefaultContext(context);
+    printf("SegmentorThread using outImage: %d, seeBounding: %d, threshold: %d.\n", outImage, seeBounding, threshold);
+    printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
 
     valid = true;
 }
 
-// -----------------------------------------------------------------------------
-
-double ColorRegionDetectionTransformation::transform(const double value)
-{
-    return value * m + b;
-}
-
 /*****************************************************************/
-void ColorRegionDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, std::string algorithm, std::string locate, double morphClosing, int maxNumBlobs, int threshold)
+void ColorRegionDetectionTransformation::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg)
 {
 
-/***************************/
-    outImage = DEFAULT_OUT_IMAGE;
-    outFeatures.fromString(DEFAULT_OUT_FEATURES); // it's a bottle!!
-    outFeaturesFormat = DEFAULT_OUT_FEATURES_FORMAT;
-    int rateMs = DEFAULT_RATE_MS;
-    seeBounding = DEFAULT_SEE_BOUNDING;
-
-//********************
-
-
-// {yarp ImageOf Rgb -> openCv Mat Bgr}
+    // {yarp ImageOf Rgb -> openCv Mat Bgr}
     IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
                                      IPL_DEPTH_8U, 3 );
     cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2BGR);
