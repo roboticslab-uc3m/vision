@@ -15,7 +15,10 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include <ColorDebug.h>
+
 #include "SegmentorThread.hpp"
+
+#include "HaarDetection2D.hpp"
 
 /************************************************************************/
 
@@ -77,7 +80,7 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     if(strSwitchMode=="haarDetection")
     {
-        //transformation = new HaarDetectionTransformation(&rf);
+        transformation = new HaarDetectionTransformation(&rf);
         if(!transformation->isValid())
         {
             CD_ERROR("\n");
@@ -114,13 +117,10 @@ void roboticslab::SegmentorThread::run()
         return;
     }
 
+    CD_DEBUG("Executing detection...\n");
+    outYarpImg = transformation->detect(inYarpImg);
+
     /*
-    if(strSwitchMode=="haarDetection")
-    {
-        std::cout<<"Executing haarDetection2D..."<<std::endl;
-        HaarDetection2D haarDetector;
-        outYarpImg=haarDetector.run(inYarpImg, object_cascade);
-    }
     else if(strSwitchMode=="colorRegionDetection")
     {
         std::cout<<"Executing ColorRegionDetection2D..."<<std::endl;

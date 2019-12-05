@@ -26,7 +26,7 @@ public:
     virtual ~Transformation() {}
     bool isValid() const { return valid; }
     virtual yarp::sig::ImageOf<yarp::sig::PixelRgb> detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) = 0;
-    virtual double run(double value) = 0; // will soon perish!
+    virtual double run(double value) { return 0.0; } // will soon perish!
 protected:
     bool valid;
 };
