@@ -24,6 +24,7 @@
 
 
 #define DEFAULT_RATE_MS 20
+#define DEFAULT_SWITCH_MODE "haarDetection"
 
 namespace roboticslab
 {
@@ -130,7 +131,6 @@ private:
     yarp::os::Port *inCropSelectorPort;
     CropSelectorProcessor cropSelectorProcessor;
 
-    std::string strSwitchMode;
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
 };

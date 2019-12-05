@@ -47,6 +47,7 @@ void roboticslab::SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
 bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
 {
     int rateMs = DEFAULT_RATE_MS;
+    std::string switchMode = DEFAULT_SWITCH_MODE;
 
     std::printf("SegmentorThread options:\n");
     std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
@@ -59,15 +60,11 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     if (rf.check("switchMode"))
     {
-        strSwitchMode = rf.find("switchMode").asString();
-        if((strSwitchMode!="haarDetection")&&(strSwitchMode!="tensorflowDetection")&&(strSwitchMode!="colorRegionDetection"))
-        {
-            std::cout<<strSwitchMode<<" mode not allowed"<<std::endl;
-            std::exit(1);
-        }
+        switchMode = rf.find("switchMode").asString();
     }
+    CD_INFO("Using switchMode: %s\n", switchMode.c_str());
 
-    if(strSwitchMode=="haarDetection")
+    if(switchMode=="haarDetection")
     {
         transformation = new HaarDetectionTransformation(&rf);
         if(!transformation->isValid())
@@ -76,12 +73,17 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
             return false;
         }
     }
-    else if(strSwitchMode=="colorRegionDetection")
+    else if(switchMode=="colorRegionDetection")
     {
 
     }
-    else if(strSwitchMode=="tensorflowDetection")
+    else if(switchMode=="tensorflowDetection")
     {
+    }
+    else
+    {
+        CD_ERROR("switchMode not allowed (available: haarDetection, colorRegionDetection, tensorflowDetection): %s\n", switchMode.c_str());
+        return false;
     }
 
     if (cropSelector != 0)
@@ -90,8 +92,8 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
         inCropSelectorPort->setReader(cropSelectorProcessor);
     }
 
-    PeriodicThread::setPeriod(rateMs * 0.001);
-    PeriodicThread::start();
+    setPeriod(rateMs * 0.001);
+    start();
 }
 
 /************************************************************************/

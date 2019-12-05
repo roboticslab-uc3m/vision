@@ -56,24 +56,10 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
         watchdog = rf.find("watchdog").asFloat64();
     }
 
-    if (rf.check("switchMode"))
-    {
-        strSwitchMode = rf.find("switchMode").asString();
-        std::cout<<"el modo es: "<<strSwitchMode<<" mode"<<std::endl;
-
-        if((strSwitchMode!="haarDetection")&&(strSwitchMode!="tensorflowDetection")&&(strSwitchMode!="colorRegionDetection"))
-        {
-            std::cout<<strSwitchMode<<" mode not allowed"<<std::endl;
-            return false;
-        }
-
-        strCameraLocal ="/"+strSwitchMode+"2D";
-        rf.setDefaultContext(strSwitchMode);
-    }
+    strCameraLocal ="/switchDetection2D";
 
     CD_INFO("Using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s.\n",
         strCameraDevice.c_str(), strCameraLocal.c_str(), strCameraRemote.c_str());
-    CD_INFO("Using switchMode: %s.\n", strSwitchMode.c_str());
     CD_INFO("Using watchdog: %f.\n", watchdog);
 
 

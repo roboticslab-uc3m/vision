@@ -48,6 +48,8 @@ HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* p
 /*****************************************************************/
 yarp::sig::ImageOf<yarp::sig::PixelRgb> HaarDetectionTransformation::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg)
 {
+    CD_DEBUG("\n");
+
     cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
     cv::cvtColor(inCvMat, inCvMat, CV_RGB2GRAY);
 
