@@ -7,7 +7,14 @@
 #include <yarp/os/Time.h>
 
 #include <ColorDebug.h>
+
 #include "SwitchDetection2D.hpp"
+
+#define DEFAULT_CROP_SELECTOR 0  // 1=true
+#define DEFAULT_CAMERA_DEVICE "remote_grabber"
+#define DEFAULT_CAMERA_LOCAL "/switchDetection2D"
+#define DEFAULT_CAMERA_REMOTE "/frameGrabber2D"
+#define DEFAULT_WATCHDOG    2       // [s]
 
 /************************************************************************/
 
@@ -17,7 +24,6 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
     std::string strCameraDevice = DEFAULT_CAMERA_DEVICE;
     std::string strCameraLocal = DEFAULT_CAMERA_LOCAL;
     std::string strCameraRemote = DEFAULT_CAMERA_REMOTE;
-    std::string strSwitchMode = DEFAULT_SWITCH_MODE;
     watchdog = DEFAULT_WATCHDOG;  // double
 
     std::printf("SwitchDetection2D options:\n");
@@ -26,7 +32,6 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
     std::printf("\t--cameraDevice (device we create, default: \"%s\")\n", strCameraDevice.c_str());
     std::printf("\t--cameraLocal (if accesing remote, local port name, default: \"%s\")\n", strCameraLocal.c_str());
     std::printf("\t--cameraRemote (if accesing remote, remote port name, default: \"%s\")\n", strCameraRemote.c_str());
-    std::printf("\t--switchMode (default: \"%s\")\n", strSwitchMode.c_str());
     std::printf("\t--watchdog ([s] default: \"%f\")\n", watchdog);
 
     if (rf.check("cropSelector"))
@@ -105,18 +110,9 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
 
     outImg.open(strCameraLocal + "/img:o");
 
-    if((strSwitchMode=="colorRegionDetection"))
-    {
-        outPort.open(strCameraLocal + "/features:o");
-    }
-    else if((strSwitchMode=="tensorflowDetection"))
-    {
-        outPort.open(strCameraLocal + "/results:o");
-    }
-    else
-    {
-        outPort.open(strCameraLocal + "/state:o");
-    }
+    outPort.open(strCameraLocal + "/switchDetector2D/features:o");
+    outPort.open(strCameraLocal + "/switchDetector2D/results:o");
+    outPort.open(strCameraLocal + "/switchDetector2D/state:o");
 
 
     if (cropSelector != 0)

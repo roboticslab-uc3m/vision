@@ -69,7 +69,7 @@ if(ENABLE_switchDetection2D)
                                             YARP::YARP_dev
                                             YARP::YARP_sig
                                             ROBOTICSLAB::ColorDebug
-                                            #ColorRegionDetection
+                                            ColorRegionDetection
                                             HaarDetection)
                                             #TensorflowDetection)
 

@@ -22,9 +22,7 @@
 
 #include "Transformation.hpp"
 
-
 #define DEFAULT_RATE_MS 20
-#define DEFAULT_SWITCH_MODE "haarDetection"
 
 namespace roboticslab
 {
@@ -130,7 +128,6 @@ private:
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *outCropSelectorImg;
     yarp::os::Port *inCropSelectorPort;
     CropSelectorProcessor cropSelectorProcessor;
-
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
 };

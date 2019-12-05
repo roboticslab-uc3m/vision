@@ -20,6 +20,8 @@
 
 #include "HaarDetection2D.hpp"
 
+#define DEFAULT_SWITCH_MODE "haarDetection"
+
 /************************************************************************/
 
 void roboticslab::SegmentorThread::setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage *_camera)
