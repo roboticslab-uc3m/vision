@@ -20,18 +20,14 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
     std::string strSwitchMode = DEFAULT_SWITCH_MODE;
     watchdog = DEFAULT_WATCHDOG;  // double
 
-    if (rf.check("help"))
-    {
-        std::printf("SwitchDetection2D options:\n");
-        std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-        std::printf("\t--cropSelector (default: \"%d\")\n", cropSelector);
-        std::printf("\t--cameraDevice (device we create, default: \"%s\")\n", strCameraDevice.c_str());
-        std::printf("\t--cameraLocal (if accesing remote, local port name, default: \"%s\")\n", strCameraLocal.c_str());
-        std::printf("\t--cameraRemote (if accesing remote, remote port name, default: \"%s\")\n", strCameraRemote.c_str());
-        std::printf("\t--switchMode (default: \"%s\")\n", strSwitchMode.c_str());
-        std::printf("\t--watchdog ([s] default: \"%f\")\n", watchdog);
-        // Do not exit: let last layer exit so we get help from the complete chain.
-    }
+    std::printf("SwitchDetection2D options:\n");
+    std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
+    std::printf("\t--cropSelector (default: \"%d\")\n", cropSelector);
+    std::printf("\t--cameraDevice (device we create, default: \"%s\")\n", strCameraDevice.c_str());
+    std::printf("\t--cameraLocal (if accesing remote, local port name, default: \"%s\")\n", strCameraLocal.c_str());
+    std::printf("\t--cameraRemote (if accesing remote, remote port name, default: \"%s\")\n", strCameraRemote.c_str());
+    std::printf("\t--switchMode (default: \"%s\")\n", strSwitchMode.c_str());
+    std::printf("\t--watchdog ([s] default: \"%f\")\n", watchdog);
 
     if (rf.check("cropSelector"))
     {
@@ -81,41 +77,42 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
     CD_INFO("Using watchdog: %f.\n", watchdog);
 
 
-    if (!rf.check("help"))
+    yarp::os::Property options;
+    options.fromString(rf.toString());
+    options.put("device", strCameraDevice);
+    options.put("local", strCameraLocal);
+    options.put("remote", strCameraRemote);
+
+    if(!cameraDevice.open(options))
     {
-        yarp::os::Property options;
-        options.fromString(rf.toString());
-        options.put("device", strCameraDevice);
-        options.put("local", strCameraLocal);
-        options.put("remote", strCameraRemote);
+        CD_WARNING("Bad camera open.\n");
+        return false;
+    }
+    CD_SUCCESS("Camera device open (connection not assured, read YARP output above).\n");
 
-        while (!dd.open(options))
-        {
-            CD_INFO("Waiting for camera device \"%s\"...\n", strCameraDevice.c_str());
-            yarp::os::Time::delay(1);
-        }
+    if(!cameraDevice.isValid())
+    {
+        CD_WARNING("Camera not valid\n");
+        return false;
+    }
+    CD_SUCCESS("Camera device valid.\n");
 
-        CD_SUCCESS("Camera device available.\n");
+    if (!cameraDevice.view(camera))
+    {
+        CD_ERROR("Camera device bad view.\n");
+        return false;
+    }
+    CD_SUCCESS("Camera device ok view.\n");
 
-        if (!dd.view(camera))
-        {
-            CD_WARNING("Camera device bad view.\n");
-        }
-        else
-        {
-            CD_SUCCESS("Camera device ok view.\n");
-        }
+    segmentorThread.setIFrameGrabberImageDriver(camera);
+    segmentorThread.setOutImg(&outImg);
+    segmentorThread.setOutPort(&outPort);
+    segmentorThread.setCropSelector(cropSelector);
 
-        segmentorThread.setIFrameGrabberImageDriver(camera);
-        segmentorThread.setOutImg(&outImg);
-        segmentorThread.setOutPort(&outPort);
-        segmentorThread.setCropSelector(cropSelector);
-
-        if (cropSelector != 0)
-        {
-            segmentorThread.setOutCropSelectorImg(&outCropSelectorImg);
-            segmentorThread.setInCropSelectorPort(&inCropSelectorPort);
-        }
+    if (cropSelector != 0)
+    {
+        segmentorThread.setOutCropSelectorImg(&outCropSelectorImg);
+        segmentorThread.setInCropSelectorPort(&inCropSelectorPort);
     }
 
     //-----------------OPEN LOCAL PORTS------------//
@@ -184,7 +181,7 @@ bool roboticslab::SwitchDetection2D::close()
 
     segmentorThread.stop();
 
-    dd.close();
+    cameraDevice.close();
     outImg.close();
     outPort.close();
 

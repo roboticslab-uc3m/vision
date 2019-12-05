@@ -15,7 +15,7 @@
 
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
 #define DEFAULT_CAMERA_DEVICE "remote_grabber"
-#define DEFAULT_CAMERA_LOCAL "/haarDetection2D"
+#define DEFAULT_CAMERA_LOCAL "/switchDetection2D"
 #define DEFAULT_CAMERA_REMOTE "/frameGrabber2D"
 #define DEFAULT_WATCHDOG    2       // [s]
 #define DEFAULT_SWITCH_MODE    "haarDetection2D"
@@ -32,7 +32,7 @@ class SwitchDetection2D : public yarp::os::RFModule
 private:
     SegmentorThread segmentorThread;
 
-    yarp::dev::PolyDriver dd;
+    yarp::dev::PolyDriver cameraDevice;
     yarp::dev::IFrameGrabberImage *camera;
 
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outImg;

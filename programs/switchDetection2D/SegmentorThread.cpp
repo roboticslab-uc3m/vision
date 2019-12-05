@@ -48,20 +48,9 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
 {
     int rateMs = DEFAULT_RATE_MS;
 
-    if (rf.check("help"))
-    {
-        std::printf("SegmentorThread options:\n");
-        std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-        std::printf("\t--rateMs (default: \"%d\")\n", rateMs);
-
-        // Do not exit: let last layer exit so we get help from the complete chain.
-    }
-
-    if (rf.check("help"))
-    {
-        std::exit(1);
-    }
-
+    std::printf("SegmentorThread options:\n");
+    std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
+    std::printf("\t--rateMs (default: \"%d\")\n", rateMs);
 
     if (rf.check("rateMs"))
     {
@@ -84,6 +73,7 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
         if(!transformation->isValid())
         {
             CD_ERROR("\n");
+            return false;
         }
     }
     else if(strSwitchMode=="colorRegionDetection")
