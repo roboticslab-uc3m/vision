@@ -2,11 +2,22 @@
 
 #include "HaarDetection2D.hpp"
 
+#include <opencv2/imgproc/imgproc.hpp>
+#include <yarp/sig/ImageDraw.h>
+
 namespace roboticslab
 {
 
 HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* parameters)
 {
+    std::string xmlCascade = DEFAULT_XMLCASCADE;
+    CD_DEBUG("*** \"xmlCascade\" [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
+    if(parameters->check("xmlCascade"))
+    {
+        xmlCascade = parameters->find("xmlCascade").asString();
+        CD_DEBUG("**** \"xmlCascade\" parameter for HaarDetectionTransformation found: \"%s\"\n", xmlCascade.c_str());
+    }
+
     if(!parameters->check("switchMode"))
     {
         CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
@@ -14,40 +25,22 @@ HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* p
     }
     std::string context = parameters->find("swicthMode").asString();
 
-    if (parameters->check("xmlCascade"))
-    {
-        xmlCascade = parameters->find("xmlCascade").asString();
-    }
-
-    if (cascade.empty() || !object_cascade.load(cascade))
-    {
-        CD_ERROR("No cascade!\n");
-        std::exit(1);
-    }
-
-    if(!parameters->check("xmlCascade"))
-    {
-        CD_ERROR("**** \"xmlCascade\" parameter for HaarDetectionTransformation NOT found\n");
-        return;
-    }
-
-    //std::string xmlCascade = DEFAULT_XMLCASCADE;
-    std::string xmlCascade = parameters->find("xmlCascade").asString();
-    CD_DEBUG("**** \"xmlCascade\" parameter for HaarDetectionTransformation found: \"%s\"\n", xmlCascade.c_str());
-    CD_DEBUG("\t--xmlCascade [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
-
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
     rf.setDefaultContext(context);
     std::string xmlCascadeFullName = rf.findFileByName(xmlCascade);
     if(xmlCascadeFullName.empty())
     {
-        CD_ERROR("**** full path for file NOT found\n");
+        CD_ERROR("**** xmlCascadeFullName NOT found\n");
         return;
     }
-    CD_DEBUG("**** full path for file found: \"%s\"\n", xmlCascadeFullName.c_str());
+    CD_DEBUG("**** xmlCascadeFullName \"%s\" found\n", xmlCascadeFullName.c_str());
 
-    std::string cascade = rf.findFileByName(xmlCascade);
+    if (!object_cascade.load(xmlCascadeFullName))
+    {
+        CD_ERROR("Cannot load xmlCascadeFullName!\n");
+        std::exit(1);
+    }
 
     valid = true;
 }
@@ -63,9 +56,8 @@ double HaarDetectionTransformation::transform(const double value)
 
 
 /*****************************************************************/
-yarp::sig::ImageOf<yarp::sig::PixelRgb> HaarDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, cv::CascadeClassifier object_cascade) {
-
-
+yarp::sig::ImageOf<yarp::sig::PixelRgb> HaarDetectionTransformation::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg)
+{
     cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
     cv::cvtColor(inCvMat, inCvMat, CV_RGB2GRAY);
 
@@ -125,10 +117,7 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> HaarDetection2D::run(yarp::sig::ImageOf<
 
     return outYarpImg;
 
-
 }
-
-
 
 /************************************************************************/
 

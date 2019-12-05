@@ -8,22 +8,12 @@
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
-#include <yarp/os/Network.h>
-#include <yarp/os/PeriodicThread.h>
-#include <yarp/os/Port.h>
-#include <yarp/os/PortReader.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/os/Time.h>
 
 #include <yarp/dev/FrameGrabberInterfaces.h>
 
 #include <yarp/sig/all.h>
-#include <yarp/sig/Image.h>
-
-#include <opencv2/objdetect/objdetect.hpp>
-#include "opencv2/core/core.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "cv.h"
 
 //#include "highgui.h" // to show windows (older)
 //#include "opencv2/highgui/highgui.hpp" // to show windows (newer)

@@ -29,16 +29,16 @@ if(ENABLE_switchDetection2D)
     #                                           TensorflowCC::Shared)
 
     # HaarDetection
-    #add_library(HaarDetection Transformation.hpp
-    #                          HaarDetection2D.hpp
-    #                          HaarDetection2D.cpp)
+    add_library(HaarDetection Transformation.hpp
+                              HaarDetection2D.hpp
+                              HaarDetection2D.cpp)
 
-    #target_link_libraries(HaarDetection YARP::YARP_OS
-    #                                    YARP::YARP_init
-    #                                    YARP::YARP_dev
-    #                                    YARP::YARP_sig
-    #                                    ${OpenCV_LIBS}
-    #                                    ROBOTICSLAB::ColorDebug)
+    target_link_libraries(HaarDetection YARP::YARP_OS
+                                        YARP::YARP_init
+                                        YARP::YARP_dev
+                                        YARP::YARP_sig
+                                        ${OpenCV_LIBS}
+                                        ROBOTICSLAB::ColorDebug)
 
     # TensorflowDetection
     #add_library(TensorflowDetection Transformation.hpp
