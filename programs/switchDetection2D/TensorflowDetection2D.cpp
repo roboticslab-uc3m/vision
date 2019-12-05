@@ -49,6 +49,8 @@
 namespace roboticslab
 {
 
+/*****************************************************************/
+
 void TensorflowDetection2D::configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg/*, yarp::os::BufferedPort<ImageOf<PixelRgb> > inputPort*/){
 
 
@@ -96,6 +98,7 @@ void TensorflowDetection2D::configuration(std::string trainedModel, std::string 
 }
 
 /*****************************************************************/
+
 yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorflowDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) {
 
     cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
@@ -168,5 +171,107 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorflowDetection2D::run(yarp::sig::Im
     return outYarpImg;
 }
 
+
+TensorflowDetectionTransformation::TensorflowDetectionTransformation(yarp::os::Searchable* parameters)
+{
+
+    std::string trainedModel = DEFAULT_TRAINEDMODEL;
+    std::string trainedModelLabels = DEFAULT_TRAINEDMODEL_LABELS;
+    std::printf("\t--pbTrainedModel [file.pb] (default: \"%s\")\n", trainedModel.c_str());
+    std::printf("\t--pbtxtTrainedModelLabels [file.pbtxt] (default: \"%s\")\n", trainedModelLabels.c_str());
+
+
+    if(!parameters->check("context"))
+    {
+        CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
+        return;
+    }
+    std::string context = parameters->find("context").asString();
+
+    if(!parameters->check("trainedModel"))
+    {
+        CD_ERROR("**** \"trainedModel\" parameter for TensorflowDetectionTransformation NOT found\n");
+        return;
+    }
+    std::string trainedModel = parameters->find("trainedModel").asString();
+    CD_DEBUG("**** \"trainedModel\" parameter for TensorflowDetectionTransformation found: \"%s\"\n", trainedModel.c_str());
+
+    if(!parameters->check("trainedModelLabels"))
+    {
+        CD_ERROR("**** \"trainedModelLabels\" parameter for TensorflowDetectionTransformation NOT found\n");
+        return;
+    }
+    std::string trainedModelLabels = parameters->find("trainedModelLabels").asString();
+    CD_DEBUG("**** \"trainedModelLabels\" parameter for TensorflowDetectionTransformation found: \"%s\"\n", trainedModelLabels.c_str());
+
+
+    if (rf.check("trainedModel"))
+    {
+        trainedModel = rf.find("trainedModel").asString();
+    }
+
+    if (rf.check("trainedModelLabels"))
+    {
+        trainedModelLabels = rf.find("trainedModelLabels").asString();
+    }
+
+    model = rf.findFileByName(trainedModel);
+    labels = rf.findFileByName(trainedModelLabels);
+
+   if (model.empty())
+   {
+       CD_ERROR("No trained model!\n");
+       std::exit(1);
+   }
+
+   if (labels.empty())
+   {
+       CD_ERROR("No trained model labels!\n");
+       std::exit(1);
+   }
+
+   outPortShape.open("/tensorflowDetection2D/shape");
+   yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg=outPortShape.read();;
+   //j//tensorflowDetector.configuration(model, labels, inYarpImg);
+
+
+    if(!parameters->check("context"))
+    {
+        CD_ERROR("**** \"context\" parameter for TensorflowDetectionTransformation NOT found\n");
+        return;
+    }
+
+    yarp::os::ResourceFinder rf;
+    rf.setVerbose(false);
+    rf.setDefaultContext(context);
+
+    std::string trainedModelFullName = rf.findFileByName(trainedModel);
+
+    if(trainedModelFullName.empty())
+    {
+        CD_ERROR("**** full path for file NOT found\n");
+        return;
+    }
+    CD_DEBUG("**** full path for file found: \"%s\"\n", trainedModelFullName.c_str());
+
+    std::string trainedModelLabelsFullName = rf.findFileByName(trainedModelLabels);
+    if(trainedModelLabelsFullName.empty())
+    {
+        CD_ERROR("**** full path for file NOT found\n");
+        return;
+    }
+    CD_DEBUG("**** full path for file found: \"%s\"\n", trainedModelLabelsFullName.c_str());
+
+
+
+    valid = true;
+}
+
+// -----------------------------------------------------------------------------
+
+double TensorflowDetectionTransformation::transform(const double value)
+{
+    return value * m + b;
+}
 
 }// namespace roboticslab

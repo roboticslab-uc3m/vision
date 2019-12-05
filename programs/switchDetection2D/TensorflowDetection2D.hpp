@@ -46,8 +46,22 @@
 #include "SegmentorThread.hpp" // MUST GO AWAY!!
 #include "Transformation.hpp"
 
+#define DEFAULT_TRAINEDMODEL "frozen_inference_graph.pb"
+#define DEFAULT_TRAINEDMODEL_LABELS "labels_map.pbtxt"
+
 namespace roboticslab
 {
+
+class TensorflowDetectionTransformation : public Transformation
+{
+public:
+    TensorflowDetectionTransformation(yarp::os::Searchable* parameters);
+    double transform(double value) override;
+private:
+    double m, b;
+    std::string model;
+    std::string labels;
+};
 
 class TensorflowDetection2D
 {

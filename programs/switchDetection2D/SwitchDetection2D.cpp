@@ -118,8 +118,6 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
         }
     }
 
-    segmentorThread.init(rf);
-
     //-----------------OPEN LOCAL PORTS------------//
 
     outImg.open(strCameraLocal + "/img:o");
@@ -144,7 +142,7 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
         inCropSelectorPort.open(strCameraLocal + "/cropSelector/state:i");
     }
 
-    return true;
+    return segmentorThread.init(rf);
 }
 
 /*****************************************************************/

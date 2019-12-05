@@ -17,11 +17,26 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <ColorDebug.h>
+
 #include "SegmentorThread.hpp" // MUST GO AWAY!!
+
 #include "Transformation.hpp"
+
+#define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
 
 namespace roboticslab
 {
+
+class HaarDetectionTransformation : public Transformation
+{
+public:
+    HaarDetectionTransformation(yarp::os::Searchable* parameters);
+    double transform(double value) override;
+private:
+    double m, b;
+    cv::CascadeClassifier object_cascade;
+
+};
 
 class HaarDetection2D
 {

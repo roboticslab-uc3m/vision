@@ -29,35 +29,6 @@ protected:
     bool valid;
 };
 
-class HaarDetectionTransformation : public Transformation
-{
-public:
-    HaarDetectionTransformation(yarp::os::Searchable* parameters);
-    double transform(double value) override;
-private:
-    double m, b;
-
-};
-
-class ColorRegionDetectionTransformation : public Transformation
-{
-public:
-    ColorRegionDetectionTransformation(yarp::os::Searchable* parameters);
-    double transform(double value) override;
-private:
-    double m, b;
-};
-
-class TensorflowDetectionTransformation : public Transformation
-{
-public:
-    TensorflowDetectionTransformation(yarp::os::Searchable* parameters);
-    double transform(double value) override;
-private:
-    double m, b;
-
-};
-
 }  // namespace roboticslab
 
 #endif // __TRANSFORMATION_HPP__
