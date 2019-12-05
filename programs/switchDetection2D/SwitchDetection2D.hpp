@@ -19,8 +19,6 @@
 #define DEFAULT_CAMERA_REMOTE "/frameGrabber2D"
 #define DEFAULT_WATCHDOG    2       // [s]
 #define DEFAULT_SWITCH_MODE    "haarDetection2D"
-#define DEFAULT_CONTEXT_MODE    "haarDetection"
-#define DEFAULT_CONFIG_FILE    "switchDetection2D.ini"
 
 namespace roboticslab
 {

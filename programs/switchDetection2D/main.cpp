@@ -48,12 +48,15 @@
 #include <ColorDebug.h>
 #include "SwitchDetection2D.hpp"
 
+#define DEFAULT_CONTEXT    "switchDetection2D"
+#define DEFAULT_CONFIG_FILE    "switchDetection2D.ini"
+
 int main(int argc, char** argv)
 {
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(true);;
-    rf.setDefaultContext(DEFAULT_CONTEXT_MODE);
+    rf.setDefaultContext(DEFAULT_CONTEXT);
     rf.setDefaultConfigFile(DEFAULT_CONFIG_FILE);
     rf.configure(argc, argv);
 

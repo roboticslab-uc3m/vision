@@ -21,7 +21,7 @@ yarp_install(FILES conf/switchDetection2D.ini
                    conf/haarcascade_tv.xml  
                    conf/haarcascade_dog.xml  
                    conf/haarcascade_lamp.xml  
-             DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/haarDetection)
+             DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/switchDetection2D)
 
 yarp_install(FILES scripts/example_switchDetection.xml
                    scripts/example_switchDetection2D.xml

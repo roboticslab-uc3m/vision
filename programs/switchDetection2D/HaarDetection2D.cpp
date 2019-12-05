@@ -18,16 +18,16 @@ HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* p
         CD_DEBUG("**** \"xmlCascade\" parameter for HaarDetectionTransformation found: \"%s\"\n", xmlCascade.c_str());
     }
 
-    if(!parameters->check("switchMode"))
+    /*if(!parameters->check("switchMode"))
     {
         CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
         return;
     }
-    std::string context = parameters->find("swicthMode").asString();
+    std::string context = parameters->find("swicthMode").asString();*/
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
-    rf.setDefaultContext(context);
+    rf.setDefaultContext("switchDetection2D"); //rf.setDefaultContext(context);
     std::string xmlCascadeFullName = rf.findFileByName(xmlCascade);
     if(xmlCascadeFullName.empty())
     {
