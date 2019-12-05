@@ -1,8 +1,5 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "ColorRegionDetection2D.hpp"
-#include "SegmentorThread.hpp"
-
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -16,6 +13,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <ColorDebug.h>
+
+#include "ColorRegionDetection2D.hpp"
 
 namespace roboticslab
 {

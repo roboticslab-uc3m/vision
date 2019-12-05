@@ -25,8 +25,8 @@
 #include "highgui.h" // to show windows
 
 #include <ColorDebug.h>
-#include "SegmentorThread.hpp"
-#include "TravisLib.hpp"
+
+ #include "TravisLib.hpp"
 
 #define DEFAULT_ALGORITHM "blueMinusRed"
 #define DEFAULT_LOCATE "centroid"
