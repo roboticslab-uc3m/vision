@@ -26,12 +26,14 @@
 //#include "highgui.h" // to show windows
 
 #include <ColorDebug.h>
-#include "ColorRegionDetection2D.hpp"
-#include "HaarDetection2D.hpp"
-#include "TensorflowDetection2D.hpp"
-#include "TensorflowDetector.hpp"
+
+//#include "ColorRegionDetection2D.hpp"
+//#include "HaarDetection2D.hpp"
+//#include "TensorflowDetection2D.hpp"
+//#include "TensorflowDetector.hpp"
+//#include "TravisLib.hpp"
+
 #include "Transformation.hpp"
-#include "TravisLib.hpp"
 
 
 #define DEFAULT_RATE_MS 20
