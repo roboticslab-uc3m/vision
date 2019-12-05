@@ -3,26 +3,12 @@
 #ifndef __COLOR_REGION_DETECTION_2D_HPP__
 #define __COLOR_REGION_DETECTION_2D_HPP__
 
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-#include <iostream>
-#include <string>
-#include <vector>
-
 #include <yarp/os/Bottle.h>
-#include <yarp/os/BufferedPort.h>
-#include <yarp/os/Network.h>
-#include <yarp/os/PeriodicThread.h>
-#include <yarp/os/Port.h>
 #include <yarp/os/Time.h>
-#include <yarp/sig/all.h>
-#include <yarp/sig/ImageDraw.h>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include "cv.h"
-#include "highgui.h" // to show windows
+#include <yarp/sig/Image.h>
+
+//#include "highgui.h" // to show windows
 
 #include <ColorDebug.h>
 
