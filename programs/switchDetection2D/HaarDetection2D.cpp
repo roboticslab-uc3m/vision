@@ -39,9 +39,10 @@ HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* p
     if (!object_cascade.load(xmlCascadeFullName))
     {
         CD_ERROR("Cannot load xmlCascadeFullName!\n");
-        std::exit(1);
+        return;
     }
 
+    CD_SUCCESS("\n");
     valid = true;
 }
 
