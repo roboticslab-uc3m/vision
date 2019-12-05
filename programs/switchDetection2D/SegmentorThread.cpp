@@ -94,6 +94,8 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     setPeriod(rateMs * 0.001);
     start();
+
+    return true;
 }
 
 /************************************************************************/
