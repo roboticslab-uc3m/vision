@@ -68,9 +68,9 @@ if(ENABLE_switchDetection2D)
                                             YARP::YARP_init
                                             YARP::YARP_dev
                                             YARP::YARP_sig
-                                            ROBOTICSLAB::ColorDebug)
+                                            ROBOTICSLAB::ColorDebug
                                             #ColorRegionDetection
-                                            #HaarDetection
+                                            HaarDetection)
                                             #TensorflowDetection)
 
     install(TARGETS switchDetection2D
