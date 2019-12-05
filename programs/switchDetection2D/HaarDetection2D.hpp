@@ -24,10 +24,8 @@ class HaarDetectionTransformation : public Transformation
 {
 public:
     HaarDetectionTransformation(yarp::os::Searchable* parameters);
-    double transform(double value) override;
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg);
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) override;
 private:
-    double m, b;
     cv::CascadeClassifier object_cascade;
     cv::Mat inCvMatPost;
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImgPre;

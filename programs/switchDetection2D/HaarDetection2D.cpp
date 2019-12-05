@@ -45,18 +45,8 @@ HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* p
     valid = true;
 }
 
-// /*****************************************************************/
-
-double HaarDetectionTransformation::transform(const double value)
-{
-    return value * m + b;
-}
-
 /*****************************************************************/
-
-
-/*****************************************************************/
-yarp::sig::ImageOf<yarp::sig::PixelRgb> HaarDetectionTransformation::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg)
+yarp::sig::ImageOf<yarp::sig::PixelRgb> HaarDetectionTransformation::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg)
 {
     cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
     cv::cvtColor(inCvMat, inCvMat, CV_RGB2GRAY);

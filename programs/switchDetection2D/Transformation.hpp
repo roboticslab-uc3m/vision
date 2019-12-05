@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <yarp/os/all.h>
+#include <yarp/sig/Image.h>
 
 //#include "ColorRegionDetection2D.hpp"
 //#include "HaarDetection2D.hpp"
@@ -24,7 +25,8 @@ public:
     Transformation() : valid(false) {}
     virtual ~Transformation() {}
     bool isValid() const { return valid; }
-    virtual double transform(double value) = 0;
+    virtual yarp::sig::ImageOf<yarp::sig::PixelRgb> detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) = 0;
+    virtual double run(double value) = 0; // will soon perish!
 protected:
     bool valid;
 };
