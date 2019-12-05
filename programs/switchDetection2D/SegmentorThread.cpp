@@ -18,6 +18,7 @@
 
 #include "SegmentorThread.hpp"
 
+#include "ColorRegionDetection2D.hpp"
 #include "HaarDetection2D.hpp"
 
 #define DEFAULT_SWITCH_MODE "haarDetection"
@@ -69,22 +70,25 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
     if(switchMode=="haarDetection")
     {
         transformation = new HaarDetectionTransformation(&rf);
-        if(!transformation->isValid())
-        {
-            CD_ERROR("\n");
-            return false;
-        }
     }
     else if(switchMode=="colorRegionDetection")
     {
-
+        transformation = new ColorRegionDetectionTransformation(&rf);
     }
     else if(switchMode=="tensorflowDetection")
     {
+        CD_ERROR("Not yet: %s\n", switchMode.c_str());
+        return false;
     }
     else
     {
         CD_ERROR("switchMode not allowed (available: haarDetection, colorRegionDetection, tensorflowDetection): %s\n", switchMode.c_str());
+        return false;
+    }
+
+    if(!transformation->isValid())
+    {
+        CD_ERROR("\n");
         return false;
     }
 

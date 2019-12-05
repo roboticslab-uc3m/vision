@@ -57,7 +57,7 @@ public:
         std::printf("SegmentorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
         algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);*/
     }
-    void run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg);
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) override;
     //double transform(double value) override;
 
 private:
