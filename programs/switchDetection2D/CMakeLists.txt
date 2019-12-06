@@ -43,8 +43,8 @@ if(ENABLE_switchDetection2D)
     add_library(TensorflowDetector Detector.hpp
                                    TensorFlowDetector.hpp
                                    TensorFlowDetector.cpp
-                                   TensorflowDetector.hpp
-                                   TensorflowDetector.cpp)
+                                   TensorFlowDetectorHelper.hpp
+                                   TensorFlowDetectorHelper.cpp)
 
     target_link_libraries(TensorflowDetector YARP::YARP_OS
                                              YARP::YARP_init
