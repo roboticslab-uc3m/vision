@@ -40,7 +40,7 @@
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/public/session.h"
 #include "tensorflow/core/util/command_line_flags.h"
-#include "TensorflowDetector.hpp"
+#include "TensorFlowDetector.hpp"
 
 #include <ColorDebug.h>
 #include "SegmentorThread.hpp" // MUST GO AWAY!!
@@ -52,11 +52,10 @@
 namespace roboticslab
 {
 
-class TensorflowDetectionTransformation : public Transformation
+class TensorflowDetectionTransformation : public Detector
 {
 public:
     TensorflowDetectionTransformation(yarp::os::Searchable* parameters);
-    double transform(double value) override;
 private:
     double m, b;
     std::string model;

@@ -31,14 +31,13 @@
 #include "tensorflow/core/public/session.h"
 #include "tensorflow/core/util/command_line_flags.h"
 
-#include "TensorflowDetector.hpp"
+#include "TensorFlowDetectorHelper.hpp"
 
 /************************************************************************/
 // Create session and load graph
 /************************************************************************/
 
-tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
-std::unique_ptr<tensorflow::Session> *session)
+tensorflow::Status loadGraph(const tensorflow::string &graph_file_name, std::unique_ptr<tensorflow::Session> *session)
 {
     tensorflow::GraphDef graph_def;
     tensorflow::Status load_graph_status =
@@ -61,7 +60,8 @@ std::unique_ptr<tensorflow::Session> *session)
 // Read labels
 /************************************************************************/
 
-tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::map<int, tensorflow::string> &labelsMap) {
+tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::map<int, tensorflow::string> &labelsMap)
+{
     std::ifstream t(fileName);
     if (t.bad())
         return tensorflow::errors::NotFound("Fail loading labels: '", fileName, "'");
@@ -107,7 +107,8 @@ tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::ma
 //  Mat OpenCV -> TensorFlow
 /************************************************************************/
 
-tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &outTensor) {
+tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &outTensor)
+{
     cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
     auto root = tensorflow::Scope::NewRootScope();
     using namespace ::tensorflow::ops;
@@ -138,7 +139,8 @@ tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &out
 
 /************************************************************************/
 
-void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMax, double xMax, double score, std::string label, bool scaled=true) {
+void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMax, double xMax, double score, std::string label, bool scaled=true)
+{
     cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
     cv::Point tl, br;
     if (scaled)
@@ -174,7 +176,8 @@ void drawBoundingBoxesOnImage(cv::Mat &image,
                               tensorflow::TTypes<float>::Flat &classes,
                               tensorflow::TTypes<float,3>::Tensor &boxes,
                               std::map<int, tensorflow::string> &labelsMap,
-                              std::vector<size_t> &idxs) {
+                              std::vector<size_t> &idxs)
+{
     cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
     for (int j = 0; j < idxs.size(); j++)
         drawBoundingBoxOnImage(image,
@@ -185,8 +188,9 @@ void drawBoundingBoxesOnImage(cv::Mat &image,
 }
 
 /************************************************************************/
-double IOU(cv::Rect2f box1, cv::Rect2f box2) {
 
+double IOU(cv::Rect2f box1, cv::Rect2f box2)
+{
     float xA = std::max(box1.tl().x, box2.tl().x);
     float yA = std::max(box1.tl().y, box2.tl().y);
     float xB = std::min(box1.br().x, box2.br().x);
@@ -199,10 +203,11 @@ double IOU(cv::Rect2f box1, cv::Rect2f box2) {
 }
 
 /************************************************************************/
+
 std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
                            tensorflow::TTypes<float, 3>::Tensor &boxes,
-                           double thresholdIOU, double thresholdScore) {
-
+                           double thresholdIOU, double thresholdScore)
+{
     std::vector<size_t> sortIdxs(scores.size());
     iota(sortIdxs.begin(), sortIdxs.end(), 0);
 
@@ -241,3 +246,5 @@ std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
 
     return goodIdxs;
 }
+
+/************************************************************************/

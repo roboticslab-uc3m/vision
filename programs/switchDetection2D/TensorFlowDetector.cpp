@@ -43,7 +43,7 @@
 #include <ColorDebug.h>
 
 #include "SegmentorThread.hpp"
-#include "TensorflowDetector.hpp"
+#include "TensorFlowDetectorHelper.hpp"
 #include "TensorFlowDetector.hpp"
 
 namespace roboticslab
@@ -193,7 +193,7 @@ TensorflowDetectionTransformation::TensorflowDetectionTransformation(yarp::os::S
         CD_ERROR("**** \"trainedModel\" parameter for TensorflowDetectionTransformation NOT found\n");
         return;
     }
-    std::string trainedModel = parameters->find("trainedModel").asString();
+    trainedModel = parameters->find("trainedModel").asString();
     CD_DEBUG("**** \"trainedModel\" parameter for TensorflowDetectionTransformation found: \"%s\"\n", trainedModel.c_str());
 
     if(!parameters->check("trainedModelLabels"))
@@ -201,20 +201,23 @@ TensorflowDetectionTransformation::TensorflowDetectionTransformation(yarp::os::S
         CD_ERROR("**** \"trainedModelLabels\" parameter for TensorflowDetectionTransformation NOT found\n");
         return;
     }
-    std::string trainedModelLabels = parameters->find("trainedModelLabels").asString();
+    trainedModelLabels = parameters->find("trainedModelLabels").asString();
     CD_DEBUG("**** \"trainedModelLabels\" parameter for TensorflowDetectionTransformation found: \"%s\"\n", trainedModelLabels.c_str());
 
 
-    if (rf.check("trainedModel"))
+    if(parameters->check("trainedModel"))
     {
-        trainedModel = rf.find("trainedModel").asString();
+        trainedModel = parameters->find("trainedModel").asString();
     }
 
-    if (rf.check("trainedModelLabels"))
+    if(parameters->check("trainedModelLabels"))
     {
-        trainedModelLabels = rf.find("trainedModelLabels").asString();
+        trainedModelLabels = parameters->find("trainedModelLabels").asString();
     }
 
+    yarp::os::ResourceFinder rf;
+    rf.setVerbose(false);
+    rf.setDefaultContext(context);
     model = rf.findFileByName(trainedModel);
     labels = rf.findFileByName(trainedModelLabels);
 
@@ -230,8 +233,8 @@ TensorflowDetectionTransformation::TensorflowDetectionTransformation(yarp::os::S
        std::exit(1);
    }
 
-   outPortShape.open("/tensorflowDetection2D/shape");
-   yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg=outPortShape.read();;
+   //outPortShape.open("/tensorflowDetection2D/shape");
+   //yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg=outPortShape.read();;
    //j//tensorflowDetector.configuration(model, labels, inYarpImg);
 
 
@@ -240,10 +243,6 @@ TensorflowDetectionTransformation::TensorflowDetectionTransformation(yarp::os::S
         CD_ERROR("**** \"context\" parameter for TensorflowDetectionTransformation NOT found\n");
         return;
     }
-
-    yarp::os::ResourceFinder rf;
-    rf.setVerbose(false);
-    rf.setDefaultContext(context);
 
     std::string trainedModelFullName = rf.findFileByName(trainedModel);
 
@@ -268,10 +267,5 @@ TensorflowDetectionTransformation::TensorflowDetectionTransformation(yarp::os::S
 }
 
 // -----------------------------------------------------------------------------
-
-double TensorflowDetectionTransformation::transform(const double value)
-{
-    return value * m + b;
-}
 
 }// namespace roboticslab
