@@ -93,16 +93,19 @@ bool ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
 
     // {yarp ImageOf Rgb -> openCv Mat Bgr}
     IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
-                                     IPL_DEPTH_8U, 3 );
+                                         IPL_DEPTH_8U, 3 );
     cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2BGR);
     cv::Mat inCvMat = cv::cvarrToMat(inIplImage);
 
     // Because Travis stuff goes with [openCv Mat Bgr] for now
     Travis travis(false,true);    // ::Travis(quiet=true, overwrite=true);
     travis.setCvMat(inCvMat);
-    if(algorithm=="hue") travis.binarize("hue", threshold-5,threshold+5);
-    else if(algorithm=="canny") travis.binarize("canny");
-    else travis.binarize(algorithm.c_str(), threshold);
+    if (algorithm=="hue")
+        travis.binarize("hue", threshold-5,threshold+5);
+    else if(algorithm=="canny")
+        travis.binarize("canny");
+    else
+        travis.binarize(algorithm.c_str(), threshold);
     travis.morphClosing(inYarpImg.width() * morphClosing / 100.0 );
     int numBlobs = travis.blobize(maxNumBlobs);
     if( 0 == numBlobs )
