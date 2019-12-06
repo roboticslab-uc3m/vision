@@ -73,7 +73,7 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
     }
     else
     {
-        CD_ERROR("switchMode not allowed (available: haarDetection, colorRegionDetection, tensorflowDetection): %s\n", detectorName.c_str());
+        CD_ERROR("\"detector\" not allowed (available: Haar, ColorRegion, TensorFlow): %s\n", detectorName.c_str());
         return false;
     }
 
