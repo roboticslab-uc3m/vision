@@ -38,7 +38,7 @@
 
 #include <ColorDebug.h>
 
-#include "SegmentorThread.hpp"
+#include "DetectorThread.hpp"
 #include "TensorFlowDetectorHelper.hpp"
 #include "TensorFlowDetector.hpp"
 

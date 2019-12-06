@@ -13,7 +13,7 @@
 
 #include <yarp/sig/Image.h>
 
-#include "SegmentorThread.hpp"
+#include "DetectorThread.hpp"
 
 namespace roboticslab
 {
@@ -25,7 +25,7 @@ namespace roboticslab
 class SwitchDetection2D : public yarp::os::RFModule
 {
 private:
-    SegmentorThread segmentorThread;
+    DetectorThread setectorThread;
 
     yarp::dev::PolyDriver cameraDevice;
     yarp::dev::IFrameGrabberImage *camera;

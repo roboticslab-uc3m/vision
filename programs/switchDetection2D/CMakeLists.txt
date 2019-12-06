@@ -58,8 +58,8 @@ if(ENABLE_switchDetection2D)
     add_executable(switchDetection2D main.cpp
                                      SwitchDetection2D.hpp
                                      SwitchDetection2D.cpp
-                                     SegmentorThread.hpp
-                                     SegmentorThread.cpp
+                                     DetectorThread.hpp
+                                     DetectorThread.cpp
                                      Detector.hpp)
 
     target_link_libraries(switchDetection2D YARP::YARP_OS

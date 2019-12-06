@@ -7,7 +7,7 @@
 
 #include <ColorDebug.h>
 
-#include "SegmentorThread.hpp"
+#include "DetectorThread.hpp"
 
 #include "ColorRegionDetector.hpp"
 #include "HaarDetector.hpp"
@@ -17,21 +17,21 @@
 
 /************************************************************************/
 
-void roboticslab::SegmentorThread::setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage *_camera)
+void roboticslab::DetectorThread::setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage *_camera)
 {
     camera = _camera;
 }
 
 /************************************************************************/
 
-void roboticslab::SegmentorThread::setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg)
+void roboticslab::DetectorThread::setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg)
 {
     pOutImg = _pOutImg;
 }
 
 /************************************************************************/
 
-void roboticslab::SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
+void roboticslab::DetectorThread::setOutPort(yarp::os::Port * _pOutPort)
 {
     pOutPort = _pOutPort;
 }
@@ -39,12 +39,12 @@ void roboticslab::SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
 /************************************************************************/
 //TensorflowDetection2D tensorflowDetector;
 
-bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
+bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
 {
     int rateMs = DEFAULT_RATE_MS;
     std::string switchMode = DEFAULT_SWITCH_MODE;
 
-    std::printf("SegmentorThread options:\n");
+    std::printf("DetectorThread options:\n");
     std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
     std::printf("\t--rateMs (default: \"%d\")\n", rateMs);
 
@@ -106,7 +106,7 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
 /************************************************************************/
 
-void roboticslab::SegmentorThread::run()
+void roboticslab::DetectorThread::run()
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
     if (!camera->getImage(inYarpImg))

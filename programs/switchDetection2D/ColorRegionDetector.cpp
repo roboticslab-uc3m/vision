@@ -80,8 +80,8 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
         outFeatures = *(parameters->find("outFeatures").asList());  // simple overrride
     }
 
-    printf("SegmentorThread using outImage: %d, seeBounding: %d, threshold: %d.\n", outImage, seeBounding, threshold);
-    printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
+    printf("DetectorThread using outImage: %d, seeBounding: %d, threshold: %d.\n", outImage, seeBounding, threshold);
+    printf("DetectorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
 
     valid = true;
 }
@@ -370,7 +370,7 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> ColorRegionDetector::detect(yarp::sig::I
                     times.addFloat64(yarp::os::Time::now());
                     output.addList() = times;
             }
-         } else fprintf(stderr,"[SegmentorThread] warning: bogus outFeatures.\n");
+         } else fprintf(stderr,"[DetectorThread] warning: bogus outFeatures.\n");
     }
 
     outputProcessed=output;

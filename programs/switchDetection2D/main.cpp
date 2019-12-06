@@ -28,7 +28,7 @@
  * | /modeDetection2D/img:o   | Output camera image with object detection using squares |
  * | /modeDetection2D/state:o | xy coordinates of object detection                      |
  *
- * @section segmentorThread SegmentorThread options:
+ * @section setectorThread DetectorThread options:
  *
  * | PROPERTY   | DESCRIPTION | DEFAULT                      |
  * |------------|-------------|------------------------------|
