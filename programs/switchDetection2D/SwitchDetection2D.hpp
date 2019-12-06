@@ -25,7 +25,7 @@ namespace roboticslab
 class SwitchDetection2D : public yarp::os::RFModule
 {
 private:
-    DetectorThread setectorThread;
+    DetectorThread detectorThread;
 
     yarp::dev::PolyDriver cameraDevice;
     yarp::dev::IFrameGrabberImage *camera;
