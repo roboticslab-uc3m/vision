@@ -93,8 +93,12 @@ bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
 
         if (i == closestObject)
         {
-            yarp::sig::draw::addRectangleOutline(outYarpImg, green, pxX, pxY,
-            objects[i].width / 2, objects[i].height / 2);
+            yarp::sig::draw::addRectangleOutline(outYarpImg,
+                                                 green,
+                                                 pxX,
+                                                 pxY,
+                                                 objects[i].width / 2,
+                                                 objects[i].height / 2);
 
             // scale centroids and fit into [-1, 1] range
             double cX = 2.0 * pxX / inCvMat.cols - 1.0;
@@ -105,8 +109,12 @@ bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
         }
         else
         {
-            yarp::sig::draw::addRectangleOutline(outYarpImg, red, pxX, pxY,
-            objects[i].width / 2, objects[i].height / 2);
+            yarp::sig::draw::addRectangleOutline(outYarpImg,
+                                                 red,
+                                                 pxX,
+                                                 pxY,
+                                                 objects[i].width / 2,
+                                                 objects[i].height / 2);
         }
     }
 
