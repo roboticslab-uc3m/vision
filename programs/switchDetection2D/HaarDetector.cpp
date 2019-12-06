@@ -8,7 +8,7 @@
 namespace roboticslab
 {
 
-HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* parameters)
+HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
 {
     std::string xmlCascade = DEFAULT_XMLCASCADE;
     CD_DEBUG("*** \"xmlCascade\" [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
@@ -47,7 +47,7 @@ HaarDetectionTransformation::HaarDetectionTransformation(yarp::os::Searchable* p
 }
 
 /*****************************************************************/
-yarp::sig::ImageOf<yarp::sig::PixelRgb> HaarDetectionTransformation::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg)
+yarp::sig::ImageOf<yarp::sig::PixelRgb> HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg)
 {
     CD_DEBUG("\n");
 

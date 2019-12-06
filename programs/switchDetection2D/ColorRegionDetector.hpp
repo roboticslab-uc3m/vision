@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __COLOR_REGION_DETECTION_2D_HPP__
-#define __COLOR_REGION_DETECTION_2D_HPP__
+#ifndef __COLOR_REGION_DETECTOR_HPP__
+#define __COLOR_REGION_DETECTOR_HPP__
 
 #include <yarp/os/Bottle.h>
 #include <yarp/os/Time.h>
@@ -30,11 +30,11 @@
 namespace roboticslab
 {
 
-class ColorRegionDetectionTransformation : public Detector
+class ColorRegionDetector : public Detector
 {
 public:
-    ColorRegionDetectionTransformation(yarp::os::Searchable* parameters);
-    ColorRegionDetectionTransformation() : area(-1), hue_peak(-1), hue_mode(-1), hue_mean(-1), hue_stddev(-1), saturation_peak(-1),
+    ColorRegionDetector(yarp::os::Searchable* parameters);
+    ColorRegionDetector() : area(-1), hue_peak(-1), hue_mode(-1), hue_mean(-1), hue_stddev(-1), saturation_peak(-1),
         saturation_mean(-1), saturation_stddev(-1), value_peak(-1), value_mode(-1), value_mean(-1), value_stddev(-1), locX(-1), locY(-1),
         rectangularity(-1), axisFirst(-1), axisSecond(-1), aspectRatio(-1), solidity(-1), massCenterlocX(-1), massCenterlocY(-1),
         arc(-1), radius(-1) {
@@ -84,4 +84,4 @@ private:
 
 }  // namespace roboticslab
 
-#endif  // __COLOR_REGION_DETECTION_2D_HPP__
+#endif  // __COLOR_REGION_DETECTOR_HPP__

@@ -69,11 +69,11 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     if(switchMode=="haarDetection")
     {
-        transformation = new HaarDetectionTransformation(&rf);
+        transformation = new HaarDetector(&rf);
     }
     else if(switchMode=="colorRegionDetection")
     {
-        transformation = new ColorRegionDetectionTransformation(&rf);
+        transformation = new ColorRegionDetector(&rf);
     }
     else if(switchMode=="tensorflowDetection")
     {
