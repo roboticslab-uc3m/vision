@@ -43,7 +43,7 @@
 #include "TensorFlowDetector.hpp"
 
 #include <ColorDebug.h>
-#include "SegmentorThread.hpp" // MUST GO AWAY!!
+
 #include "Detector.hpp"
 
 #define DEFAULT_TRAINEDMODEL "frozen_inference_graph.pb"
