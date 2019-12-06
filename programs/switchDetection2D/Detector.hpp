@@ -8,7 +8,7 @@
 #include <yarp/os/all.h>
 #include <yarp/sig/Image.h>
 
-//#include "ColorRegionDetection2D.hpp"
+//#include "ColorRegionDetector.hpp"
 //#include "HaarDetector.hpp"
 //#include "TensorflowDetection2D.hpp"
 //#include "TensorflowDetector.hpp"

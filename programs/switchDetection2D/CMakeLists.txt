@@ -19,8 +19,8 @@ if(ENABLE_switchDetection2D)
 
     # ColorRegionDetection
     add_library(ColorRegionDetection Detector.hpp
-                                     ColorRegionDetection2D.hpp
-                                     ColorRegionDetection2D.cpp)
+                                     ColorRegionDetector.hpp
+                                     ColorRegionDetector.cpp)
 
     target_link_libraries(ColorRegionDetection YARP::YARP_OS
                                                YARP::YARP_init

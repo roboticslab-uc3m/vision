@@ -14,7 +14,7 @@
 
 #include <ColorDebug.h>
 
-#include "ColorRegionDetection2D.hpp"
+#include "ColorRegionDetector.hpp"
 
 namespace roboticslab
 {

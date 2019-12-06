@@ -18,7 +18,7 @@
 
 #include "SegmentorThread.hpp"
 
-#include "ColorRegionDetection2D.hpp"
+#include "ColorRegionDetector.hpp"
 #include "HaarDetector.hpp"
 
 #define DEFAULT_SWITCH_MODE "haarDetection"
@@ -123,8 +123,8 @@ void roboticslab::SegmentorThread::run()
     /*
     else if(strSwitchMode=="colorRegionDetection")
     {
-        std::cout<<"Executing ColorRegionDetection2D..."<<std::endl;
-        ColorRegionDetection2D colorRegionDetector;
+        std::cout<<"Executing ColorRegionDetector..."<<std::endl;
+        ColorRegionDetector colorRegionDetector;
         //    /outYarpImg=/
         colorRegionDetector.run(inYarpImg, algorithm, locate, morphClosing, maxNumBlobs,threshold);
         outYarpImg=colorRegionDetector.outImageProcessed;
