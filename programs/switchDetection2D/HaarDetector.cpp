@@ -21,13 +21,6 @@ HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
         CD_DEBUG("**** \"xmlCascade\" parameter for HaarDetectionTransformation found: \"%s\"\n", xmlCascade.c_str());
     }
 
-    /*if(!parameters->check("switchMode"))
-    {
-        CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
-        return;
-    }
-    std::string context = parameters->find("swicthMode").asString();*/
-
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
     rf.setDefaultContext("switchDetection2D"); //rf.setDefaultContext(context);
