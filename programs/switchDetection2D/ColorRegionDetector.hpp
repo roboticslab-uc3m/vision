@@ -37,9 +37,10 @@ public:
     ColorRegionDetector() : area(-1), hue_peak(-1), hue_mode(-1), hue_mean(-1), hue_stddev(-1), saturation_peak(-1),
         saturation_mean(-1), saturation_stddev(-1), value_peak(-1), value_mode(-1), value_mean(-1), value_stddev(-1), locX(-1), locY(-1),
         rectangularity(-1), axisFirst(-1), axisSecond(-1), aspectRatio(-1), solidity(-1), massCenterlocX(-1), massCenterlocY(-1),
-        arc(-1), radius(-1) {
+        arc(-1), radius(-1)
+    {
         std::printf("\t--algorithm (redMinusBlue,greenMinusRed...; default: \"%s\")\n",algorithm.c_str());
-        std::printf("\t--locate (centroid,bottom; default: \"%s\")\n",locate.c_str());
+        std::printf("\t--locate(centroid,bottom; default: \"%s\")\n",locate.c_str());
         std::printf("\t--morphClosing (percentage, 2 or 4 okay; default: \"%f\")\n",morphClosing);
         std::printf("\t--maxNumBlobs (default: \"%d\")\n",maxNumBlobs);
         std::printf("\t--outFeatures (default: \"(%s)\")\n",outFeatures.toString().c_str());
@@ -57,7 +58,9 @@ public:
         std::printf("DetectorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
         algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);*/
     }
-    bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yarp::sig::ImageOf<yarp::sig::PixelRgb> &ret) override;
+    bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
+                std::vector<BoundingBox>& boundingBoxes,
+                yarp::sig::ImageOf<yarp::sig::PixelRgb> &ret) override;
 
 private:
     std::string algorithm;

@@ -12,13 +12,20 @@
 namespace roboticslab
 {
 
+class BoundingBox
+{
+
+};
+
 class Detector
 {
 public:
     Detector() : valid(false) {}
     virtual ~Detector() {}
     bool isValid() const { return valid; }
-    virtual bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yarp::sig::ImageOf<yarp::sig::PixelRgb> &ret) = 0;
+    virtual bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
+                        std::vector<BoundingBox>& boundingBoxes,
+                        yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret) = 0;
 
 protected:
     bool valid;
