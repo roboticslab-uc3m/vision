@@ -93,7 +93,7 @@ public:
 class DetectorThread : public yarp::os::PeriodicThread
 {
 public:
-    Detector* transformation;
+    Detector* detector;
 
 
     DetectorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}

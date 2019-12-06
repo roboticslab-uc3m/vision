@@ -61,15 +61,15 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
 
     if(switchMode=="haarDetection")
     {
-        transformation = new HaarDetector(&rf);
+        detector = new HaarDetector(&rf);
     }
     else if(switchMode=="colorRegionDetection")
     {
-        transformation = new ColorRegionDetector(&rf);
+        detector = new ColorRegionDetector(&rf);
     }
     else if(switchMode=="tensorflowDetection")
     {
-        transformation = new TensorFlowDetector(&rf);
+        detector = new TensorFlowDetector(&rf);
     }
     else
     {
@@ -77,7 +77,7 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
         return false;
     }
 
-    if(!transformation->isValid())
+    if(!detector->isValid())
     {
         CD_ERROR("\n");
         return false;
@@ -118,7 +118,7 @@ void roboticslab::DetectorThread::run()
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
     yarp::os::Bottle output;
-    outYarpImg = transformation->detect(inYarpImg);
+    outYarpImg = detector->detect(inYarpImg);
 
     /*
     colorRegionDetector.run(inYarpImg, algorithm, locate, morphClosing, maxNumBlobs,threshold);
