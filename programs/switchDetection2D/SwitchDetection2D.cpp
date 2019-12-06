@@ -13,7 +13,7 @@
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
 #define DEFAULT_CAMERA_DEVICE "remote_grabber"
 #define DEFAULT_CAMERA_LOCAL "/switchDetection2D"
-#define DEFAULT_CAMERA_REMOTE "/frameGrabber2D"
+#define DEFAULT_CAMERA_REMOTE "/grabber"
 #define DEFAULT_WATCHDOG    2       // [s]
 
 /************************************************************************/
