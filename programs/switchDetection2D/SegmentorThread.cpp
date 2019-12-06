@@ -109,15 +109,15 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
 void roboticslab::SegmentorThread::run()
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
-    yarp::os::Bottle output;
-
     if (!camera->getImage(inYarpImg))
     {
         return;
     }
 
-    CD_DEBUG("Executing detection...\n");
+    CD_DEBUG("\n");
+
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
+    yarp::os::Bottle output;
     outYarpImg = transformation->detect(inYarpImg);
 
     /*
