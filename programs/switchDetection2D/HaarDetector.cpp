@@ -65,6 +65,7 @@ bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yar
     int closestObject = 999999;
     int minimumDistance = 999999;
 
+    // determine closest (biggest)
     for (int i = 0; i < objects.size(); i++)
     {
         const int pxX = objects[i].x + objects[i].width / 2;
@@ -82,6 +83,7 @@ bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yar
         }
     }
 
+    // paint on image
     for (int i = 0; i < objects.size(); i++)
     {
         const int pxX = objects[i].x + objects[i].width / 2;
