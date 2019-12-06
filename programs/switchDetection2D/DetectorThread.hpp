@@ -90,13 +90,13 @@ public:
  *
  * @brief Implements switchDetection2D PeriodicThread.
  */
-class SegmentorThread : public yarp::os::PeriodicThread
+class DetectorThread : public yarp::os::PeriodicThread
 {
 public:
     Detector* transformation;
 
 
-    SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
+    DetectorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
     void setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage * _camera);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);

@@ -94,15 +94,15 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
     }
     CD_SUCCESS("Camera device ok view.\n");
 
-    segmentorThread.setIFrameGrabberImageDriver(camera);
-    segmentorThread.setOutImg(&outImg);
-    segmentorThread.setOutPort(&outPort);
-    segmentorThread.setCropSelector(cropSelector);
+    setectorThread.setIFrameGrabberImageDriver(camera);
+    setectorThread.setOutImg(&outImg);
+    setectorThread.setOutPort(&outPort);
+    setectorThread.setCropSelector(cropSelector);
 
     if (cropSelector != 0)
     {
-        segmentorThread.setOutCropSelectorImg(&outCropSelectorImg);
-        segmentorThread.setInCropSelectorPort(&inCropSelectorPort);
+        setectorThread.setOutCropSelectorImg(&outCropSelectorImg);
+        setectorThread.setInCropSelectorPort(&inCropSelectorPort);
     }
 
     //-----------------OPEN LOCAL PORTS------------//
@@ -120,7 +120,7 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
         inCropSelectorPort.open(strCameraLocal + "/cropSelector/state:i");
     }
 
-    return segmentorThread.init(rf);
+    return setectorThread.init(rf);
 }
 
 /*****************************************************************/
@@ -160,7 +160,7 @@ bool roboticslab::SwitchDetection2D::close()
 {
     CD_INFO("Closing...\n");
 
-    segmentorThread.stop();
+    setectorThread.stop();
 
     cameraDevice.close();
     outImg.close();

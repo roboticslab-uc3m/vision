@@ -54,7 +54,7 @@ public:
         if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asFloat64();
         if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt32();
 
-        std::printf("SegmentorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
+        std::printf("DetectorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
         algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);*/
     }
     yarp::sig::ImageOf<yarp::sig::PixelRgb> detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) override;
