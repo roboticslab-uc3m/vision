@@ -14,7 +14,7 @@
 
 #include "TravisLib.hpp"
 
-#include "Transformation.hpp"
+#include "Detector.hpp"
 
 #define DEFAULT_ALGORITHM "blueMinusRed"
 #define DEFAULT_LOCATE "centroid"

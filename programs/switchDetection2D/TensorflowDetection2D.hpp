@@ -44,7 +44,7 @@
 
 #include <ColorDebug.h>
 #include "SegmentorThread.hpp" // MUST GO AWAY!!
-#include "Transformation.hpp"
+#include "Detector.hpp"
 
 #define DEFAULT_TRAINEDMODEL "frozen_inference_graph.pb"
 #define DEFAULT_TRAINEDMODEL_LABELS "labels_map.pbtxt"

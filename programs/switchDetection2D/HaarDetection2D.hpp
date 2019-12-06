@@ -13,7 +13,7 @@
 
 #include <ColorDebug.h>
 
-#include "Transformation.hpp"
+#include "Detector.hpp"
 
 #define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
 
