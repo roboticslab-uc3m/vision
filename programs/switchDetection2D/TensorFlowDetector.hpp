@@ -66,8 +66,6 @@ private:
     std::unique_ptr<tensorflow::Session> session;
     std::map<int, std::string> labelsMap;
     std::vector<std::string> outputLayer;
-    std::string model;
-    std::string labels;
     time_t start, end;
     int nFrames = 25;
     int iFrame = 0;
