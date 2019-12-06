@@ -132,7 +132,7 @@ void roboticslab::SegmentorThread::run()
     }
     else if(strSwitchMode=="tensorflowDetection")
     {
-        std::cout<<"Ejecutando tensorflowDetection2D"<<std::endl;
+        std::cout<<"Ejecutando TensorFlowDetector"<<std::endl;
         outYarpImg=tensorflowDetector.run(inYarpImg);
         output=tensorflowDetector.bottle;
     }
