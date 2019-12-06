@@ -59,7 +59,7 @@ public:
         algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);*/
     }
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                std::vector<BoundingBox>& boundingBoxes,
+                std::vector<BoundingBox*>& boundingBoxes,
                 yarp::sig::ImageOf<yarp::sig::PixelRgb> &ret) override;
 
 private:

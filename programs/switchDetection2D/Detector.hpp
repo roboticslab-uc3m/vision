@@ -24,7 +24,7 @@ public:
     virtual ~Detector() {}
     bool isValid() const { return valid; }
     virtual bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                        std::vector<BoundingBox>& boundingBoxes,
+                        std::vector<BoundingBox*>& boundingBoxes,
                         yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret) = 0;
 
 protected:

@@ -46,7 +46,7 @@ HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
 
 /*****************************************************************/
 bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                          std::vector<BoundingBox>& boundingBoxes,
+                          std::vector<BoundingBox*>& boundingBoxes,
                           yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret)
 {
     CD_DEBUG("\n");
@@ -55,13 +55,18 @@ bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
     cv::cvtColor(inCvMat, inCvMat, CV_RGB2GRAY);
 
     std::vector<cv::Rect> objects;
-
     object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, cv::Size(30, 30));
+
+    for(size_t i; i<objects.size(); i++)
+    {
+        BoundingBox* bb = new BoundingBox;
+        boundingBoxes.push_back(bb);
+    }
 
     // determine closest (biggest)
     int closestObject = 999999;
     int minimumDistance = 999999;
-    for (int i = 0; i < objects.size(); i++)
+    for (size_t i = 0; i < objects.size(); i++)
     {
         const int pxX = objects[i].x + objects[i].width / 2;
         const int pxY = objects[i].y + objects[i].height / 2;
@@ -83,7 +88,7 @@ bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
     yarp::sig::PixelRgb red(255, 0, 0);
     yarp::sig::PixelRgb green(0, 255, 0);
     yarp::os::Bottle output;
-    for (int i = 0; i < objects.size(); i++)
+    for (size_t i = 0; i < objects.size(); i++)
     {
         const int pxX = objects[i].x + objects[i].width / 2;
         const int pxY = objects[i].y + objects[i].height / 2;
