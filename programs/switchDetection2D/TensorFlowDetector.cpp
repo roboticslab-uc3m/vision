@@ -1,9 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include <string>
 #include <time.h>
 #include <utility>
-#include <vector>
 
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
@@ -44,6 +42,54 @@
 
 namespace roboticslab
 {
+
+/*****************************************************************/
+
+TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
+{
+    std::string trainedModel = DEFAULT_TRAINEDMODEL;
+    CD_DEBUG("*** --trainedModel [file.pb] (default: \"%s\")\n", trainedModel.c_str());
+    if(parameters->check("trainedModel"))
+    {
+        CD_INFO("**** \"trainedModel\" parameter for TensorFlowDetector found\n");
+        trainedModel = parameters->find("trainedModel").asString();
+    }
+    CD_DEBUG("**** \"trainedModel\" parameter for TensorFlowDetector found: \"%s\"\n", trainedModel.c_str());
+
+    std::string trainedModelLabels = DEFAULT_TRAINEDMODEL_LABELS;
+    printf("\t--trainedModelLabels [file.pbtxt] (default: \"%s\")\n", trainedModelLabels.c_str());
+    if(parameters->check("trainedModelLabels"))
+    {
+        CD_INFO("**** \"trainedModelLabels\" parameter for TensorFlowDetector found\n");
+        trainedModelLabels = parameters->find("trainedModelLabels").asString();
+    }
+    CD_DEBUG("**** \"trainedModelLabels\" parameter for TensorFlowDetector found: \"%s\"\n", trainedModelLabels.c_str());
+
+    yarp::os::ResourceFinder rf;
+    rf.setVerbose(false);
+    rf.setDefaultContext("switchDetection2D");
+
+    std::string trainedModelFullName = rf.findFileByName(trainedModel);
+    if(trainedModelFullName.empty())
+    {
+        CD_ERROR("**** full path for trainedModel NOT found\n");
+        return;
+    }
+    CD_DEBUG("**** full path for trainedModel found: \"%s\"\n", trainedModelFullName.c_str());
+
+    std::string trainedModelLabelsFullName = rf.findFileByName(trainedModelLabels);
+    if(trainedModelLabelsFullName.empty())
+    {
+        CD_ERROR("**** full path for trainedModelLabels NOT found\n");
+        return;
+    }
+    CD_DEBUG("**** full path for trainedModelLabels found: \"%s\"\n", trainedModelLabelsFullName.c_str());
+
+    //outPortShape.open("/tensorflowDetection2D/shape");
+    //yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg=outPortShape.read();;
+    //j//tensorflowDetector.configuration(model, labels, inYarpImg);
+
+}
 
 /*****************************************************************/
 
@@ -91,6 +137,8 @@ void TensorFlowDetector::configuration(std::string trainedModel, std::string tra
     shape.AddDim((tensorflow::int64)inYarpImg->width());
     shape.AddDim(3);
     std::cout<<"Taking frames..."<<std::endl;
+
+    valid = true;
 }
 
 /*****************************************************************/
@@ -165,101 +213,6 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorFlowDetector::detect(yarp::sig::Im
     outYarpImg.setExternal(inCvMat.data,inCvMat.size[1],inCvMat.size[0]);
 
     return outYarpImg;
-}
-
-
-TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
-{
-
-    std::string trainedModel = DEFAULT_TRAINEDMODEL;
-    std::string trainedModelLabels = DEFAULT_TRAINEDMODEL_LABELS;
-    std::printf("\t--pbTrainedModel [file.pb] (default: \"%s\")\n", trainedModel.c_str());
-    std::printf("\t--pbtxtTrainedModelLabels [file.pbtxt] (default: \"%s\")\n", trainedModelLabels.c_str());
-
-
-    if(!parameters->check("context"))
-    {
-        CD_ERROR("**** \"context\" parameter for HaarDetectionTransformation NOT found\n");
-        return;
-    }
-    std::string context = parameters->find("context").asString();
-
-    if(!parameters->check("trainedModel"))
-    {
-        CD_ERROR("**** \"trainedModel\" parameter for TensorflowDetectionTransformation NOT found\n");
-        return;
-    }
-    trainedModel = parameters->find("trainedModel").asString();
-    CD_DEBUG("**** \"trainedModel\" parameter for TensorflowDetectionTransformation found: \"%s\"\n", trainedModel.c_str());
-
-    if(!parameters->check("trainedModelLabels"))
-    {
-        CD_ERROR("**** \"trainedModelLabels\" parameter for TensorflowDetectionTransformation NOT found\n");
-        return;
-    }
-    trainedModelLabels = parameters->find("trainedModelLabels").asString();
-    CD_DEBUG("**** \"trainedModelLabels\" parameter for TensorflowDetectionTransformation found: \"%s\"\n", trainedModelLabels.c_str());
-
-
-    if(parameters->check("trainedModel"))
-    {
-        trainedModel = parameters->find("trainedModel").asString();
-    }
-
-    if(parameters->check("trainedModelLabels"))
-    {
-        trainedModelLabels = parameters->find("trainedModelLabels").asString();
-    }
-
-    yarp::os::ResourceFinder rf;
-    rf.setVerbose(false);
-    rf.setDefaultContext(context);
-    model = rf.findFileByName(trainedModel);
-    labels = rf.findFileByName(trainedModelLabels);
-
-   if (model.empty())
-   {
-       CD_ERROR("No trained model!\n");
-       std::exit(1);
-   }
-
-   if (labels.empty())
-   {
-       CD_ERROR("No trained model labels!\n");
-       std::exit(1);
-   }
-
-   //outPortShape.open("/tensorflowDetection2D/shape");
-   //yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg=outPortShape.read();;
-   //j//tensorflowDetector.configuration(model, labels, inYarpImg);
-
-
-    if(!parameters->check("context"))
-    {
-        CD_ERROR("**** \"context\" parameter for TensorflowDetectionTransformation NOT found\n");
-        return;
-    }
-
-    std::string trainedModelFullName = rf.findFileByName(trainedModel);
-
-    if(trainedModelFullName.empty())
-    {
-        CD_ERROR("**** full path for file NOT found\n");
-        return;
-    }
-    CD_DEBUG("**** full path for file found: \"%s\"\n", trainedModelFullName.c_str());
-
-    std::string trainedModelLabelsFullName = rf.findFileByName(trainedModelLabels);
-    if(trainedModelLabelsFullName.empty())
-    {
-        CD_ERROR("**** full path for file NOT found\n");
-        return;
-    }
-    CD_DEBUG("**** full path for file found: \"%s\"\n", trainedModelLabelsFullName.c_str());
-
-
-
-    valid = true;
 }
 
 // -----------------------------------------------------------------------------
