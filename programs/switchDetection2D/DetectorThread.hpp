@@ -93,9 +93,6 @@ public:
 class DetectorThread : public yarp::os::PeriodicThread
 {
 public:
-    Detector* detector;
-
-
     DetectorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
     void setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage * _camera);
@@ -120,6 +117,8 @@ public:
     }
 
 private:
+    Detector* detector;
+
     yarp::dev::IFrameGrabberImage *camera;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
