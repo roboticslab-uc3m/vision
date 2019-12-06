@@ -45,7 +45,7 @@ HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
 }
 
 /*****************************************************************/
-yarp::sig::ImageOf<yarp::sig::PixelRgb> HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg)
+bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret)
 {
     CD_DEBUG("\n");
 
@@ -106,8 +106,9 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> HaarDetector::detect(yarp::sig::ImageOf<
         }
     }
 
-    return outYarpImg;
+    ret = outYarpImg;
 
+    return true;
 }
 
 /************************************************************************/

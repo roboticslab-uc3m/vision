@@ -18,7 +18,7 @@ public:
     Detector() : valid(false) {}
     virtual ~Detector() {}
     bool isValid() const { return valid; }
-    virtual yarp::sig::ImageOf<yarp::sig::PixelRgb> detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) = 0;
+    virtual bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yarp::sig::ImageOf<yarp::sig::PixelRgb> &ret) = 0;
 
 protected:
     bool valid;

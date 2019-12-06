@@ -88,7 +88,7 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
 
 /*****************************************************************/
 
-yarp::sig::ImageOf<yarp::sig::PixelRgb> ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg)
+bool ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yarp::sig::ImageOf<yarp::sig::PixelRgb> &ret)
 {
 
     // {yarp ImageOf Rgb -> openCv Mat Bgr}
@@ -108,13 +108,13 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> ColorRegionDetector::detect(yarp::sig::I
     if( 0 == numBlobs )
     {
         travis.release();
-        return inYarpImg;
+        return false;
     }
     std::vector<cv::Point2d> blobsXY;
     if( ! travis.getBlobsXY(blobsXY) )
     {
         travis.release();
-        return inYarpImg;
+        return false;
     }
     std::vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond,blobsPerimeter;
     std::vector<double> blobsRectangularity,blobsSolidity;
@@ -126,7 +126,7 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> ColorRegionDetector::detect(yarp::sig::I
     if( ! travis.getBlobsAngle(0,blobsAngle) )  // method: 0=box, 1=ellipse; note check for return as 1 can break
     {
         travis.release();
-        return inYarpImg;
+        return false;
      }
     travis.getBlobsAspectRatio(blobsAspectRatio,blobsAxisFirst,blobsAxisSecond);  // must be called after getBlobsAngle!!!!
     travis.getBlobsRectangularity(blobsRectangularity);  // must be called after getBlobsAngle!!!!
@@ -379,7 +379,8 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> ColorRegionDetector::detect(yarp::sig::I
     cvReleaseImage( &inIplImage );  // release the memory for the image
     outCvMat.release();  // cvReleaseImage( &outIplImage );  // release the memory for the image
 
-    return outYarpImg;
+    ret = outYarpImg;
+    return true;
 }
 
 /************************************************************************/

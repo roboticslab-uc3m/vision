@@ -19,7 +19,7 @@ class HaarDetector : public Detector
 {
 public:
     HaarDetector(yarp::os::Searchable* parameters);
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) override;
+    bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yarp::sig::ImageOf<yarp::sig::PixelRgb> &ret) override;
 private:
     cv::CascadeClassifier object_cascade;
     cv::Mat inCvMatPost;

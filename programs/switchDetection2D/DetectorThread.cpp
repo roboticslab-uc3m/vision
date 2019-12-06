@@ -118,7 +118,7 @@ void roboticslab::DetectorThread::run()
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
     yarp::os::Bottle output;
-    outYarpImg = detector->detect(inYarpImg);
+    bool ok = detector->detect(inYarpImg, outYarpImg);
 
     /*
     colorRegionDetector.run(inYarpImg, algorithm, locate, morphClosing, maxNumBlobs,threshold);

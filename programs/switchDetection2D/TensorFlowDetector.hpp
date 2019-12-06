@@ -52,7 +52,7 @@ class TensorFlowDetector : public Detector
 public:
     TensorFlowDetector(yarp::os::Searchable* parameters);
     void configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg);
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg);
+    bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret);
 
 private:
     // Tensorflow: Session object instance

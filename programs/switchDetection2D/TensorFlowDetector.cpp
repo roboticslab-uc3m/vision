@@ -143,8 +143,8 @@ void TensorFlowDetector::configuration(std::string trainedModel, std::string tra
 
 /*****************************************************************/
 
-yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) {
-
+bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret)
+{
     cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
     cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
 
@@ -212,7 +212,8 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorFlowDetector::detect(yarp::sig::Im
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
     outYarpImg.setExternal(inCvMat.data,inCvMat.size[1],inCvMat.size[0]);
 
-    return outYarpImg;
+    outYarpImg = ret;
+    return true;
 }
 
 // -----------------------------------------------------------------------------
