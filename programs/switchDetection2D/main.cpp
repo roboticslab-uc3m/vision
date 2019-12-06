@@ -21,7 +21,7 @@
  * | watchdog     |                                      | 2.000000         |
  *
  *
- * @section  haarDetection2DPorts HaarDetection2D output ports:
+ * @section  haarDetection2DPorts HaarDetector output ports:
  *
  * | OUTPUT PORT              | CONTENT                                                 |
  * |--------------------------|---------------------------------------------------------|

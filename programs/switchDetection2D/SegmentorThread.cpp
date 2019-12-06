@@ -18,8 +18,8 @@
 
 #include "SegmentorThread.hpp"
 
-#include "ColorRegionDetection2D.hpp"
-#include "HaarDetection2D.hpp"
+#include "ColorRegionDetector.hpp"
+#include "HaarDetector.hpp"
 
 #define DEFAULT_SWITCH_MODE "haarDetection"
 
@@ -69,11 +69,11 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     if(switchMode=="haarDetection")
     {
-        transformation = new HaarDetectionTransformation(&rf);
+        transformation = new HaarDetector(&rf);
     }
     else if(switchMode=="colorRegionDetection")
     {
-        transformation = new ColorRegionDetectionTransformation(&rf);
+        transformation = new ColorRegionDetector(&rf);
     }
     else if(switchMode=="tensorflowDetection")
     {
@@ -123,8 +123,8 @@ void roboticslab::SegmentorThread::run()
     /*
     else if(strSwitchMode=="colorRegionDetection")
     {
-        std::cout<<"Executing ColorRegionDetection2D..."<<std::endl;
-        ColorRegionDetection2D colorRegionDetector;
+        std::cout<<"Executing ColorRegionDetector..."<<std::endl;
+        ColorRegionDetector colorRegionDetector;
         //    /outYarpImg=/
         colorRegionDetector.run(inYarpImg, algorithm, locate, morphClosing, maxNumBlobs,threshold);
         outYarpImg=colorRegionDetector.outImageProcessed;
@@ -132,7 +132,7 @@ void roboticslab::SegmentorThread::run()
     }
     else if(strSwitchMode=="tensorflowDetection")
     {
-        std::cout<<"Ejecutando tensorflowDetection2D"<<std::endl;
+        std::cout<<"Ejecutando TensorFlowDetector"<<std::endl;
         outYarpImg=tensorflowDetector.run(inYarpImg);
         output=tensorflowDetector.bottle;
     }

@@ -14,13 +14,13 @@
 
 #include <ColorDebug.h>
 
-#include "ColorRegionDetection2D.hpp"
+#include "ColorRegionDetector.hpp"
 
 namespace roboticslab
 {
 
 
-ColorRegionDetectionTransformation::ColorRegionDetectionTransformation(yarp::os::Searchable* parameters)
+ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
 {
     algorithm = DEFAULT_ALGORITHM;
     CD_DEBUG("*** \"algorithm\" (default: \"%s\")\n", algorithm.c_str());
@@ -94,7 +94,7 @@ ColorRegionDetectionTransformation::ColorRegionDetectionTransformation(yarp::os:
 
 /*****************************************************************/
 
-yarp::sig::ImageOf<yarp::sig::PixelRgb> ColorRegionDetectionTransformation::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg)
+yarp::sig::ImageOf<yarp::sig::PixelRgb> ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg)
 {
 
     // {yarp ImageOf Rgb -> openCv Mat Bgr}
