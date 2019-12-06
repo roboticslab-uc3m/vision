@@ -3,9 +3,6 @@
 #ifndef __HAAR_DETECTOR_HPP__
 #define __HAAR_DETECTOR_HPP__
 
-#include <string>
-#include <vector>
-
 #include <yarp/os/Bottle.h>
 #include <yarp/sig/Image.h>
 

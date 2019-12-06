@@ -40,8 +40,6 @@
  * | xmlCascade | file.xml    | haarcascade_cocacola_can.xml |
  */
 
-#include <iostream>
-
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
 

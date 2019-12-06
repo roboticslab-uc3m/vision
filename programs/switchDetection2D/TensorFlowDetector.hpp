@@ -4,10 +4,8 @@
 #define __TENSORFLOW_DETECTOR_HPP__
 
 #include <map>
-#include <string.h>
 #include <time.h>
 #include <utility>
-#include <vector>
 
 #include <yarp/dev/FrameGrabberInterfaces.h>
 #include <yarp/os/Bottle.h>

@@ -1,12 +1,9 @@
-
-// Libraries
+// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
 #include <fstream>
-#include <iostream>
 #include <math.h>
 #include <regex>
 #include <utility>
-#include <vector>
 
 #include <cv.hpp>
 #include <opencv2/core/mat.hpp>

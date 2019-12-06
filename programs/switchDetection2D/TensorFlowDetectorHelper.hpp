@@ -1,7 +1,8 @@
-#ifndef TENSORFLOW_DETECTOR_HELPER_HPP
-#define TENSORFLOW_DETECTOR_HELPER_HPP
+// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-// Libraries
+#ifndef __TENSORFLOW_DETECTOR_HELPER_HPP__
+#define __TENSORFLOW_DETECTOR_HELPER_HPP__
+
 #include <vector>
 
 #include <opencv2/core/mat.hpp>
@@ -32,4 +33,4 @@ std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
                                 double thresholdIOU, double thresholdScore);
 
 
-#endif // TENSORFLOW_DETECTOR_HELPER_HPP
+#endif // __TENSORFLOW_DETECTOR_HELPER_HPP__
