@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __TRANSFORMATION_HPP__
-#define __TRANSFORMATION_HPP__
+#ifndef __DETECTOR_HPP__
+#define __DETECTOR_HPP__
 
 #include <vector>
 
@@ -27,4 +27,4 @@ protected:
 
 }  // namespace roboticslab
 
-#endif // __TRANSFORMATION_HPP__
+#endif // __DETECTOR_HPP__
