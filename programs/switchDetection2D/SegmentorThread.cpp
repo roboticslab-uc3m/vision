@@ -94,8 +94,17 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
         inCropSelectorPort->setReader(cropSelectorProcessor);
     }
 
-    setPeriod(rateMs * 0.001);
-    start();
+    if(!setPeriod(rateMs * 0.001))
+    {
+        CD_ERROR("\n");
+        return false;
+    }
+
+    if(!start())
+    {
+        CD_ERROR("\n");
+        return false;
+    }
 
     return true;
 }

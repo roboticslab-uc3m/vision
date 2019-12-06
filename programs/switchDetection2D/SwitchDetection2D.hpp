@@ -20,7 +20,7 @@ namespace roboticslab
 /**
  * @ingroup switchDetection2D
  *
- * @brief Computer Vision segment faces.
+ * @brief Computer Vision detection.
  */
 class SwitchDetection2D : public yarp::os::RFModule
 {
