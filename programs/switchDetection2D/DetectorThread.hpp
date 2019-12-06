@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __SEGMENTOR_THREAD_HPP__
-#define __SEGMENTOR_THREAD_HPP__
+#ifndef __DETECTOR_THREAD_HPP__
+#define __DETECTOR_THREAD_HPP__
 
 #include <vector>
 
@@ -134,4 +134,4 @@ private:
 
 }  // namespace roboticslab
 
-#endif  // __SEGMENTOR_THREAD_HPP__
+#endif  // __DETECTOR_THREAD_HPP__

@@ -13,7 +13,7 @@
 #include "HaarDetector.hpp"
 #include "TensorFlowDetector.hpp"
 
-#define DEFAULT_SWITCH_MODE "haarDetection"
+#define DEFAULT_DETECTOR "Haar"
 
 /************************************************************************/
 
@@ -42,7 +42,7 @@ void roboticslab::DetectorThread::setOutPort(yarp::os::Port * _pOutPort)
 bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
 {
     int rateMs = DEFAULT_RATE_MS;
-    std::string switchMode = DEFAULT_SWITCH_MODE;
+    std::string detectorName = DEFAULT_DETECTOR;
 
     std::printf("DetectorThread options:\n");
     std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
@@ -53,27 +53,27 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
         rateMs = rf.find("rateMs").asInt32();
     }
 
-    if (rf.check("switchMode"))
+    if (rf.check("detector"))
     {
-        switchMode = rf.find("switchMode").asString();
+        detectorName = rf.find("detector").asString();
     }
-    CD_INFO("Using switchMode: %s\n", switchMode.c_str());
+    CD_INFO("Using detector: %s\n", detectorName.c_str());
 
-    if(switchMode=="haarDetection")
+    if(detectorName=="Haar")
     {
         detector = new HaarDetector(&rf);
     }
-    else if(switchMode=="colorRegionDetection")
+    else if(detectorName=="ColorRegion")
     {
         detector = new ColorRegionDetector(&rf);
     }
-    else if(switchMode=="tensorflowDetection")
+    else if(detectorName=="TensorFlow")
     {
         detector = new TensorFlowDetector(&rf);
     }
     else
     {
-        CD_ERROR("switchMode not allowed (available: haarDetection, colorRegionDetection, tensorflowDetection): %s\n", switchMode.c_str());
+        CD_ERROR("switchMode not allowed (available: haarDetection, colorRegionDetection, tensorflowDetection): %s\n", detectorName.c_str());
         return false;
     }
 

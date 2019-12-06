@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __TENSORFLOW_DETECTOR_HPP__
-#define __TENSORFLOW_DETECTOR_HPP__
+#ifndef __TENSOR_FLOW_DETECTOR_HPP__
+#define __TENSOR_FLOW_DETECTOR_HPP__
 
 #include <map>
 #include <time.h>
@@ -80,4 +80,4 @@ private:
 
 }  // namespace roboticslab
 
-#endif  // __TENSORFLOW_DETECTOR_HPP__
+#endif  // __TENSOR_FLOW_DETECTOR_HPP__

@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __TENSORFLOW_DETECTOR_HELPER_HPP__
-#define __TENSORFLOW_DETECTOR_HELPER_HPP__
+#ifndef __TENSOR_FLOW_DETECTOR_HELPER_HPP__
+#define __TENSOR_FLOW_DETECTOR_HELPER_HPP__
 
 #include <vector>
 
