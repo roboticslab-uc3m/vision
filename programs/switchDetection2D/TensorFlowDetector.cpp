@@ -51,7 +51,7 @@ namespace roboticslab
 
 /*****************************************************************/
 
-void TensorflowDetection2D::configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg/*, yarp::os::BufferedPort<ImageOf<PixelRgb> > inputPort*/){
+void TensorFlowDetector::configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg/*, yarp::os::BufferedPort<ImageOf<PixelRgb> > inputPort*/){
 
 
     //yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImgShape = inputPort.read();
@@ -99,7 +99,7 @@ void TensorflowDetection2D::configuration(std::string trainedModel, std::string 
 
 /*****************************************************************/
 
-yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorflowDetection2D::run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) {
+yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) {
 
     cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
     cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
@@ -172,7 +172,7 @@ yarp::sig::ImageOf<yarp::sig::PixelRgb> TensorflowDetection2D::run(yarp::sig::Im
 }
 
 
-TensorflowDetectionTransformation::TensorflowDetectionTransformation(yarp::os::Searchable* parameters)
+TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
 {
 
     std::string trainedModel = DEFAULT_TRAINEDMODEL;

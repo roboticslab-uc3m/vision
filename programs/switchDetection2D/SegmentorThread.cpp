@@ -20,6 +20,7 @@
 
 #include "ColorRegionDetector.hpp"
 #include "HaarDetector.hpp"
+#include "TensorFlowDetector.hpp"
 
 #define DEFAULT_SWITCH_MODE "haarDetection"
 
@@ -77,8 +78,7 @@ bool roboticslab::SegmentorThread::init(yarp::os::ResourceFinder &rf)
     }
     else if(switchMode=="tensorflowDetection")
     {
-        CD_ERROR("Not yet: %s\n", switchMode.c_str());
-        return false;
+        transformation = new TensorFlowDetector(&rf);
     }
     else
     {

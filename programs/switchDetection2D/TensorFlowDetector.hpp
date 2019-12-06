@@ -52,25 +52,14 @@
 namespace roboticslab
 {
 
-class TensorflowDetectionTransformation : public Detector
+class TensorFlowDetector : public Detector
 {
 public:
-    TensorflowDetectionTransformation(yarp::os::Searchable* parameters);
-private:
-    double m, b;
-    std::string model;
-    std::string labels;
-};
-
-class TensorflowDetection2D
-{
-public:
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> run(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg);
+    TensorFlowDetector(yarp::os::Searchable* parameters);
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg);
     void configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg/*, yarp::os::BufferedPort<ImageOf<PixelRgb> > inputPort*/);
 
 private:
-    int initDetector=0;
-
     // Tensorflow: Session object instance
     //yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inputPort;
     tensorflow::Status readLabelsMapStatus;
@@ -90,6 +79,7 @@ private:
     double fps = 0.;
     double thresholdScore = 0.5;
     double thresholdIOU = 0.8;
+    int initDetector=0;
     yarp::os::Bottle bottle;
 };
 
