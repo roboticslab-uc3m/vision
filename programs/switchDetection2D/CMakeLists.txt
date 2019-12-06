@@ -32,8 +32,8 @@ if(ENABLE_switchDetection2D)
 
     # HaarDetection
     add_library(HaarDetection Detector.hpp
-                              HaarDetection2D.hpp
-                              HaarDetection2D.cpp)
+                              HaarDetector.hpp
+                              HaarDetector.cpp)
 
     target_link_libraries(HaarDetection YARP::YARP_OS
                                         YARP::YARP_init

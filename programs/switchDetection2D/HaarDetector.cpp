@@ -1,6 +1,6 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "HaarDetection2D.hpp"
+#include "HaarDetector.hpp"
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <yarp/sig/ImageDraw.h>

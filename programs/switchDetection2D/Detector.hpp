@@ -9,7 +9,7 @@
 #include <yarp/sig/Image.h>
 
 //#include "ColorRegionDetection2D.hpp"
-//#include "HaarDetection2D.hpp"
+//#include "HaarDetector.hpp"
 //#include "TensorflowDetection2D.hpp"
 //#include "TensorflowDetector.hpp"
 //#include "TravisLib.hpp"

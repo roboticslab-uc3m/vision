@@ -19,7 +19,7 @@
 #include "SegmentorThread.hpp"
 
 #include "ColorRegionDetection2D.hpp"
-#include "HaarDetection2D.hpp"
+#include "HaarDetector.hpp"
 
 #define DEFAULT_SWITCH_MODE "haarDetection"
 
