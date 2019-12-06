@@ -1,11 +1,8 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __TENSORFLOW_DETECTION_2D_HPP__
-#define __TENSORFLOW_DETECTION_2D_HPP__
+#ifndef __TENSORFLOW_DETECTOR_HPP__
+#define __TENSORFLOW_DETECTOR_HPP__
 
-#include <cstdlib>
-#include <fstream>
-#include <iostream>
 #include <map>
 #include <string.h>
 #include <time.h>
@@ -85,4 +82,4 @@ private:
 
 }  // namespace roboticslab
 
-#endif  // __TENSORFLOW_DETECTION_2D_HPP__
+#endif  // __TENSORFLOW_DETECTOR_HPP__

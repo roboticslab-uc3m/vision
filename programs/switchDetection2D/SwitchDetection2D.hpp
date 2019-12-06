@@ -3,12 +3,14 @@
 #ifndef __SWITCH_DETECTION_2D_HPP__
 #define __SWITCH_DETECTION_2D_HPP__
 
-#include <yarp/dev/PolyDriver.h>
-#include <yarp/dev/FrameGrabberInterfaces.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/os/RFModule.h>
+
+#include <yarp/dev/PolyDriver.h>
+#include <yarp/dev/FrameGrabberInterfaces.h>
+
 #include <yarp/sig/Image.h>
 
 #include "SegmentorThread.hpp"

@@ -1,5 +1,5 @@
-#ifndef TENSORFLOWDETECTOR_HPP
-#define TENSORFLOWDETECTOR_HPP
+#ifndef TENSORFLOW_DETECTOR_HELPER_HPP
+#define TENSORFLOW_DETECTOR_HELPER_HPP
 
 // Libraries
 #include <vector>
@@ -32,4 +32,4 @@ std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
                                 double thresholdIOU, double thresholdScore);
 
 
-#endif // TENSORFLOWDETECTOR_HPP
+#endif // TENSORFLOW_DETECTOR_HELPER_HPP

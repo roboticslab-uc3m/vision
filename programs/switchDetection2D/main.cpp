@@ -46,6 +46,7 @@
 #include <yarp/os/ResourceFinder.h>
 
 #include <ColorDebug.h>
+
 #include "SwitchDetection2D.hpp"
 
 #define DEFAULT_CONTEXT    "switchDetection2D"

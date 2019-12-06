@@ -5,7 +5,6 @@
 
 #include <vector>
 
-#include <yarp/os/all.h>
 #include <yarp/sig/Image.h>
 
 #include "ColorDebug.h"
