@@ -60,7 +60,6 @@ public:
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg, yarp::sig::ImageOf<yarp::sig::PixelRgb> &ret) override;
 
 private:
-    double m, b;
     std::string algorithm;
 
     float area, hue_peak, hue_mode, hue_mean, hue_stddev, saturation_peak,
