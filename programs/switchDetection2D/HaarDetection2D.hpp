@@ -20,7 +20,7 @@
 namespace roboticslab
 {
 
-class HaarDetectionTransformation : public Transformation
+class HaarDetectionTransformation : public Detector
 {
 public:
     HaarDetectionTransformation(yarp::os::Searchable* parameters);

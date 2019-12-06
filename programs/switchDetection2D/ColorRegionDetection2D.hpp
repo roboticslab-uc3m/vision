@@ -30,7 +30,7 @@
 namespace roboticslab
 {
 
-class ColorRegionDetectionTransformation : public Transformation
+class ColorRegionDetectionTransformation : public Detector
 {
 public:
     ColorRegionDetectionTransformation(yarp::os::Searchable* parameters);

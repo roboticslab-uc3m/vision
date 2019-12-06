@@ -19,11 +19,11 @@
 namespace roboticslab
 {
 
-class Transformation
+class Detector
 {
 public:
-    Transformation() : valid(false) {}
-    virtual ~Transformation() {}
+    Detector() : valid(false) {}
+    virtual ~Detector() {}
     bool isValid() const { return valid; }
     virtual yarp::sig::ImageOf<yarp::sig::PixelRgb> detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg) = 0;
     virtual double run(double value) { return 0.0; } // will soon perish!

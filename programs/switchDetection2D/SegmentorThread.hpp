@@ -92,7 +92,7 @@ public:
 class SegmentorThread : public yarp::os::PeriodicThread
 {
 public:
-    Transformation* transformation;
+    Detector* transformation;
 
 
     SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
