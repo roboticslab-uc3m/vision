@@ -41,10 +41,10 @@
 #include "tensorflow/core/util/command_line_flags.h"
 
 #include <ColorDebug.h>
+
 #include "SegmentorThread.hpp"
 #include "TensorflowDetector.hpp"
-#include "TensorflowDetector.hpp"
-#include "TensorflowDetection2D.hpp"
+#include "TensorFlowDetector.hpp"
 
 namespace roboticslab
 {

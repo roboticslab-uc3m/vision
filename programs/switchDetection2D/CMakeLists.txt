@@ -2,16 +2,13 @@ if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_switchDetection2D OR ENABLE_switchDe
     message(WARNING "OpenCV package not found, disabling switchDetection2D program")
 endif()
 
-#if(NOT TensorflowCC_FOUND AND (NOT DEFINED ENABLE_switchDetection2D OR ENABLE_switchDetection2D))
-#    message(WARNING "TensorflowCC package not found, disabling switchDetection2D program")
-#endif()
+if(NOT TensorflowCC_FOUND AND (NOT DEFINED ENABLE_switchDetection2D OR ENABLE_switchDetection2D))
+    message(WARNING "TensorflowCC package not found, disabling switchDetection2D program")
+endif()
 
-
-#cmake_dependent_option(ENABLE_switchDetection2D "Enable/disable switchDetection2D program" ON
-#                                                "ENABLE_TravisLib;OpenCV_FOUND;TensorflowCC_FOUND" OFF)
 
 cmake_dependent_option(ENABLE_switchDetection2D "Enable/disable switchDetection2D program" ON
-                                                "ENABLE_TravisLib;OpenCV_FOUND" OFF)
+                                                "ENABLE_TravisLib;OpenCV_FOUND;TensorflowCC_FOUND" OFF)
 
 if(ENABLE_switchDetection2D)
 
@@ -43,19 +40,19 @@ if(ENABLE_switchDetection2D)
                                        ROBOTICSLAB::ColorDebug)
 
     # TensorflowDetector
-    #add_library(TensorflowDetector Detector.hpp
-    #                               TensorflowDetection2D.hpp
-    #                               TensorflowDetection2D.cpp
-    #                               TensorflowDetector.hpp
-    #                               TensorflowDetector.cpp)
+    add_library(TensorflowDetector Detector.hpp
+                                   TensorFlowDetector.hpp
+                                   TensorFlowDetector.cpp
+                                   TensorflowDetector.hpp
+                                   TensorflowDetector.cpp)
 
-    #target_link_libraries(TensorflowDetector YARP::YARP_OS
-    #                                         YARP::YARP_init
-    #                                         YARP::YARP_dev
-    #                                         YARP::YARP_sig
-    #                                         ROBOTICSLAB::ColorDebug
-    #                                         TensorflowCC::Shared
-    #                                         ${OpenCV_LIBS})
+    target_link_libraries(TensorflowDetector YARP::YARP_OS
+                                             YARP::YARP_init
+                                             YARP::YARP_dev
+                                             YARP::YARP_sig
+                                             ROBOTICSLAB::ColorDebug
+                                             TensorflowCC::Shared
+                                             ${OpenCV_LIBS})
 
     # switchDetection2D
     add_executable(switchDetection2D main.cpp
@@ -71,8 +68,8 @@ if(ENABLE_switchDetection2D)
                                             YARP::YARP_sig
                                             ROBOTICSLAB::ColorDebug
                                             ColorRegionDetector
-                                            HaarDetector)
-                                            #TensorflowDetector)
+                                            HaarDetector
+                                            TensorflowDetector)
 
     install(TARGETS switchDetection2D
             DESTINATION ${CMAKE_INSTALL_BINDIR})
