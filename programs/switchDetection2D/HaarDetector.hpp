@@ -12,8 +12,6 @@
 
 #include "Detector.hpp"
 
-#define DEFAULT_XMLCASCADE "haarcascade_frontalface_alt.xml"
-
 namespace roboticslab
 {
 
@@ -26,6 +24,8 @@ private:
     cv::CascadeClassifier object_cascade;
     cv::Mat inCvMatPost;
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImgPre;
+
+    static const std::string DEFAULT_XMLCASCADE;
 };
 
 }  // namespace roboticslab
