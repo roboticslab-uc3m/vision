@@ -99,7 +99,6 @@ public:
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
     void setOutPort(yarp::os::Port *_pOutPort);
     bool init(yarp::os::ResourceFinder &rf);
-    void run() override;  // The periodical function
 
     void setCropSelector(int cropSelector)
     {
@@ -117,6 +116,8 @@ public:
     }
 
 private:
+    void run() override;  // The periodical function
+
     Detector* detector;
 
     yarp::dev::IFrameGrabberImage *camera;
