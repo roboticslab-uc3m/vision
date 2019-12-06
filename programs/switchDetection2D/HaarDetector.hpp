@@ -15,7 +15,7 @@
 
 #include "Detector.hpp"
 
-#define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
+#define DEFAULT_XMLCASCADE "haarcascade_frontalface_alt.xml"
 
 namespace roboticslab
 {
