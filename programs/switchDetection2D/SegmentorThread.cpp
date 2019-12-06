@@ -121,21 +121,11 @@ void roboticslab::SegmentorThread::run()
     outYarpImg = transformation->detect(inYarpImg);
 
     /*
-    else if(strSwitchMode=="colorRegionDetection")
-    {
-        std::cout<<"Executing ColorRegionDetector..."<<std::endl;
-        ColorRegionDetector colorRegionDetector;
-        //    /outYarpImg=/
-        colorRegionDetector.run(inYarpImg, algorithm, locate, morphClosing, maxNumBlobs,threshold);
-        outYarpImg=colorRegionDetector.outImageProcessed;
-        output=colorRegionDetector.outputProcessed;
-    }
-    else if(strSwitchMode=="tensorflowDetection")
-    {
-        std::cout<<"Ejecutando TensorFlowDetector"<<std::endl;
-        outYarpImg=tensorflowDetector.run(inYarpImg);
-        output=tensorflowDetector.bottle;
-    }
+    colorRegionDetector.run(inYarpImg, algorithm, locate, morphClosing, maxNumBlobs,threshold);
+    outYarpImg=colorRegionDetector.outImageProcessed;
+    outYarpImg=tensorflowDetector.run(inYarpImg);
+    output=colorRegionDetector.outputProcessed;
+    output=tensorflowDetector.bottle;
     */
 
     pOutImg->prepare() = outYarpImg;
