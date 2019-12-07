@@ -31,8 +31,6 @@
 #include "TensorFlowDetectorHelper.hpp"
 
 /************************************************************************/
-// Create session and load graph
-/************************************************************************/
 
 tensorflow::Status loadGraph(const tensorflow::string &graph_file_name, std::unique_ptr<tensorflow::Session> *session)
 {
@@ -164,8 +162,6 @@ void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMa
 
 }
 
-/************************************************************************/
-// Draw on image
 /************************************************************************/
 
 void drawBoundingBoxesOnImage(cv::Mat &image,

@@ -3,8 +3,6 @@
 #ifndef __TENSOR_FLOW_DETECTOR_HELPER_HPP__
 #define __TENSOR_FLOW_DETECTOR_HELPER_HPP__
 
-#include <vector>
-
 #include <opencv2/core/mat.hpp>
 
 #include "tensorflow/core/framework/tensor.h"
@@ -13,7 +11,7 @@
 tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::map<int, tensorflow::string> &labelsMap);
 
 tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
-                 std::unique_ptr<tensorflow::Session> *session);
+                             std::unique_ptr<tensorflow::Session> *session);
 
 tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &outTensor);
 
