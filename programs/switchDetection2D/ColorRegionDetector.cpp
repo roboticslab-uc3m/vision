@@ -89,7 +89,7 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
 /*****************************************************************/
 
 bool ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                                 std::vector<BoundingBox*>& boundingBoxes,
+                                 std::vector<DetectedObject*>& detectedObjects,
                                  yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret)
 {
 

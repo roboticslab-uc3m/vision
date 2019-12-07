@@ -46,7 +46,7 @@ HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
 
 /*****************************************************************/
 bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                          std::vector<BoundingBox*>& boundingBoxes,
+                          std::vector<DetectedObject*>& detectedObjects,
                           yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret)
 {
     CD_DEBUG("\n");
@@ -59,8 +59,8 @@ bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
 
     for(size_t i; i<objects.size(); i++)
     {
-        BoundingBox* bb = new BoundingBox;
-        boundingBoxes.push_back(bb);
+        DetectedObject* detectedObject = new DetectedObject;
+        detectedObjects.push_back(detectedObject);
     }
 
     // determine closest (biggest)

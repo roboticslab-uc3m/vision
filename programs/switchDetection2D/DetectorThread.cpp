@@ -117,17 +117,17 @@ void roboticslab::DetectorThread::run()
     CD_DEBUG("\n");
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
-    std::vector<BoundingBox*> bbs;
+    std::vector<DetectedObject*> detectedObjects;
     yarp::os::Bottle output;
 
-    bool ok = detector->detect(inYarpImg, bbs, outYarpImg);
+    bool ok = detector->detect(inYarpImg, detectedObjects, outYarpImg);
 
     // use results here
 
-    for(size_t i=0; i<bbs.size(); i++)
+    for(size_t i=0; i<detectedObjects.size(); i++)
     {
-        delete bbs[i];
-        bbs[i] = 0;
+        delete detectedObjects[i];
+        detectedObjects[i] = 0;
     }
 
     /*

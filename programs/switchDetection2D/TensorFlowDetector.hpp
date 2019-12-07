@@ -53,7 +53,7 @@ public:
     TensorFlowDetector(yarp::os::Searchable* parameters);
     void configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg);
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                std::vector<BoundingBox*>& boundingBoxes,
+                std::vector<DetectedObject*>& detectedObjects,
                 yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret);
 
 private:
