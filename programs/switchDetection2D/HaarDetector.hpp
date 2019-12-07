@@ -3,7 +3,6 @@
 #ifndef __HAAR_DETECTOR_HPP__
 #define __HAAR_DETECTOR_HPP__
 
-#include <yarp/os/Bottle.h>
 #include <yarp/sig/Image.h>
 
 #include <opencv2/objdetect/objdetect.hpp>

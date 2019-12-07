@@ -6,8 +6,6 @@
 
 #include <yarp/os/ResourceFinder.h>
 
-#include <yarp/sig/ImageDraw.h>
-
 namespace roboticslab
 {
 

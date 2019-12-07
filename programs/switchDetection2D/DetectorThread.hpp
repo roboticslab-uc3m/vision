@@ -3,8 +3,6 @@
 #ifndef __DETECTOR_THREAD_HPP__
 #define __DETECTOR_THREAD_HPP__
 
-#include <vector>
-
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
@@ -14,10 +12,7 @@
 
 #include <yarp/dev/FrameGrabberInterfaces.h>
 
-#include <yarp/sig/all.h>
-
-//#include "highgui.h" // to show windows (older)
-//#include "opencv2/highgui/highgui.hpp" // to show windows (newer)
+#include <yarp/sig/Image.h>
 
 #include <ColorDebug.h>
 
