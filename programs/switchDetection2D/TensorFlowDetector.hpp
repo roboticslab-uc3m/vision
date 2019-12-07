@@ -3,23 +3,17 @@
 #ifndef __TENSOR_FLOW_DETECTOR_HPP__
 #define __TENSOR_FLOW_DETECTOR_HPP__
 
-#include <map>
-#include <time.h>
-#include <utility>
-
-#include <yarp/dev/FrameGrabberInterfaces.h>
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
 #include <yarp/os/Port.h>
-#include <yarp/os/PortReader.h>
-#include <yarp/os/RateThread.h>
 #include <yarp/os/ResourceFinder.h>
+
+#include <yarp/dev/FrameGrabberInterfaces.h>
+
 #include <yarp/sig/Image.h>
 
-#include <cv.hpp>
 #include <opencv2/core/mat.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/videoio.hpp>
 

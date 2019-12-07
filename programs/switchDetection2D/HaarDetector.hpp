@@ -23,7 +23,6 @@ public:
                 yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret) override;
 private:
     cv::CascadeClassifier object_cascade;
-    cv::Mat inCvMatPost;
 
     static const std::string DEFAULT_XMLCASCADE;
 };

@@ -8,8 +8,6 @@
 
 #include <yarp/sig/Image.h>
 
-//#include "highgui.h" // to show windows
-
 #include <ColorDebug.h>
 
 #include "TravisLib.hpp"
