@@ -11,7 +11,11 @@
 namespace roboticslab
 {
 
+/*****************************************************************/
+
 const std::string HaarDetector::DEFAULT_XMLCASCADE = "haarcascade_frontalface_alt.xml";
+
+/*****************************************************************/
 
 HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
 {
@@ -45,6 +49,7 @@ HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
 }
 
 /*****************************************************************/
+
 bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
                           std::vector<DetectedObject*>& detectedObjects,
                           yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret)

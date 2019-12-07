@@ -47,15 +47,6 @@ public:
         std::printf("\t--outImage (0=rgb,1=bw; default: \"%d\")\n",outImage);
         std::printf("\t--seeBounding (0=none,1=contour,2=box,3=both; default: \"%d\")\n",seeBounding);
         std::printf("\t--threshold (default: \"%d\")\n",threshold);
-
-        /*if (rf.check("algorithm")) algorithm = rf.find("algorithm").asString();
-        if (rf.check("locate")) locate = rf.find("locate").asString();
-        if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt32();
-        if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asFloat64();
-        if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt32();
-
-        std::printf("DetectorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
-        algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);*/
     }
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
                 std::vector<DetectedObject*>& detectedObjects,

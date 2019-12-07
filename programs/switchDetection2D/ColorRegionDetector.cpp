@@ -13,6 +13,7 @@
 namespace roboticslab
 {
 
+/*****************************************************************/
 
 ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
 {
@@ -82,6 +83,8 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
 
     printf("DetectorThread using outImage: %d, seeBounding: %d, threshold: %d.\n", outImage, seeBounding, threshold);
     printf("DetectorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
+    printf("DetectorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
+           algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);
 
     valid = true;
 }
@@ -151,7 +154,6 @@ bool ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
     outImageProcessed=outYarpImg;
 
     //return outYarpImg; crea conflicto con return; de funciones travis
-
 
     // Take advantage we have the travis object and get features for text output
     yarp::os::Bottle output;
