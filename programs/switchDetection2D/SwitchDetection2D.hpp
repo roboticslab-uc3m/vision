@@ -24,6 +24,9 @@ namespace roboticslab
  */
 class SwitchDetection2D : public yarp::os::RFModule
 {
+public:
+    bool configure(yarp::os::ResourceFinder &rf);
+
 private:
     DetectorThread detectorThread;
 
@@ -44,9 +47,6 @@ private:
     double getPeriod();
     bool updateModule();
     bool close();
-
-public:
-    bool configure(yarp::os::ResourceFinder &rf);
 };
 
 }  // namespace roboticslab
