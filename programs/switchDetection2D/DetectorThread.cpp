@@ -116,13 +116,24 @@ void roboticslab::DetectorThread::run()
 
     CD_DEBUG("\n");
 
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> myNull;
     std::vector<DetectedObject*> detectedObjects;
     yarp::os::Bottle output;
 
-    bool ok = detector->detect(inYarpImg, detectedObjects, outYarpImg);
+    bool ok = detector->detect(inYarpImg, detectedObjects, myNull);
 
-    // use results here
+    // paint on image
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
+    yarp::sig::PixelRgb red(255, 0, 0);
+    for (size_t i = 0; i < detectedObjects.size(); i++)
+    {
+        yarp::sig::draw::addRectangleOutline(outYarpImg,
+                                             red,
+                                             detectedObjects[i]->cx(),
+                                             detectedObjects[i]->cy(),
+                                             detectedObjects[i]->width() / 2,
+                                             detectedObjects[i]->height() / 2);
+    }
 
     for(size_t i=0; i<detectedObjects.size(); i++)
     {

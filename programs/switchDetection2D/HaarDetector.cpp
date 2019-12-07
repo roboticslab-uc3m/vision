@@ -65,67 +65,13 @@ bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
     for(size_t i; i<objects.size(); i++)
     {
         DetectedObject* detectedObject = new DetectedObject;
+        detectedObject->setBoundingBox(objects[i].x,
+                                       objects[i].y,
+                                       objects[i].x + objects[i].width,
+                                       objects[i].y + objects[i].height);
         detectedObjects.push_back(detectedObject);
     }
 
-    // determine closest (biggest)
-    int closestObject = 999999;
-    int minimumDistance = 999999;
-    for (size_t i = 0; i < objects.size(); i++)
-    {
-        const int pxX = objects[i].x + objects[i].width / 2;
-        const int pxY = objects[i].y + objects[i].height / 2;
-
-        int centerX = inCvMat.cols / 2;
-        int centerY = inCvMat.rows / 2;
-
-        int distance = std::sqrt(std::pow(pxX - centerX, 2) + std::pow(pxY - centerY, 2));
-
-        if (distance < minimumDistance)
-        {
-            minimumDistance = distance;
-            closestObject = i;
-        }
-    }
-
-    // paint on image
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
-    yarp::sig::PixelRgb red(255, 0, 0);
-    yarp::sig::PixelRgb green(0, 255, 0);
-    yarp::os::Bottle output;
-    for (size_t i = 0; i < objects.size(); i++)
-    {
-        const int pxX = objects[i].x + objects[i].width / 2;
-        const int pxY = objects[i].y + objects[i].height / 2;
-
-        if (i == closestObject)
-        {
-            yarp::sig::draw::addRectangleOutline(outYarpImg,
-                                                 green,
-                                                 pxX,
-                                                 pxY,
-                                                 objects[i].width / 2,
-                                                 objects[i].height / 2);
-
-            // scale centroids and fit into [-1, 1] range
-            double cX = 2.0 * pxX / inCvMat.cols - 1.0;
-            double cY = 2.0 * pxY / inCvMat.rows - 1.0;
-
-            output.addFloat64(cX); // Points right
-            output.addFloat64(cY); // Points down
-        }
-        else
-        {
-            yarp::sig::draw::addRectangleOutline(outYarpImg,
-                                                 red,
-                                                 pxX,
-                                                 pxY,
-                                                 objects[i].width / 2,
-                                                 objects[i].height / 2);
-        }
-    }
-
-    ret = outYarpImg;
 
     return true;
 }
