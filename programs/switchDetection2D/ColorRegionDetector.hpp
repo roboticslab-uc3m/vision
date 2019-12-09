@@ -3,9 +3,6 @@
 #ifndef __COLOR_REGION_DETECTOR_HPP__
 #define __COLOR_REGION_DETECTOR_HPP__
 
-#include <yarp/os/Bottle.h>
-#include <yarp/os/Time.h>
-
 #include <yarp/sig/Image.h>
 
 #include <ColorDebug.h>
@@ -31,9 +28,6 @@ private:
     int threshold;
 
     int maxNumBlobs;
-
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> outImageProcessed;
-    yarp::os::Bottle outputProcessed;
 
     static const std::string DEFAULT_ALGORITHM;
     static const double DEFAULT_MORPH_CLOSING;
