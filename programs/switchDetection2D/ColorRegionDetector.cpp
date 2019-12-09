@@ -24,6 +24,7 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
         CD_INFO("**** \"algorithm\" parameter for ColorRegionDetectionTransformation found\n");
         algorithm = parameters->find("algorithm").asString();
     }
+    CD_DEBUG("ColorRegionDetector using algorithm: %s.\n", algorithm.c_str());
 
     maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
     if(parameters->check("maxNumBlobs"))
@@ -38,13 +39,7 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
         CD_INFO("**** \"morphClosing\" parameter for ColorRegionDetectionTransformation found\n");
         morphClosing = parameters->find("morphClosing").asFloat64();
     }
-
-    outImage = DEFAULT_OUT_IMAGE;
-    if(parameters->check("outImage"))
-    {
-        CD_INFO("**** \"outImage\" parameter for ColorRegionDetectionTransformation found\n");
-        outImage = parameters->find("outImage").asInt32();
-    }
+    CD_DEBUG("ColorRegionDetector using morphClosing: %f.\n", morphClosing);
 
     threshold = DEFAULT_THRESHOLD;
     if(parameters->check("threshold"))
@@ -52,17 +47,7 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
         CD_INFO("**** \"threshold\" parameter for ColorRegionDetectionTransformation found\n");
         threshold = parameters->find("threshold").asInt32();
     }
-
-    seeBounding = DEFAULT_SEE_BOUNDING;
-    if(parameters->check("seeBounding"))
-    {
-        CD_INFO("**** \"seeBounding\" parameter for ColorRegionDetectionTransformation found\n");
-        seeBounding = parameters->find("seeBounding").asInt32();
-    }
-
-    printf("DetectorThread using outImage: %d, seeBounding: %d, threshold: %d.\n", outImage, seeBounding, threshold);
-    printf("DetectorThread using algorithm: %s, morphClosing: %f.\n",
-            algorithm.c_str(),morphClosing);
+    CD_DEBUG("ColorRegionDetector using threshold: %d.\n", threshold);
 
     valid = true;
 }
@@ -102,46 +87,8 @@ bool ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
         travis.release();
         return false;
     }
-    std::vector<double> blobsAngle,blobsArea,blobsAspectRatio,blobsAxisFirst,blobsAxisSecond,blobsPerimeter;
-    std::vector<double> blobsRectangularity,blobsSolidity;
-    std::vector<double> blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev;
-    travis.getBlobsArea(blobsArea);
-    travis.getBlobsPerimeter(blobsPerimeter);
-    travis.getBlobsSolidity(blobsSolidity);
-    travis.getBlobsHSV(blobsHue,blobsSat,blobsVal,blobsHueStdDev,blobsSatStdDev,blobsValStdDev);
-    if( ! travis.getBlobsAngle(0,blobsAngle) )  // method: 0=box, 1=ellipse; note check for return as 1 can break
-    {
-        travis.release();
-        return false;
-    }
-    travis.getBlobsAspectRatio(blobsAspectRatio,blobsAxisFirst,blobsAxisSecond);  // must be called after getBlobsAngle!!!!
-    travis.getBlobsRectangularity(blobsRectangularity);  // must be called after getBlobsAngle!!!!
-    cv::Mat outCvMat = travis.getCvMat(outImage,seeBounding);
+
     travis.release();
-
-    // { openCv Mat Bgr -> yarp ImageOf Rgb}
-    IplImage outIplImage = outCvMat;
-    cvCvtColor(&outIplImage,&outIplImage, CV_BGR2RGB);
-    char sequence[] = "RGB";
-    strcpy (outIplImage.channelSeq,sequence);
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
-    outYarpImg.wrapIplImage(&outIplImage);
-    yarp::sig::PixelRgb blue(0,0,255);
-    for( int i = 0; i < blobsXY.size(); i++)
-        yarp::sig::draw::addCircle(outYarpImg,blue,blobsXY[i].x,blobsXY[i].y,3);
-    outImageProcessed=outYarpImg;
-
-    //return outYarpImg; crea conflicto con return; de funciones travis
-
-    // Take advantage we have the travis object and get features for text output
-    yarp::os::Bottle output;
-
-    outputProcessed=output;
-    //pOutPort->write(output);
-
-    cvReleaseImage( &inIplImage );  // release the memory for the image
-    outCvMat.release();  // cvReleaseImage( &outIplImage );  // release the memory for the image
-
 
     return true;
 }
