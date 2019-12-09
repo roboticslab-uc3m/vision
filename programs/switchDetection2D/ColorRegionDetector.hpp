@@ -34,11 +34,8 @@ public:
         arc(-1), radius(-1)
     {
         std::printf("\t--algorithm (redMinusBlue,greenMinusRed...; default: \"%s\")\n",algorithm.c_str());
-        std::printf("\t--locate(centroid,bottom; default: \"%s\")\n",locate.c_str());
         std::printf("\t--morphClosing (percentage, 2 or 4 okay; default: \"%f\")\n",morphClosing);
         std::printf("\t--maxNumBlobs (default: \"%d\")\n",maxNumBlobs);
-        std::printf("\t--outFeatures (default: \"(%s)\")\n",outFeatures.toString().c_str());
-        std::printf("\t--outFeaturesFormat (0=bottled,1=minimal; default: \"%d\")\n",outFeaturesFormat);
         std::printf("\t--outImage (0=rgb,1=bw; default: \"%d\")\n",outImage);
         std::printf("\t--seeBounding (0=none,1=contour,2=box,3=both; default: \"%d\")\n",seeBounding);
         std::printf("\t--threshold (default: \"%d\")\n",threshold);
@@ -55,10 +52,7 @@ private:
         value_stddev, locX, locY, rectangularity, axisFirst, axisSecond,
         aspectRatio, solidity, massCenterlocX, massCenterlocY, arc, radius;
     double morphClosing;
-    std::string locate;
     int maxNumBlobs;
-    yarp::os::Bottle outFeatures;
-    int outFeaturesFormat;
     int outImage;
     int seeBounding;
     int threshold;

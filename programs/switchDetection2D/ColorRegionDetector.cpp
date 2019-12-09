@@ -61,8 +61,8 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
     }
 
     printf("DetectorThread using outImage: %d, seeBounding: %d, threshold: %d.\n", outImage, seeBounding, threshold);
-    printf("DetectorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
-            algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);
+    printf("DetectorThread using algorithm: %s, morphClosing: %f.\n",
+            algorithm.c_str(),morphClosing);
 
     valid = true;
 }
