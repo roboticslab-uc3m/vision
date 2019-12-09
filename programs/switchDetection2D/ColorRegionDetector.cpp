@@ -39,13 +39,6 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
         morphClosing = parameters->find("morphClosing").asFloat64();
     }
 
-    outFeaturesFormat = DEFAULT_OUT_FEATURES_FORMAT;
-    if(parameters->check("outFeaturesFormat"))
-    {
-        CD_INFO("**** \"outFeaturesFormat\" parameter for ColorRegionDetectionTransformation found\n");
-        outFeaturesFormat = parameters->find("outFeaturesFormat").asInt32();
-    }
-
     outImage = DEFAULT_OUT_IMAGE;
     if(parameters->check("outImage"))
     {
