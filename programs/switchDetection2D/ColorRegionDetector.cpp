@@ -26,13 +26,6 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
     }
     CD_DEBUG("ColorRegionDetector using algorithm: %s.\n", algorithm.c_str());
 
-    maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
-    if(parameters->check("maxNumBlobs"))
-    {
-        CD_INFO("**** \"maxNumBlobs\" parameter for ColorRegionDetectionTransformation found\n");
-        maxNumBlobs = parameters->find("maxNumBlobs").asInt32();
-    }
-
     morphClosing = DEFAULT_MORPH_CLOSING;
     if(parameters->check("morphClosing"))
     {
@@ -48,6 +41,13 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
         threshold = parameters->find("threshold").asInt32();
     }
     CD_DEBUG("ColorRegionDetector using threshold: %d.\n", threshold);
+
+    maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
+    if(parameters->check("maxNumBlobs"))
+    {
+        CD_INFO("**** \"maxNumBlobs\" parameter for ColorRegionDetectionTransformation found\n");
+        maxNumBlobs = parameters->find("maxNumBlobs").asInt32();
+    }
 
     valid = true;
 }
