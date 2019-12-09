@@ -68,13 +68,19 @@ bool Travis::setBinCvMat(const cv::Mat& image)
 
 /************************************************************************/
 
-bool Travis::binarize(const char* algorithm) {
-    if (!_quiet) printf("[Travis] in: binarize(%s)\n",algorithm);
-    if (strcmp(algorithm,"canny")==0) {
+bool Travis::binarize(const char* algorithm)
+{
+    if (!_quiet)
+        printf("[Travis] in: binarize(%s)\n",algorithm);
+
+    if (strcmp(algorithm,"canny")==0)
+    {
         if (!_quiet) printf("[Travis] in: binarize(canny)\n");
         cvtColor(_img,_imgBin,CV_BGR2GRAY);
         Canny(_imgBin,_imgBin, 30,40);
-    } else {
+    }
+    else
+    {
         fprintf(stderr,"[Travis] error: Unrecognized algorithm with 0 args: %s.\n",algorithm);
         return false;
     }
@@ -89,44 +95,64 @@ bool Travis::binarize(const char* algorithm) {
 
 /************************************************************************/
 
-bool Travis::binarize(const char* algorithm, const double& threshold) {
-    if (strcmp(algorithm,"redMinusGreen")==0) {
-        if (!_quiet) printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
+bool Travis::binarize(const char* algorithm, const double& threshold)
+{
+    if (strcmp(algorithm,"redMinusGreen")==0)
+    {
+        if (!_quiet)
+            printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
         cv::Mat bgrChannels[3];
         cv::split(_img, bgrChannels);
         cv::subtract(bgrChannels[2], bgrChannels[1], _imgBin);  // BGR
         cv::threshold(_imgBin, _imgBin, threshold, 255, cv::THRESH_BINARY);
-    } else if (strcmp(algorithm,"redMinusBlue")==0) {
-        if (!_quiet) printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
+    }
+    else if (strcmp(algorithm,"redMinusBlue")==0)
+    {
+        if (!_quiet)
+            printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
         cv::Mat bgrChannels[3];
         cv::split(_img, bgrChannels);
         cv::subtract(bgrChannels[2], bgrChannels[0], _imgBin);  // BGR
         cv::threshold(_imgBin, _imgBin, threshold, 255, cv::THRESH_BINARY);
-    } else if (strcmp(algorithm,"greenMinusRed")==0) {
-        if (!_quiet) printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
+    }
+    else if (strcmp(algorithm,"greenMinusRed")==0)
+    {
+        if (!_quiet)
+            printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
         cv::Mat bgrChannels[3];
         cv::split(_img, bgrChannels);
         cv::subtract(bgrChannels[1], bgrChannels[2], _imgBin);  // BGR
         cv::threshold(_imgBin, _imgBin, threshold, 255, cv::THRESH_BINARY);
-    } else if (strcmp(algorithm,"greenMinusBlue")==0) {
-        if (!_quiet) printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
+    }
+    else if (strcmp(algorithm,"greenMinusBlue")==0)
+    {
+        if (!_quiet)
+            printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
         cv::Mat bgrChannels[3];
         cv::split(_img, bgrChannels);
         cv::subtract(bgrChannels[1], bgrChannels[0], _imgBin);  // BGR
         cv::threshold(_imgBin, _imgBin, threshold, 255, cv::THRESH_BINARY);
-    } else if (strcmp(algorithm,"blueMinusRed")==0) {
-        if (!_quiet) printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
+    }
+    else if (strcmp(algorithm,"blueMinusRed")==0)
+    {
+        if (!_quiet)
+            printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
         cv::Mat bgrChannels[3];
         cv::split(_img, bgrChannels);
         cv::subtract(bgrChannels[0], bgrChannels[2], _imgBin);  // BGR
         cv::threshold(_imgBin, _imgBin, threshold, 255, cv::THRESH_BINARY);
-    } else if (strcmp(algorithm,"blueMinusGreen")==0) {
-        if (!_quiet) printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
+    }
+    else if (strcmp(algorithm,"blueMinusGreen")==0)
+    {
+        if (!_quiet)
+            printf("[Travis] in: binarize(%s, %f)\n",algorithm,threshold);
         cv::Mat bgrChannels[3];
         cv::split(_img, bgrChannels);
         cv::subtract(bgrChannels[0], bgrChannels[1], _imgBin);  // BGR
         cv::threshold(_imgBin, _imgBin, threshold, 255, cv::THRESH_BINARY);
-    } else {
+    }
+    else
+    {
         fprintf(stderr,"[Travis] error: Unrecognized algorithm with 1 arg: %s.\n",algorithm);
         return false;
     }
@@ -136,14 +162,19 @@ bool Travis::binarize(const char* algorithm, const double& threshold) {
     outChannels[1] = _imgBin;
     outChannels[2] = _imgBin;
     cv::merge(outChannels, 3, _imgBin3);
+
     return true;
 }
 
 /************************************************************************/
 
-bool Travis::binarize(const char* algorithm, const double& min, const double& max) {
-    if (strcmp(algorithm,"hue")==0) {
-        if (!_quiet) printf("[Travis] in: binarize(%s, %f, %f)\n",algorithm,min,max);
+bool Travis::binarize(const char* algorithm, const double& min, const double& max)
+{
+    if (strcmp(algorithm,"hue")==0)
+    {
+        if (!_quiet)
+            printf("[Travis] in: binarize(%s, %f, %f)\n",algorithm,min,max);
+
         cv::Mat hsvChannels[3];
         split( _imgHsv, hsvChannels );
         cv::threshold(hsvChannels[0], hsvChannels[0], max, 255, cv::THRESH_TOZERO_INV);
@@ -155,8 +186,9 @@ bool Travis::binarize(const char* algorithm, const double& min, const double& ma
         cv::threshold(hsvChannels[2], hsvChannels[2], 120, 255, CV_THRESH_BINARY);
         cv::bitwise_and(hsvChannels[2],_imgBin,_imgBin);
         // end: extra V filter
-        
-    } else {
+    }
+    else
+    {
         fprintf(stderr,"[Travis] error: Unrecognized algorithm with 2 args: %s.\n",algorithm);
         return false;
     }
@@ -166,36 +198,46 @@ bool Travis::binarize(const char* algorithm, const double& min, const double& ma
     outChannels[1] = _imgBin;
     outChannels[2] = _imgBin;
     cv::merge(outChannels, 3, _imgBin3);
+
     return true;
 }
 
 /************************************************************************/
 
-void Travis::morphClosing(const int& closure) {
-    if (!_quiet) printf("[Travis] in: morphClosing(%d)\n", closure);
+void Travis::morphClosing(const int& closure)
+{
+    if (!_quiet)
+        printf("[Travis] in: morphClosing(%d)\n", closure);
+
     dilate(_imgBin, _imgBin, cv::Mat(), cv::Point(-1,-1), closure);
     erode(_imgBin, _imgBin, cv::Mat(), cv::Point(-1,-1), closure);
 }
 
 /************************************************************************/
 
-void Travis::morphOpening(const int& opening) {
-    if (!_quiet) printf("[Travis] in: morphOpening(%d)\n", opening);
+void Travis::morphOpening(const int& opening)
+{
+    if (!_quiet)
+        printf("[Travis] in: morphOpening(%d)\n", opening);
+
     erode(_imgBin, _imgBin, cv::Mat(), cv::Point(-1,-1), opening);
     dilate(_imgBin, _imgBin, cv::Mat(), cv::Point(-1,-1), opening);
 }
 
 /************************************************************************/
 
-int Travis::blobize(const int& maxNumBlobs) {
-    if (!_quiet) printf("[Travis] in: blobize(%d)\n", maxNumBlobs);
+int Travis::blobize(const int& maxNumBlobs)
+{
+    if (!_quiet)
+        printf("[Travis] in: blobize(%d)\n", maxNumBlobs);
 
     // [thanks getBiggestContour from smorante] note: here jgvictores decides to avoid Canny
     //findContours( _imgBin, _contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
     findContours( _imgBin, _contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
     //findContours( _imgBin, _contours, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 
-    if (!_quiet) printf("[Travis] # of found contours: %zd.\n", _contours.size());
+    if (!_quiet)
+        printf("[Travis] # of found contours: %zd.\n", _contours.size());
     
     // [thanks http://stackoverflow.com/questions/13495207/opencv-c-sorting-contours-by-their-contourarea]
     // default to sort by size (to keep the biggest, xD)
@@ -210,15 +252,20 @@ int Travis::blobize(const int& maxNumBlobs) {
 
 /************************************************************************/
 
-void Travis::pushContour(const std::vector <cv::Point>& contour) {
-    if (!_quiet) printf("[Travis] in: pushContour()\n");
+void Travis::pushContour(const std::vector <cv::Point>& contour)
+{
+    if (!_quiet)
+        printf("[Travis] in: pushContour()\n");
+
     _contours.push_back( contour );
 
 }
 
 /************************************************************************/
+
 bool Travis::getBlobsXY(std::vector <cv::Point2d>& locations) {
-    if (!_quiet) printf("[Travis] in: getBlobsXY(...)\n");
+    if (!_quiet)
+        printf("[Travis] in: getBlobsXY(...)\n");
 
     // we have the number of actual blobs in _contours.size()
 
@@ -230,12 +277,14 @@ bool Travis::getBlobsXY(std::vector <cv::Point2d>& locations) {
 
     // [thanks http://areshopencv.blogspot.com.es/2011/09/finding-center-of-gravity-in-opencv.html]
     std::vector<cv::Moments> mu( _contours.size() );
-
-    for( int i = 0; i < _contours.size(); i++ ) {
+    for( int i = 0; i < _contours.size(); i++ )
+    {
         mu[i] = moments( cv::Mat(_contours[i]), false );
     }
+
     std::vector<cv::Point2d> mc( _contours.size() );
-    for( int i = 0; i < _contours.size(); i++ ) {
+    for( int i = 0; i < _contours.size(); i++ )
+    {
         mc[i] = cv::Point2d( mu[i].m10/mu[i].m00 , mu[i].m01/mu[i].m00 );
         if( mc[i].x != mc[i].x )
             return false;
@@ -248,31 +297,42 @@ bool Travis::getBlobsXY(std::vector <cv::Point2d>& locations) {
 }
 
 /************************************************************************/
-bool Travis::getBlobsArea(std::vector <double>& areas) {
-    if (!_quiet) printf("[Travis] in: getBlobsArea(...)\n");
 
-    for( int i = 0; i < _contours.size(); i++ ) {
+bool Travis::getBlobsArea(std::vector<double>& areas)
+{
+    if (!_quiet)
+        printf("[Travis] in: getBlobsArea(...)\n");
+
+    for( int i = 0; i < _contours.size(); i++ )
+    {
         areas.push_back( fabs(contourArea(cv::Mat(_contours[i]))) );
     }
     return true;
 }
 
 /************************************************************************/
-bool Travis::getBlobsPerimeter(std::vector <double>& perimeters) {
-    if (!_quiet) printf("[Travis] in: getBlobsPerimeter(...)\n");
 
-    for( int i = 0; i < _contours.size(); i++ ) {
+bool Travis::getBlobsPerimeter(std::vector<double>& perimeters)
+{
+    if (!_quiet)
+        printf("[Travis] in: getBlobsPerimeter(...)\n");
+
+    for( int i = 0; i < _contours.size(); i++ )
+    {
         perimeters.push_back( arcLength(_contours[i],true) );
     }
     return true;
 }
 
 /************************************************************************/
-bool Travis::getBlobsSolidity(std::vector <double>& solidities) {
-    if (!_quiet) printf("[Travis] in: getBlobsSolidity(...)\n");
 
-    for( int i = 0; i < _contours.size(); i++ ) {
+bool Travis::getBlobsSolidity(std::vector<double>& solidities)
+{
+    if (!_quiet)
+        printf("[Travis] in: getBlobsSolidity(...)\n");
 
+    for( int i = 0; i < _contours.size(); i++ )
+    {
         double areaCont = contourArea(_contours[i]);
 
         std::vector <cv::Point> biggestCH;
@@ -285,14 +345,17 @@ bool Travis::getBlobsSolidity(std::vector <double>& solidities) {
 }
 
 /************************************************************************/
-bool Travis::getBlobsAngle(const int& method, std::vector <double>& angles) {
+
+bool Travis::getBlobsAngle(const int& method, std::vector<double>& angles) {
     if (!_quiet) printf("[Travis] in: getBlobsAngle(%d,...)\n", method);
 
-    for( int i = 0; i < _contours.size(); i++ ) {
+    for( int i = 0; i < _contours.size(); i++ )
+    {
         //Rect sqCont = boundingRect( Mat(_contours[i]) );
         //RotatedRect sqCont = boundingRect( Mat(_contours[i]) );
         
-        if (method == 0) {  // box
+        if (method == 0) // box
+        {
             // [thanks http://felix.abecassis.me/2011/10/opencv-bounding-box-skew-angle/]
             _minRotatedRects.push_back( minAreaRect( cv::Mat(_contours[i]) ) );
             /*double angle = minRotatedRect.angle;
@@ -300,9 +363,12 @@ bool Travis::getBlobsAngle(const int& method, std::vector <double>& angles) {
             angles.push_back( angle );*/
             //j//angles.push_back( _minRotatedRects[_minRotatedRects.size()-1].angle+90.0 );
 
-        } else if (method == 1) {  // ellipse
+        }
+        else if (method == 1) // ellipse
+        {
         // hopefully people will see this return false as a warning and treat before error.
-            if (_contours[i].size() < 5) {
+            if (_contours[i].size() < 5)
+            {
                 fprintf(stderr,"[Travis] error: returning false as ellipse would break with < 5 points.\n");
                 return false;  // else fitEllipse would cause break exit.
             }
@@ -325,9 +391,13 @@ bool Travis::getBlobsAngle(const int& method, std::vector <double>& angles) {
 }
 
 /************************************************************************/
-bool Travis::getBlobsAspectRatio(std::vector <double>& aspectRatios, std::vector <double>& axisFirsts, std::vector <double>& axisSeconds) {
-    if (!_quiet) printf("[Travis] in: getBlobsAspectRatio(...)\n");
-    for( int i = 0; i < _minRotatedRects.size(); i++ ) {
+bool Travis::getBlobsAspectRatio(std::vector<double>& aspectRatios, std::vector<double>& axisFirsts, std::vector<double>& axisSeconds)
+{
+    if (!_quiet)
+        printf("[Travis] in: getBlobsAspectRatio(...)\n");
+
+    for( int i = 0; i < _minRotatedRects.size(); i++ )
+    {
         cv::Point2f vertices[4];
         _minRotatedRects[i].points(vertices);
         double length = cv::norm(vertices[1] - vertices[0]);
@@ -340,10 +410,13 @@ bool Travis::getBlobsAspectRatio(std::vector <double>& aspectRatios, std::vector
 }
 
 /************************************************************************/
-bool Travis::getBlobsRectangularity(std::vector <double>& rectangularities) {
-    if (!_quiet) printf("[Travis] in: getBlobsRectangularity(...)\n");
-    for( int i = 0; i < _minRotatedRects.size(); i++ ) {
+bool Travis::getBlobsRectangularity(std::vector<double>& rectangularities)
+{
+    if (!_quiet)
+        printf("[Travis] in: getBlobsRectangularity(...)\n");
 
+    for( int i = 0; i < _minRotatedRects.size(); i++ )
+    {
         double areaObj = contourArea(_contours[i]);
 
         //double areaRect = _minRotatedRects[i].area();  // does not exist
@@ -359,14 +432,17 @@ bool Travis::getBlobsRectangularity(std::vector <double>& rectangularities) {
 }
 
 /************************************************************************/
-bool Travis::getBlobsHSV(std::vector <double>& hues, std::vector <double>& vals, std::vector <double>& sats,
-        std::vector <double>& hueStdDevs, std::vector <double>& valStdDevs, std::vector <double>& satStdDevs) {
-    if (!_quiet) printf("[Travis] in: getBlobsHSV(...)\n");
+bool Travis::getBlobsHSV(std::vector<double>& hues, std::vector<double>& vals, std::vector<double>& sats,
+                         std::vector<double>& hueStdDevs, std::vector<double>& valStdDevs, std::vector<double>& satStdDevs)
+{
+    if (!_quiet)
+        printf("[Travis] in: getBlobsHSV(...)\n");
+
     cv::Mat hsvChannels[3];
     split( _imgHsv, hsvChannels );
     
-    for( int i = 0; i < _contours.size(); i++ ) {
-
+    for( int i = 0; i < _contours.size(); i++ )
+    {
         // \begin{mask}
         std::vector <cv::Point> biggestCH;
         convexHull(_contours[i],biggestCH);
@@ -396,7 +472,6 @@ bool Travis::getBlobsHSV(std::vector <double>& hues, std::vector <double>& vals,
         // \begin{mask}
         mask.release();
         // \end{mask}
-
     }
 
     return true;
@@ -404,12 +479,16 @@ bool Travis::getBlobsHSV(std::vector <double>& hues, std::vector <double>& vals,
 
 /************************************************************************/
 
-cv::Mat& Travis::getCvMat(const int& image, const int& vizualization) {
-    if (!_quiet) printf("[Travis] in: getCvMat(%d,%d)\n",image,vizualization);
+cv::Mat& Travis::getCvMat(const int& image, const int& vizualization)
+{
+    if (!_quiet)
+        printf("[Travis] in: getCvMat(%d,%d)\n",image,vizualization);
 
-    if (( vizualization == 2 )||( vizualization == 3 )) {  // Contour
+    if (( vizualization == 2 )||( vizualization == 3 )) // Contour
+    {
         cv::RNG rng(12345);
-        for( int i = 0; i < _contours.size(); i++ ) {
+        for( int i = 0; i < _contours.size(); i++ )
+        {
             cv::Scalar color = cv::Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
             if ( image == 1 )
                 cv::drawContours( _imgBin3, _contours, i, color, 1, 8, CV_RETR_LIST, 0, cv::Point() );
@@ -418,8 +497,10 @@ cv::Mat& Travis::getCvMat(const int& image, const int& vizualization) {
         }
     }
 
-    if (( vizualization == 1 )||( vizualization == 3 )) {  // Box, computed in getBlobsAngle
-        for(int i=0;i<_minRotatedRects.size();i++) {
+    if (( vizualization == 1 )||( vizualization == 3 )) // Box, computed in getBlobsAngle
+    {
+        for(int i=0;i<_minRotatedRects.size();i++)
+        {
             cv::Point2f vertices[4];
             _minRotatedRects[i].points(vertices);
             if ( image == 1 )
@@ -439,7 +520,8 @@ cv::Mat& Travis::getCvMat(const int& image, const int& vizualization) {
 
 /************************************************************************/
 
-void Travis::release() {
+void Travis::release()
+{
     _img.release();
     _imgHsv.release();
     _imgBin3.release();
@@ -451,7 +533,8 @@ void Travis::release() {
 /************************************************************************/
 
 // comparison function object
-bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 ) {
+bool compareContourAreas (std::vector<cv::Point> contour1, std::vector<cv::Point> contour2)
+{
     double i = fabs( contourArea(cv::Mat(contour1)) );
     double j = fabs( contourArea(cv::Mat(contour2)) );
     return ( i > j );
@@ -459,7 +542,8 @@ bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Poin
 
 /************************************************************************/
 
-bool travisCrop(const int x, const int y, const int width, const int height, cv::Mat& img) {
+bool travisCrop(const int x, const int y, const int width, const int height, cv::Mat& img)
+{
     printf("[Travis] in: travisCrop(%d,%d,%d,%d)\n",x,y,width,height);
     // Thanks: http://stackoverflow.com/questions/8267191/how-to-crop-a-cvmat-in-opencv
  
@@ -471,11 +555,12 @@ bool travisCrop(const int x, const int y, const int width, const int height, cv:
 
 /************************************************************************/
 
-std::vector <cv::Point> getBiggestContour(const cv::Mat image){
+std::vector<cv::Point> getBiggestContour(const cv::Mat image)
+{
     //variables
     cv::Mat grayImg, cannyImg;
-    std::vector < std::vector <cv::Point> > contours;
-    std::vector < std::vector <cv::Point> > biggest;
+    std::vector<std::vector<cv::Point> > contours;
+    std::vector<std::vector<cv::Point> > biggest;
 
     //converting to grayscale
     cvtColor(image,grayImg,CV_BGR2GRAY);
@@ -491,19 +576,21 @@ std::vector <cv::Point> getBiggestContour(const cv::Mat image){
     int maxSize=0;
     int indexCont=0;
 
-    for(int i=0 ; i< contours.size() ; i++){
-            if(contours[i].size() > maxSize){
-                maxSize=contours[i].size();
-                indexCont=i;
-                }
-     }
+    for(int i=0 ; i< contours.size() ; i++)
+    {
+        if(contours[i].size() > maxSize)
+        {
+            maxSize=contours[i].size();
+            indexCont=i;
+        }
+    }
 
     biggest.push_back(contours[indexCont]);
     return biggest[0];
 }
 
-void calcLocationXY(float& locX, float& locY, const std::vector <cv::Point> biggestCont){
-
+void calcLocationXY(float& locX, float& locY, const std::vector<cv::Point> biggestCont)
+{
     cv::RotatedRect minEllipse;
 
     //fitting ellipse around contour
@@ -512,13 +599,12 @@ void calcLocationXY(float& locX, float& locY, const std::vector <cv::Point> bigg
     //getting the center
     locX = minEllipse.center.x;
     locY = minEllipse.center.y;
-
 }
 
-void calcMask(cv::Mat& mask, const std::vector <cv::Point> biggestCont){
-
-    std::vector < std::vector <cv::Point> > listCont;
-    std::vector <cv::Point> biggestCH;
+void calcMask(cv::Mat& mask, const std::vector<cv::Point> biggestCont)
+{
+    std::vector<std::vector<cv::Point> > listCont;
+    std::vector<cv::Point> biggestCH;
 
     //doing convexhull
     convexHull(biggestCont,biggestCH);
@@ -528,13 +614,14 @@ void calcMask(cv::Mat& mask, const std::vector <cv::Point> biggestCont){
     drawContours(mask, listCont,-1, cv::Scalar(255),CV_FILLED);
 }
 
-void calcArea(float& area, const std::vector <cv::Point> biggestCont){
-
+void calcArea(float& area, const std::vector<cv::Point> biggestCont)
+{
     //setting area
     area = contourArea(biggestCont);
 }
 
-void calcRectangularity(float& rectangularity, const std::vector <cv::Point> biggestCont){
+void calcRectangularity(float& rectangularity, const std::vector<cv::Point> biggestCont)
+{
     //RotatedRect minEllipse;
     float areaObj;
     float areaRect;
@@ -548,10 +635,10 @@ void calcRectangularity(float& rectangularity, const std::vector <cv::Point> big
 
     //setting parameter
     rectangularity = areaObj/areaRect  - (M_PI/4.0);  // subtract the ideal circ/square rel. 
-
 }
 
-void calcAngle(float& angle, const std::vector <cv::Point> biggestCont){
+void calcAngle(float& angle, const std::vector<cv::Point> biggestCont)
+{
     cv::RotatedRect minRect = minAreaRect( cv::Mat(biggestCont));
 
     cv::Point2f vertices[4];
@@ -562,11 +649,10 @@ void calcAngle(float& angle, const std::vector <cv::Point> biggestCont){
         angle = - atan2( p_0_3.y , p_0_3.x )*180.0/M_PI ;
     else
         angle = - atan2( p_0_1.y , p_0_1.x )*180.0/M_PI ;
-
 }
 
-void calcMassCenter(float& massCenterLocX, float& massCenterLocY , const std::vector <cv::Point> biggestCont){
-
+void calcMassCenter(float& massCenterLocX, float& massCenterLocY, const std::vector<cv::Point> biggestCont)
+{
     cv::Moments mu;
     cv::Point2f mc;
 
@@ -580,8 +666,8 @@ void calcMassCenter(float& massCenterLocX, float& massCenterLocY , const std::ve
     massCenterLocY = mc.y;
 }
 
-void calcAspectRatio(float& aspectRatio, float& axisFirst, float& axisSecond ,const std::vector <cv::Point> biggestCont){
-
+void calcAspectRatio(float& aspectRatio, float& axisFirst, float& axisSecond, const std::vector<cv::Point> biggestCont)
+{
     cv::RotatedRect minEllipse;
     cv::Point2f vertices[4];
 
@@ -600,9 +686,9 @@ void calcAspectRatio(float& aspectRatio, float& axisFirst, float& axisSecond ,co
 }
 
 
-void calcSolidity(float& solidity, const std::vector <cv::Point> biggestCont){
-
-    std::vector <cv::Point> biggestCH;
+void calcSolidity(float& solidity, const std::vector<cv::Point> biggestCont)
+{
+    std::vector<cv::Point> biggestCH;
     float areaCont;
     float areaCH;
 
@@ -612,44 +698,41 @@ void calcSolidity(float& solidity, const std::vector <cv::Point> biggestCont){
     areaCont= contourArea(biggestCont);
     areaCH = contourArea(biggestCH);
     solidity= areaCont/areaCH;
-
 }
 
 void calcHSVMeanStdDev(const cv::Mat image, const cv::Mat mask, float& hue_mean, float& hue_stddev,
                        float& saturation_mean, float& saturation_stddev,
-                       float& value_mean, float& value_stddev){
-
+                       float& value_mean, float& value_stddev)
+{
     cv::Mat hsvImage;
     cvtColor(image, hsvImage, CV_BGR2HSV);
 
     // Separate the image in 3 places ( H - S - V )
-     std::vector<cv::Mat> hsv_planes;
-     split( hsvImage, hsv_planes );
+    std::vector<cv::Mat> hsv_planes;
+    split( hsvImage, hsv_planes );
 
-   // calculating mean and stddev
-     cv::Scalar h_mean, h_stddev;
-     cv::meanStdDev(hsv_planes[0], h_mean, h_stddev,mask);
+    // calculating mean and stddev
+    cv::Scalar h_mean, h_stddev;
+    cv::meanStdDev(hsv_planes[0], h_mean, h_stddev,mask);
 
-     cv::Scalar s_mean, s_stddev;
-     cv::meanStdDev(hsv_planes[1], s_mean, s_stddev, mask);
+    cv::Scalar s_mean, s_stddev;
+    cv::meanStdDev(hsv_planes[1], s_mean, s_stddev, mask);
 
-     cv::Scalar v_mean, v_stddev;
-     cv::meanStdDev(hsv_planes[2], v_mean, v_stddev, mask);
+    cv::Scalar v_mean, v_stddev;
+    cv::meanStdDev(hsv_planes[2], v_mean, v_stddev, mask);
 
-     //setting values
-     hue_mean = h_mean[0];
-     hue_stddev = h_stddev[0];
-     saturation_mean = s_mean[0];
-     saturation_stddev = s_stddev[0];
-     value_mean = v_mean[0];
-     value_stddev = v_stddev[0];
-
+    //setting values
+    hue_mean = h_mean[0];
+    hue_stddev = h_stddev[0];
+    saturation_mean = s_mean[0];
+    saturation_stddev = s_stddev[0];
+    value_mean = v_mean[0];
+    value_stddev = v_stddev[0];
 }
 
-
 void calcHSVPeakColor(const cv::Mat image, const cv::Mat mask, float& hue_mode, float& hue_peak,
-                       float& value_mode, float& value_peak) {
-
+                      float& value_mode, float& value_peak)
+{
     cv::Mat hsvImage;
     cvtColor(image, hsvImage, CV_BGR2HSV);
 
@@ -685,8 +768,10 @@ void calcHSVPeakColor(const cv::Mat image, const cv::Mat mask, float& hue_mode, 
     float h_mode= 0;
     int h_maxPixels = 0;
 
-    for(int i=0; i< h_bins; i++){
-        if(h_hist.at<float>(i) > h_maxPixels){
+    for(int i=0; i< h_bins; i++)
+    {
+        if(h_hist.at<float>(i) > h_maxPixels)
+        {
             h_mode=i;
             h_maxPixels=h_hist.at<float>(i);
         }
@@ -694,8 +779,10 @@ void calcHSVPeakColor(const cv::Mat image, const cv::Mat mask, float& hue_mode, 
 
     float h_peak= 0;
 
-    for(int i=h_bins; i>0; i--){
-        if((int)h_hist.at<float>(i) > 0){
+    for(int i=h_bins; i>0; i--)
+    {
+        if((int)h_hist.at<float>(i) > 0)
+        {
             //cout << (int)h_hist.at<float>(i);
             h_peak=i;
             break;
@@ -705,8 +792,10 @@ void calcHSVPeakColor(const cv::Mat image, const cv::Mat mask, float& hue_mode, 
 //    float s_peak= 0;
 //    int s_maxPixels = 0;
 
-//    for(int i=0; i< s_bins; i++){
-//        if(s_hist.at<float>(i) > s_maxPixels){
+//    for(int i=0; i< s_bins; i++)
+//    {
+//        if(s_hist.at<float>(i) > s_maxPixels)
+//        {
 //            s_peak=i;
 //            s_maxPixels=s_hist.at<float>(i);
 //        }
@@ -715,8 +804,10 @@ void calcHSVPeakColor(const cv::Mat image, const cv::Mat mask, float& hue_mode, 
     float v_mode= 0;
     int v_maxPixels = 0;
 
-    for(int i=0; i< v_bins; i++){
-        if(v_hist.at<float>(i) > v_maxPixels){
+    for(int i=0; i< v_bins; i++)
+    {
+        if(v_hist.at<float>(i) > v_maxPixels)
+        {
             v_mode=i;
             v_maxPixels=v_hist.at<float>(i);
         }
@@ -740,22 +831,21 @@ void calcHSVPeakColor(const cv::Mat image, const cv::Mat mask, float& hue_mode, 
     value_peak=v_peak;
 }
 
-void calcMoments(cv::Mat& theHuMoments, const std::vector <cv::Point> biggestCont ){
-
+void calcMoments(cv::Mat& theHuMoments, const std::vector<cv::Point> biggestCont)
+{
     cv::Moments mu;
     mu = cv::moments(biggestCont);
     HuMoments(mu,theHuMoments);
-
 }
 
-void calcArcLength(float& arc, const std::vector <cv::Point> biggestCont ){
-
+void calcArcLength(float& arc, const std::vector<cv::Point> biggestCont)
+{
     cv::Mat tranf = cv::Mat(biggestCont);
     arc=arcLength(tranf,true);
 }
 
-void calcCircle(float& radius, const std::vector <cv::Point> biggestCont ){
-
+void calcCircle(float& radius, const std::vector<cv::Point> biggestCont)
+{
     cv::Point2f center;
     float rad=0;
     minEnclosingCircle(cv::Mat(biggestCont),center,rad);
