@@ -14,12 +14,6 @@
 
 #include "Detector.hpp"
 
-#define DEFAULT_ALGORITHM "blueMinusRed"
-#define DEFAULT_MORPH_CLOSING 2
-#define DEFAULT_THRESHOLD 55
-
-#define DEFAULT_MAX_NUM_BLOBS 1
-
 namespace roboticslab
 {
 
@@ -41,6 +35,11 @@ private:
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outImageProcessed;
     yarp::os::Bottle outputProcessed;
 
+    static const std::string DEFAULT_ALGORITHM;
+    static const double DEFAULT_MORPH_CLOSING;
+    static const double DEFAULT_THRESHOLD;
+
+    static const double DEFAULT_MAX_NUM_BLOBS;
 };
 
 }  // namespace roboticslab

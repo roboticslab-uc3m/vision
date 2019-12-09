@@ -15,6 +15,14 @@ namespace roboticslab
 
 /*****************************************************************/
 
+const std::string ColorRegionDetector::DEFAULT_ALGORITHM = "blueMinusRed";
+const double ColorRegionDetector::DEFAULT_MORPH_CLOSING = 2;
+const double ColorRegionDetector::DEFAULT_THRESHOLD = 55;
+
+const double ColorRegionDetector::DEFAULT_MAX_NUM_BLOBS = 1;
+
+/*****************************************************************/
+
 ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
 {
     algorithm = DEFAULT_ALGORITHM;
