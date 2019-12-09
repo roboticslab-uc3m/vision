@@ -14,14 +14,21 @@ namespace roboticslab
 
 /************************************************************************/
 
-bool Travis::setCvMat(const cv::Mat& image) {
-    if (!_quiet) printf("[Travis] in: setCvMat(...)\n");
-    if (!image.data) {
+bool Travis::setCvMat(const cv::Mat& image)
+{
+    if (!_quiet)
+        printf("[Travis] in: setCvMat(...)\n");
+
+    if (!image.data)
+    {
         fprintf(stderr,"[Travis] error: No image data.\n");
         return false;
     }
-    if (!_overwrite) _img = image.clone();  // safer
-    else _img = image;  // faster and less memory
+
+    if (!_overwrite)
+        _img = image.clone();  // safer
+    else
+        _img = image;  // faster and less memory
 
     cvtColor(_img, _imgHsv, CV_BGR2HSV);
 
@@ -30,14 +37,22 @@ bool Travis::setCvMat(const cv::Mat& image) {
 
 /************************************************************************/
 
-bool Travis::setBinCvMat(const cv::Mat& image) {
-    if (!_quiet) printf("[Travis] in: setBinCvMat(...)\n");
-    if (!image.data) {
+bool Travis::setBinCvMat(const cv::Mat& image)
+{
+    if (!_quiet)
+        printf("[Travis] in: setBinCvMat(...)\n");
+
+    if (!image.data)
+    {
         fprintf(stderr,"[Travis] error: No image data.\n");
         return false;
     }
-    if (!_overwrite) _imgBin = image.clone();  // safer
-    else _imgBin = image;  // faster and less memory
+
+    if (!_overwrite)
+        _imgBin = image.clone();  // safer
+
+    else
+        _imgBin = image;  // faster and less memory
 
     // the result is bin but we store bin3 so we can colorfully paint on it
     cv::Mat outChannels[3];
