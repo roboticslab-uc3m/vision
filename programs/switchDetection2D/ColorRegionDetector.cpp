@@ -67,15 +67,7 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
         seeBounding = parameters->find("seeBounding").asInt32();
     }
 
-    outFeatures.fromString(DEFAULT_OUT_FEATURES);  // it's a bottle!!
-    if(parameters->check("outFeatures"))
-    {
-        CD_INFO("**** \"outFeatures\" parameter for ColorRegionDetectionTransformation found\n");
-        outFeatures = *(parameters->find("outFeatures").asList());  // simple overrride
-    }
-
     printf("DetectorThread using outImage: %d, seeBounding: %d, threshold: %d.\n", outImage, seeBounding, threshold);
-    printf("DetectorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
     printf("DetectorThread using algorithm: %s, locate: %s, maxNumBlobs: %d, morphClosing: %f, outFeaturesFormat: %d.\n",
             algorithm.c_str(),locate.c_str(),maxNumBlobs,morphClosing,outFeaturesFormat);
 
