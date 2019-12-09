@@ -110,6 +110,8 @@ public:
      */
     bool getBlobsSolidity(std::vector<double>& solidities);
 
+    bool getBlobsRect(std::vector<cv::Rect>& rects);
+
     /**
      * This function calculates ALPHA, and _minRotatedRects as a side effect.
      * @param method 0=box, 1=ellipse.

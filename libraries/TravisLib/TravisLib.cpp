@@ -258,7 +258,6 @@ void Travis::pushContour(const std::vector <cv::Point>& contour)
         printf("[Travis] in: pushContour()\n");
 
     _contours.push_back( contour );
-
 }
 
 /************************************************************************/
@@ -346,8 +345,21 @@ bool Travis::getBlobsSolidity(std::vector<double>& solidities)
 
 /************************************************************************/
 
-bool Travis::getBlobsAngle(const int& method, std::vector<double>& angles) {
-    if (!_quiet) printf("[Travis] in: getBlobsAngle(%d,...)\n", method);
+bool Travis::getBlobsRect(std::vector<cv::Rect>& rects)
+{
+    for( int i = 0; i < _contours.size(); i++ )
+    {
+        //approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
+        //rects boundingRect( Mat(contours_poly[i]) );
+    }
+}
+
+/************************************************************************/
+
+bool Travis::getBlobsAngle(const int& method, std::vector<double>& angles)
+{
+    if (!_quiet)
+        printf("[Travis] in: getBlobsAngle(%d,...)\n", method);
 
     for( int i = 0; i < _contours.size(); i++ )
     {
