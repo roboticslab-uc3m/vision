@@ -149,19 +149,18 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
     if (!runStatus.ok())
     {
         CD_ERROR("Running model status: FAIL\n");
+        return false;
     }
 
     // Extract results
     tensorflow::TTypes<float>::Flat scores = outputs[1].flat<float>();
     tensorflow::TTypes<float>::Flat classes = outputs[2].flat<float>();
-    //tensorflow::TTypes<float>::Flat numDetections = outputs[3].flat<float>();
     tensorflow::TTypes<float, 3>::Tensor boxes = outputs[0].flat_outer_dims<float,3>();
 
     std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
     for (size_t i = 0; i < goodIdxs.size(); i++)
     {
         std::cout<<"Detection: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Score: "<<scores(goodIdxs.at(i))<<std::endl;
-
 
         double score_detection=scores(goodIdxs.at(i));
         std::string class_name=std::string(labelsMap[classes(goodIdxs.at(i))]);
@@ -175,7 +174,6 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
 
         drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
         cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
-
     }
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
