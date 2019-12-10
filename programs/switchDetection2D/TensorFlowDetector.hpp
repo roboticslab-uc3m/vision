@@ -53,10 +53,6 @@ private:
     std::unique_ptr<tensorflow::Session> session;
     std::map<int, std::string> labelsMap;
     std::vector<std::string> outputLayer;
-    time_t start, end;
-    int nFrames = 25;
-    int iFrame = 0;
-    double fps = 0.;
     double thresholdScore = 0.5;
     double thresholdIOU = 0.8;
 

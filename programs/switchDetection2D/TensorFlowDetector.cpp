@@ -111,7 +111,6 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters) : first
 
 void TensorFlowDetector::setTensorShape(tensorflow::int64 h, tensorflow::int64 w)
 {
-    time(&start);
     shape = tensorflow::TensorShape();
     shape.AddDim(1);
     shape.AddDim(h);
@@ -134,24 +133,13 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
     cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
     cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
 
-    std::cout << "Frame: " << iFrame << std::endl;
-
-    if (nFrames % (iFrame + 1) == 0)
-    {
-        time(&end);
-        fps = 1. * nFrames / difftime(end, start);
-        time(&start);
-    }
-    iFrame++;
-
     // Mat -> Tensor
     tensor = tensorflow::Tensor(tensorflow::DT_FLOAT, shape);
     tensorflow::Status readTensorStatus = readTensorFromMat(inCvMat, tensor);
     if (!readTensorStatus.ok())
     {
-        std::cout<<std::endl;
-        std::cout<<std::endl;
-        std::cout<<"Mat OpenCV -> Tensor : FAIL"<<std::endl;
+        CD_ERROR("Mat OpenCV -> Tensor : FAIL\n");
+        return false;
     }
 
     // Execute graph
@@ -159,22 +147,18 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
     tensorflow::Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
     if (!runStatus.ok())
     {
-        std::cout<<std::endl;
-        std::cout<<std::endl;
-        std::cout<<"Running model status: FAIL"<<std::endl;
+        CD_ERROR("Running model status: FAIL\n");
     }
 
     // Extract results
     tensorflow::TTypes<float>::Flat scores = outputs[1].flat<float>();
     tensorflow::TTypes<float>::Flat classes = outputs[2].flat<float>();
-    tensorflow::TTypes<float>::Flat numDetections = outputs[3].flat<float>();
+    //tensorflow::TTypes<float>::Flat numDetections = outputs[3].flat<float>();
     tensorflow::TTypes<float, 3>::Tensor boxes = outputs[0].flat_outer_dims<float,3>();
 
     std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
     for (size_t i = 0; i < goodIdxs.size(); i++)
     {
-        std::cout<<std::endl;
-        std::cout<<std::endl;
         std::cout<<"Detection: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Score: "<<scores(goodIdxs.at(i))<<std::endl;
 
 
@@ -188,9 +172,7 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
         bottle.addString(" Score: ");
         bottle.addDouble(score_detection);
 
-        std::cout<<std::endl;
         drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
-        cv::putText(inCvMat, std::to_string(fps).substr(0, 5), cv::Point(0, inCvMat.rows), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 255));
         cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
 
     }
