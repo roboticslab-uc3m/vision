@@ -3,7 +3,7 @@
 #ifndef __COLOR_REGION_DETECTOR_HPP__
 #define __COLOR_REGION_DETECTOR_HPP__
 
-#include <yarp/sig/Image.h>
+#include <yarp/os/Searchable.h>
 
 #include <ColorDebug.h>
 

@@ -1,31 +1,24 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
 #include <fstream>
-#include <math.h>
 #include <regex>
 
 #include <cv.hpp>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "tensorflow/cc/ops/const_op.h"
-#include "tensorflow/cc/ops/image_ops.h"
-#include "tensorflow/cc/ops/standard_ops.h"
-#include "tensorflow/core/framework/graph.pb.h"
-#include "tensorflow/core/framework/tensor.h"
-#include "tensorflow/core/graph/default_device.h"
-#include "tensorflow/core/graph/graph_def_builder.h"
-#include "tensorflow/core/lib/core/errors.h"
-#include "tensorflow/core/lib/core/stringpiece.h"
-#include "tensorflow/core/lib/core/threadpool.h"
-#include "tensorflow/core/lib/io/path.h"
-#include "tensorflow/core/lib/strings/stringprintf.h"
-#include "tensorflow/core/platform/env.h"
-#include "tensorflow/core/platform/init_main.h"
-#include "tensorflow/core/platform/logging.h"
-#include "tensorflow/core/platform/types.h"
-#include "tensorflow/core/public/session.h"
-#include "tensorflow/core/util/command_line_flags.h"
+#include <tensorflow/cc/ops/const_op.h>
+#include <tensorflow/cc/ops/image_ops.h>
+#include <tensorflow/cc/ops/standard_ops.h>
+#include <tensorflow/core/framework/graph.pb.h>
+#include <tensorflow/core/graph/default_device.h>
+#include <tensorflow/core/graph/graph_def_builder.h>
+#include <tensorflow/core/lib/core/threadpool.h>
+#include <tensorflow/core/lib/io/path.h>
+#include <tensorflow/core/lib/strings/stringprintf.h>
+#include <tensorflow/core/platform/init_main.h>
+#include <tensorflow/core/public/session.h>
+#include <tensorflow/core/util/command_line_flags.h>
 
 #include "TensorFlowDetectorHelper.hpp"
 
@@ -38,8 +31,7 @@ tensorflow::Status loadGraph(const tensorflow::string &graph_file_name, std::uni
     ReadBinaryProto(tensorflow::Env::Default(), graph_file_name, &graph_def);
     if (!load_graph_status.ok())
     {
-        return tensorflow::errors::NotFound("Fail loading graph: '",
-                                    graph_file_name, "'");
+        return tensorflow::errors::NotFound("Fail loading graph: '", graph_file_name, "'");
     }
     session->reset(tensorflow::NewSession(tensorflow::SessionOptions()));
     tensorflow::Status session_create_status = (*session)->Create(graph_def);
@@ -50,8 +42,6 @@ tensorflow::Status loadGraph(const tensorflow::string &graph_file_name, std::uni
     return tensorflow::Status::OK();
 }
 
-/************************************************************************/
-// Read labels
 /************************************************************************/
 
 tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::map<int, tensorflow::string> &labelsMap)
@@ -97,8 +87,6 @@ tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::ma
 }
 
 
-/************************************************************************/
-//  Mat OpenCV -> TensorFlow
 /************************************************************************/
 
 tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &outTensor)

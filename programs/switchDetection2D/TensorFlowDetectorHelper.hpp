@@ -5,8 +5,8 @@
 
 #include <opencv2/core/mat.hpp>
 
-#include "tensorflow/core/framework/tensor.h"
-#include "tensorflow/core/public/session.h"
+#include <tensorflow/core/framework/tensor.h>
+#include <tensorflow/core/public/session.h>
 
 tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::map<int, tensorflow::string> &labelsMap);
 
@@ -29,6 +29,5 @@ double IOU(cv::Rect box1, cv::Rect box2);
 std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
                                 tensorflow::TTypes<float, 3>::Tensor &boxes,
                                 double thresholdIOU, double thresholdScore);
-
 
 #endif // __TENSORFLOW_DETECTOR_HELPER_HPP__
