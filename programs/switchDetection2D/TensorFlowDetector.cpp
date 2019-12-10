@@ -87,21 +87,21 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters) : first
     loadGraphStatus = loadGraph(graphPath, &session);
     if (!loadGraphStatus.ok())
     {
-        CD_ERROR("Fail loading graph \"%s\"\n",graphPath);
+        CD_ERROR("Fail loading graph \"%s\"\n",graphPath.c_str());
         return;
     }
-    CD_SUCCESS("Graph \"%s\" loaded correctly\n",graphPath);
+    CD_SUCCESS("Graph \"%s\" loaded correctly\n",graphPath.c_str());
 
     // Load labels
     labelsMap = std::map<int,std::string>();
-    std::cout<<"Labels "<<trainedModelLabelsFullName<<" are going to be loaded."<<std::endl;
+    CD_INFO("Labels \"%s\" are going to be loaded.\n",trainedModelLabelsFullName.c_str());
     readLabelsMapStatus = readLabelsMapFile(trainedModelLabelsFullName, labelsMap);
     if (!readLabelsMapStatus.ok())
     {
-        CD_ERROR("Fail loading labels \"%s\".\n",trainedModelLabelsFullName);
+        CD_ERROR("Fail loading labels \"%s\".\n",trainedModelLabelsFullName.c_str());
         return;
     }
-    CD_SUCCESS("Labels \"%s\" loaded correctly.\n",trainedModelLabelsFullName);
+    CD_SUCCESS("Labels \"%s\" loaded correctly.\n",trainedModelLabelsFullName.c_str());
     CD_SUCCESS("%d labels have been loaded.\n",labelsMap.size());;
 
     valid = true; // setTensorShape at firstArrived
