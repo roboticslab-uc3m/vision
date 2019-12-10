@@ -83,19 +83,16 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
 void TensorFlowDetector::configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg)
 {
     //yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImgShape = inputPort.read();
-
     //yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg=&inYarpImg;
-    yarp::os::Bottle output;
 
     std::string LABELS = trainedModelLabels;
-    std::string GRAPH = trainedModel;
 
     // Set  node names
     inputLayer = "image_tensor:0";
     outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
 
     // Load .pb frozen model
-    tensorflow::string graphPath = GRAPH;
+    tensorflow::string graphPath = trainedModel; // GRAPH
     loadGraphStatus = loadGraph(graphPath, &session);
     if (!loadGraphStatus.ok())
     {
@@ -107,14 +104,15 @@ void TensorFlowDetector::configuration(std::string trainedModel, std::string tra
 
     // Load labels
     labelsMap = std::map<int,std::string>();
-    std::cout<<"Labels "<<LABELS<<" are going to be loaded."<<std::endl;
-    readLabelsMapStatus = readLabelsMapFile(LABELS, labelsMap);
+    std::cout<<"Labels "<<trainedModelLabels<<" are going to be loaded."<<std::endl;
+    readLabelsMapStatus = readLabelsMapFile(trainedModelLabels, labelsMap);
     if (!readLabelsMapStatus.ok())
     {
-        std::cout<<"Fail loading labels "<<LABELS<<"."<<std::endl;
-    } else
+        std::cout<<"Fail loading labels "<<trainedModelLabels<<"."<<std::endl;
+    }
+    else
         std::cout<<"Labels "<<LABELS<<" loaded correctly."<<std::endl;
-        std::cout<<labelsMap.size()<<" labels have been loaded."<<std::endl;
+    std::cout<<labelsMap.size()<<" labels have been loaded."<<std::endl;
 
     time(&start);
     shape = tensorflow::TensorShape();
