@@ -85,8 +85,6 @@ void TensorFlowDetector::configuration(std::string trainedModel, std::string tra
     //yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImgShape = inputPort.read();
     //yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg=&inYarpImg;
 
-    std::string LABELS = trainedModelLabels;
-
     // Set  node names
     inputLayer = "image_tensor:0";
     outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
@@ -111,7 +109,7 @@ void TensorFlowDetector::configuration(std::string trainedModel, std::string tra
         std::cout<<"Fail loading labels "<<trainedModelLabels<<"."<<std::endl;
     }
     else
-        std::cout<<"Labels "<<LABELS<<" loaded correctly."<<std::endl;
+        std::cout<<"Labels "<<trainedModelLabels<<" loaded correctly."<<std::endl;
     std::cout<<labelsMap.size()<<" labels have been loaded."<<std::endl;
 
     time(&start);
