@@ -46,7 +46,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
     }
     CD_DEBUG("**** \"trainedModel\" parameter for TensorFlowDetector found: \"%s\"\n", trainedModel.c_str());
 
-    trainedModelLabels = DEFAULT_TRAINEDMODEL_LABELS;
+    std::string trainedModelLabels = DEFAULT_TRAINEDMODEL_LABELS;
     printf("\t--trainedModelLabels [file.pbtxt] (default: \"%s\")\n", trainedModelLabels.c_str());
     if(parameters->check("trainedModelLabels"))
     {
@@ -67,7 +67,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
     }
     CD_DEBUG("**** full path for trainedModel found: \"%s\"\n", trainedModelFullName.c_str());
 
-    std::string trainedModelLabelsFullName = rf.findFileByName(trainedModelLabels);
+    trainedModelLabelsFullName = rf.findFileByName(trainedModelLabels);
     if(trainedModelLabelsFullName.empty())
     {
         CD_ERROR("**** full path for trainedModelLabels NOT found\n");
@@ -75,10 +75,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
     }
     CD_DEBUG("**** full path for trainedModelLabels found: \"%s\"\n", trainedModelLabelsFullName.c_str());
 
-    //outPortShape.open("/tensorflowDetection2D/shape");
-    //yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg=outPortShape.read();;
     //j//tensorflowDetector.configuration(model, labels, inYarpImg);
-
 }
 
 /*****************************************************************/
