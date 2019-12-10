@@ -25,36 +25,36 @@ const double ColorRegionDetector::DEFAULT_MAX_NUM_BLOBS = 1;
 ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
 {
     algorithm = DEFAULT_ALGORITHM;
-    CD_DEBUG("*** \"algorithm\" (default: \"%s\")\n", algorithm.c_str());
     if(parameters->check("algorithm"))
     {
-        CD_INFO("**** \"algorithm\" parameter for ColorRegionDetectionTransformation found\n");
+        CD_INFO("\"algorithm\" parameter found\n");
         algorithm = parameters->find("algorithm").asString();
     }
-    CD_DEBUG("ColorRegionDetector using algorithm: %s.\n", algorithm.c_str());
+    CD_DEBUG("Using \"algorithm\": %s.\n", algorithm.c_str());
 
     morphClosing = DEFAULT_MORPH_CLOSING;
     if(parameters->check("morphClosing"))
     {
-        CD_INFO("**** \"morphClosing\" parameter for ColorRegionDetectionTransformation found\n");
+        CD_INFO("\"morphClosing\" parameter found\n");
         morphClosing = parameters->find("morphClosing").asFloat64();
     }
-    CD_DEBUG("ColorRegionDetector using morphClosing: %f.\n", morphClosing);
+    CD_DEBUG("Using \"morphClosing\": %f.\n", morphClosing);
 
     threshold = DEFAULT_THRESHOLD;
     if(parameters->check("threshold"))
     {
-        CD_INFO("**** \"threshold\" parameter for ColorRegionDetectionTransformation found\n");
+        CD_INFO("\"threshold\" parameter found\n");
         threshold = parameters->find("threshold").asInt32();
     }
-    CD_DEBUG("ColorRegionDetector using threshold: %d.\n", threshold);
+    CD_DEBUG("Using \"threshold\": %d.\n", threshold);
 
     maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
     if(parameters->check("maxNumBlobs"))
     {
-        CD_INFO("**** \"maxNumBlobs\" parameter for ColorRegionDetectionTransformation found\n");
+        CD_INFO("\"maxNumBlobs\" parameter found\n");
         maxNumBlobs = parameters->find("maxNumBlobs").asInt32();
     }
+    CD_DEBUG("Using \"maxNumBlobs\": %d.\n", maxNumBlobs);
 
     valid = true;
 }
