@@ -59,7 +59,6 @@ private:
     double fps = 0.;
     double thresholdScore = 0.5;
     double thresholdIOU = 0.8;
-    int initDetector=0;
 
     yarp::os::Bottle bottle;
 
