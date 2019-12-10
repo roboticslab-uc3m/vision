@@ -80,14 +80,14 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
 
 /*****************************************************************/
 
-void TensorFlowDetector::configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg)
+void TensorFlowDetector::configuration(std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg)
 {
     // Set  node names
     inputLayer = "image_tensor:0";
     outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
 
     // Load .pb frozen model
-    tensorflow::string graphPath = trainedModel; // GRAPH
+    tensorflow::string graphPath = trainedModelFullName; // GRAPH
     loadGraphStatus = loadGraph(graphPath, &session);
     if (!loadGraphStatus.ok())
     {
