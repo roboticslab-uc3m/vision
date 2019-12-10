@@ -18,12 +18,12 @@ const std::string HaarDetector::DEFAULT_XMLCASCADE = "haarcascade_frontalface_al
 HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
 {
     std::string xmlCascade = DEFAULT_XMLCASCADE;
-    CD_DEBUG("*** \"xmlCascade\" [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
     if(parameters->check("xmlCascade"))
     {
         xmlCascade = parameters->find("xmlCascade").asString();
-        CD_DEBUG("**** \"xmlCascade\" parameter for HaarDetectionTransformation found: \"%s\"\n", xmlCascade.c_str());
+        CD_DEBUG("\"xmlCascade\" parameter found: \"%s\"\n", xmlCascade.c_str());
     }
+    CD_DEBUG("Using \"xmlCascade\":\n", xmlCascade.c_str());
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
@@ -31,18 +31,18 @@ HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
     std::string xmlCascadeFullName = rf.findFileByName(xmlCascade);
     if(xmlCascadeFullName.empty())
     {
-        CD_ERROR("**** xmlCascadeFullName NOT found\n");
+        CD_ERROR("xmlCascadeFullName NOT found\n");
         return;
     }
-    CD_DEBUG("**** xmlCascadeFullName \"%s\" found\n", xmlCascadeFullName.c_str());
+    CD_DEBUG("xmlCascadeFullName \"%s\" found\n", xmlCascadeFullName.c_str());
 
     if (!object_cascade.load(xmlCascadeFullName))
     {
         CD_ERROR("Cannot load xmlCascadeFullName!\n");
         return;
     }
-
     CD_SUCCESS("\n");
+
     valid = true;
 }
 
