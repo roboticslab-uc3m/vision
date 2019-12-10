@@ -35,9 +35,6 @@
 
 #include "Detector.hpp"
 
-#define DEFAULT_TRAINEDMODEL "frozen_inference_graph.pb"
-#define DEFAULT_TRAINEDMODEL_LABELS "labels_map.pbtxt"
-
 namespace roboticslab
 {
 
@@ -70,6 +67,9 @@ private:
     double thresholdIOU = 0.8;
     int initDetector=0;
     yarp::os::Bottle bottle;
+
+    static const std::string DEFAULT_TRAINEDMODEL;
+    static const std::string DEFAULT_TRAINEDMODEL_LABELS;
 };
 
 }  // namespace roboticslab

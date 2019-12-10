@@ -45,6 +45,11 @@ namespace roboticslab
 
 /*****************************************************************/
 
+const std::string TensorFlowDetector::DEFAULT_TRAINEDMODEL = "frozen_inference_graph.pb";
+const std::string TensorFlowDetector::DEFAULT_TRAINEDMODEL_LABELS = "labels_map.pbtxt";
+
+/*****************************************************************/
+
 TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
 {
     std::string trainedModel = DEFAULT_TRAINEDMODEL;
