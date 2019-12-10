@@ -62,18 +62,18 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
     trainedModelFullName = rf.findFileByName(trainedModel);
     if(trainedModelFullName.empty())
     {
-        CD_ERROR("**** full path for trainedModel NOT found\n");
+        CD_ERROR("full path for \"trainedModel\" NOT found\n");
         return;
     }
-    CD_DEBUG("**** full path for trainedModel found: \"%s\"\n", trainedModelFullName.c_str());
+    CD_DEBUG("full path for \"trainedModel\" found: \"%s\"\n", trainedModelFullName.c_str());
 
     trainedModelLabelsFullName = rf.findFileByName(trainedModelLabels);
     if(trainedModelLabelsFullName.empty())
     {
-        CD_ERROR("**** full path for trainedModelLabels NOT found\n");
+        CD_ERROR("full path for \"trainedModelLabels\" NOT found\n");
         return;
     }
-    CD_DEBUG("**** full path for trainedModelLabels found: \"%s\"\n", trainedModelLabelsFullName.c_str());
+    CD_DEBUG("full path for \"trainedModelLabels\" found: \"%s\"\n", trainedModelLabelsFullName.c_str());
 
     // Set  node names
     inputLayer = "image_tensor:0";
