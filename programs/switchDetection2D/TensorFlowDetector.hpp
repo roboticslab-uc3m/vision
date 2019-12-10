@@ -4,18 +4,15 @@
 #define __TENSOR_FLOW_DETECTOR_HPP__
 
 #include <yarp/os/Bottle.h>
-#include <yarp/os/BufferedPort.h>
-#include <yarp/os/ConnectionReader.h>
-#include <yarp/os/Port.h>
 #include <yarp/os/ResourceFinder.h>
 
 #include <yarp/dev/FrameGrabberInterfaces.h>
 
 #include <yarp/sig/Image.h>
+#include <yarp/sig/ImageDraw.h>
 
 #include <opencv2/core/mat.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/videoio.hpp>
 
 #include "tensorflow/cc/ops/const_op.h"
 #include "tensorflow/cc/ops/image_ops.h"
@@ -29,11 +26,12 @@
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/public/session.h"
 #include "tensorflow/core/util/command_line_flags.h"
+
 #include "TensorFlowDetector.hpp"
 
-#include <ColorDebug.h>
-
 #include "Detector.hpp"
+
+#include <ColorDebug.h>
 
 namespace roboticslab
 {

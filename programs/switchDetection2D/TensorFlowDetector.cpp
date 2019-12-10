@@ -1,25 +1,11 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include <time.h>
-#include <utility>
-
-#include <yarp/os/Bottle.h>
-#include <yarp/os/BufferedPort.h>
-#include <yarp/os/ConnectionReader.h>
-#include <yarp/os/Port.h>
-#include <yarp/os/PortReader.h>
-#include <yarp/os/Property.h>
-#include <yarp/os/Network.h>
-#include <yarp/os/Time.h>
 #include <yarp/sig/Image.h>
-#include <yarp/sig/ImageDraw.h>
 
 #include <cv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/videoio.hpp>
 
 #include "tensorflow/cc/ops/const_op.h"
 #include "tensorflow/cc/ops/image_ops.h"
@@ -36,7 +22,6 @@
 
 #include <ColorDebug.h>
 
-#include "DetectorThread.hpp"
 #include "TensorFlowDetectorHelper.hpp"
 #include "TensorFlowDetector.hpp"
 

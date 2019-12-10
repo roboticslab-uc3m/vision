@@ -3,7 +3,6 @@
 #include <fstream>
 #include <math.h>
 #include <regex>
-#include <utility>
 
 #include <cv.hpp>
 #include <opencv2/core/mat.hpp>
