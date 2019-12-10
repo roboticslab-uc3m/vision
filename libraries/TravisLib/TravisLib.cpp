@@ -349,8 +349,8 @@ bool Travis::getBlobsRect(std::vector<cv::Rect>& rects)
 {
     for( int i = 0; i < _contours.size(); i++ )
     {
-        //approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
-        //rects boundingRect( Mat(contours_poly[i]) );
+        //approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true ); // ?
+        rects.push_back( boundingRect( cv::Mat(_contours[i]) ) );
     }
 }
 
@@ -687,7 +687,8 @@ void calcAspectRatio(float& aspectRatio, float& axisFirst, float& axisSecond, co
     minEllipse = fitEllipse(cv::Mat(biggestCont));
     minEllipse.points(vertices);
     float dist[2];
-    for (int i = 0; i < 2; i++){
+    for (int i = 0; i < 2; i++)
+    {
         dist[i]=std::sqrt(pow((vertices[i].x - vertices[(i+1)%4].x),2)+pow((vertices[i].y - vertices[(i+1)%4].y),2));
     }
 
