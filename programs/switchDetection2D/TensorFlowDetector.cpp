@@ -76,16 +76,16 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
     CD_DEBUG("**** full path for trainedModelLabels found: \"%s\"\n", trainedModelLabelsFullName.c_str());
 
     //j//tensorflowDetector.configuration(model, labels, inYarpImg);
+
+    // Set  node names
+    inputLayer = "image_tensor:0";
+    outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
 }
 
 /*****************************************************************/
 
 void TensorFlowDetector::configuration(yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg)
 {
-    // Set  node names
-    inputLayer = "image_tensor:0";
-    outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
-
     // Load .pb frozen model
     tensorflow::string graphPath = trainedModelFullName; // GRAPH
     loadGraphStatus = loadGraph(graphPath, &session);
