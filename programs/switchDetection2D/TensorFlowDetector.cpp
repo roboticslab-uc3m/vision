@@ -46,7 +46,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
     }
     CD_DEBUG("**** \"trainedModel\" parameter for TensorFlowDetector found: \"%s\"\n", trainedModel.c_str());
 
-    std::string trainedModelLabels = DEFAULT_TRAINEDMODEL_LABELS;
+    trainedModelLabels = DEFAULT_TRAINEDMODEL_LABELS;
     printf("\t--trainedModelLabels [file.pbtxt] (default: \"%s\")\n", trainedModelLabels.c_str());
     if(parameters->check("trainedModelLabels"))
     {
@@ -59,7 +59,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
     rf.setVerbose(false);
     rf.setDefaultContext("switchDetection2D");
 
-    std::string trainedModelFullName = rf.findFileByName(trainedModel);
+    trainedModelFullName = rf.findFileByName(trainedModel);
     if(trainedModelFullName.empty())
     {
         CD_ERROR("**** full path for trainedModel NOT found\n");

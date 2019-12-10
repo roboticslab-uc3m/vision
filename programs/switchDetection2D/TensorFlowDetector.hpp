@@ -64,6 +64,9 @@ private:
     double thresholdScore = 0.5;
     double thresholdIOU = 0.8;
     int initDetector=0;
+    std::string trainedModelFullName;
+    std::string trainedModelLabels;
+
     yarp::os::Bottle bottle;
 
     static const std::string DEFAULT_TRAINEDMODEL;
