@@ -38,7 +38,7 @@ const std::string TensorFlowDetector::DEFAULT_TRAINEDMODEL_LABELS = "labels_map.
 
 /*****************************************************************/
 
-TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
+TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters) : firstArrived(false)
 {
     std::string trainedModel = DEFAULT_TRAINEDMODEL;
     CD_DEBUG("\"trainedModel\" [file.pb] (default: \"%s\")\n", trainedModel.c_str());
@@ -104,22 +104,19 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
     CD_SUCCESS("Labels \"%s\" loaded correctly.\n",trainedModelLabelsFullName);
     CD_SUCCESS("%d labels have been loaded.\n",labelsMap.size());;
 
-    //j//tensorflowDetector.configuration(inYarpImg);
+    valid = true;
 }
 
 /*****************************************************************/
 
-void TensorFlowDetector::configuration(yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg)
+void TensorFlowDetector::setTensorShape(tensorflow::int64 h, tensorflow::int64 w)
 {
     time(&start);
     shape = tensorflow::TensorShape();
     shape.AddDim(1);
-    shape.AddDim((tensorflow::int64)inYarpImg->height());
-    shape.AddDim((tensorflow::int64)inYarpImg->width());
+    shape.AddDim(h);
+    shape.AddDim(w);
     shape.AddDim(3);
-    std::cout<<"Taking frames..."<<std::endl;
-
-    valid = true;
 }
 
 /*****************************************************************/
@@ -128,6 +125,12 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
                                 std::vector<DetectedObject*>& detectedObjects,
                                 yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret)
 {
+    if(!firstArrived)
+    {
+        setTensorShape(inYarpImg.width(),inYarpImg.height());
+        firstArrived = true;
+    }
+
     cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
     cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
 

@@ -36,12 +36,14 @@ class TensorFlowDetector : public Detector
 {
 public:
     TensorFlowDetector(yarp::os::Searchable* parameters);
-    void configuration(yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg);
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
                 std::vector<DetectedObject*>& detectedObjects,
                 yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret);
 
 private:
+    void setTensorShape(tensorflow::int64 h, tensorflow::int64 w);
+    bool firstArrived;
+
     // Tensorflow: Session object instance
     //yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inputPort;
     tensorflow::Status readLabelsMapStatus;
