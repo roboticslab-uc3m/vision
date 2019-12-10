@@ -98,9 +98,8 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
         CD_ERROR("Fail loading labels \"%s\".\n",trainedModelLabelsFullName);
         return;
     }
-    else
-        std::cout<<"Labels "<<trainedModelLabelsFullName<<" loaded correctly."<<std::endl;
-    std::cout<<labelsMap.size()<<" labels have been loaded."<<std::endl;
+    CD_SUCCESS("Labels \"%s\" loaded correctly.\n",trainedModelLabelsFullName);
+    CD_SUCCESS("%d labels have been loaded.\n",labelsMap.size());;
 
     //j//tensorflowDetector.configuration(inYarpImg);
 }
