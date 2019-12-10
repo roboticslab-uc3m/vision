@@ -89,13 +89,6 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
     }
     CD_SUCCESS("Graph \"%s\" loaded correctly\n",graphPath);
 
-    //j//tensorflowDetector.configuration(model, labels, inYarpImg);
-}
-
-/*****************************************************************/
-
-void TensorFlowDetector::configuration(yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg)
-{
     // Load labels
     labelsMap = std::map<int,std::string>();
     std::cout<<"Labels "<<trainedModelLabelsFullName<<" are going to be loaded."<<std::endl;
@@ -108,6 +101,13 @@ void TensorFlowDetector::configuration(yarp::sig::ImageOf<yarp::sig::PixelRgb> *
         std::cout<<"Labels "<<trainedModelLabelsFullName<<" loaded correctly."<<std::endl;
     std::cout<<labelsMap.size()<<" labels have been loaded."<<std::endl;
 
+    //j//tensorflowDetector.configuration(inYarpImg);
+}
+
+/*****************************************************************/
+
+void TensorFlowDetector::configuration(yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg)
+{
     time(&start);
     shape = tensorflow::TensorShape();
     shape.AddDim(1);
