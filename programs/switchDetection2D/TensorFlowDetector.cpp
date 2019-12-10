@@ -111,6 +111,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters) : first
 
 void TensorFlowDetector::setTensorShape(tensorflow::int64 h, tensorflow::int64 w)
 {
+    CD_DEBUG("%d, %d\n",h,w);
     shape = tensorflow::TensorShape();
     shape.AddDim(1);
     shape.AddDim(h);
