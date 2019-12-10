@@ -89,11 +89,23 @@ bool ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
         travis.release();
         return false;
     }
-    std::vector<cv::Point2d> blobsXY;
-    if( ! travis.getBlobsXY(blobsXY) )
+    std::vector<cv::Rect> blobsRect;
+    if( ! travis.getBlobsRect(blobsRect) )
     {
         travis.release();
         return false;
+    }
+
+    for(size_t i; i<blobsRect.size(); i++)
+    {
+        cv::Point tl = blobsRect[i].tl();
+        cv::Point br = blobsRect[i].br();
+        DetectedObject* detectedObject = new DetectedObject;
+        detectedObject->setBoundingBox(tl.x,
+                                       tl.y,
+                                       br.x,
+                                       br.y);
+        detectedObjects.push_back(detectedObject);
     }
 
     travis.release();
