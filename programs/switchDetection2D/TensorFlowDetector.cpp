@@ -75,27 +75,27 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
     }
     CD_DEBUG("**** full path for trainedModelLabels found: \"%s\"\n", trainedModelLabelsFullName.c_str());
 
-    //j//tensorflowDetector.configuration(model, labels, inYarpImg);
-
     // Set  node names
     inputLayer = "image_tensor:0";
     outputLayer = {"detection_boxes:0", "detection_scores:0", "detection_classes:0", "num_detections:0"};
+
+    // Load .pb frozen model
+    tensorflow::string graphPath = trainedModelFullName; // GRAPH
+    loadGraphStatus = loadGraph(graphPath, &session);
+    if (!loadGraphStatus.ok())
+    {
+        CD_ERROR("Fail loading graph \"%s\"\n",graphPath);
+        return;
+    }
+    CD_SUCCESS("Graph \"%s\" loaded correctly\n",graphPath);
+
+    //j//tensorflowDetector.configuration(model, labels, inYarpImg);
 }
 
 /*****************************************************************/
 
 void TensorFlowDetector::configuration(yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg)
 {
-    // Load .pb frozen model
-    tensorflow::string graphPath = trainedModelFullName; // GRAPH
-    loadGraphStatus = loadGraph(graphPath, &session);
-    if (!loadGraphStatus.ok())
-    {
-        std::cout<<"Fail loading graph "<<graphPath<<"."<<std::endl;
-    }
-    else
-        std::cout<<"Graph "<<graphPath<<" loaded correctly."<<std::endl;
-
     // Load labels
     labelsMap = std::map<int,std::string>();
     std::cout<<"Labels "<<trainedModelLabelsFullName<<" are going to be loaded."<<std::endl;
