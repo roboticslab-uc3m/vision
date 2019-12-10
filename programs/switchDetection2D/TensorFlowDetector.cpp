@@ -95,7 +95,8 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
     readLabelsMapStatus = readLabelsMapFile(trainedModelLabelsFullName, labelsMap);
     if (!readLabelsMapStatus.ok())
     {
-        std::cout<<"Fail loading labels "<<trainedModelLabelsFullName<<"."<<std::endl;
+        CD_ERROR("Fail loading labels \"%s\".\n",trainedModelLabelsFullName);
+        return;
     }
     else
         std::cout<<"Labels "<<trainedModelLabelsFullName<<" loaded correctly."<<std::endl;
