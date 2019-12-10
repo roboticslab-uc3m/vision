@@ -38,22 +38,22 @@ const std::string TensorFlowDetector::DEFAULT_TRAINEDMODEL_LABELS = "labels_map.
 TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
 {
     std::string trainedModel = DEFAULT_TRAINEDMODEL;
-    CD_DEBUG("*** --trainedModel [file.pb] (default: \"%s\")\n", trainedModel.c_str());
+    CD_DEBUG("\"trainedModel\" [file.pb] (default: \"%s\")\n", trainedModel.c_str());
     if(parameters->check("trainedModel"))
     {
-        CD_INFO("**** \"trainedModel\" parameter for TensorFlowDetector found\n");
+        CD_INFO("\"trainedModel\" parameter for TensorFlowDetector found\n");
         trainedModel = parameters->find("trainedModel").asString();
     }
-    CD_DEBUG("**** \"trainedModel\" parameter for TensorFlowDetector found: \"%s\"\n", trainedModel.c_str());
+    CD_DEBUG("\"trainedModel\" parameter for TensorFlowDetector found: \"%s\"\n", trainedModel.c_str());
 
     std::string trainedModelLabels = DEFAULT_TRAINEDMODEL_LABELS;
-    printf("\t--trainedModelLabels [file.pbtxt] (default: \"%s\")\n", trainedModelLabels.c_str());
+    CD_DEBUG("\"trainedModelLabels\" [file.pbtxt] (default: \"%s\")\n", trainedModelLabels.c_str());
     if(parameters->check("trainedModelLabels"))
     {
-        CD_INFO("**** \"trainedModelLabels\" parameter for TensorFlowDetector found\n");
+        CD_INFO("\"trainedModelLabels\" parameter for TensorFlowDetector found\n");
         trainedModelLabels = parameters->find("trainedModelLabels").asString();
     }
-    CD_DEBUG("**** \"trainedModelLabels\" parameter for TensorFlowDetector found: \"%s\"\n", trainedModelLabels.c_str());
+    CD_DEBUG("\"trainedModelLabels\" parameter for TensorFlowDetector found: \"%s\"\n", trainedModelLabels.c_str());
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
