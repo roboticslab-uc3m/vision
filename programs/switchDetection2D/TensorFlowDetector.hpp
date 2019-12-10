@@ -44,8 +44,6 @@ private:
     void setTensorShape(tensorflow::int64 h, tensorflow::int64 w);
     bool firstArrived;
 
-    // Tensorflow: Session object instance
-    //yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inputPort;
     tensorflow::Status readLabelsMapStatus;
     tensorflow::Status loadGraphStatus;
     tensorflow::string inputLayer;
@@ -62,8 +60,6 @@ private:
     double thresholdScore = 0.5;
     double thresholdIOU = 0.8;
     int initDetector=0;
-    std::string trainedModelFullName;
-    std::string trainedModelLabelsFullName;
 
     yarp::os::Bottle bottle;
 

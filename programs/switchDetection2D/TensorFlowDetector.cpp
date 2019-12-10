@@ -62,7 +62,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters) : first
     rf.setVerbose(false);
     rf.setDefaultContext("switchDetection2D");
 
-    trainedModelFullName = rf.findFileByName(trainedModel);
+    std::string trainedModelFullName = rf.findFileByName(trainedModel);
     if(trainedModelFullName.empty())
     {
         CD_ERROR("full path for \"trainedModel\" NOT found\n");
@@ -70,7 +70,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters) : first
     }
     CD_DEBUG("full path for \"trainedModel\" found: \"%s\"\n", trainedModelFullName.c_str());
 
-    trainedModelLabelsFullName = rf.findFileByName(trainedModelLabels);
+    std::string trainedModelLabelsFullName = rf.findFileByName(trainedModelLabels);
     if(trainedModelLabelsFullName.empty())
     {
         CD_ERROR("full path for \"trainedModelLabels\" NOT found\n");
