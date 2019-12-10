@@ -80,7 +80,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
 
 /*****************************************************************/
 
-void TensorFlowDetector::configuration(std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg)
+void TensorFlowDetector::configuration(yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg)
 {
     // Set  node names
     inputLayer = "image_tensor:0";
@@ -98,14 +98,14 @@ void TensorFlowDetector::configuration(std::string trainedModelLabels, yarp::sig
 
     // Load labels
     labelsMap = std::map<int,std::string>();
-    std::cout<<"Labels "<<trainedModelLabels<<" are going to be loaded."<<std::endl;
-    readLabelsMapStatus = readLabelsMapFile(trainedModelLabels, labelsMap);
+    std::cout<<"Labels "<<trainedModelLabelsFullName<<" are going to be loaded."<<std::endl;
+    readLabelsMapStatus = readLabelsMapFile(trainedModelLabelsFullName, labelsMap);
     if (!readLabelsMapStatus.ok())
     {
-        std::cout<<"Fail loading labels "<<trainedModelLabels<<"."<<std::endl;
+        std::cout<<"Fail loading labels "<<trainedModelLabelsFullName<<"."<<std::endl;
     }
     else
-        std::cout<<"Labels "<<trainedModelLabels<<" loaded correctly."<<std::endl;
+        std::cout<<"Labels "<<trainedModelLabelsFullName<<" loaded correctly."<<std::endl;
     std::cout<<labelsMap.size()<<" labels have been loaded."<<std::endl;
 
     time(&start);
