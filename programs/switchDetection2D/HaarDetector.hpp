@@ -3,6 +3,8 @@
 #ifndef __HAAR_DETECTOR_HPP__
 #define __HAAR_DETECTOR_HPP__
 
+#include <yarp/os/Searchable.h>
+
 #include <opencv2/objdetect/objdetect.hpp>
 
 #include <ColorDebug.h>

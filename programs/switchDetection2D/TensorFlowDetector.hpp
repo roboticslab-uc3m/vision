@@ -3,12 +3,9 @@
 #ifndef __TENSOR_FLOW_DETECTOR_HPP__
 #define __TENSOR_FLOW_DETECTOR_HPP__
 
-#include <yarp/os/Bottle.h>
-#include <yarp/os/ResourceFinder.h>
+#include <yarp/os/Searchable.h>
 
 #include <yarp/dev/FrameGrabberInterfaces.h>
-
-#include <yarp/sig/ImageDraw.h>
 
 #include <opencv2/core/mat.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
