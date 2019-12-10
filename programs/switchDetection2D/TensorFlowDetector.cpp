@@ -83,9 +83,8 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters)
 
 /*****************************************************************/
 
-void TensorFlowDetector::configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg/*, yarp::os::BufferedPort<ImageOf<PixelRgb> > inputPort*/){
-
-
+void TensorFlowDetector::configuration(std::string trainedModel, std::string trainedModelLabels, yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImg)
+{
     //yarp::sig::ImageOf<yarp::sig::PixelRgb> *inYarpImgShape = inputPort.read();
 
     //yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg=&inYarpImg;
