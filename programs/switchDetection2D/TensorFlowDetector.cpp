@@ -104,7 +104,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters) : first
     CD_SUCCESS("Labels \"%s\" loaded correctly.\n",trainedModelLabelsFullName);
     CD_SUCCESS("%d labels have been loaded.\n",labelsMap.size());;
 
-    valid = true;
+    valid = true; // setTensorShape at firstArrived
 }
 
 /*****************************************************************/
