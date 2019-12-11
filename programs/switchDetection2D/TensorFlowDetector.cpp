@@ -85,7 +85,6 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters) : first
     CD_SUCCESS("Graph \"%s\" loaded correctly\n",graphPath.c_str());
 
     // Load labels
-    labelsMap = std::map<int,std::string>();
     CD_INFO("Labels \"%s\" are going to be loaded.\n",trainedModelLabelsFullName.c_str());
     tensorflow::Status readLabelsMapStatus = readLabelsMapFile(trainedModelLabelsFullName, labelsMap);
     if (!readLabelsMapStatus.ok())
@@ -151,11 +150,11 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
 
     //CD_INFO("scores.size(): %d\n",scores.size()); // 100
     std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, DEFAULT_THRESHOLD_IOU, DEFAULT_THRESHOLD_SCORE);
-    CD_INFO("goodIdxs.size(): %d\n",goodIdxs.size());
+    //CD_INFO("goodIdxs.size(): %d\n",goodIdxs.size());
 
     for (size_t i = 0; i < goodIdxs.size(); i++)
     {
-        CD_SUCCESS("Detection: \"%s\" -> Score: %d\n",labelsMap[classes(goodIdxs[i])].c_str(),scores(goodIdxs[i]));
+        CD_SUCCESS("Detection: \"%s\" -> Score: %f\n",labelsMap[classes(goodIdxs[i])].c_str(),scores(goodIdxs[i]));
 
         DetectedObject* detectedObject = new DetectedObject;
         detectedObject->setBoundingBox(boxes(0,goodIdxs[i],0),

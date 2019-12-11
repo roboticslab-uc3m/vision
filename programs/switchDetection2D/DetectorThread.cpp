@@ -111,7 +111,7 @@ void roboticslab::DetectorThread::run()
         return;
     }
 
-    CD_DEBUG("\n");
+    //CD_DEBUG("\n");
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> myNull;
     std::vector<DetectedObject*> detectedObjects;

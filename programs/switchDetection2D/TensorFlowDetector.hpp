@@ -15,6 +15,7 @@
 namespace roboticslab
 {
 
+/** reduce console output via `export TF_CPP_MIN_LOG_LEVEL=2` **/
 class TensorFlowDetector : public Detector
 {
 public:
