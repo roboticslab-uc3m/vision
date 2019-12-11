@@ -5,7 +5,6 @@
 
 #include <yarp/os/ResourceFinder.h>
 
-#include <yarp/sig/Image.h>
 #include <yarp/sig/ImageDraw.h>
 
 #include <cv.hpp>
