@@ -185,8 +185,8 @@ double IOU(cv::Rect2f box1, cv::Rect2f box2)
 /************************************************************************/
 
 std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
-                           tensorflow::TTypes<float, 3>::Tensor &boxes,
-                           double thresholdIOU, double thresholdScore)
+                                tensorflow::TTypes<float, 3>::Tensor &boxes,
+                                double thresholdIOU, double thresholdScore)
 {
     std::vector<size_t> sortIdxs(scores.size());
     iota(sortIdxs.begin(), sortIdxs.end(), 0);

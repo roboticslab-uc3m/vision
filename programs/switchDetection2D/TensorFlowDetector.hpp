@@ -23,8 +23,6 @@
 #include <tensorflow/core/public/session.h>
 #include <tensorflow/core/util/command_line_flags.h>
 
-#include <ColorDebug.h>
-
 #include "TensorFlowDetector.hpp"
 
 #include "Detector.hpp"
@@ -48,7 +46,6 @@ private:
     tensorflow::Status loadGraphStatus;
     tensorflow::string inputLayer;
     tensorflow::TensorShape shape;
-    tensorflow::Tensor tensor;
     std::vector<tensorflow::Tensor> outputs;
     std::unique_ptr<tensorflow::Session> session;
     std::map<int, std::string> labelsMap;

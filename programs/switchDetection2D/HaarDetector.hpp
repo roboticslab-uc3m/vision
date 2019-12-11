@@ -7,8 +7,6 @@
 
 #include <opencv2/objdetect/objdetect.hpp>
 
-#include <ColorDebug.h>
-
 #include "Detector.hpp"
 
 namespace roboticslab

@@ -6,6 +6,8 @@
 
 #include <yarp/os/ResourceFinder.h>
 
+#include <ColorDebug.h>
+
 namespace roboticslab
 {
 

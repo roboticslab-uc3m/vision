@@ -135,11 +135,11 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
     cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
 
     // Mat -> Tensor
-    tensor = tensorflow::Tensor(tensorflow::DT_FLOAT, shape);
+    tensorflow::Tensor tensor = tensorflow::Tensor(tensorflow::DT_FLOAT, shape);
     tensorflow::Status readTensorStatus = readTensorFromMat(inCvMat, tensor);
     if (!readTensorStatus.ok())
     {
-        CD_ERROR("Mat OpenCV -> Tensor : FAIL\n");
+        CD_ERROR("Mat OpenCV -> Tensor: FAIL\n");
         return false;
     }
 
@@ -157,7 +157,10 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
     tensorflow::TTypes<float>::Flat classes = outputs[2].flat<float>();
     tensorflow::TTypes<float, 3>::Tensor boxes = outputs[0].flat_outer_dims<float,3>();
 
+    CD_INFO("scores.size(): %d\n",scores.size());
     std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
+    CD_INFO("goodIdxs.size(): %d\n",goodIdxs.size());
+
     for (size_t i = 0; i < goodIdxs.size(); i++)
     {
         std::cout<<"Detection: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Score: "<<scores(goodIdxs.at(i))<<std::endl;

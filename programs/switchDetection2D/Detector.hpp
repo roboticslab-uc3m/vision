@@ -7,8 +7,6 @@
 
 #include <yarp/sig/Image.h>
 
-#include <ColorDebug.h>
-
 namespace roboticslab
 {
 
