@@ -157,13 +157,13 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
     tensorflow::TTypes<float>::Flat classes = outputs[2].flat<float>();
     tensorflow::TTypes<float, 3>::Tensor boxes = outputs[0].flat_outer_dims<float,3>();
 
-    CD_INFO("scores.size(): %d\n",scores.size());
+    //CD_INFO("scores.size(): %d\n",scores.size()); // 100
     std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
-    CD_INFO("goodIdxs.size(): %d\n",goodIdxs.size());
+    //CD_INFO("goodIdxs.size(): %d\n",goodIdxs.size());
 
     for (size_t i = 0; i < goodIdxs.size(); i++)
     {
-        CD_INFO("Detection: \"%s\" -> Score: %d\n",labelsMap[classes(goodIdxs.at(i))],scores(goodIdxs.at(i)));
+        CD_SUCCESS("Detection: \"%s\" -> Score: %d\n",labelsMap[classes(goodIdxs.at(i))].c_str(),scores(goodIdxs.at(i)));
 
         //double score_detection=scores(goodIdxs.at(i));
         //std::string class_name=std::string(labelsMap[classes(goodIdxs.at(i))]);
