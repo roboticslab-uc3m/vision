@@ -10,10 +10,7 @@
 #include <opencv2/core/mat.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include <tensorflow/cc/ops/standard_ops.h>
 #include <tensorflow/core/public/session.h>
-
-#include "TensorFlowDetector.hpp"
 
 #include "Detector.hpp"
 
