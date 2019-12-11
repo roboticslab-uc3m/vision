@@ -129,7 +129,8 @@ void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMa
     {
         tl = cv::Point((int) (xMin * image.cols), (int) (yMin * image.rows));
         br = cv::Point((int) (xMax * image.cols), (int) (yMax * image.rows));
-    } else
+    }
+    else
     {
         tl = cv::Point((int) xMin, (int) yMin);
         br = cv::Point((int) xMax, (int) yMax);
@@ -146,7 +147,6 @@ void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMa
     cv::Point textCorner = cv::Point(tl.x, tl.y + fontCoeff * 0.9);
     cv::putText(image, caption, textCorner, cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(255, 0, 0));
     cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
-
 }
 
 /************************************************************************/
@@ -193,7 +193,8 @@ std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
 
     std::set<size_t> badIdxs = std::set<size_t>();
     size_t i = 0;
-    while (i < sortIdxs.size()) {
+    while (i < sortIdxs.size())
+    {
         if (scores(sortIdxs.at(i)) < thresholdScore)
             badIdxs.insert(sortIdxs[i]);
         if (badIdxs.find(sortIdxs.at(i)) != badIdxs.end())
@@ -203,7 +204,7 @@ std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
         }
 
         cv::Rect2f box1 = cv::Rect2f(cv::Point2f(boxes(0, sortIdxs.at(i), 1), boxes(0, sortIdxs.at(i), 0)),
-                             cv::Point2f(boxes(0, sortIdxs.at(i), 3), boxes(0, sortIdxs.at(i), 2)));
+                                     cv::Point2f(boxes(0, sortIdxs.at(i), 3), boxes(0, sortIdxs.at(i), 2)));
         for (size_t j = i + 1; j < sortIdxs.size(); j++)
         {
             if (scores(sortIdxs.at(j)) < thresholdScore)
@@ -212,7 +213,7 @@ std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
                 continue;
             }
             cv::Rect2f box2 = cv::Rect2f(cv::Point2f(boxes(0, sortIdxs.at(j), 1), boxes(0, sortIdxs.at(j), 0)),
-                                 cv::Point2f(boxes(0, sortIdxs.at(j), 3), boxes(0, sortIdxs.at(j), 2)));
+                                         cv::Point2f(boxes(0, sortIdxs.at(j), 3), boxes(0, sortIdxs.at(j), 2)));
             if (IOU(box1, box2) > thresholdIOU)
                 badIdxs.insert(sortIdxs[j]);
         }
