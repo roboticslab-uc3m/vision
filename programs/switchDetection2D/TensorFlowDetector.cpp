@@ -156,10 +156,18 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
         CD_SUCCESS("Detection: \"%s\" -> Score: %f\n",labelsMap[classes(goodIdxs[i])].c_str(),scores(goodIdxs[i]));
 
         DetectedObject* detectedObject = new DetectedObject;
-        detectedObject->setBoundingBox(boxes(0,goodIdxs[i],0),
-                                       boxes(0,goodIdxs[i],1),
-                                       boxes(0,goodIdxs[i],2),
-                                       boxes(0,goodIdxs[i],3));
+        double yMin = boxes(0,goodIdxs[i],0);
+        double xMin = boxes(0,goodIdxs[i],1);
+        double yMax = boxes(0,goodIdxs[i],2);
+        double xMax = boxes(0,goodIdxs[i],3);
+        int tlx = xMin * inYarpImg.width();
+        int tly = yMin * inYarpImg.height();
+        int brx = xMax * inYarpImg.width();
+        int bry = yMax * inYarpImg.height();
+        detectedObject->setBoundingBox(tlx,
+                                       tly,
+                                       brx,
+                                       bry);
         detectedObjects.push_back(detectedObject);
     }
 
