@@ -123,7 +123,8 @@ tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &out
 
 /************************************************************************/
 
-void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMax, double xMax, double score, std::string label, bool scaled=true)
+void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMax, double xMax,
+                            double score, std::string label, bool scaled=true)
 {
     cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
     cv::Point tl, br;
@@ -201,6 +202,7 @@ std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
     {
         if (scores(sortIdxs.at(i)) < thresholdScore)
             badIdxs.insert(sortIdxs[i]);
+
         if (badIdxs.find(sortIdxs.at(i)) != badIdxs.end())
         {
             i++;
@@ -209,6 +211,7 @@ std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
 
         cv::Rect2f box1 = cv::Rect2f(cv::Point2f(boxes(0, sortIdxs.at(i), 1), boxes(0, sortIdxs.at(i), 0)),
                                      cv::Point2f(boxes(0, sortIdxs.at(i), 3), boxes(0, sortIdxs.at(i), 2)));
+
         for (size_t j = i + 1; j < sortIdxs.size(); j++)
         {
             if (scores(sortIdxs.at(j)) < thresholdScore)
@@ -225,6 +228,7 @@ std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
     }
 
     std::vector<size_t> goodIdxs = std::vector<size_t>();
+
     for (auto it = sortIdxs.begin(); it != sortIdxs.end(); it++)
         if (badIdxs.find(sortIdxs.at(*it)) == badIdxs.end())
             goodIdxs.push_back(*it);

@@ -159,11 +159,18 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
 
     //CD_INFO("scores.size(): %d\n",scores.size()); // 100
     std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
-    //CD_INFO("goodIdxs.size(): %d\n",goodIdxs.size());
+    CD_INFO("goodIdxs.size(): %d\n",goodIdxs.size());
 
     for (size_t i = 0; i < goodIdxs.size(); i++)
     {
-        CD_SUCCESS("Detection: \"%s\" -> Score: %d\n",labelsMap[classes(goodIdxs.at(i))].c_str(),scores(goodIdxs.at(i)));
+        CD_SUCCESS("Detection: \"%s\" -> Score: %d\n",labelsMap[classes(goodIdxs[i])].c_str(),scores(goodIdxs[i]));
+
+        DetectedObject* detectedObject = new DetectedObject;
+        detectedObject->setBoundingBox(boxes(0,goodIdxs[i],0),
+                                       boxes(0,goodIdxs[i],1),
+                                       boxes(0,goodIdxs[i],2),
+                                       boxes(0,goodIdxs[i],3));
+        detectedObjects.push_back(detectedObject);
 
         //double score_detection=scores(goodIdxs.at(i));
         //std::string class_name=std::string(labelsMap[classes(goodIdxs.at(i))]);
@@ -176,14 +183,14 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
         bottle.addString(" Score: ");
         bottle.addDouble(score_detection);*/
 
-        drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
-        cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
+        //drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
+        //cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
     }
 
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
-    outYarpImg.setExternal(inCvMat.data,inCvMat.size[1],inCvMat.size[0]);
+    //yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
+    //outYarpImg.setExternal(inCvMat.data,inCvMat.size[1],inCvMat.size[0]);
 
-    outYarpImg = ret;
+    //outYarpImg = ret;
     return true;
 }
 
