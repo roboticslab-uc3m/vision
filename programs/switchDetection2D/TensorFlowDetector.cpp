@@ -37,8 +37,8 @@ namespace roboticslab
 
 const std::string TensorFlowDetector::DEFAULT_TRAINEDMODEL = "frozen_inference_graph.pb";
 const std::string TensorFlowDetector::DEFAULT_TRAINEDMODEL_LABELS = "labels_map.pbtxt";
-const double TensorFlowDetector::thresholdScore = 0.5;
-const double TensorFlowDetector::thresholdIOU = 0.8;
+const double TensorFlowDetector::DEFAULT_THRESHOLD_SCORE = 0.5;
+const double TensorFlowDetector::DEFAULT_THRESHOLD_IOU = 0.8;
 
 /*****************************************************************/
 
@@ -162,7 +162,7 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
     tensorflow::TTypes<float, 3>::Tensor boxes = outputs[0].flat_outer_dims<float,3>();
 
     //CD_INFO("scores.size(): %d\n",scores.size()); // 100
-    std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, thresholdIOU, thresholdScore);
+    std::vector<size_t> goodIdxs = filterBoxes(scores, boxes, DEFAULT_THRESHOLD_IOU, DEFAULT_THRESHOLD_SCORE);
     CD_INFO("goodIdxs.size(): %d\n",goodIdxs.size());
 
     for (size_t i = 0; i < goodIdxs.size(); i++)

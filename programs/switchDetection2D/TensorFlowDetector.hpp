@@ -58,8 +58,8 @@ private:
 
     static const std::string DEFAULT_TRAINEDMODEL;
     static const std::string DEFAULT_TRAINEDMODEL_LABELS;
-    static const double thresholdScore;
-    static const double thresholdIOU;
+    static const double DEFAULT_THRESHOLD_SCORE;
+    static const double DEFAULT_THRESHOLD_IOU;
 };
 
 }  // namespace roboticslab
