@@ -136,7 +136,7 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
     }
 
     // Execute graph
-    outputs.clear();
+    std::vector<tensorflow::Tensor> outputs; // outputs.clear();
     tensorflow::Status runStatus = session->Run({{inputLayer, tensor}}, outputLayer, {}, &outputs);
     if (!runStatus.ok())
     {

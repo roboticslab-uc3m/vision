@@ -26,7 +26,6 @@ public:
 private:
     tensorflow::string inputLayer;
     tensorflow::TensorShape shape;
-    std::vector<tensorflow::Tensor> outputs;
     std::unique_ptr<tensorflow::Session> session;
     std::map<int, std::string> labelsMap;
     std::vector<std::string> outputLayer;
@@ -34,8 +33,7 @@ private:
     void setTensorShape(tensorflow::int64 h, tensorflow::int64 w);
     bool firstArrived;
 
-    tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
-                                 std::unique_ptr<tensorflow::Session> *session);
+    tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,std::unique_ptr<tensorflow::Session> *session);
     tensorflow::Status readLabelsMapFile(const tensorflow::string &fileName, std::map<int, tensorflow::string> &labelsMap);
     tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &outTensor);
     void drawBoundingBoxOnImage(cv::Mat &image, double xMin, double yMin, double xMax, double yMax,
