@@ -28,7 +28,6 @@
 
 #include <ColorDebug.h>
 
-#include "TensorFlowDetectorHelper.hpp"
 #include "TensorFlowDetector.hpp"
 
 namespace roboticslab
