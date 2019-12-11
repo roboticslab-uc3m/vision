@@ -55,11 +55,11 @@ private:
     std::unique_ptr<tensorflow::Session> session;
     std::map<int, std::string> labelsMap;
     std::vector<std::string> outputLayer;
-    double thresholdScore = 0.5;
-    double thresholdIOU = 0.8;
 
     static const std::string DEFAULT_TRAINEDMODEL;
     static const std::string DEFAULT_TRAINEDMODEL_LABELS;
+    static const double thresholdScore;
+    static const double thresholdIOU;
 };
 
 }  // namespace roboticslab

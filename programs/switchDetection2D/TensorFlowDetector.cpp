@@ -37,6 +37,8 @@ namespace roboticslab
 
 const std::string TensorFlowDetector::DEFAULT_TRAINEDMODEL = "frozen_inference_graph.pb";
 const std::string TensorFlowDetector::DEFAULT_TRAINEDMODEL_LABELS = "labels_map.pbtxt";
+const double TensorFlowDetector::thresholdScore = 0.5;
+const double TensorFlowDetector::thresholdIOU = 0.8;
 
 /*****************************************************************/
 
