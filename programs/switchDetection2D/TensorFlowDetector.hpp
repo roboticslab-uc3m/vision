@@ -26,6 +26,13 @@ public:
                 yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret);
 
 private:
+    tensorflow::string inputLayer;
+    tensorflow::TensorShape shape;
+    std::vector<tensorflow::Tensor> outputs;
+    std::unique_ptr<tensorflow::Session> session;
+    std::map<int, std::string> labelsMap;
+    std::vector<std::string> outputLayer;
+
     void setTensorShape(tensorflow::int64 h, tensorflow::int64 w);
     bool firstArrived;
 
@@ -45,13 +52,6 @@ private:
     std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
                                     tensorflow::TTypes<float, 3>::Tensor &boxes,
                                     double thresholdIOU, double thresholdScore);
-
-    tensorflow::string inputLayer;
-    tensorflow::TensorShape shape;
-    std::vector<tensorflow::Tensor> outputs;
-    std::unique_ptr<tensorflow::Session> session;
-    std::map<int, std::string> labelsMap;
-    std::vector<std::string> outputLayer;
 
     static const std::string DEFAULT_TRAINEDMODEL;
     static const std::string DEFAULT_TRAINEDMODEL_LABELS;
