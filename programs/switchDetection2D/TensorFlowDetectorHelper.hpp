@@ -15,7 +15,8 @@ tensorflow::Status loadGraph(const tensorflow::string &graph_file_name,
 
 tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &outTensor);
 
-void drawBoundingBoxOnImage(cv::Mat &image, double xMin, double yMin, double xMax, double yMax, double score, std::string label, bool scaled);
+void drawBoundingBoxOnImage(cv::Mat &image, double xMin, double yMin, double xMax, double yMax,
+                            double score, std::string label, bool scaled);
 
 void drawBoundingBoxesOnImage(cv::Mat &image,
                               tensorflow::TTypes<float>::Flat &scores,
