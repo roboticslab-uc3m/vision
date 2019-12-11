@@ -53,7 +53,7 @@ HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
 bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
                           std::vector<DetectedObject*>& detectedObjects)
 {
-    CD_DEBUG("\n");
+    //CD_DEBUG("\n");
 
     cv::Mat inCvMat = cv::cvarrToMat((IplImage*)inYarpImg.getIplImage());
     cv::cvtColor(inCvMat, inCvMat, CV_RGB2GRAY);
