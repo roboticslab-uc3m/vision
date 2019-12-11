@@ -62,8 +62,7 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
 /*****************************************************************/
 
 bool ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                                 std::vector<DetectedObject*>& detectedObjects,
-                                 yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret)
+                                 std::vector<DetectedObject*>& detectedObjects)
 {
 
     // {yarp ImageOf Rgb -> openCv Mat Bgr}

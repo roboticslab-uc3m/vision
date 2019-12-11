@@ -21,8 +21,7 @@ class TensorFlowDetector : public Detector
 public:
     TensorFlowDetector(yarp::os::Searchable* parameters);
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                std::vector<DetectedObject*>& detectedObjects,
-                yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret);
+                std::vector<DetectedObject*>& detectedObjects);
 
 private:
     tensorflow::string inputLayer;

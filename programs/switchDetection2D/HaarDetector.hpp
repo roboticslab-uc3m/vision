@@ -17,8 +17,7 @@ class HaarDetector : public Detector
 public:
     HaarDetector(yarp::os::Searchable* parameters);
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                std::vector<DetectedObject*>& detectedObjects,
-                yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret) override;
+                std::vector<DetectedObject*>& detectedObjects) override;
 private:
     cv::CascadeClassifier object_cascade;
 

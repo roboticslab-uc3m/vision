@@ -113,8 +113,7 @@ void TensorFlowDetector::setTensorShape(tensorflow::int64 h, tensorflow::int64 w
 /*****************************************************************/
 
 bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                                std::vector<DetectedObject*>& detectedObjects,
-                                yarp::sig::ImageOf<yarp::sig::PixelRgb>& ret)
+                                std::vector<DetectedObject*>& detectedObjects)
 {
     if(!firstArrived)
     {
