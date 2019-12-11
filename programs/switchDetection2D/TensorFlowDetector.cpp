@@ -84,7 +84,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters) : first
 
     // Load .pb frozen model
     tensorflow::string graphPath = trainedModelFullName; // GRAPH
-    loadGraphStatus = loadGraph(graphPath, &session);
+    tensorflow::Status loadGraphStatus = loadGraph(graphPath, &session);
     if (!loadGraphStatus.ok())
     {
         CD_ERROR("Fail loading graph \"%s\"\n",graphPath.c_str());
@@ -95,7 +95,7 @@ TensorFlowDetector::TensorFlowDetector(yarp::os::Searchable* parameters) : first
     // Load labels
     labelsMap = std::map<int,std::string>();
     CD_INFO("Labels \"%s\" are going to be loaded.\n",trainedModelLabelsFullName.c_str());
-    readLabelsMapStatus = readLabelsMapFile(trainedModelLabelsFullName, labelsMap);
+    tensorflow::Status readLabelsMapStatus = readLabelsMapFile(trainedModelLabelsFullName, labelsMap);
     if (!readLabelsMapStatus.ok())
     {
         CD_ERROR("Fail loading labels \"%s\".\n",trainedModelLabelsFullName.c_str());

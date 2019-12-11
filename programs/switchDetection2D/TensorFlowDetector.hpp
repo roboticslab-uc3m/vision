@@ -42,8 +42,6 @@ private:
     void setTensorShape(tensorflow::int64 h, tensorflow::int64 w);
     bool firstArrived;
 
-    tensorflow::Status readLabelsMapStatus;
-    tensorflow::Status loadGraphStatus;
     tensorflow::string inputLayer;
     tensorflow::TensorShape shape;
     std::vector<tensorflow::Tensor> outputs;
