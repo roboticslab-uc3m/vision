@@ -175,26 +175,8 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
                                        boxes(0,goodIdxs[i],2),
                                        boxes(0,goodIdxs[i],3));
         detectedObjects.push_back(detectedObject);
-
-        //double score_detection=scores(goodIdxs.at(i));
-        //std::string class_name=std::string(labelsMap[classes(goodIdxs.at(i))]);
-        /*yarp::os::Bottle bottle;
-        bottle.clear();
-        bottle.addString(" Detection number: ");
-        bottle.addInt(goodIdxs.size());
-        bottle.addString(" Detection: ");
-        bottle.addString(class_name);
-        bottle.addString(" Score: ");
-        bottle.addDouble(score_detection);*/
-
-        //drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
-        //cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);
     }
 
-    //yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
-    //outYarpImg.setExternal(inCvMat.data,inCvMat.size[1],inCvMat.size[0]);
-
-    //outYarpImg = ret;
     return true;
 }
 
