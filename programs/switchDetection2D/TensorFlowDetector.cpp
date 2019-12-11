@@ -163,17 +163,18 @@ bool TensorFlowDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpIm
 
     for (size_t i = 0; i < goodIdxs.size(); i++)
     {
-        std::cout<<"Detection: "<<labelsMap[classes(goodIdxs.at(i))]<< " -> Score: "<<scores(goodIdxs.at(i))<<std::endl;
+        CD_INFO("Detection: \"%s\" -> Score: %d\n",labelsMap[classes(goodIdxs.at(i))],scores(goodIdxs.at(i)));
 
-        double score_detection=scores(goodIdxs.at(i));
-        std::string class_name=std::string(labelsMap[classes(goodIdxs.at(i))]);
+        //double score_detection=scores(goodIdxs.at(i));
+        //std::string class_name=std::string(labelsMap[classes(goodIdxs.at(i))]);
+        /*yarp::os::Bottle bottle;
         bottle.clear();
         bottle.addString(" Detection number: ");
         bottle.addInt(goodIdxs.size());
         bottle.addString(" Detection: ");
         bottle.addString(class_name);
         bottle.addString(" Score: ");
-        bottle.addDouble(score_detection);
+        bottle.addDouble(score_detection);*/
 
         drawBoundingBoxesOnImage(inCvMat, scores, classes, boxes, labelsMap, goodIdxs);
         cv::cvtColor(inCvMat, inCvMat, cv::COLOR_BGR2RGB);

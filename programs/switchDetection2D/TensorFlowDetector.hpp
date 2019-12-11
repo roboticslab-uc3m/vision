@@ -51,8 +51,6 @@ private:
     double thresholdScore = 0.5;
     double thresholdIOU = 0.8;
 
-    yarp::os::Bottle bottle;
-
     static const std::string DEFAULT_TRAINEDMODEL;
     static const std::string DEFAULT_TRAINEDMODEL_LABELS;
 };

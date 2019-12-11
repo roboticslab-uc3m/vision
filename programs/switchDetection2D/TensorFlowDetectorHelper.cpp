@@ -20,6 +20,8 @@
 #include <tensorflow/core/public/session.h>
 #include <tensorflow/core/util/command_line_flags.h>
 
+#include <ColorDebug.h>
+
 #include "TensorFlowDetectorHelper.hpp"
 
 /************************************************************************/
@@ -188,6 +190,8 @@ std::vector<size_t> filterBoxes(tensorflow::TTypes<float>::Flat &scores,
                                 tensorflow::TTypes<float, 3>::Tensor &boxes,
                                 double thresholdIOU, double thresholdScore)
 {
+    CD_DEBUG("thresholdIOU: %f; thresholdScore: %f\n",thresholdIOU,thresholdScore);
+
     std::vector<size_t> sortIdxs(scores.size());
     iota(sortIdxs.begin(), sortIdxs.end(), 0);
 
