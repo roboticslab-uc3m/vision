@@ -3,27 +3,32 @@
 #ifndef __SWITCH_DETECTION_2D_HPP__
 #define __SWITCH_DETECTION_2D_HPP__
 
-#include <yarp/dev/PolyDriver.h>
-#include <yarp/dev/FrameGrabberInterfaces.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/os/RFModule.h>
+
+#include <yarp/dev/PolyDriver.h>
+#include <yarp/dev/FrameGrabberInterfaces.h>
+
 #include <yarp/sig/Image.h>
 
-#include "SegmentorThread.hpp"
+#include "DetectorThread.hpp"
 
 namespace roboticslab
 {
 /**
  * @ingroup switchDetection2D
  *
- * @brief Computer Vision segment faces.
+ * @brief Computer Vision detection.
  */
 class SwitchDetection2D : public yarp::os::RFModule
 {
+public:
+    bool configure(yarp::os::ResourceFinder &rf);
+
 private:
-    SegmentorThread segmentorThread;
+    DetectorThread detectorThread;
 
     yarp::dev::PolyDriver cameraDevice;
     yarp::dev::IFrameGrabberImage *camera;
@@ -42,9 +47,6 @@ private:
     double getPeriod();
     bool updateModule();
     bool close();
-
-public:
-    bool configure(yarp::os::ResourceFinder &rf);
 };
 
 }  // namespace roboticslab

@@ -21,14 +21,14 @@
  * | watchdog     |                                      | 2.000000         |
  *
  *
- * @section  haarDetection2DPorts HaarDetection2D output ports:
+ * @section  haarDetection2DPorts HaarDetector output ports:
  *
  * | OUTPUT PORT              | CONTENT                                                 |
  * |--------------------------|---------------------------------------------------------|
  * | /modeDetection2D/img:o   | Output camera image with object detection using squares |
  * | /modeDetection2D/state:o | xy coordinates of object detection                      |
  *
- * @section segmentorThread SegmentorThread options:
+ * @section setectorThread DetectorThread options:
  *
  * | PROPERTY   | DESCRIPTION | DEFAULT                      |
  * |------------|-------------|------------------------------|
@@ -40,12 +40,11 @@
  * | xmlCascade | file.xml    | haarcascade_cocacola_can.xml |
  */
 
-#include <iostream>
-
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
 
 #include <ColorDebug.h>
+
 #include "SwitchDetection2D.hpp"
 
 #define DEFAULT_CONTEXT    "switchDetection2D"

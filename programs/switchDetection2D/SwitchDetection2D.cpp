@@ -1,6 +1,5 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include <iostream>
 #include <string>
 
 #include <yarp/os/Property.h>
@@ -13,7 +12,7 @@
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
 #define DEFAULT_CAMERA_DEVICE "remote_grabber"
 #define DEFAULT_CAMERA_LOCAL "/switchDetection2D"
-#define DEFAULT_CAMERA_REMOTE "/frameGrabber2D"
+#define DEFAULT_CAMERA_REMOTE "/grabber"
 #define DEFAULT_WATCHDOG    2       // [s]
 
 /************************************************************************/
@@ -95,15 +94,15 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
     }
     CD_SUCCESS("Camera device ok view.\n");
 
-    segmentorThread.setIFrameGrabberImageDriver(camera);
-    segmentorThread.setOutImg(&outImg);
-    segmentorThread.setOutPort(&outPort);
-    segmentorThread.setCropSelector(cropSelector);
+    detectorThread.setIFrameGrabberImageDriver(camera);
+    detectorThread.setOutImg(&outImg);
+    detectorThread.setOutPort(&outPort);
+    detectorThread.setCropSelector(cropSelector);
 
     if (cropSelector != 0)
     {
-        segmentorThread.setOutCropSelectorImg(&outCropSelectorImg);
-        segmentorThread.setInCropSelectorPort(&inCropSelectorPort);
+        detectorThread.setOutCropSelectorImg(&outCropSelectorImg);
+        detectorThread.setInCropSelectorPort(&inCropSelectorPort);
     }
 
     //-----------------OPEN LOCAL PORTS------------//
@@ -121,7 +120,7 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
         inCropSelectorPort.open(strCameraLocal + "/cropSelector/state:i");
     }
 
-    return segmentorThread.init(rf);
+    return detectorThread.init(rf);
 }
 
 /*****************************************************************/
@@ -161,7 +160,7 @@ bool roboticslab::SwitchDetection2D::close()
 {
     CD_INFO("Closing...\n");
 
-    segmentorThread.stop();
+    detectorThread.stop();
 
     cameraDevice.close();
     outImg.close();

@@ -25,4 +25,4 @@ yarp_install(FILES conf/switchDetection2D.ini
 
 yarp_install(FILES scripts/example_switchDetection.xml
                    scripts/example_switchDetection2D.xml
-             DESTINATION ${ROBOTICSLAB-VISION_APPLICATIONS_TEMPLATES_INSTALL_DIR})
+             DESTINATION ${ROBOTICSLAB-VISION_APPLICATIONS_INSTALL_DIR})

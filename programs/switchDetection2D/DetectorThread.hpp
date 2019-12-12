@@ -1,26 +1,22 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __SEGMENTOR_THREAD_HPP__
-#define __SEGMENTOR_THREAD_HPP__
-
-#include <vector>
+#ifndef __DETECTOR_THREAD_HPP__
+#define __DETECTOR_THREAD_HPP__
 
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
+#include <yarp/os/PeriodicThread.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/os/Time.h>
 
 #include <yarp/dev/FrameGrabberInterfaces.h>
 
-#include <yarp/sig/all.h>
-
-//#include "highgui.h" // to show windows (older)
-//#include "opencv2/highgui/highgui.hpp" // to show windows (newer)
+#include <yarp/sig/Image.h>
 
 #include <ColorDebug.h>
 
-#include "Transformation.hpp"
+#include "Detector.hpp"
 
 #define DEFAULT_RATE_MS 20
 
@@ -89,19 +85,15 @@ public:
  *
  * @brief Implements switchDetection2D PeriodicThread.
  */
-class SegmentorThread : public yarp::os::PeriodicThread
+class DetectorThread : public yarp::os::PeriodicThread
 {
 public:
-    Transformation* transformation;
-
-
-    SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
+    DetectorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
     void setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage * _camera);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
     void setOutPort(yarp::os::Port *_pOutPort);
     bool init(yarp::os::ResourceFinder &rf);
-    void run();  // The periodical function
 
     void setCropSelector(int cropSelector)
     {
@@ -119,6 +111,10 @@ public:
     }
 
 private:
+    void run() override;  // The periodical function
+
+    Detector* detector;
+
     yarp::dev::IFrameGrabberImage *camera;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
@@ -134,4 +130,4 @@ private:
 
 }  // namespace roboticslab
 
-#endif  // __SEGMENTOR_THREAD_HPP__
+#endif  // __DETECTOR_THREAD_HPP__

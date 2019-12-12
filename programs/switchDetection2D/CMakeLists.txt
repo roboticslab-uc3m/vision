@@ -14,64 +14,60 @@ if(ENABLE_switchDetection2D)
 
     include_directories(${OpenCV_INCLUDE_DIRS})
 
-    # ColorRegionDetection
-    add_library(ColorRegionDetection Transformation.hpp
-                                     ColorRegionDetection2D.hpp
-                                     ColorRegionDetection2D.cpp)
+    # ColorRegionDetector
+    add_library(ColorRegionDetector Detector.hpp
+                                    ColorRegionDetector.hpp
+                                    ColorRegionDetector.cpp)
 
-    target_link_libraries(ColorRegionDetection YARP::YARP_OS
-                                               YARP::YARP_init
-                                               YARP::YARP_dev
-                                               YARP::YARP_sig
-                                               ${OpenCV_LIBS}
-                                               ROBOTICSLAB::ColorDebug
-                                               TravisLib
-                                               TensorflowCC::Shared)
+    target_link_libraries(ColorRegionDetector YARP::YARP_OS
+                                              YARP::YARP_init
+                                              YARP::YARP_dev
+                                              YARP::YARP_sig
+                                              ${OpenCV_LIBS}
+                                              ROBOTICSLAB::ColorDebug
+                                              TravisLib) # ROBOTICSLAB::TravisLib ? ...only finds installed header!!
 
-    # HaarDetection
-    add_library(HaarDetection Transformation.hpp
-                              HaarDetection2D.hpp
-                              HaarDetection2D.cpp)
+    # HaarDetector
+    add_library(HaarDetector Detector.hpp
+                             HaarDetector.hpp
+                             HaarDetector.cpp)
 
-    target_link_libraries(HaarDetection YARP::YARP_OS
-                                        YARP::YARP_init
-                                        YARP::YARP_dev
-                                        YARP::YARP_sig
-                                        ${OpenCV_LIBS}
-                                        ROBOTICSLAB::ColorDebug)
+    target_link_libraries(HaarDetector YARP::YARP_OS
+                                       YARP::YARP_init
+                                       YARP::YARP_dev
+                                       YARP::YARP_sig
+                                       ${OpenCV_LIBS}
+                                       ROBOTICSLAB::ColorDebug)
 
-    # TensorflowDetection
-    #add_library(TensorflowDetection Transformation.hpp
-    #                                TensorflowDetection2D.hpp
-    #                                TensorflowDetection2D.cpp
-    #                                TensorflowDetector.hpp
-    #                                TensorflowDetector.cpp)
+    # TensorflowDetector
+    add_library(TensorflowDetector Detector.hpp
+                                   TensorFlowDetector.hpp
+                                   TensorFlowDetector.cpp)
 
-    #target_link_libraries(TensorflowDetection YARP::YARP_OS
-    #                                          YARP::YARP_init
-    #                                          YARP::YARP_dev
-    #                                          YARP::YARP_sig
-    #                                          ROBOTICSLAB::ColorDebug
-    #                                          TensorflowCC::Shared
-    #                                          ${OpenCV_LIBS})
+    target_link_libraries(TensorflowDetector YARP::YARP_OS
+                                             YARP::YARP_init
+                                             YARP::YARP_dev
+                                             YARP::YARP_sig
+                                             ROBOTICSLAB::ColorDebug
+                                             TensorflowCC::Shared
+                                             ${OpenCV_LIBS})
 
     # switchDetection2D
     add_executable(switchDetection2D main.cpp
                                      SwitchDetection2D.hpp
                                      SwitchDetection2D.cpp
-                                     SegmentorThread.hpp
-                                     SegmentorThread.cpp
-                                     Transformation.hpp
-                                     Transformation.cpp)
+                                     DetectorThread.hpp
+                                     DetectorThread.cpp
+                                     Detector.hpp)
 
     target_link_libraries(switchDetection2D YARP::YARP_OS
                                             YARP::YARP_init
                                             YARP::YARP_dev
                                             YARP::YARP_sig
                                             ROBOTICSLAB::ColorDebug
-                                            ColorRegionDetection
-                                            HaarDetection)
-                                            #TensorflowDetection)
+                                            ColorRegionDetector
+                                            HaarDetector
+                                            TensorflowDetector)
 
     install(TARGETS switchDetection2D
             DESTINATION ${CMAKE_INSTALL_BINDIR})
