@@ -133,7 +133,7 @@ tensorflow::Status readTensorFromMat(const cv::Mat &mat, tensorflow::Tensor &out
 
 /************************************************************************/
 
-void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMax, double xMax, double score, std::string label, bool scaled=true) {
+double *drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMax, double xMax, double score, std::string label, bool scaled=true) {
     cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
     cv::Point tl, br;
     if (scaled) {
@@ -143,6 +143,15 @@ void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMa
         tl = cv::Point((int) xMin, (int) yMin);
         br = cv::Point((int) xMax, (int) yMax);
     }
+    double xMed=(xMin+xMax)/2;
+    double yMed=(yMin+yMax)/2;
+    static double position[2];
+    position[0]=xMed;
+    position[1]=yMed;
+    std::cout<<"Pre:"<<std::endl;
+    std::cout<<"X: "<<position[0]<<" y: "<<position[1]<<std::endl;
+
+
     cv::rectangle(image, tl, br, cv::Scalar(0, 255, 255), 1);
 
     float scoreRounded = floorf(score * 1000) / 1000;
@@ -156,25 +165,36 @@ void drawBoundingBoxOnImage(cv::Mat &image, double yMin, double xMin, double yMa
     cv::putText(image, caption, textCorner, cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(255, 0, 0));
     cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
 
+    return position;
+
 }
 
 /************************************************************************/
 // Draw on image
 /************************************************************************/
 
-void drawBoundingBoxesOnImage(cv::Mat &image,
+double *drawBoundingBoxesOnImage(cv::Mat &image,
                               tensorflow::TTypes<float>::Flat &scores,
                               tensorflow::TTypes<float>::Flat &classes,
                               tensorflow::TTypes<float,3>::Tensor &boxes,
                               std::map<int, tensorflow::string> &labelsMap,
                               std::vector<size_t> &idxs) {
     cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+
+    double *positiona;
+
     for (int j = 0; j < idxs.size(); j++)
-        drawBoundingBoxOnImage(image,
+
+        positiona=drawBoundingBoxOnImage(image,
                                boxes(0,idxs.at(j),0), boxes(0,idxs.at(j),1),
                                boxes(0,idxs.at(j),2), boxes(0,idxs.at(j),3),
                                scores(idxs.at(j)), labelsMap[classes(idxs.at(j))]);
+
+                               std::cout<<"Post:"<<std::endl;
+                               std::cout<<"X: "<<positiona[0]<<" y: "<<positiona[1]<<std::endl;
+
                                cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+return positiona;
 }
 
 /************************************************************************/
