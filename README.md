@@ -46,3 +46,5 @@ Installation instructions for installing from source can be found [here]( doc/vi
 - [ViSP](http://visp.inria.fr/): Visual Servoing Platform
 - YARP
     - [visual-tracking-control](https://robotology.github.io/visual-tracking-control) ([robotology/visual-tracking-control](https://github.com/robotology/visual-tracking-control))
+- roboticslab-uc3m
+    - [legacy-matlab-visual-servo](https://github.com/roboticslab-uc3m/legacy-matlab-visual-servo) (legacy)
