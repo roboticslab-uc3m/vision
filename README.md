@@ -41,6 +41,7 @@ Installation instructions for installing from source can be found [here]( doc/vi
 - [MIT-SPARK/Kimera-VIO](https://github.com/MIT-SPARK/Kimera-VIO): Visual Inertial Odometry with SLAM capabilities and 3D Mesh generation
 - YARP
     - [robotology/segmentation](https://github.com/robotology/segmentation) ([doxygen](http://robotology.github.io/segmentation/doxygen/doc/html/modules.html))
+    - [icVision](http://juxi.net/projects/icVision) ([Juxi/icVision](https://github.com/Juxi/icVision))
 
 ### Visual Servoing
 - [ViSP](http://visp.inria.fr/): Visual Servoing Platform
