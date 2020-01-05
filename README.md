@@ -34,13 +34,15 @@ Installation instructions for installing from source can be found [here]( doc/vi
 ## Similar and Related Projects
 
 ### General
-- [robotology/segmentation](https://github.com/robotology/segmentation) ([doxygen](http://robotology.github.io/segmentation/doxygen/doc/html/modules.html))
 - [GRIP](https://wpiroboticsprojects.github.io/GRIP) ([WPIRoboticsProjects/GRIP](https://github.com/WPIRoboticsProjects/GRIP)): A tool for developing computer vision algorithms interactively. We have used it for several projects, including [asrob-uc3m/air-hockey](https://github.com/asrob-uc3m/air-hockey/issues/5). [tutorial](http://wpilib.screenstepslive.com/s/4485/m/24194/l/463566-introduction-to-grip).
 - [TVM](https://tvm.ai) ([dmlc/tvm](https://github.com/dmlc/tvm)): Open Deep Learning Compiler Stack
 - [PCL](http://pointclouds.org) ([PointCloudLibrary/pcl](https://github.com/PointCloudLibrary/pcl)): 2D/3D image and point cloud processing
 - [CloudCompare/CloudCompare](https://github.com/CloudCompare/CloudCompare): A 3D point cloud (and triangular mesh) processing software
 - [MIT-SPARK/Kimera-VIO](https://github.com/MIT-SPARK/Kimera-VIO): Visual Inertial Odometry with SLAM capabilities and 3D Mesh generation
+- YARP
+    - [robotology/segmentation](https://github.com/robotology/segmentation) ([doxygen](http://robotology.github.io/segmentation/doxygen/doc/html/modules.html))
 
 ### Visual Servoing
-- [visual-tracking-control](https://robotology.github.io/visual-tracking-control) ([robotology/visual-tracking-control](https://github.com/robotology/visual-tracking-control))
 - [ViSP](http://visp.inria.fr/): Visual Servoing Platform
+- YARP
+    - [visual-tracking-control](https://robotology.github.io/visual-tracking-control) ([robotology/visual-tracking-control](https://github.com/robotology/visual-tracking-control))
