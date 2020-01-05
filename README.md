@@ -50,3 +50,6 @@ Installation instructions for installing from source can be found [here]( doc/vi
 - roboticslab-uc3m
     - [follow-me](https://github.com/roboticslab-uc3m/follow-me) (see [follow-me#34](https://github.com/roboticslab-uc3m/follow-me/issues/34#issuecomment-433612540))
     - [legacy-matlab-visual-servo](https://github.com/roboticslab-uc3m/legacy-matlab-visual-servo) (legacy)
+
+### Monocular SLAM
+- https://github.com/asrob-uc3m/robotDevastation-playground#monocular-slam
