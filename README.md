@@ -44,7 +44,7 @@ Installation instructions for installing from source can be found [here]( doc/vi
     - [icVision](http://juxi.net/projects/icVision) ([Juxi/icVision](https://github.com/Juxi/icVision))
 
 ### Visual Servoing
-- [ViSP](http://visp.inria.fr/): Visual Servoing Platform
+- [ViSP](http://visp.inria.fr/) ([lagadic/visp](https://github.com/lagadic/visp)): Visual Servoing Platform
 - YARP
     - [visual-tracking-control](https://robotology.github.io/visual-tracking-control) ([robotology/visual-tracking-control](https://github.com/robotology/visual-tracking-control))
 - roboticslab-uc3m
