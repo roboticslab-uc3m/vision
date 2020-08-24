@@ -11,8 +11,11 @@
 #include <yarp/os/Bottle.h>
 #include <yarp/sig/ImageDraw.h>
 
+#include <opencv2/core/core_c.h>
 #include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/objdetect.hpp> // cv::CASCADE_SCALE_IMAGE
 
 #include <ColorDebug.h>
 
@@ -106,7 +109,7 @@ void SegmentorThread::run()
 
     std::vector<cv::Rect> objects;
 
-    object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, cv::Size(30, 30));
+    object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
     yarp::sig::PixelRgb red(255, 0, 0);

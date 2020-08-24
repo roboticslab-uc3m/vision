@@ -2,6 +2,10 @@
 
 #include "SegmentorThread.hpp"
 
+#include <opencv2/core/core_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
+#include <opencv2/objdetect.hpp> // cv::CASCADE_SCALE_IMAGE
+
 #include <yarp/os/Time.h>
 
 namespace
@@ -123,7 +127,7 @@ void SegmentorThread::run() {
 
     std::vector<cv::Rect> faces;
     //face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0, Size(70, 70));
-    face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(30, 30) );
+    face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0|cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30) );
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
     outYarpImg.copy(colorFrame);

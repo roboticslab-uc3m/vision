@@ -4,6 +4,9 @@
 
 #include <yarp/os/Time.h>
 
+#include <opencv2/core/core_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
+
 namespace
 {
     inline void scaleXY(const yarp::sig::Image & frame1, const yarp::sig::Image & frame2, double px1, double py1, double * px2, double * py2)
@@ -215,7 +218,7 @@ void SegmentorThread::run() {
     cv::Mat outCvMat = travis.getCvMat(outImage,seeBounding);
     travis.release();
     // { openCv Mat Bgr -> yarp ImageOf Rgb}
-    IplImage outIplImage = outCvMat;
+    IplImage outIplImage = cvIplImage(outCvMat);
     cvCvtColor(&outIplImage,&outIplImage, CV_BGR2RGB);
     char sequence[] = "RGB";
     strcpy (outIplImage.channelSeq,sequence);

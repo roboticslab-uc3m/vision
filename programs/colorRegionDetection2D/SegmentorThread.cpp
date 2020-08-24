@@ -2,6 +2,9 @@
 
 #include "SegmentorThread.hpp"
 
+#include <opencv2/core/core_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
+
 using namespace std;
 
 namespace roboticslab
@@ -140,7 +143,7 @@ void SegmentorThread::run() {
     travis.release();
 
     // { openCv Mat Bgr -> yarp ImageOf Rgb}
-    IplImage outIplImage = outCvMat;
+    IplImage outIplImage = cvIplImage(outCvMat);
     cvCvtColor(&outIplImage,&outIplImage, CV_BGR2RGB);
     char sequence[] = "RGB";
     strcpy (outIplImage.channelSeq,sequence);
