@@ -2,6 +2,7 @@
 
 #include "SegmentorThread.hpp"
 
+#include <opencv2/core/version.hpp>
 #include <opencv2/core/core_c.h>
 #include <opencv2/imgproc/imgproc_c.h>
 
@@ -143,7 +144,11 @@ void SegmentorThread::run() {
     travis.release();
 
     // { openCv Mat Bgr -> yarp ImageOf Rgb}
+#if CV_MAJOR_VERSION > 3 || (CV_MAJOR_VERSION == 3 && CV_MINOR_VERSION == 4 && CV_SUBMINOR_VERSION >= 4)
     IplImage outIplImage = cvIplImage(outCvMat);
+#else
+    IplImage outIplImage = outCvMat;
+#endif
     cvCvtColor(&outIplImage,&outIplImage, CV_BGR2RGB);
     char sequence[] = "RGB";
     strcpy (outIplImage.channelSeq,sequence);
