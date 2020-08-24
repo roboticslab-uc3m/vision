@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <vector>
 
+#include <opencv2/imgproc/imgproc_c.h>
+
 namespace roboticslab
 {
 
