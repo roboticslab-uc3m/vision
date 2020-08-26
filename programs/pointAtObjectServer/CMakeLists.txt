@@ -25,7 +25,7 @@ if(ENABLE_pointAtObjectServer)
     list(FILTER PCL_DEFINITIONS EXCLUDE REGEX "^ +$")
     target_compile_definitions(pointAtObjectServer PUBLIC ${PCL_DEFINITIONS})
 
-    target_link_libraries(pointAtObjectServer YARP::YARP_OS
+    target_link_libraries(pointAtObjectServer YARP::YARP_os
                                               YARP::YARP_init
                                               YARP::YARP_sig
                                               ${PCL_LIBRARIES})

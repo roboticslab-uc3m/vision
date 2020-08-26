@@ -15,7 +15,7 @@ if(ENABLE_haarDetection2D)
                                    SegmentorThread.hpp
                                    SegmentorThread.cpp)
 
-    target_link_libraries(haarDetection2D YARP::YARP_OS
+    target_link_libraries(haarDetection2D YARP::YARP_os
                                           YARP::YARP_init
                                           YARP::YARP_dev
                                           YARP::YARP_sig

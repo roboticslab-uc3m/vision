@@ -11,8 +11,8 @@ env:
     - CACHE_DIR=~/cached-deps
     - YCM_CHECKOUT=ycm-0.11
   matrix:
+    - YARP_CHECKOUT=yarp-3.4
     - YARP_CHECKOUT=yarp-3.3
-    - YARP_CHECKOUT=yarp-3.2
 
 matrix:
   include:

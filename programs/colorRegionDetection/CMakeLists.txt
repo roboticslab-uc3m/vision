@@ -15,7 +15,7 @@ if(ENABLE_colorRegionDetection)
                                         SegmentorThread.hpp
                                         SegmentorThread.cpp)
 
-    target_link_libraries(colorRegionDetection YARP::YARP_OS
+    target_link_libraries(colorRegionDetection YARP::YARP_os
                                                YARP::YARP_init
                                                YARP::YARP_dev
                                                YARP::YARP_sig

@@ -25,7 +25,7 @@ if(ENABLE_tensorflowDetection2D)
                                    SegmentorThread.hpp
                                    SegmentorThread.cpp)
 
-    target_link_libraries(tensorflowDetection2D YARP::YARP_OS
+    target_link_libraries(tensorflowDetection2D YARP::YARP_os
                                           YARP::YARP_init
                                           YARP::YARP_dev
                                           YARP::YARP_sig
