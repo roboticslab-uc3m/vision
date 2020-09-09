@@ -8,9 +8,9 @@ add_executable(kinectPxToReal main.cpp
                               CallbackPort.hpp
                               CallbackPort.cpp)
 
-target_link_libraries(kinectPxToReal YARP::YARP_OS
+target_link_libraries(kinectPxToReal YARP::YARP_os
                                      YARP::YARP_init
-                                     YARP::YARP_sig)
+                                     YARP::YARP_dev)
 
 install(TARGETS kinectPxToReal
         DESTINATION ${CMAKE_INSTALL_BINDIR})

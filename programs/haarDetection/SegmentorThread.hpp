@@ -7,26 +7,18 @@
 #include <yarp/os/Network.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/BufferedPort.h>
-#include <yarp/os/RateThread.h>
+#include <yarp/os/PeriodicThread.h>
+#include <yarp/os/Property.h>
 
 #include <yarp/dev/all.h>
 #include <yarp/dev/IRGBDSensor.h>
 
 #include <yarp/sig/all.h>
 
-#include <cv.h>
-//#include <highgui.h> // to show windows
-
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
-
-// thanks! https://web.stanford.edu/~qianyizh/projects/scenedata.html
-#define DEFAULT_FX_D          525.0  // 640x480
-#define DEFAULT_FY_D          525.0  //
-#define DEFAULT_CX_D          319.5  //
-#define DEFAULT_CY_D          239.5  //
 
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_SEE_BOUNDING 3
@@ -49,11 +41,11 @@ class DataProcessor : public yarp::os::PortReader {
         // process data in b
         printf("Got %s\n", b.toString().c_str());
         if(waitForFirst) {
-            xKeep = b.get(0).asInt();
-            yKeep = b.get(1).asInt();
+            xKeep = b.get(0).asInt32();
+            yKeep = b.get(1).asInt32();
             waitForFirst = false;
         } else {
-            if((b.get(0).asInt()<xKeep)||(b.get(1).asInt()<yKeep)){
+            if((b.get(0).asInt32()<xKeep)||(b.get(1).asInt32()<yKeep)){
                 x = 0;
                 y = 0;
                 w = 0;
@@ -61,8 +53,8 @@ class DataProcessor : public yarp::os::PortReader {
             } else {
                 x = xKeep;
                 y = yKeep;
-                w = b.get(0).asInt() - x;
-                h = b.get(1).asInt() - y;
+                w = b.get(0).asInt32() - x;
+                h = b.get(1).asInt32() - y;
             }
             waitForFirst = true;
         }
@@ -87,9 +79,9 @@ public:
 /**
  * @ingroup haarDetection
  *
- * @brief Implements haarDetection RateThread.
+ * @brief Implements haarDetection PeriodicThread.
  */
-class SegmentorThread : public yarp::os::RateThread {
+class SegmentorThread : public yarp::os::PeriodicThread {
 private:
     yarp::dev::IRGBDSensor *iRGBDSensor;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
@@ -106,7 +98,7 @@ private:
 
 
 public:
-    SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
+    SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
     void setIRGBDSensor(yarp::dev::IRGBDSensor * _iRGBDSensor);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);

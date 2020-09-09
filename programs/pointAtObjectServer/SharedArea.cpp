@@ -10,18 +10,18 @@ void SharedArea::init() {
 
 /************************************************************************/
 void SharedArea::setLC(const double _lineCoords[6]) {
-    lcMutex.wait();
+    lcMutex.lock();
     for(int i=0;i<6;i++) lineCoords[i] = _lineCoords[i];
-    lcMutex.post();
+    lcMutex.unlock();
     printf("[SharedArea] set shortCoords1: %f %f %f\t",lineCoords[0],lineCoords[1],lineCoords[2]);
     printf("[SharedArea] set shortCoords2: %f %f %f\n",lineCoords[3],lineCoords[4],lineCoords[5]);
 }
 
 /************************************************************************/
 void SharedArea::getLC(double _lineCoords[6]) {
-    lcMutex.wait();
+    lcMutex.lock();
     for(int i=0;i<6;i++) _lineCoords[i] = lineCoords[i];
-    lcMutex.post();
+    lcMutex.unlock();
     // printf("[SharedArea] get coord1: %f %f %f\t",lineCoords[0],lineCoords[1],lineCoords[2]);
     // printf("[SharedArea] get coord2: %f %f %f\n",lineCoords[3],lineCoords[4],lineCoords[5]);
 }
@@ -29,9 +29,9 @@ void SharedArea::getLC(double _lineCoords[6]) {
 /************************************************************************/
 void SharedArea::getLongLC(double _longLineCoords[6]) {
     double shortCoords[6];
-    lcMutex.wait();
+    lcMutex.lock();
     for(int i=0;i<6;i++) shortCoords[i] = lineCoords[i];
-    lcMutex.post();
+    lcMutex.unlock();
     printf("[SharedArea] get shortCoords1: %f %f %f\t",shortCoords[0],shortCoords[1],shortCoords[2]);
     printf("[SharedArea] get shortCoords2: %f %f %f\n",shortCoords[3],shortCoords[4],shortCoords[5]);
     double direction[3] = { shortCoords[3] - shortCoords[0],
@@ -51,4 +51,3 @@ void SharedArea::getLongLC(double _longLineCoords[6]) {
 
 /************************************************************************/
 }  // namespace roboticslab
-

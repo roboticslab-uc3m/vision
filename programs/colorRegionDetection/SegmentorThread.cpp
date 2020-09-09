@@ -4,6 +4,27 @@
 
 #include <yarp/os/Time.h>
 
+#include <opencv2/core/version.hpp>
+#include <opencv2/core/core_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
+
+namespace
+{
+    inline void scaleXY(const yarp::sig::Image & frame1, const yarp::sig::Image & frame2, double px1, double py1, double * px2, double * py2)
+    {
+        if (frame1.width() != frame2.width() || frame1.height() != frame2.height())
+        {
+            *px2 = px1 * ((double)frame2.width() / (double)frame1.width());
+            *py2 = py1 * ((double)frame2.height() / (double)frame1.height());
+        }
+        else
+        {
+            *px2 = px1;
+            *py2 = py1;
+        }
+    }
+}
+
 namespace roboticslab
 {
 
@@ -24,15 +45,21 @@ void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort) {
 
 /************************************************************************/
 void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
+    yarp::os::Property rgbIntrinsicParams;
+    yarp::os::Property depthIntrinsicParams;
 
-    fx_d = DEFAULT_FX_D;
-    fy_d = DEFAULT_FY_D;
-    cx_d = DEFAULT_CX_D;
-    cy_d = DEFAULT_CY_D;
-    fx_rgb = DEFAULT_FX_RGB;
-    fy_rgb = DEFAULT_FY_RGB;
-    cx_rgb = DEFAULT_CX_RGB;
-    cy_rgb = DEFAULT_CY_RGB;
+    iRGBDSensor->getRgbIntrinsicParam(rgbIntrinsicParams);
+    iRGBDSensor->getDepthIntrinsicParam(depthIntrinsicParams);
+
+    fx_d = depthIntrinsicParams.find("focalLengthX").asFloat64();
+    fy_d = depthIntrinsicParams.find("focalLengthY").asFloat64();
+    cx_d = depthIntrinsicParams.find("principalPointX").asFloat64();
+    cy_d = depthIntrinsicParams.find("principalPointY").asFloat64();
+
+    fx_rgb = rgbIntrinsicParams.find("focalLengthX").asFloat64();
+    fy_rgb = rgbIntrinsicParams.find("focalLengthY").asFloat64();
+    cx_rgb = rgbIntrinsicParams.find("principalPointX").asFloat64();
+    cy_rgb = rgbIntrinsicParams.find("principalPointY").asFloat64();
 
     algorithm = DEFAULT_ALGORITHM;
     locate = DEFAULT_LOCATE;
@@ -50,16 +77,6 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     if (rf.check("help")) {
         printf("SegmentorThread options:\n");
         printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-
-        printf("\t--fx_d (default: \"%f\")\n",fx_d);
-        printf("\t--fy_d (default: \"%f\")\n",fy_d);
-        printf("\t--cx_d (default: \"%f\")\n",cx_d);
-        printf("\t--cy_d (default: \"%f\")\n",cy_d);
-        printf("\t--fx_rgb (default: \"%f\")\n",fx_rgb);
-        printf("\t--fy_rgb (default: \"%f\")\n",fy_rgb);
-        printf("\t--cx_rgb (default: \"%f\")\n",cx_rgb);
-        printf("\t--cy_rgb (default: \"%f\")\n",cy_rgb);
-
         printf("\t--algorithm (default: \"%s\")\n",algorithm.c_str());
         printf("\t--locate (centroid or bottom; default: \"%s\")\n",locate.c_str());
         printf("\t--maxNumBlobs (default: \"%d\")\n",maxNumBlobs);
@@ -76,20 +93,12 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
 
-    if (rf.check("fx_d")) fx_d = rf.find("fx_d").asDouble();
-    if (rf.check("fy_d")) fy_d = rf.find("fy_d").asDouble();
-    if (rf.check("cx_d")) cx_d = rf.find("cx_d").asDouble();
-    if (rf.check("cy_d")) cy_d = rf.find("cy_d").asDouble();
-    if (rf.check("fx_rgb")) fx_rgb = rf.find("fx_rgb").asDouble();
-    if (rf.check("fy_rgb")) fy_rgb = rf.find("fy_rgb").asDouble();
-    if (rf.check("cx_rgb")) cx_rgb = rf.find("cx_rgb").asDouble();
-    if (rf.check("cy_rgb")) cy_rgb = rf.find("cy_rgb").asDouble();
     if (rf.check("algorithm")) algorithm = rf.find("algorithm").asString();
     if (rf.check("locate")) locate = rf.find("locate").asString();
-    if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt();
-    if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asDouble();
-    if (rf.check("morphOpening")) morphOpening = rf.find("morphOpening").asDouble();
-    if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt();
+    if (rf.check("maxNumBlobs")) maxNumBlobs = rf.find("maxNumBlobs").asInt32();
+    if (rf.check("morphClosing")) morphClosing = rf.find("morphClosing").asFloat64();
+    if (rf.check("morphOpening")) morphOpening = rf.find("morphOpening").asFloat64();
+    if (rf.check("outFeaturesFormat")) outFeaturesFormat = rf.find("outFeaturesFormat").asInt32();
 
     printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
         fx_d,fy_d,cx_d,cy_d);
@@ -102,13 +111,13 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 
     if (rf.check("outFeatures")) {
         outFeatures = *(rf.find("outFeatures").asList());  // simple overrride
-    }   
+    }
     printf("SegmentorThread using outFeatures: (%s).\n", outFeatures.toString().c_str());
 
-    if (rf.check("outImage")) outImage = rf.find("outImage").asInt();
-    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt();
-    if (rf.check("threshold")) threshold = rf.find("threshold").asInt();
-    if (rf.check("seeBounding")) seeBounding = rf.find("seeBounding").asInt();
+    if (rf.check("outImage")) outImage = rf.find("outImage").asInt32();
+    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt32();
+    if (rf.check("threshold")) threshold = rf.find("threshold").asInt32();
+    if (rf.check("seeBounding")) seeBounding = rf.find("seeBounding").asInt32();
     printf("SegmentorThread using outImage: %d, rateMs: %d, seeBounding: %d, threshold: %d.\n",
         outImage, rateMs, seeBounding, threshold);
 
@@ -126,7 +135,7 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
     // from the depthCamera device if started straight away.
     yarp::os::Time::delay(1);
 
-    this->setRate(rateMs);
+    this->setPeriod(rateMs * 0.001);
     this->start();
 }
 
@@ -210,7 +219,11 @@ void SegmentorThread::run() {
     cv::Mat outCvMat = travis.getCvMat(outImage,seeBounding);
     travis.release();
     // { openCv Mat Bgr -> yarp ImageOf Rgb}
+#if CV_MAJOR_VERSION > 3 || (CV_MAJOR_VERSION == 3 && CV_MINOR_VERSION == 4 && CV_SUBMINOR_VERSION >= 4)
+    IplImage outIplImage = cvIplImage(outCvMat);
+#else
     IplImage outIplImage = outCvMat;
+#endif
     cvCvtColor(&outIplImage,&outIplImage, CV_BGR2RGB);
     char sequence[] = "RGB";
     strcpy (outIplImage.channelSeq,sequence);
@@ -235,7 +248,9 @@ void SegmentorThread::run() {
             blobsXY[i].y = 0;
         }
         // double mmZ_tmp = depth->pixel(int(blobsXY[i].x +cx_d-cx_rgb),int(blobsXY[i].y +cy_d-cy_rgb));
-        double mmZ_tmp = depthFrame.pixel(int(blobsXY[i].x),int(blobsXY[i].y));
+        double depthX, depthY;
+        scaleXY(colorFrame, depthFrame, blobsXY[i].x, blobsXY[i].y, &depthX, &depthY);
+        double mmZ_tmp = depthFrame.pixel(int(depthX), int(depthY));
 
         if (mmZ_tmp < 0.001) {
             fprintf(stderr,"[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n",i);
@@ -265,191 +280,191 @@ void SegmentorThread::run() {
     for (int elem = 0; elem < outFeatures.size() ; elem++) {
         if ( outFeatures.get(elem).asString() == "mmX" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmX[0]);
+                output.addFloat64(mmX[0]);
             } else {
                 yarp::os::Bottle locXs;
                 for (int i = 0; i < blobsXY.size(); i++)
-                    locXs.addDouble(mmX[i]);
+                    locXs.addFloat64(mmX[i]);
                 output.addList() = locXs;
             }
         } else if ( outFeatures.get(elem).asString() == "mmY" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmY[0]);
+                output.addFloat64(mmY[0]);
             } else {
                 yarp::os::Bottle locYs;
                 for (int i = 0; i < blobsXY.size(); i++)
-                    locYs.addDouble(mmY[i]);
+                    locYs.addFloat64(mmY[i]);
                 output.addList() = locYs;
             }
         } else if ( outFeatures.get(elem).asString() == "mmZ" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(mmZ[0]);
+                output.addFloat64(mmZ[0]);
             } else {
                 yarp::os::Bottle locZs;
                 for (int i = 0; i < blobsXY.size(); i++)
-                    locZs.addDouble(mmZ[i]);
+                    locZs.addFloat64(mmZ[i]);
                 output.addList() = locZs;
             }
         } else if ( outFeatures.get(elem).asString() == "pxXpos" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsXY[0].x);
+                output.addFloat64(blobsXY[0].x);
             } else {
                 yarp::os::Bottle locXs;
                 for (int i = 0; i < blobsXY.size(); i++)
-                    locXs.addDouble(blobsXY[i].x);
+                    locXs.addFloat64(blobsXY[i].x);
                 output.addList() = locXs;
             }
         } else if ( outFeatures.get(elem).asString() == "pxYpos" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsXY[0].y);
+                output.addFloat64(blobsXY[0].y);
             } else {
                 yarp::os::Bottle locYs;
                 for (int i = 0; i < blobsXY.size(); i++)
-                    locYs.addDouble(blobsXY[i].y);
+                    locYs.addFloat64(blobsXY[i].y);
                 output.addList() = locYs;
             }
         } else if ( outFeatures.get(elem).asString() == "pxX" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsXY[0].x - cx_d);
+                output.addFloat64(blobsXY[0].x - cx_d);
             } else {
                 yarp::os::Bottle locXs;
                 for (int i = 0; i < blobsXY.size(); i++)
-                    locXs.addDouble(blobsXY[i].x - cx_d);
+                    locXs.addFloat64(blobsXY[i].x - cx_d);
                 output.addList() = locXs;
             }
         } else if ( outFeatures.get(elem).asString() == "pxY" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsXY[0].y - cy_d);
+                output.addFloat64(blobsXY[0].y - cy_d);
             } else {
                 yarp::os::Bottle locYs;
                 for (int i = 0; i < blobsXY.size(); i++)
-                    locYs.addDouble(blobsXY[i].y - cy_d);
+                    locYs.addFloat64(blobsXY[i].y - cy_d);
                 output.addList() = locYs;
             }
         } else if ( outFeatures.get(elem).asString() == "angle" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsAngle[0]);
+                output.addFloat64(blobsAngle[0]);
             } else {
                 yarp::os::Bottle angles;
                 for (int i = 0; i < blobsAngle.size(); i++)
-                    angles.addDouble(blobsAngle[i]);
+                    angles.addFloat64(blobsAngle[i]);
                 output.addList() = angles;
             }
         } else if ( outFeatures.get(elem).asString() == "area" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsArea[0]);
+                output.addFloat64(blobsArea[0]);
             } else {
                 yarp::os::Bottle areas;
                 for (int i = 0; i < blobsArea.size(); i++)
-                    areas.addDouble(blobsArea[i]);
+                    areas.addFloat64(blobsArea[i]);
                 output.addList() = areas;
             }
         } else if ( outFeatures.get(elem).asString() == "aspectRatio" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsAspectRatio[0]);
+                output.addFloat64(blobsAspectRatio[0]);
             } else {
                 yarp::os::Bottle aspectRatios;
                 for (int i = 0; i < blobsAspectRatio.size(); i++)
-                    aspectRatios.addDouble(blobsAspectRatio[i]);
+                    aspectRatios.addFloat64(blobsAspectRatio[i]);
                 output.addList() = aspectRatios;
             }
         } else if ( outFeatures.get(elem).asString() == "rectangularity" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsRectangularity[0]);
+                output.addFloat64(blobsRectangularity[0]);
             } else {
                 yarp::os::Bottle rectangularities;
                 for (int i = 0; i < blobsRectangularity.size(); i++)
-                    rectangularities.addDouble(blobsRectangularity[i]);
+                    rectangularities.addFloat64(blobsRectangularity[i]);
                 output.addList() = rectangularities;
             }
         } else if ( outFeatures.get(elem).asString() == "axisFirst" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsAxisFirst[0]);
+                output.addFloat64(blobsAxisFirst[0]);
             } else {
                 yarp::os::Bottle axisFirsts;
                 for (int i = 0; i < blobsAxisFirst.size(); i++)
-                    axisFirsts.addDouble(blobsAxisFirst[i]);
+                    axisFirsts.addFloat64(blobsAxisFirst[i]);
                 output.addList() = axisFirsts;
             }
         } else if ( outFeatures.get(elem).asString() == "axisSecond" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsAxisSecond[0]);
+                output.addFloat64(blobsAxisSecond[0]);
             } else {
                 yarp::os::Bottle axisSeconds;
                 for (int i = 0; i < blobsAxisSecond.size(); i++)
-                    axisSeconds.addDouble(blobsAxisSecond[i]);
+                    axisSeconds.addFloat64(blobsAxisSecond[i]);
                 output.addList() = axisSeconds;
             }
         } else if ( outFeatures.get(elem).asString() == "solidity" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsSolidity[0]);
+                output.addFloat64(blobsSolidity[0]);
             } else {
                 yarp::os::Bottle solidities;
                 for (int i = 0; i < blobsSolidity.size(); i++)
-                    solidities.addDouble(blobsSolidity[i]);
+                    solidities.addFloat64(blobsSolidity[i]);
                 output.addList() = solidities;
             }
         } else if ( outFeatures.get(elem).asString() == "hue" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsHue[0]);
+                output.addFloat64(blobsHue[0]);
             } else {
                 yarp::os::Bottle hues;
                 for (int i = 0; i < blobsHue.size(); i++)
-                    hues.addDouble(blobsHue[i]);
+                    hues.addFloat64(blobsHue[i]);
                 output.addList() = hues;
             }
         } else if ( outFeatures.get(elem).asString() == "sat" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsSat[0]);
+                output.addFloat64(blobsSat[0]);
             } else {
                 yarp::os::Bottle sats;
                 for (int i = 0; i < blobsSat.size(); i++)
-                    sats.addDouble(blobsSat[i]);
+                    sats.addFloat64(blobsSat[i]);
                 output.addList() = sats;
             }
         } else if ( outFeatures.get(elem).asString() == "val" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsVal[0]);
+                output.addFloat64(blobsVal[0]);
             } else {
                 yarp::os::Bottle vals;
                 for (int i = 0; i < blobsVal.size(); i++)
-                    vals.addDouble(blobsVal[i]);
+                    vals.addFloat64(blobsVal[i]);
                 output.addList() = vals;
             }
         } else if ( outFeatures.get(elem).asString() == "hueStdDev" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsHueStdDev[0]);
+                output.addFloat64(blobsHueStdDev[0]);
             } else {
                 yarp::os::Bottle hueStdDevs;
                 for (int i = 0; i < blobsHueStdDev.size(); i++)
-                    hueStdDevs.addDouble(blobsHueStdDev[i]);
+                    hueStdDevs.addFloat64(blobsHueStdDev[i]);
                 output.addList() = hueStdDevs;
             }
         } else if ( outFeatures.get(elem).asString() == "satStdDev" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsSatStdDev[0]);
+                output.addFloat64(blobsSatStdDev[0]);
             } else {
                 yarp::os::Bottle satStdDevs;
                 for (int i = 0; i < blobsSatStdDev.size(); i++)
-                    satStdDevs.addDouble(blobsSatStdDev[i]);
+                    satStdDevs.addFloat64(blobsSatStdDev[i]);
                 output.addList() = satStdDevs;
             }
         } else if ( outFeatures.get(elem).asString() == "valStdDev" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(blobsValStdDev[0]);
+                output.addFloat64(blobsValStdDev[0]);
             } else {
                 yarp::os::Bottle valStdDevs;
                 for (int i = 0; i < blobsValStdDev.size(); i++)
-                    valStdDevs.addDouble(blobsValStdDev[i]);
+                    valStdDevs.addFloat64(blobsValStdDev[i]);
                 output.addList() = valStdDevs;
             }
         } else if ( outFeatures.get(elem).asString() == "time" ) {
             if ( outFeaturesFormat == 1 ) {  // 0: Bottled, 1: Minimal
-                output.addDouble(yarp::os::Time::now());
+                output.addFloat64(yarp::os::Time::now());
             } else {
                 yarp::os::Bottle times;
                 for (int i = 0; i < blobsArea.size(); i++)
-                    times.addDouble(yarp::os::Time::now());
+                    times.addFloat64(yarp::os::Time::now());
                 output.addList() = times;
             }
         } else {

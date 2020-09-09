@@ -7,13 +7,10 @@
 #include <yarp/os/Network.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/BufferedPort.h>
-#include <yarp/os/RateThread.h>
+#include <yarp/os/PeriodicThread.h>
 #include <yarp/os/Time.h>
 
 #include <yarp/sig/all.h>
-
-#include "cv.h"
-//#include "highgui.h" // to show windows
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -41,14 +38,14 @@ using namespace cv;
 namespace roboticslab
 {
 
-class SegmentorThread : public RateThread {
+class SegmentorThread : public PeriodicThread {
 private:
     BufferedPort<ImageOf<PixelRgb> > *pInImg;
     BufferedPort<ImageOf<PixelRgb> > *pOutImg;  // for testing
     Port *pOutPort;
     //
-    ConstString algorithm;
-    ConstString locate;
+    std::string algorithm;
+    std::string locate;
     int maxNumBlobs;
     double morphClosing;
     Bottle outFeatures;
@@ -64,7 +61,7 @@ private:
         aspectRatio, solidity, massCenterlocX, massCenterlocY, arc, radius;
 
 public:
-    SegmentorThread() : RateThread(DEFAULT_RATE_MS),
+    SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001),
         area(-1), hue_peak(-1), hue_mode(-1), hue_mean(-1), hue_stddev(-1),
         saturation_peak(-1), saturation_mean(-1), saturation_stddev(-1),
         value_peak(-1), value_mode(-1), value_mean(-1), value_stddev(-1),

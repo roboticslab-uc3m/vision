@@ -22,7 +22,7 @@ if(ENABLE_YarpPlugins)
 #        EXPORT ROBOTICSLAB_VISION)
 
 # Export variables to the global scope.
-#set_property(GLOBAL APPEND PROPERTY ROBOTICSLAB_VISION_TARGETS VisionInterfaces)
+#set_property(GLOBAL APPEND PROPERTY _exported_targets VisionInterfaces)
 
 # YARP devices.
 #add_subdirectory(...)

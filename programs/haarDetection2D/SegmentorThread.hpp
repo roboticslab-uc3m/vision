@@ -6,9 +6,9 @@
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
+#include <yarp/os/PeriodicThread.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/PortReader.h>
-#include <yarp/os/RateThread.h>
 #include <yarp/os/ResourceFinder.h>
 
 #include <yarp/dev/FrameGrabberInterfaces.h>
@@ -18,12 +18,6 @@
 #include <opencv2/objdetect/objdetect.hpp>
 
 #include <ColorDebug.h>
-
-// http://web.archive.org/web/20150524152748/https://web.stanford.edu/~qianyizh/projects/scenedata.html
-#define DEFAULT_FX_D          525.0  // 640x480
-#define DEFAULT_FY_D          525.0  //
-#define DEFAULT_CX_D          319.5  //
-#define DEFAULT_CY_D          239.5  //
 
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
@@ -49,21 +43,21 @@ private:
 
         if (waitForFirst)
         {
-            xKeep = b.get(0).asInt();
-            yKeep = b.get(1).asInt();
+            xKeep = b.get(0).asInt32();
+            yKeep = b.get(1).asInt32();
             waitForFirst = false;
         }
         else
         {
-            if (b.get(0).asInt() < xKeep || b.get(1).asInt() < yKeep)
+            if (b.get(0).asInt32() < xKeep || b.get(1).asInt32() < yKeep)
             {
                 x = y = w = h = 0;
             }
             else
             {
                 x = y = xKeep;
-                w = b.get(0).asInt() - x;
-                h = b.get(1).asInt() - y;
+                w = b.get(0).asInt32() - x;
+                h = b.get(1).asInt32() - y;
             }
 
             waitForFirst = true;
@@ -90,16 +84,15 @@ public:
 /**
  * @ingroup haarDetection2D
  *
- * @brief Implements haarDetection2D RateThread.
+ * @brief Implements haarDetection2D PeriodicThread.
  */
-class SegmentorThread : public yarp::os::RateThread
+class SegmentorThread : public yarp::os::PeriodicThread
 {
 private:
     yarp::dev::IFrameGrabberImage *camera;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
 
-    double fx_d, fy_d, cx_d, cy_d;
     int cropSelector;
 
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *outCropSelectorImg;
@@ -110,7 +103,7 @@ private:
     cv::CascadeClassifier object_cascade;
 
 public:
-    SegmentorThread() : RateThread(DEFAULT_RATE_MS) {}
+    SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
     void setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage * _camera);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);

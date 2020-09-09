@@ -9,37 +9,34 @@
 #define __KINECT_PX_TO_REAL_HPP__
 
 #include <yarp/os/RFModule.h>
-#include <yarp/os/Network.h>
+#include <yarp/os/ResourceFinder.h>
 #include <yarp/os/Port.h>
-#include <yarp/os/BufferedPort.h>
 
-#include <yarp/sig/all.h>
+#include <yarp/dev/IRGBDSensor.h>
+#include <yarp/dev/PolyDriver.h>
 
 #include "CallbackPort.hpp"
 
-#define DEFAULT_FX          640     //
-#define DEFAULT_FY          640     //
-#define DEFAULT_CX          320     //
-#define DEFAULT_CY          240     //
+#define DEFAULT_RGBD_DEVICE "RGBDSensorClient"
+#define DEFAULT_RGBD_LOCAL "/kinectPxToReal"
+#define DEFAULT_RGBD_REMOTE "/rgbd"
 #define DEFAULT_WATCHDOG    5       // [s]
 
-using namespace yarp::os;
-using namespace yarp::sig;
-
-class KinectPxToReal : public RFModule {
+class KinectPxToReal : public yarp::os::RFModule {
     protected:
         bool updateModule();
         bool interruptModule();
         double getPeriod();
         double watchdog; // [s]
 
-        BufferedPort<ImageOf<PixelFloat> > depthPort;
         CallbackPort callbackPort;
-        Port outPort;
+        yarp::os::Port outPort;
+
+        yarp::dev::PolyDriver rgbdDevice;
+        yarp::dev::IRGBDSensor * irgbdSensor;
 
     public:
-        bool configure(ResourceFinder &rf);
+        bool configure(yarp::os::ResourceFinder &rf);
 };
 
 #endif  // __KINECT_PX_TO_REAL_HPP__
-

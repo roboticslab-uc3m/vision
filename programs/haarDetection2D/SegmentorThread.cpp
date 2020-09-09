@@ -11,8 +11,11 @@
 #include <yarp/os/Bottle.h>
 #include <yarp/sig/ImageDraw.h>
 
+#include <opencv2/core/core_c.h>
 #include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/objdetect.hpp> // cv::CASCADE_SCALE_IMAGE
 
 #include <ColorDebug.h>
 
@@ -43,11 +46,6 @@ void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
 
 void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 {
-    fx_d = DEFAULT_FX_D;
-    fy_d = DEFAULT_FY_D;
-    cx_d = DEFAULT_CX_D;
-    cy_d = DEFAULT_CY_D;    
-
     int rateMs = DEFAULT_RATE_MS;
 
     std::string xmlCascade = DEFAULT_XMLCASCADE;
@@ -56,40 +54,14 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
     {
         std::printf("SegmentorThread options:\n");
         std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-        std::printf("\t--fx_d (default: \"%f\")\n", fx_d);
-        std::printf("\t--fy_d (default: \"%f\")\n", fy_d);
-        std::printf("\t--cx_d (default: \"%f\")\n", cx_d);
-        std::printf("\t--cy_d (default: \"%f\")\n", cy_d);
         std::printf("\t--rateMs (default: \"%d\")\n", rateMs);
         std::printf("\t--xmlCascade [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
 
-    if (rf.check("fx_d"))
-    {
-        fx_d = rf.find("fx_d").asDouble();
-    }
-
-    if (rf.check("fy_d"))
-    {
-        fy_d = rf.find("fy_d").asDouble();
-    }
-
-    if (rf.check("cx_d"))
-    {
-        cx_d = rf.find("cx_d").asDouble();
-    }
-
-    if (rf.check("cy_d"))
-    {
-        cy_d = rf.find("cy_d").asDouble();
-    }
-
-    CD_INFO("Using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n", fx_d, fy_d, cx_d, cy_d);
-
     if (rf.check("rateMs"))
     {
-        rateMs = rf.find("rateMs").asInt();
+        rateMs = rf.find("rateMs").asInt32();
     }
 
     if (rf.check("xmlCascade"))
@@ -116,8 +88,8 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
         inCropSelectorPort->setReader(processor);
     }
 
-    RateThread::setRate(rateMs);
-    RateThread::start();
+    PeriodicThread::setPeriod(rateMs * 0.001);
+    PeriodicThread::start();
 }
 
 /************************************************************************/
@@ -137,7 +109,7 @@ void SegmentorThread::run()
 
     std::vector<cv::Rect> objects;
 
-    object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, cv::Size(30, 30));
+    object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
     yarp::sig::PixelRgb red(255, 0, 0);
@@ -153,8 +125,8 @@ void SegmentorThread::run()
         const int pxX = objects[i].x + objects[i].width / 2;
         const int pxY = objects[i].y + objects[i].height / 2;
 
-        int centerX = inCvMat.rows / 2;
-        int centerY = inCvMat.cols / 2;
+        int centerX = inCvMat.cols / 2;
+        int centerY = inCvMat.rows / 2;
 
         int distance = std::sqrt(std::pow(pxX - centerX, 2) + std::pow(pxY - centerY, 2));
 
@@ -172,14 +144,15 @@ void SegmentorThread::run()
 
         if (i == closestObject)
         {
-            double mmX_tmp = 1000.0 * (pxX - cx_d) / fx_d;
-            double mmY_tmp = 1000.0 * (pxY - cy_d) / fy_d;
-
             yarp::sig::draw::addRectangleOutline(outYarpImg, green, pxX, pxY,
                     objects[i].width / 2, objects[i].height / 2);
 
-            output.addDouble(mmX_tmp);   // Points left
-            output.addDouble(-mmY_tmp);  // Points up
+            // scale centroids and fit into [-1, 1] range
+            double cX = 2.0 * pxX / inCvMat.cols - 1.0;
+            double cY = 2.0 * pxY / inCvMat.rows - 1.0;
+
+            output.addFloat64(cX); // Points right
+            output.addFloat64(cY); // Points down
         }
         else
         {

@@ -25,7 +25,8 @@ if(ENABLE_TravisLib)
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
             PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-    set_property(GLOBAL APPEND PROPERTY ROBOTICSLAB_VISION_TARGETS TravisLib)
+    set_property(GLOBAL APPEND PROPERTY _exported_targets TravisLib)
+    set_property(GLOBAL APPEND PROPERTY _exported_dependencies OpenCV)
 
 else()
 

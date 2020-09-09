@@ -1,14 +1,15 @@
 <application>
-<name>example haarDetection App</name>
+    <name>example haarDetection App</name>
+
     <module>
         <name>yarpdev</name>
-        <parameters>--device OpenNI2DeviceServer --depthVideoMode 4 --colorVideoMode 9 --noRGBMirror --noDepthMirror</parameters>
+        <parameters>--context sensors --from asus-xtion.ini</parameters>
         <node>localhost</node>
     </module>
 
     <module>
         <name>haarDetection</name>
-        <parameters>--kinectDevice OpenNI2DeviceClient --kinectLocal /haarDetection</parameters>
+        <parameters>--RGBDLocal /xtion</parameters>
         <node>localhost</node>
     </module>
     <module>
@@ -21,6 +22,4 @@
         <to>/haarDetection/yarpview/img:i</to>
     </connection>
 
-
 </application>
-

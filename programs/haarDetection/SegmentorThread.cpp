@@ -2,7 +2,28 @@
 
 #include "SegmentorThread.hpp"
 
+#include <opencv2/core/core_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
+#include <opencv2/objdetect.hpp> // cv::CASCADE_SCALE_IMAGE
+
 #include <yarp/os/Time.h>
+
+namespace
+{
+    inline void scaleXY(const yarp::sig::Image & frame1, const yarp::sig::Image & frame2, double px1, double py1, double * px2, double * py2)
+    {
+        if (frame1.width() != frame2.width() || frame1.height() != frame2.height())
+        {
+            *px2 = px1 * ((double)frame2.width() / (double)frame1.width());
+            *py2 = py1 * ((double)frame2.height() / (double)frame1.height());
+        }
+        else
+        {
+            *px2 = px1;
+            *py2 = py1;
+        }
+    }
+}
 
 namespace roboticslab
 {
@@ -24,11 +45,14 @@ void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort) {
 
 /************************************************************************/
 void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
+    yarp::os::Property depthIntrinsicParams;
 
-    fx_d = DEFAULT_FX_D;
-    fy_d = DEFAULT_FY_D;
-    cx_d = DEFAULT_CX_D;
-    cy_d = DEFAULT_CY_D;    
+    iRGBDSensor->getDepthIntrinsicParam(depthIntrinsicParams);
+
+    fx_d = depthIntrinsicParams.find("focalLengthX").asFloat64();
+    fy_d = depthIntrinsicParams.find("focalLengthY").asFloat64();
+    cx_d = depthIntrinsicParams.find("principalPointX").asFloat64();
+    cy_d = depthIntrinsicParams.find("principalPointY").asFloat64();
 
     int rateMs = DEFAULT_RATE_MS;
 
@@ -38,27 +62,15 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     if (rf.check("help")) {
         printf("SegmentorThread options:\n");
         printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-
-        printf("\t--fx_d (default: \"%f\")\n",fx_d);
-        printf("\t--fy_d (default: \"%f\")\n",fy_d);
-        printf("\t--cx_d (default: \"%f\")\n",cx_d);
-        printf("\t--cy_d (default: \"%f\")\n",cy_d);
         printf("\t--rateMs (default: \"%d\")\n",rateMs);
         printf("\t--xmlCascade [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
 
-    if (rf.check("fx_d")) fx_d = rf.find("fx_d").asDouble();
-    if (rf.check("fy_d")) fy_d = rf.find("fy_d").asDouble();
-    if (rf.check("cx_d")) cx_d = rf.find("cx_d").asDouble();
-    if (rf.check("cy_d")) cy_d = rf.find("cy_d").asDouble();
-
     printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
         fx_d,fy_d,cx_d,cy_d);
 
-
-
-    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt();
+    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt32();
     if (rf.check("xmlCascade")) xmlCascade = rf.find("xmlCascade").asString();
 
     printf("--------------------------------------------------------------\n");
@@ -82,7 +94,7 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     // from the depthCamera device if started straight away.
     yarp::os::Time::delay(1);
 
-    this->setRate(rateMs);
+    this->setPeriod(rateMs * 0.001);
     this->start();
 }
 
@@ -115,7 +127,7 @@ void SegmentorThread::run() {
 
     std::vector<cv::Rect> faces;
     //face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0, Size(70, 70));
-    face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(30, 30) );
+    face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0|cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30) );
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
     outYarpImg.copy(colorFrame);
@@ -129,7 +141,9 @@ void SegmentorThread::run() {
     {
         int pxX = faces[i].x+faces[i].width/2;
         int pxY = faces[i].y+faces[i].height/2;
-        double mmZ_tmp = depthFrame.pixel(pxX,pxY);
+        double depthX, depthY;
+        scaleXY(colorFrame, depthFrame, pxX, pxY, &depthX, &depthY);
+        double mmZ_tmp = depthFrame.pixel(int(depthX), int(depthY));
 
         if (mmZ_tmp < 0.001)
         {
@@ -166,9 +180,9 @@ void SegmentorThread::run() {
             yarp::sig::draw::addRectangleOutline(outYarpImg,green,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
                                 faces[i].width/2,faces[i].height/2);
 
-            output.addDouble( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
-            output.addDouble( mmY_tmp );    // Points down.
-            output.addDouble( mmZ_tmp );    // Points forward.
+            output.addFloat64( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
+            output.addFloat64( mmY_tmp );    // Points down.
+            output.addFloat64( mmZ_tmp );    // Points forward.
         }
         else
         {

@@ -9,9 +9,9 @@ namespace roboticslab
 bool ColorRegionDetection::configure(yarp::os::ResourceFinder &rf) {
 
     cropSelector = DEFAULT_CROP_SELECTOR;
-    yarp::os::ConstString strRGBDDevice = DEFAULT_RGBD_DEVICE;
-    yarp::os::ConstString strRGBDLocal = DEFAULT_RGBD_LOCAL;
-    yarp::os::ConstString strRGBDRemote = DEFAULT_RGBD_REMOTE;
+    std::string strRGBDDevice = DEFAULT_RGBD_DEVICE;
+    std::string strRGBDLocal = DEFAULT_RGBD_LOCAL;
+    std::string strRGBDRemote = DEFAULT_RGBD_REMOTE;
     watchdog = DEFAULT_WATCHDOG;  // double
 
     fprintf(stdout,"--------------------------------------------------------------\n");
@@ -25,12 +25,12 @@ bool ColorRegionDetection::configure(yarp::os::ResourceFinder &rf) {
         printf("\t--watchdog ([s] default: \"%f\")\n",watchdog);
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
-    if(rf.check("cropSelector")) cropSelector = rf.find("cropSelector").asInt();
+    if(rf.check("cropSelector")) cropSelector = rf.find("cropSelector").asInt32();
     printf("ColorRegionDetection using cropSelector: %d.\n",cropSelector);
     if(rf.check("RGBDDevice")) strRGBDDevice = rf.find("RGBDDevice").asString();
     if(rf.check("RGBDLocal")) strRGBDLocal = rf.find("RGBDLocal").asString();
     if(rf.check("RGBDRemote")) strRGBDRemote = rf.find("RGBDRemote").asString();
-    if(rf.check("watchdog")) watchdog = rf.find("watchdog").asDouble();
+    if(rf.check("watchdog")) watchdog = rf.find("watchdog").asFloat64();
     printf("ColorRegionDetection using RGBDDevice: %s, RGBDLocal: %s, RGBDRemote: %s.\n",
         strRGBDDevice.c_str(), strRGBDLocal.c_str(), strRGBDRemote.c_str());
     printf("ColorRegionDetection using watchdog: %f.\n",watchdog);

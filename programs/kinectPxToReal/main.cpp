@@ -2,7 +2,7 @@
 
 /**
  * 
- * @ingroup asibot_modules
+ * @ingroup vision_programs
  * \defgroup kinectPxToReal kinectPxToReal
  *
  * kinectPxToReal means Pixel to Homogeneous Transformation Matrix for Kinect
@@ -19,9 +19,11 @@
 
 #include "KinectPxToReal.hpp"
 
-int main(int argc, char *argv[]) {
+#include <yarp/os/Network.h>
+#include <yarp/os/ResourceFinder.h>
 
-    ResourceFinder rf;
+int main(int argc, char *argv[]) {
+    yarp::os::ResourceFinder rf;
     rf.setVerbose(true);
     rf.setDefaultContext("kinectPxToReal/conf");
     rf.setDefaultConfigFile("kinectPxToReal.ini");
@@ -35,8 +37,8 @@ int main(int argc, char *argv[]) {
     printf("Run \"kinectPxToReal --help\" for options.\n");
     printf("kinectPxToReal checking for yarp network... ");
     fflush(stdout);
-    Network yarp;
-    if (!yarp.checkNetwork()) {
+    yarp::os::Network yarp;
+    if (!yarp::os::Network::checkNetwork()) {
         fprintf(stderr, "[fail]\nkinectPxToReal found no yarp network (try running \"yarpserver &\"), bye!\n");
         return 1;
     } else printf("[ok]\n");
