@@ -4,7 +4,7 @@
 
 #include <opencv2/core/core_c.h>
 #include <opencv2/imgproc/imgproc_c.h>
-#include <opencv2/objdetect.hpp> // cv::CASCADE_SCALE_IMAGE
+#include <opencv2/objdetect/objdetect.hpp> // CV_HAAR_SCALE_IMAGE (cv2), cv::CASCADE_SCALE_IMAGE (cv3/4)
 
 #include <yarp/os/Time.h>
 
