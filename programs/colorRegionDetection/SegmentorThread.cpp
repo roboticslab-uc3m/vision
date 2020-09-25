@@ -2,6 +2,7 @@
 
 #include "SegmentorThread.hpp"
 
+#include <yarp/conf/version.h>
 #include <yarp/os/Time.h>
 
 #include <opencv2/core/version.hpp>
@@ -131,9 +132,12 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
         inCropSelectorPort->setReader(processor);
     }
 
+#if YARP_VERSION_MAJOR < 5
     // Wait for the first few frames to arrive. We kept receiving invalid pixel codes
     // from the depthCamera device if started straight away.
+    // https://github.com/roboticslab-uc3m/vision/issues/88
     yarp::os::Time::delay(1);
+#endif
 
     this->setPeriod(rateMs * 0.001);
     this->start();

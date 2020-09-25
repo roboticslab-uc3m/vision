@@ -6,6 +6,7 @@
 #include <opencv2/imgproc/imgproc_c.h>
 #include <opencv2/objdetect/objdetect.hpp> // CV_HAAR_SCALE_IMAGE (cv2), cv::CASCADE_SCALE_IMAGE (cv3/4)
 
+#include <yarp/conf/version.h>
 #include <yarp/os/Time.h>
 
 namespace
@@ -90,9 +91,12 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
         inCropSelectorPort->setReader(processor);
     }
 
+#if YARP_VERSION_MAJOR < 5
     // Wait for the first few frames to arrive. We kept receiving invalid pixel codes
     // from the depthCamera device if started straight away.
+    // https://github.com/roboticslab-uc3m/vision/issues/88
     yarp::os::Time::delay(1);
+#endif
 
     this->setPeriod(rateMs * 0.001);
     this->start();
