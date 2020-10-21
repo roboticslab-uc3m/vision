@@ -8,7 +8,6 @@
 
 #include "ColorRegionDetector.hpp"
 #include "HaarDetector.hpp"
-#include "TensorFlowDetector.hpp"
 
 #define DEFAULT_DETECTOR "Haar"
 
