@@ -63,10 +63,6 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
     {
         detector = new ColorRegionDetector(&rf);
     }
-    else if(detectorName=="TensorFlow")
-    {
-        detector = new TensorFlowDetector(&rf);
-    }
     else
     {
         CD_ERROR("\"detector\" not allowed (available: Haar, ColorRegion, TensorFlow): %s\n", detectorName.c_str());
