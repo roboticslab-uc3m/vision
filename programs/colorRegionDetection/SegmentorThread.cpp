@@ -2,7 +2,12 @@
 
 #include "SegmentorThread.hpp"
 
+#include <yarp/conf/version.h>
 #include <yarp/os/Time.h>
+
+#include <opencv2/core/version.hpp>
+#include <opencv2/core/core_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
 
 namespace
 {
@@ -127,9 +132,12 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
         inCropSelectorPort->setReader(processor);
     }
 
+#if YARP_VERSION_MINOR < 5
     // Wait for the first few frames to arrive. We kept receiving invalid pixel codes
     // from the depthCamera device if started straight away.
+    // https://github.com/roboticslab-uc3m/vision/issues/88
     yarp::os::Time::delay(1);
+#endif
 
     this->setPeriod(rateMs * 0.001);
     this->start();
@@ -215,7 +223,11 @@ void SegmentorThread::run() {
     cv::Mat outCvMat = travis.getCvMat(outImage,seeBounding);
     travis.release();
     // { openCv Mat Bgr -> yarp ImageOf Rgb}
+#if CV_MAJOR_VERSION > 3 || (CV_MAJOR_VERSION == 3 && CV_MINOR_VERSION == 4 && CV_SUBMINOR_VERSION >= 4)
+    IplImage outIplImage = cvIplImage(outCvMat);
+#else
     IplImage outIplImage = outCvMat;
+#endif
     cvCvtColor(&outIplImage,&outIplImage, CV_BGR2RGB);
     char sequence[] = "RGB";
     strcpy (outIplImage.channelSeq,sequence);

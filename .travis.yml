@@ -10,11 +10,11 @@ env:
   global:
     - CACHE_DIR=~/cached-deps
     - YCM_CHECKOUT=ycm-0.11
-  matrix:
+  jobs:
+    - YARP_CHECKOUT=yarp-3.4
     - YARP_CHECKOUT=yarp-3.3
-    - YARP_CHECKOUT=yarp-3.2
 
-matrix:
+jobs:
   include:
     - if: type = cron
       compiler: gcc
@@ -60,7 +60,7 @@ install:
     source "$TRAVIS_BUILD_DIR/scripts/travis/git-cache-dependency.sh"
     --package-name COLOR_DEBUG
     --repo-url https://github.com/roboticslab-uc3m/color-debug
-    --repo-checkout develop
+    --repo-checkout master
 
 before_script:
   - mkdir -p "$TRAVIS_BUILD_DIR/build" && cd "$_"

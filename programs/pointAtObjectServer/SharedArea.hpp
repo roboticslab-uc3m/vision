@@ -3,7 +3,8 @@
 
 #include <stdio.h>
 
-#include <yarp/os/Semaphore.h>
+#include <mutex>
+
 #include <yarp/sig/Vector.h>
 
 namespace roboticslab {
@@ -11,7 +12,7 @@ namespace roboticslab {
 class SharedArea {
     private:
         double lineCoords[6];
-        yarp::os::Semaphore lcMutex;
+        std::mutex lcMutex;
 
     public:
         void init();
@@ -23,4 +24,3 @@ class SharedArea {
 }  // namespace roboticslab
 
 #endif  // __SHARED_AREA_HPP__
-

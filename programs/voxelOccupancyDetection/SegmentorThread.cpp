@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include <yarp/conf/version.h>
 #include <yarp/os/Time.h>
 
 namespace roboticslab
@@ -146,9 +147,12 @@ default: \"(%s)\")\n",outFeatures.toString().c_str());
 //    printf("Calibrating..................");
     /***********************************************************************************/
 
+#if YARP_VERSION_MINOR < 5
     // Wait for the first few frames to arrive. We kept receiving invalid pixel codes
     // from the depthCamera device if started straight away.
+    // https://github.com/roboticslab-uc3m/vision/issues/88
     yarp::os::Time::delay(1);
+#endif
 
     this->setPeriod(rateMs * 0.001);
     this->start();
