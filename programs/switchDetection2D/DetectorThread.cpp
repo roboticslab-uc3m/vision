@@ -6,8 +6,8 @@
 
 #include "DetectorThread.hpp"
 
-#include "ColorRegionDetector.hpp"
-#include "HaarDetector.hpp"
+#include "../../libraries/ColorRegionDetector/ColorRegionDetector.hpp"
+#include "../../libraries/HaarDetector/HaarDetector.hpp"
 
 #define DEFAULT_DETECTOR "Haar"
 
