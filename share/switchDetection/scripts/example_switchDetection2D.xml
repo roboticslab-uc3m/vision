@@ -1,0 +1,26 @@
+<application>
+    <name>example switchDetection2D App</name>
+
+    <module>
+        <name>yarpdev</name>
+        <parameters>--device opencv_grabber</parameters>
+        <node>localhost</node>
+    </module>
+
+    <module>
+        <name>switchDetection2D</name>
+        <parameters></parameters>
+        <node>localhost</node>
+    </module>
+
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /switchDetection2D/yarpview/img:i</parameters>
+        <node>localhost</node>
+    </module>
+
+    <connection>
+        <from>/switchDetection2D/img:o</from>
+        <to>/switchDetection2D/yarpview/img:i</to>
+    </connection>
+</application>
