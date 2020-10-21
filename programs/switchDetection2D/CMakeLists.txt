@@ -12,8 +12,7 @@ if(ENABLE_switchDetection2D)
                                      SwitchDetection2D.hpp
                                      SwitchDetection2D.cpp
                                      DetectorThread.hpp
-                                     DetectorThread.cpp
-                                     Detector.hpp)
+                                     DetectorThread.cpp)
 
     target_link_libraries(switchDetection2D YARP::YARP_OS
                                             YARP::YARP_init
@@ -21,7 +20,8 @@ if(ENABLE_switchDetection2D)
                                             YARP::YARP_sig
                                             ROBOTICSLAB::ColorDebug
                                             ColorRegionDetector
-                                            HaarDetector)
+                                            HaarDetector
+                                            DetectorInterfaces)
 
     install(TARGETS switchDetection2D
             DESTINATION ${CMAKE_INSTALL_BINDIR})
