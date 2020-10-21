@@ -1,36 +1,34 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __SEGMENTOR_THREAD_HPP__
-#define __SEGMENTOR_THREAD_HPP__
+#ifndef __DETECTOR_THREAD_HPP__
+#define __DETECTOR_THREAD_HPP__
 
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
 #include <yarp/os/PeriodicThread.h>
-#include <yarp/os/Port.h>
-#include <yarp/os/PortReader.h>
 #include <yarp/os/ResourceFinder.h>
+#include <yarp/os/Time.h>
 
 #include <yarp/dev/FrameGrabberInterfaces.h>
 
 #include <yarp/sig/Image.h>
 
-#include <opencv2/objdetect/objdetect.hpp>
-
 #include <ColorDebug.h>
 
+#include "Detector.hpp"
+
 #define DEFAULT_RATE_MS 20
-#define DEFAULT_XMLCASCADE "haarcascade_cocacola_can.xml"
 
 namespace roboticslab
 {
 
 /**
- * @ingroup haarDetection2D
+ * @ingroup switchDetection2D
  *
- * @brief Implements haarDetection2D callback on Bottle.
+ * @brief Implements switchDetection2D callback on Bottle.
  */
-class DataProcessor : public yarp::os::PortReader
+class CropSelectorProcessor : public yarp::os::PortReader
 {
 private:
     virtual bool read(yarp::os::ConnectionReader& connection)
@@ -79,37 +77,23 @@ public:
     int x, y, w, h;
 
     bool waitForFirst;
+
 };
 
 /**
- * @ingroup haarDetection2D
+ * @ingroup switchDetection2D
  *
- * @brief Implements haarDetection2D PeriodicThread.
+ * @brief Implements switchDetection2D PeriodicThread.
  */
-class SegmentorThread : public yarp::os::PeriodicThread
+class DetectorThread : public yarp::os::PeriodicThread
 {
-private:
-    yarp::dev::IFrameGrabberImage *camera;
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
-    yarp::os::Port *pOutPort;
-
-    int cropSelector;
-
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *outCropSelectorImg;
-    yarp::os::Port *inCropSelectorPort;
-
-    DataProcessor processor;
-
-    cv::CascadeClassifier object_cascade;
-
 public:
-    SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
+    DetectorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
     void setIFrameGrabberImageDriver(yarp::dev::IFrameGrabberImage * _camera);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
     void setOutPort(yarp::os::Port *_pOutPort);
-    void init(yarp::os::ResourceFinder &rf);
-    void run();  // The periodical function
+    bool init(yarp::os::ResourceFinder &rf);
 
     void setCropSelector(int cropSelector)
     {
@@ -125,8 +109,25 @@ public:
     {
         this->inCropSelectorPort = inCropSelectorPort;
     }
+
+private:
+    void run() override;  // The periodical function
+
+    Detector* detector;
+
+    yarp::dev::IFrameGrabberImage *camera;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
+    yarp::os::Port *pOutPort;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outPortShape;
+
+    int cropSelector;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *outCropSelectorImg;
+    yarp::os::Port *inCropSelectorPort;
+    CropSelectorProcessor cropSelectorProcessor;
+
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
 };
 
 }  // namespace roboticslab
 
-#endif  // __SEGMENTOR_THREAD_HPP__
+#endif  // __DETECTOR_THREAD_HPP__

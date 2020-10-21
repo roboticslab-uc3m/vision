@@ -3,11 +3,11 @@
 /**
  * @ingroup vision_programs
  *
- * @defgroup haarDetection2D haarDetection2D
+ * @defgroup SwitchDetection2D SwitchDetection2D
  *
- * @brief Creates an instance of roboticslab::HaarDetection2D.
+ * @brief Creates an instance of roboticslab::SwitchDetection2D.
  *
- * @section haarDetection2DOptions HaarDetection2D options:
+ * @section switchDetection2DOptions switchDetection2D options:
  *
  * | PROPERTY     | DESCRIPTION                          | DEFAULT          |
  * |--------------|--------------------------------------|------------------|
@@ -21,20 +21,21 @@
  * | watchdog     |                                      | 2.000000         |
  *
  *
- * @section  haarDetection2DPorts HaarDetection2D output ports:
+ * @section  haarDetection2DPorts HaarDetector output ports:
  *
  * | OUTPUT PORT              | CONTENT                                                 |
  * |--------------------------|---------------------------------------------------------|
- * | /haarDetection2D/img:o   | Output camera image with object detection using squares |
- * | /haarDetection2D/state:o | xy coordinates of object detection                      |
+ * | /modeDetection2D/img:o   | Output camera image with object detection using squares |
+ * | /modeDetection2D/state:o | xy coordinates of object detection                      |
  *
- * @section segmentorThread SegmentorThread options:
+ * @section setectorThread DetectorThread options:
  *
  * | PROPERTY   | DESCRIPTION | DEFAULT                      |
  * |------------|-------------|------------------------------|
  * | help       |             |                              |
  * | from       | file.ini    |                              |
  * | context    | path        |                              |
+ * | switchMode |             | haarDetection                |
  * | rateMs     |             | 20                           |
  * | xmlCascade | file.xml    | haarcascade_cocacola_can.xml |
  */
@@ -44,17 +45,21 @@
 
 #include <ColorDebug.h>
 
-#include "HaarDetection2D.hpp"
+#include "SwitchDetection2D.hpp"
+
+#define DEFAULT_CONTEXT    "switchDetection2D"
+#define DEFAULT_CONFIG_FILE    "switchDetection2D.ini"
 
 int main(int argc, char** argv)
 {
+
     yarp::os::ResourceFinder rf;
-    rf.setVerbose(true);
-    rf.setDefaultContext("haarDetection");
-    rf.setDefaultConfigFile("haarDetection2D.ini");
+    rf.setVerbose(true);;
+    rf.setDefaultContext(DEFAULT_CONTEXT);
+    rf.setDefaultConfigFile(DEFAULT_CONFIG_FILE);
     rf.configure(argc, argv);
 
-    roboticslab::HaarDetection2D mod;
+    roboticslab::SwitchDetection2D mod;
 
     if (rf.check("help"))
     {
