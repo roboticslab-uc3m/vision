@@ -4,7 +4,7 @@
 
 yarp_install(FILES applications/ymanager.ini
                    applications/example_switchDetection2D.xml
-                   applications/fakeSensors.xml
+                   applications/visionFakeSensors.xml
              DESTINATION ${ROBOTICSLAB-VISION_APPLICATIONS_INSTALL_DIR})
 
 ### Go through single applications
