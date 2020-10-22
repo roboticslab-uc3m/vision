@@ -1,6 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
 #include <yarp/os/Value.h>
+#include <yarp/cv/Cv.h>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -64,12 +65,7 @@ ColorRegionDetector::ColorRegionDetector(yarp::os::Searchable* parameters)
 bool ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
                                  std::vector<DetectedObject>& detectedObjects)
 {
-
-    // {yarp ImageOf Rgb -> openCv Mat Bgr}
-    IplImage *inIplImage = cvCreateImage(cvSize(inYarpImg.width(), inYarpImg.height()),
-                                         IPL_DEPTH_8U, 3 );
-    cvCvtColor((IplImage*)inYarpImg.getIplImage(), inIplImage, CV_RGB2BGR);
-    cv::Mat inCvMat = cv::cvarrToMat(inIplImage);
+    cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImg);
 
     // Because Travis stuff goes with [openCv Mat Bgr] for now
     Travis travis(false,true);    // ::Travis(quiet=true, overwrite=true);
