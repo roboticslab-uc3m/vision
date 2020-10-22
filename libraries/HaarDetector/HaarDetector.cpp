@@ -2,8 +2,6 @@
 
 #include "HaarDetector.hpp"
 
-#include <opencv2/imgproc/imgproc.hpp>
-
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/cv/Cv.h>
 

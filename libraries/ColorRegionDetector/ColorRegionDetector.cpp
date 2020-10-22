@@ -3,9 +3,6 @@
 #include <yarp/os/Value.h>
 #include <yarp/cv/Cv.h>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-
 #include <ColorDebug.h>
 
 #include "ColorRegionDetector.hpp"
