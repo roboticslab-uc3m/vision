@@ -108,7 +108,7 @@ void roboticslab::DetectorThread::run()
 
     //CD_DEBUG("\n");
 
-    std::vector<DetectedObject*> detectedObjects;
+    std::vector<DetectedObject> detectedObjects;
     yarp::os::Bottle output;
 
     bool ok = detector->detect(inYarpImg, detectedObjects);
@@ -120,16 +120,10 @@ void roboticslab::DetectorThread::run()
     {
         yarp::sig::draw::addRectangleOutline(outYarpImg,
                                              red,
-                                             detectedObjects[i]->cx(),
-                                             detectedObjects[i]->cy(),
-                                             detectedObjects[i]->width() / 2,
-                                             detectedObjects[i]->height() / 2);
-    }
-
-    for(size_t i=0; i<detectedObjects.size(); i++)
-    {
-        delete detectedObjects[i];
-        detectedObjects[i] = 0;
+                                             detectedObjects[i].cx(),
+                                             detectedObjects[i].cy(),
+                                             detectedObjects[i].width() / 2,
+                                             detectedObjects[i].height() / 2);
     }
 
     /*

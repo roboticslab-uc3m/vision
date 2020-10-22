@@ -51,7 +51,7 @@ HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
 /*****************************************************************/
 
 bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                          std::vector<DetectedObject*>& detectedObjects)
+                          std::vector<DetectedObject>& detectedObjects)
 {
     //CD_DEBUG("\n");
 
@@ -63,11 +63,11 @@ bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
 
     for(size_t i; i<objects.size(); i++)
     {
-        DetectedObject* detectedObject = new DetectedObject;
-        detectedObject->setBoundingBox(objects[i].x,
-                                       objects[i].y,
-                                       objects[i].x + objects[i].width,
-                                       objects[i].y + objects[i].height);
+        DetectedObject detectedObject;
+        detectedObject.setBoundingBox(objects[i].x,
+                                      objects[i].y,
+                                      objects[i].x + objects[i].width,
+                                      objects[i].y + objects[i].height);
         detectedObjects.push_back(detectedObject);
     }
 
