@@ -2,14 +2,13 @@ if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_switchDetection2D OR ENABLE_switchDe
     message(WARNING "OpenCV package not found, disabling switchDetection2D program")
 endif()
 
-cmake_dependent_option(ENABLE_HaarDetector "Enable/disable HaarDetector" ON
-                       OpenCV_FOUND OFF)
+#cmake_dependent_option(ENABLE_HaarDetector "Enable/disable HaarDetector" ON
+#                       OpenCV_FOUND OFF)
 
-if(ENABLE_HaarDetector)
+#if(ENABLE_HaarDetector)
 
     include_directories(${OpenCV_INCLUDE_DIRS})
 
-     # HaarDetector
     add_library(HaarDetector HaarDetector.hpp
                              HaarDetector.cpp)
 
@@ -24,8 +23,8 @@ if(ENABLE_HaarDetector)
      install(TARGETS HaarDetector
             DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-else()
+#else()
 
-    set(ENABLE_HaarDetector OFF CACHE BOOL "Enable/disable HaarDetector library" FORCE)
+#    set(ENABLE_HaarDetector OFF CACHE BOOL "Enable/disable HaarDetector library" FORCE)
 
-endif()
+#endif()
