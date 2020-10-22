@@ -7,4 +7,10 @@
         <node>localhost</node>
     </module>
 
+    <module>
+        <name>yarpdev</name>
+        <parameters>--device fakeDepthCamera --name /rgbd</parameters>
+        <node>localhost</node>
+    </module>
+
 </application>
