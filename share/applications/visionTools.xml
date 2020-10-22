@@ -1,0 +1,37 @@
+<application>
+<name>visionTools App</name>
+
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /yarpview/grabber</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/grabber</from>
+        <to>/yarpview/grabber</to>
+        <!--protocol></protocol-->
+    </connection>
+
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /yarpview/rgbd/rgbImage:i</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/rgbd/rgbImage:o</from>
+        <to>/yarpview/rgbd/rgbImage:i</to>
+        <!--protocol></protocol-->
+    </connection>
+
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /yarpview/rgbd/depthImage:i</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/rgbd/depthImage:o</from>
+        <to>/yarpview/rgbd/depthImage:i</to>
+        <protocol>udp+recv.portmonitor+type.dll+file.depthimage</protocol>
+    </connection>
+
+</application>
