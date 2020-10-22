@@ -8,6 +8,7 @@
         <deployer>yarpdev</deployer>
     </module>
 
+    <!-- Requires YARP compiled with ENABLE_yarpmod_fakeDepthCamera -->
     <module>
         <name>fakeDepthCamera</name>
         <parameters>--name /rgbd</parameters>
