@@ -1,0 +1,10 @@
+<application>
+<name>fakeSensors App</name>
+
+    <module>
+        <name>yarpdev</name>
+        <parameters>--device test_grabber</parameters>
+        <node>localhost</node>
+    </module>
+
+</application>
