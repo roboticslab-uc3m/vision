@@ -2,9 +2,10 @@
 <name>fakeSensors App</name>
 
     <module>
-        <name>yarpdev</name>
-        <parameters>--device test_grabber --name /grabber</parameters>
+        <name>test_grabber</name>
+        <parameters>--name /grabber</parameters>
         <node>localhost</node>
+        <deployer>yarpdev</deployer>
     </module>
 
     <module>
@@ -19,10 +20,12 @@
     </connection>
 
     <module>
-        <name>yarpdev</name>
-        <parameters>--device fakeDepthCamera --name /rgbd</parameters>
+        <name>fakeDepthCamera</name>
+        <parameters>--name /rgbd</parameters>
         <node>localhost</node>
+        <deployer>yarpdev</deployer>
     </module>
+
 
     <module>
         <name>yarpview</name>
