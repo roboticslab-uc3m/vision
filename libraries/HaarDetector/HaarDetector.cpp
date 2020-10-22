@@ -51,7 +51,7 @@ HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
 /*****************************************************************/
 
 bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                          std::vector<DetectedObject>& detectedObjects)
+                          yarp::sig::VectorOf<DetectedObject>& detectedObjects)
 {
     //CD_DEBUG("\n");
 

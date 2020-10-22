@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <yarp/sig/Image.h>
+#include <yarp/sig/Vector.h>
 
 namespace roboticslab
 {
@@ -32,7 +33,7 @@ public:
     virtual ~Detector() {}
     bool isValid() const { return valid; }
     virtual bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                        std::vector<DetectedObject>& detectedObjects) = 0;
+                        yarp::sig::VectorOf<DetectedObject>& detectedObjects) = 0;
 
 protected:
     bool valid;

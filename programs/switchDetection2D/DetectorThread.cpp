@@ -108,7 +108,7 @@ void roboticslab::DetectorThread::run()
 
     //CD_DEBUG("\n");
 
-    std::vector<DetectedObject> detectedObjects;
+    yarp::sig::VectorOf<DetectedObject> detectedObjects;
     yarp::os::Bottle output;
 
     bool ok = detector->detect(inYarpImg, detectedObjects);

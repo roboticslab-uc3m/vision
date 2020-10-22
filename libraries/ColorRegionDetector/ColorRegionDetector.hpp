@@ -17,7 +17,7 @@ class ColorRegionDetector : public Detector
 public:
     ColorRegionDetector(yarp::os::Searchable* parameters);
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                std::vector<DetectedObject>& detectedObjects) override;
+                yarp::sig::VectorOf<DetectedObject>& detectedObjects) override;
 
 private:
     std::string algorithm;
