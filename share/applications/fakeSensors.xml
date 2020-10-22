@@ -3,14 +3,47 @@
 
     <module>
         <name>yarpdev</name>
-        <parameters>--device test_grabber</parameters>
+        <parameters>--device test_grabber --name /fakeGrabber/img:o</parameters>
         <node>localhost</node>
     </module>
 
     <module>
-        <name>yarpdev</name>
-        <parameters>--device fakeDepthCamera --name /rgbd</parameters>
+        <name>yarpview</name>
+        <parameters>--name /yarpview/fakeGrabber/img:i</parameters>
         <node>localhost</node>
     </module>
+    <connection>
+        <from>/fakeGrabber/img:o</from>
+        <to>/yarpview/fakeGrabber/img:i</to>
+        <!--protocol></protocol-->
+    </connection>
+
+    <module>
+        <name>yarpdev</name>
+        <parameters>--device fakeDepthCamera --name /fakeRgbd</parameters>
+        <node>localhost</node>
+    </module>
+
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /yarpview/fakeRgbd/rgbImage:i</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/fakeRgbd/rgbImage:o</from>
+        <to>/yarpview/fakeRgbd/rgbImage:i</to>
+        <!--protocol></protocol-->
+    </connection>
+
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /yarpview/fakeRgbd/depthImage:i</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/fakeRgbd/depthImage:o</from>
+        <to>/yarpview/fakeRgbd/depthImage:i</to>
+        <protocol>udp+recv.portmonitor+type.dll+file.depthimage</protocol>
+    </connection>
 
 </application>
