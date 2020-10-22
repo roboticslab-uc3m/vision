@@ -9,7 +9,7 @@
 
     <module>
         <name>switchDetection2D</name>
-        <parameters></parameters>
+        <parameters>--detector ColorRegion --algorithm redMinusGreen</parameters>
         <node>localhost</node>
     </module>
 
