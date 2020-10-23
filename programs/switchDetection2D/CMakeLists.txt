@@ -3,7 +3,7 @@ if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_switchDetection2D OR ENABLE_switchDe
 endif()
 
 cmake_dependent_option(ENABLE_switchDetection2D "Enable/disable switchDetection2D program" ON
-                                                "ENABLE_TravisLib;OpenCV_FOUND;TensorflowCC_FOUND" OFF)
+                                                "ENABLE_TravisLib;OpenCV_FOUND" OFF)
 
 if(ENABLE_switchDetection2D)
 
