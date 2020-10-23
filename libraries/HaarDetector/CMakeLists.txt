@@ -1,30 +1,36 @@
-if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_switchDetection2D OR ENABLE_switchDetection2D))
-    message(WARNING "OpenCV package not found, disabling switchDetection2D program")
+if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_HaarDetector OR ENABLE_HaarDetector))
+    message(WARNING "OpenCV package not found, disabling HaarDetector library")
 endif()
 
-#cmake_dependent_option(ENABLE_HaarDetector "Enable/disable HaarDetector" ON
-#                       OpenCV_FOUND OFF)
+cmake_dependent_option(ENABLE_HaarDetector "Enable/disable HaarDetector" ON
+                       OpenCV_FOUND OFF)
 
-#if(ENABLE_HaarDetector)
-
-    include_directories(${OpenCV_INCLUDE_DIRS})
+if(ENABLE_HaarDetector)
 
     add_library(HaarDetector HaarDetector.hpp
                              HaarDetector.cpp)
 
-    target_link_libraries(HaarDetector YARP::YARP_OS
-                                       YARP::YARP_init
-                                       YARP::YARP_dev
-                                       YARP::YARP_sig
-                                       ${OpenCV_LIBS}
-                                       ROBOTICSLAB::ColorDebug
-                                       DetectorInterfaces)
+    set_target_properties(HaarDetector PROPERTIES PUBLIC_HEADER HaarDetector.hpp)
 
-     install(TARGETS HaarDetector
-            DESTINATION ${CMAKE_INSTALL_BINDIR})
+    target_include_directories(HaarDetector PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-#else()
+    target_link_libraries(HaarDetector PUBLIC YARP::YARP_os
+                                              DetectorInterfaces
+                                       PRIVATE ${OpenCV_LIBS}
+                                               ROBOTICSLAB::ColorDebug)
 
-#    set(ENABLE_HaarDetector OFF CACHE BOOL "Enable/disable HaarDetector library" FORCE)
+    install(TARGETS HaarDetector
+            EXPORT ROBOTICSLAB_VISION
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-#endif()
+    set_property(GLOBAL APPEND PROPERTY _exported_targets HaarDetector)
+
+else()
+
+    set(ENABLE_HaarDetector OFF CACHE BOOL "Enable/disable HaarDetector library" FORCE)
+
+endif()

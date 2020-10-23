@@ -3,6 +3,8 @@
 #include <yarp/os/Value.h>
 #include <yarp/cv/Cv.h>
 
+#include "TravisLib.hpp"
+
 #include <ColorDebug.h>
 
 #include "ColorRegionDetector.hpp"

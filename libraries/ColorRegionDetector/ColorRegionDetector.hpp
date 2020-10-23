@@ -5,8 +5,6 @@
 
 #include <yarp/os/Searchable.h>
 
-#include "TravisLib.hpp"
-
 #include "Detector.hpp"
 
 namespace roboticslab
