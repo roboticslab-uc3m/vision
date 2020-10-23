@@ -21,7 +21,7 @@ install(TARGETS DetectorInterfaces
 
 set_property(GLOBAL APPEND PROPERTY _exported_targets DetectorInterfaces)
 
+add_subdirectory(TravisLib)
 add_subdirectory(ColorRegionDetector)
 add_subdirectory(HaarDetector)
-add_subdirectory(TravisLib)
 add_subdirectory(YarpPlugins)
