@@ -30,7 +30,6 @@ void roboticslab::DetectorThread::setOutPort(yarp::os::Port * _pOutPort)
 }
 
 /************************************************************************/
-//TensorflowDetection2D tensorflowDetector;
 
 bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
 {
