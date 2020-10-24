@@ -17,7 +17,7 @@ namespace roboticslab
 class HaarDetector : public yarp::dev::DeviceDriver, public IDetector
 {
 public:
-    virtual bool open(yarp::os::Searchable& config);
+    bool open(yarp::os::Searchable& config) override;
 
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
                 yarp::sig::VectorOf<DetectedObject>& detectedObjects) override;
