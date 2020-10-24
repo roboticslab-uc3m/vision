@@ -22,37 +22,37 @@ const double ColorRegionDetector::DEFAULT_MAX_NUM_BLOBS = 1;
 
 /*****************************************************************/
 
-bool ColorRegionDetector::open(yarp::os::Searchable& parameters)
+bool ColorRegionDetector::open(yarp::os::Searchable& config)
 {
     algorithm = DEFAULT_ALGORITHM;
-    if(parameters.check("algorithm"))
+    if(config.check("algorithm"))
     {
         CD_INFO("\"algorithm\" parameter found\n");
-        algorithm = parameters.find("algorithm").asString();
+        algorithm = config.find("algorithm").asString();
     }
     CD_DEBUG("Using \"algorithm\": %s.\n", algorithm.c_str());
 
     morphClosing = DEFAULT_MORPH_CLOSING;
-    if(parameters.check("morphClosing"))
+    if(config.check("morphClosing"))
     {
         CD_INFO("\"morphClosing\" parameter found\n");
-        morphClosing = parameters.find("morphClosing").asFloat64();
+        morphClosing = config.find("morphClosing").asFloat64();
     }
     CD_DEBUG("Using \"morphClosing\": %f.\n", morphClosing);
 
     threshold = DEFAULT_THRESHOLD;
-    if(parameters.check("threshold"))
+    if(config.check("threshold"))
     {
         CD_INFO("\"threshold\" parameter found\n");
-        threshold = parameters.find("threshold").asInt32();
+        threshold = config.find("threshold").asInt32();
     }
     CD_DEBUG("Using \"threshold\": %d.\n", threshold);
 
     maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
-    if(parameters.check("maxNumBlobs"))
+    if(config.check("maxNumBlobs"))
     {
         CD_INFO("\"maxNumBlobs\" parameter found\n");
-        maxNumBlobs = parameters.find("maxNumBlobs").asInt32();
+        maxNumBlobs = config.find("maxNumBlobs").asInt32();
     }
     CD_DEBUG("Using \"maxNumBlobs\": %d.\n", maxNumBlobs);
 

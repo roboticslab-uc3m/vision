@@ -15,7 +15,7 @@ namespace roboticslab
 class ColorRegionDetector :  public yarp::dev::DeviceDriver, public Detector
 {
 public:
-    virtual bool open(yarp::os::Searchable& parameters);
+    virtual bool open(yarp::os::Searchable& config);
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
                 yarp::sig::VectorOf<DetectedObject>& detectedObjects) override;
 
