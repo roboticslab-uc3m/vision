@@ -33,7 +33,8 @@ if(NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 # Pick up our cmake modules.
-#list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake
+                              ${CMAKE_SOURCE_DIR}/cmake/find-modules)
 
 # Hard dependencies.
 find_package(YCM 0.11 REQUIRED)
@@ -41,10 +42,12 @@ find_package(YARP 3.3 REQUIRED COMPONENTS os dev sig cv)
 find_package(COLOR_DEBUG REQUIRED)
 
 # Soft dependencies.
-find_package(Doxygen QUIET)
+
 find_package(OpenCV QUIET)
 find_package(PCL 1.6 QUIET)
 find_package(TensorflowCC 1.12 QUIET)
+find_package(GTestSources 1.6.0 QUIET)
+find_package(Doxygen QUIET)
 
 # Xenial + PCL 1.7 bug
 # https://github.com/PointCloudLibrary/pcl/issues/2406
@@ -82,6 +85,7 @@ include(CMakeDependentOption)
 # Add main contents.
 add_subdirectory(libraries)
 add_subdirectory(programs)
+add_subdirectory(tests)
 add_subdirectory(share)
 add_subdirectory(doc)
 
