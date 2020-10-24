@@ -35,7 +35,6 @@ void roboticslab::DetectorThread::setOutPort(yarp::os::Port * _pOutPort)
 bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
 {
     int rateMs = DEFAULT_RATE_MS;
-    std::string detectorName = DEFAULT_DETECTOR;
 
     std::printf("DetectorThread options:\n");
     std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
