@@ -1,31 +1,38 @@
-if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_switchDetection2D OR ENABLE_switchDetection2D))
-    message(WARNING "OpenCV package not found, disabling switchDetection2D program")
+if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_ColorRegionDetector OR ENABLE_ColorRegionDetector))
+    message(WARNING "OpenCV package not found, disabling ColorRegionDetector library")
 endif()
 
-#cmake_dependent_option(ENABLE_ColorRegionDetector "Enable/disable ColorRegionDetector" ON
-#                       OpenCV_FOUND OFF)
+cmake_dependent_option(ENABLE_ColorRegionDetector "Enable/disable ColorRegionDetector" ON
+                       "ENABLE_TravisLib;OpenCV_FOUND" OFF)
 
-#if(ENABLE_ColorRegionDetector)
-
-    include_directories(${OpenCV_INCLUDE_DIRS})
+if(ENABLE_ColorRegionDetector)
 
     add_library(ColorRegionDetector ColorRegionDetector.hpp
                                     ColorRegionDetector.cpp)
 
-    target_link_libraries(ColorRegionDetector YARP::YARP_OS
-                                              YARP::YARP_init
-                                              YARP::YARP_dev
-                                              YARP::YARP_sig
-                                              ${OpenCV_LIBS}
-                                              ROBOTICSLAB::ColorDebug
-                                              TravisLib
-                                              DetectorInterfaces) # ROBOTICSLAB::TravisLib ? ...only finds installed header!!
+    set_target_properties(ColorRegionDetector PROPERTIES PUBLIC_HEADER ColorRegionDetector.hpp)
+
+    target_include_directories(ColorRegionDetector PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                                                          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+
+    target_link_libraries(ColorRegionDetector PUBLIC YARP::YARP_os
+                                                     DetectorInterfaces
+                                              PRIVATE YARP::YARP_cv
+                                                      ${OpenCV_LIBS}
+                                                      ROBOTICSLAB::ColorDebug
+                                                      TravisLib)
 
     install(TARGETS ColorRegionDetector
-            DESTINATION ${CMAKE_INSTALL_BINDIR})
+            EXPORT ROBOTICSLAB_VISION
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-#else()
+    set_property(GLOBAL APPEND PROPERTY _exported_targets ColorRegionDetector)
 
-#    set(ENABLE_ColorRegionDetector OFF CACHE BOOL "Enable/disable ColorRegionDetector library" FORCE)
+else()
 
-#endif()
+    set(ENABLE_ColorRegionDetector OFF CACHE BOOL "Enable/disable ColorRegionDetector library" FORCE)
+
+endif()
