@@ -57,7 +57,7 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
         return false;
     }
 
-    if (!detectorDevice.view(detector))
+    if (!detectorDevice.view(iDetector))
     {
         CD_ERROR("Problems acquiring detector interface\n");
         return false;
@@ -101,7 +101,7 @@ void roboticslab::DetectorThread::run()
     yarp::sig::VectorOf<DetectedObject> detectedObjects;
     yarp::os::Bottle output;
 
-    bool ok = detector->detect(inYarpImg, detectedObjects);
+    bool ok = iDetector->detect(inYarpImg, detectedObjects);
 
     // paint on image
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
