@@ -21,6 +21,8 @@ if(ENABLE_tests)
         target_link_libraries(testColorRegionDetector VisionInterfaces
                                                       gtest_main)
 
+        target_compile_features(testColorRegionDetector PUBLIC cxx_std_11)
+
         gtest_discover_tests(testColorRegionDetector)
     endif()
 
