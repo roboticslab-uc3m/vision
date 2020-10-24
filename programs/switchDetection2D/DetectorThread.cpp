@@ -46,20 +46,26 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
         rateMs = rf.find("rateMs").asInt32();
     }
 
-    if (rf.check("detector"))
+    yarp::os::Property deviceOptions;
+    deviceOptions.fromString(rf.toString());
+    if(deviceOptions.check("device"))
     {
-        detectorName = rf.find("detector").asString();
+        deviceOptions.put("device", DEFAULT_DETECTOR);
     }
-    CD_INFO("Using detector: %s\n", detectorName.c_str());
 
-    yarp::os::Property detectorOptions;
-    detectorOptions.put("device", detectorName);
-
-    if(!detectorDevice.open(detectorOptions))
+    if(!detectorDevice.open(deviceOptions))
     {
-        CD_ERROR("\"detector\" not allowed (available: Haar, ColorRegion, TensorFlow): %s\n", detectorName.c_str());
+        CD_ERROR("Failed to open device: %s\n", rf.find("device").toString().c_str());
         return false;
     }
+
+    if (!detectorDevice.view(detector))
+    {
+        CD_ERROR("Problems acquiring detector interface\n");
+        return false;
+    }
+
+    CD_SUCCESS("Acquired detector interface\n");
 
     if (cropSelector != 0)
     {
