@@ -16,7 +16,7 @@ namespace roboticslab
 
 /**
  * @ingroup vision-tests
- * @brief Tests \ref KdlSolver ikin and idyn on a simple mechanism.
+ * @brief Tests \ref ColorRegionDetector
  */
 class ColorRegionDetectorTest : public testing::Test
 {
