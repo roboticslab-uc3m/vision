@@ -25,6 +25,7 @@ if(ENABLE_YarpPlugins)
 #set_property(GLOBAL APPEND PROPERTY _exported_targets VisionInterfaces)
 
 # YARP devices.
-#add_subdirectory(...)
+add_subdirectory(ColorRegionDetector)
+add_subdirectory(HaarDetector)
 
 endif()
