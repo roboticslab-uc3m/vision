@@ -5,6 +5,8 @@
 
 #include <yarp/os/Searchable.h>
 
+#include <yarp/dev/DeviceDriver.h>
+
 #include <opencv2/objdetect/objdetect.hpp>
 
 #include "IDetector.hpp"
@@ -12,10 +14,11 @@
 namespace roboticslab
 {
 
-class HaarDetector : public Detector
+class HaarDetector : public yarp::dev::DeviceDriver, public Detector
 {
 public:
-    HaarDetector(yarp::os::Searchable* parameters);
+    virtual bool open(yarp::os::Searchable& parameters);
+
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
                 yarp::sig::VectorOf<DetectedObject>& detectedObjects) override;
 private:

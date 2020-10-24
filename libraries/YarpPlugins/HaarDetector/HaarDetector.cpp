@@ -16,12 +16,12 @@ const std::string HaarDetector::DEFAULT_XMLCASCADE = "haarcascade_frontalface_al
 
 /*****************************************************************/
 
-HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
+bool HaarDetector::open(yarp::os::Searchable& parameters)
 {
     std::string xmlCascade = DEFAULT_XMLCASCADE;
-    if(parameters->check("xmlCascade"))
+    if(parameters.check("xmlCascade"))
     {
-        xmlCascade = parameters->find("xmlCascade").asString();
+        xmlCascade = parameters.find("xmlCascade").asString();
         CD_DEBUG("\"xmlCascade\" parameter found: \"%s\"\n", xmlCascade.c_str());
     }
     CD_DEBUG("Using \"xmlCascade\":\n", xmlCascade.c_str());
@@ -33,14 +33,14 @@ HaarDetector::HaarDetector(yarp::os::Searchable* parameters)
     if(xmlCascadeFullName.empty())
     {
         CD_ERROR("xmlCascadeFullName NOT found\n");
-        return;
+        return false;
     }
     CD_DEBUG("xmlCascadeFullName \"%s\" found\n", xmlCascadeFullName.c_str());
 
     if (!object_cascade.load(xmlCascadeFullName))
     {
         CD_ERROR("Cannot load xmlCascadeFullName!\n");
-        return;
+        return false;
     }
     CD_SUCCESS("\n");
 

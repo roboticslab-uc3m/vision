@@ -55,7 +55,7 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
     yarp::os::Property detectorOptions;
     detectorOptions.put("device", detectorName);
 
-    if(!detector->open(detectorOptions))
+    if(!detectorDevice.open(detectorOptions))
     {
         CD_ERROR("\"detector\" not allowed (available: Haar, ColorRegion, TensorFlow): %s\n", detectorName.c_str());
         return false;
