@@ -38,6 +38,7 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
     std::printf("DetectorThread options:\n");
     std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
     std::printf("\t--rateMs (default: \"%d\")\n", rateMs);
+    std::printf("\t--device (default: \"%s\")\n", DEFAULT_DETECTOR);
 
     if (rf.check("rateMs"))
     {
@@ -46,10 +47,8 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
 
     yarp::os::Property deviceOptions;
     deviceOptions.fromString(rf.toString());
-    if(deviceOptions.check("device"))
-    {
-        deviceOptions.put("device", DEFAULT_DETECTOR);
-    }
+
+    deviceOptions.put("device", deviceOptions.check("detector", yarp::os::Value(DEFAULT_DETECTOR), "detector to be used"));
 
     if(!detectorDevice.open(deviceOptions))
     {
