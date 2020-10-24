@@ -18,8 +18,7 @@ if(ENABLE_tests)
     if(TARGET ColorRegionDetector)
         add_executable(testColorRegionDetector testColorRegionDetector.cpp)
 
-        target_link_libraries(testColorRegionDetector VisionInterfaces
-                                                      gtest_main)
+        target_link_libraries(testColorRegionDetector VisionInterfaces YARP::YARP_dev gtest_main)
 
         target_compile_features(testColorRegionDetector PUBLIC cxx_std_11)
 

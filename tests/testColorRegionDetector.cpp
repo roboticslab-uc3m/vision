@@ -24,6 +24,20 @@ class ColorRegionDetectorTest : public testing::Test
     public:
         virtual void SetUp()
         {
+            yarp::os::Property deviceOptions;
+            deviceOptions.put("device", "ColorRegionDetector");
+
+            if(!detectorDevice.open(deviceOptions))
+            {
+                CD_ERROR("Failed to open ColorRegionDetector device\n");
+                return;
+            }
+
+            if (!detectorDevice.view(iDetector))
+            {
+                CD_ERROR("Problems acquiring detector interface\n");
+                return;
+            }
         }
 
         virtual void TearDown()
@@ -32,6 +46,7 @@ class ColorRegionDetectorTest : public testing::Test
 
     protected:
         roboticslab::IDetector *iDetector;
+        yarp::dev::PolyDriver detectorDevice;
 };
 
 TEST_F( ColorRegionDetectorTest, ColorRegionDetector1)
