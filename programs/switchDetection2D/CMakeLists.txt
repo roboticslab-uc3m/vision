@@ -19,9 +19,7 @@ if(ENABLE_switchDetection2D)
                                             YARP::YARP_dev
                                             YARP::YARP_sig
                                             ROBOTICSLAB::ColorDebug
-                                            ColorRegionDetector
-                                            HaarDetector
-                                            DetectorInterfaces)
+                                            VisionInterfaces)
 
     install(TARGETS switchDetection2D
             DESTINATION ${CMAKE_INSTALL_BINDIR})

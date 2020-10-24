@@ -11,12 +11,13 @@
 #include <yarp/os/Time.h>
 
 #include <yarp/dev/FrameGrabberInterfaces.h>
+#include <yarp/dev/PolyDriver.h>
 
 #include <yarp/sig/Image.h>
 
 #include <ColorDebug.h>
 
-#include "Detector.hpp"
+#include "IDetector.hpp"
 
 #define DEFAULT_RATE_MS 20
 
@@ -113,6 +114,7 @@ public:
 private:
     void run() override;  // The periodical function
 
+    yarp::dev::PolyDriver detectorDevice;
     Detector* detector;
 
     yarp::dev::IFrameGrabberImage *camera;

@@ -18,8 +18,7 @@ if(ENABLE_tests)
     if(TARGET ColorRegionDetector)
         add_executable(testColorRegionDetector testColorRegionDetector.cpp)
 
-        target_link_libraries(testColorRegionDetector ROBOTICSLAB::ColorRegionDetector
-                                                      ROBOTICSLAB::DetectorInterfaces
+        target_link_libraries(testColorRegionDetector VisionInterfaces
                                                       gtest_main)
 
         gtest_discover_tests(testColorRegionDetector)

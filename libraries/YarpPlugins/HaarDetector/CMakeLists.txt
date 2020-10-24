@@ -5,18 +5,24 @@ endif()
 cmake_dependent_option(ENABLE_HaarDetector "Enable/disable HaarDetector" ON
                        OpenCV_FOUND OFF)
 
-if(ENABLE_HaarDetector)
+yarp_prepare_plugin(HaarDetector
+                    CATEGORY device
+                    TYPE roboticslab::HaarDetector
+                    INCLUDE HaarDetector.hpp
+                    DEFAULT ON)
 
-    add_library(HaarDetector HaarDetector.hpp
-                             HaarDetector.cpp)
+if(NOT SKIP_HaarDetector)
 
-    set_target_properties(HaarDetector PROPERTIES PUBLIC_HEADER HaarDetector.hpp)
+    yarp_add_plugin(HaarDetector HaarDetector.hpp
+                                 HaarDetector.cpp)
 
-    target_include_directories(HaarDetector PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-                                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+#    set_target_properties(HaarDetector PROPERTIES PUBLIC_HEADER HaarDetector.hpp)
+
+#    target_include_directories(HaarDetector PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+#                                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
     target_link_libraries(HaarDetector PUBLIC YARP::YARP_os
-                                              DetectorInterfaces
+                                              VisionInterfaces
                                        PRIVATE ${OpenCV_LIBS}
                                                ROBOTICSLAB::ColorDebug)
 
@@ -27,7 +33,7 @@ if(ENABLE_HaarDetector)
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
             PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-    set_property(GLOBAL APPEND PROPERTY _exported_targets HaarDetector)
+#    set_property(GLOBAL APPEND PROPERTY _exported_targets HaarDetector)
 
 else()
 

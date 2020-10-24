@@ -6,9 +6,6 @@
 
 #include "DetectorThread.hpp"
 
-#include "../../libraries/ColorRegionDetector/ColorRegionDetector.hpp"
-#include "../../libraries/HaarDetector/HaarDetector.hpp"
-
 #define DEFAULT_DETECTOR "Haar"
 
 /************************************************************************/
@@ -55,23 +52,12 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
     }
     CD_INFO("Using detector: %s\n", detectorName.c_str());
 
-    if(detectorName=="Haar")
-    {
-        detector = new HaarDetector(&rf);
-    }
-    else if(detectorName=="ColorRegion")
-    {
-        detector = new ColorRegionDetector(&rf);
-    }
-    else
+    yarp::os::Property detectorOptions;
+    detectorOptions.put("device", detectorName);
+
+    if(!detector->open(detectorOptions))
     {
         CD_ERROR("\"detector\" not allowed (available: Haar, ColorRegion, TensorFlow): %s\n", detectorName.c_str());
-        return false;
-    }
-
-    if(!detector->isValid())
-    {
-        CD_ERROR("\n");
         return false;
     }
 
