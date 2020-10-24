@@ -5,15 +5,17 @@
 
 #include <yarp/os/Searchable.h>
 
+#include <yarp/dev/DeviceDriver.h>
+
 #include "IDetector.hpp"
 
 namespace roboticslab
 {
 
-class ColorRegionDetector : public Detector
+class ColorRegionDetector :  public yarp::dev::DeviceDriver, public Detector
 {
 public:
-    ColorRegionDetector(yarp::os::Searchable* parameters);
+    virtual bool open(yarp::os::Searchable& parameters);
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
                 yarp::sig::VectorOf<DetectedObject>& detectedObjects) override;
 
