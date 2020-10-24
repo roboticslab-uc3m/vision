@@ -7,8 +7,8 @@ cmake_dependent_option(ENABLE_TravisLib "Enable/disable TravisLib" ON
 
 if(ENABLE_TravisLib)
 
-    add_library(TravisLib TravisLib.hpp
-                          TravisLib.cpp)
+    add_library(TravisLib SHARED TravisLib.hpp
+                                 TravisLib.cpp)
 
     set_target_properties(TravisLib PROPERTIES PUBLIC_HEADER TravisLib.hpp)
 
