@@ -38,7 +38,7 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
     std::printf("DetectorThread options:\n");
     std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
     std::printf("\t--rateMs (default: \"%d\")\n", rateMs);
-    std::printf("\t--device (default: \"%s\")\n", DEFAULT_DETECTOR);
+    std::printf("\t--detector (default: \"%s\")\n", DEFAULT_DETECTOR);
 
     if (rf.check("rateMs"))
     {
