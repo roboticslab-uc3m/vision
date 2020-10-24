@@ -5,7 +5,7 @@
 
 #include <yarp/os/Searchable.h>
 
-#include "Detector.hpp"
+#include "IDetector.hpp"
 
 namespace roboticslab
 {

@@ -7,7 +7,7 @@
 
 #include <opencv2/objdetect/objdetect.hpp>
 
-#include "Detector.hpp"
+#include "IDetector.hpp"
 
 namespace roboticslab
 {

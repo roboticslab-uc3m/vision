@@ -9,7 +9,7 @@
 
 #include <ColorDebug.h>
 
-#include "Detector.h"
+#include "IDetector.h"
 
 namespace roboticslab
 {
