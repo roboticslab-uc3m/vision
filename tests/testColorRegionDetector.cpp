@@ -31,7 +31,7 @@ class ColorRegionDetectorTest : public testing::Test
         }
 
     protected:
-        roboticslab::Detector *detector;
+        roboticslab::IDetector *detector;
 };
 
 TEST_F( ColorRegionDetectorTest, ColorRegionDetector1)

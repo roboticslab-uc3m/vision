@@ -115,7 +115,7 @@ private:
     void run() override;  // The periodical function
 
     yarp::dev::PolyDriver detectorDevice;
-    Detector* detector;
+    IDetector* detector;
 
     yarp::dev::IFrameGrabberImage *camera;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing

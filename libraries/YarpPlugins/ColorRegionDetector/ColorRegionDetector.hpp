@@ -12,7 +12,7 @@
 namespace roboticslab
 {
 
-class ColorRegionDetector :  public yarp::dev::DeviceDriver, public Detector
+class ColorRegionDetector :  public yarp::dev::DeviceDriver, public IDetector
 {
 public:
     virtual bool open(yarp::os::Searchable& config);

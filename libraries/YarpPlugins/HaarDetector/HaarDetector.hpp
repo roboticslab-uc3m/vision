@@ -14,7 +14,7 @@
 namespace roboticslab
 {
 
-class HaarDetector : public yarp::dev::DeviceDriver, public Detector
+class HaarDetector : public yarp::dev::DeviceDriver, public IDetector
 {
 public:
     virtual bool open(yarp::os::Searchable& config);
