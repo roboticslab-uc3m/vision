@@ -16,11 +16,6 @@ if(NOT SKIP_ColorRegionDetector)
     yarp_add_plugin(ColorRegionDetector ColorRegionDetector.hpp
                                         ColorRegionDetector.cpp)
 
-#    set_target_properties(ColorRegionDetector PROPERTIES PUBLIC_HEADER ColorRegionDetector.hpp)
-
-#    target_include_directories(ColorRegionDetector PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-#                                                          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-
     target_link_libraries(ColorRegionDetector PUBLIC YARP::YARP_os
                                                      VisionInterfaces
                                               PRIVATE YARP::YARP_cv
@@ -34,8 +29,6 @@ if(NOT SKIP_ColorRegionDetector)
                  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
                  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
                  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-#    set_property(GLOBAL APPEND PROPERTY _exported_targets ColorRegionDetector)
 
 else()
 

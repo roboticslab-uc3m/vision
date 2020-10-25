@@ -16,11 +16,6 @@ if(NOT SKIP_HaarDetector)
     yarp_add_plugin(HaarDetector HaarDetector.hpp
                                  HaarDetector.cpp)
 
-#    set_target_properties(HaarDetector PROPERTIES PUBLIC_HEADER HaarDetector.hpp)
-
-#    target_include_directories(HaarDetector PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-#                                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-
     target_link_libraries(HaarDetector PUBLIC YARP::YARP_os
                                               VisionInterfaces
                                        PRIVATE ${OpenCV_LIBS}
@@ -32,8 +27,6 @@ if(NOT SKIP_HaarDetector)
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
             PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-#    set_property(GLOBAL APPEND PROPERTY _exported_targets HaarDetector)
 
 else()
 
