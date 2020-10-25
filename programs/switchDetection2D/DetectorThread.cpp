@@ -113,15 +113,14 @@ void roboticslab::DetectorThread::run()
                                              detectedObjects[i].cy(),
                                              detectedObjects[i].width() / 2,
                                              detectedObjects[i].height() / 2);
-    }
 
-    /*
-    colorRegionDetector.run(inYarpImg, algorithm, locate, morphClosing, maxNumBlobs,threshold);
-    outYarpImg=colorRegionDetector.outImageProcessed;
-    outYarpImg=tensorflowDetector.run(inYarpImg);
-    output=colorRegionDetector.outputProcessed;
-    output=tensorflowDetector.bottle;
-    */
+        yarp::os::Bottle b;
+        b.addInt32(detectedObjects[i].cx());
+        b.addInt32(detectedObjects[i].cy());
+        b.addInt32(detectedObjects[i].width());
+        b.addInt32(detectedObjects[i].height());
+        output.addList() = b;
+    }
 
     pOutImg->prepare() = outYarpImg;
     pOutImg->write();
