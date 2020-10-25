@@ -107,11 +107,10 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
 
     //-----------------OPEN LOCAL PORTS------------//
 
-    outImg.open(strCameraLocal + "/img:o");
-
-    outPort.open(strCameraLocal + "/switchDetector2D/features:o");
-    outPort.open(strCameraLocal + "/switchDetector2D/results:o");
-    outPort.open(strCameraLocal + "/switchDetector2D/state:o");
+    std::string portPrefix("/switchDetection2D");
+    portPrefix += strCameraRemote;
+    outImg.open(portPrefix + "/img:o");
+    outPort.open(portPrefix + "/state:o");
 
 
     if (cropSelector != 0)

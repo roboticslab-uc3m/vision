@@ -17,7 +17,7 @@
     </module>
 
     <connection>
-        <from>/switchDetection2D/img:o</from>
+        <from>/switchDetection2D/grabber/img:o</from>
         <to>/switchDetection2D/yarpview/img:i</to>
     </connection>
 </application>
