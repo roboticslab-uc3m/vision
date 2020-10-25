@@ -29,14 +29,9 @@ private:
 class IDetector
 {
 public:
-    IDetector() : valid(false) {}
     virtual ~IDetector() {}
-    bool isValid() const { return valid; }
     virtual bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
                         yarp::sig::VectorOf<DetectedObject>& detectedObjects) = 0;
-
-protected:
-    bool valid;
 };
 
 }  // namespace roboticslab

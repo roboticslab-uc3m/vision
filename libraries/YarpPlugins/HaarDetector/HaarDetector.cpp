@@ -44,7 +44,7 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
     }
     CD_SUCCESS("\n");
 
-    valid = true;
+    return true;
 }
 
 /*****************************************************************/

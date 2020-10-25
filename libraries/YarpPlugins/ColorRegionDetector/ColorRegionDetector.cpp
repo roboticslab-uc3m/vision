@@ -56,7 +56,7 @@ bool ColorRegionDetector::open(yarp::os::Searchable& config)
     }
     CD_DEBUG("Using \"maxNumBlobs\": %d.\n", maxNumBlobs);
 
-    valid = true;
+    return true;
 }
 
 /*****************************************************************/
