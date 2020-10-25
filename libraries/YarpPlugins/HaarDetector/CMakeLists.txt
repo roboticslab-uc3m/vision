@@ -26,7 +26,7 @@ if(NOT SKIP_HaarDetector)
                                        PRIVATE ${OpenCV_LIBS}
                                                ROBOTICSLAB::ColorDebug)
 
-    target_compile_features(BasicCartesianControl PUBLIC cxx_std_11)
+    target_compile_features(HaarDetector PUBLIC cxx_std_11)
 
     install(TARGETS HaarDetector
             LIBRARY DESTINATION ${ROBOTICSLAB-VISION_DYNAMIC_PLUGINS_INSTALL_DIR}
