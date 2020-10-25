@@ -15,9 +15,14 @@
         <parameters>--name /switchDetection2D/yarpview/img:i</parameters>
         <node>localhost</node>
     </module>
-
     <connection>
         <from>/switchDetection2D/grabber/img:o</from>
         <to>/switchDetection2D/yarpview/img:i</to>
     </connection>
+
+    <module>
+        <name>gnome-terminal</name>
+        <parameters>-e "yarp read ... /switchDetection2D/grabber/state:o"</parameters>
+        <node>localhost</node>
+    </module>
 </application>
