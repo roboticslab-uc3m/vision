@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include <yarp/os/Property.h>
+#include <yarp/os/ResourceFinder.h>
 
 #include <yarp/dev/Drivers.h>
 #include <yarp/dev/PolyDriver.h>
@@ -65,15 +66,21 @@ TEST_F( HaarDetectorTest, HaarDetector1)
 
 TEST_F( HaarDetectorTest, HaarDetector2)
 {
+    yarp::os::ResourceFinder rf;
+    rf.setVerbose(false);
+    rf.setDefaultContext("HaarDetector");
+    std::string faceFullName = rf.findFileByName("tests/face-nc.pgm");
+    ASSERT_FALSE(faceFullName.empty());
+
     yarpImage.zero();
-    bool ok = yarp::sig::file::read(yarpImage, "file.jpg", yarp::sig::file::FORMAT_JPG);
+    bool ok = yarp::sig::file::read(yarpImage, faceFullName, yarp::sig::file::FORMAT_PGM);
     ASSERT_TRUE(ok);
 
-    /*yarp::sig::VectorOf<DetectedObject> detectedObjects;
+    yarp::sig::VectorOf<DetectedObject> detectedObjects;
     iDetector->detect(yarpImage,detectedObjects);
     ASSERT_EQ(detectedObjects.size(), 1);
-    ASSERT_NEAR(detectedObjects[0].cx(), yarpImage.width()/2, 2);
-    ASSERT_NEAR(detectedObjects[0].cy(), yarpImage.height()/2, 2);*/
+    ASSERT_NEAR(detectedObjects[0].cx(), yarpImage.width()/2, 25);
+    ASSERT_NEAR(detectedObjects[0].cy(), yarpImage.height()/2, 25);
 }
 
 }  // namespace roboticslab
