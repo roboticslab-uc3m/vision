@@ -20,3 +20,6 @@ yarp_install(FILES conf/haarcascade_cocacola_can.xml
                    conf/haarcascade_dog.xml  
                    conf/haarcascade_lamp.xml  
              DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/HaarDetector)
+
+yarp_install(FILES tests/face-nc.pgm
+             DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/HaarDetector/tests)
