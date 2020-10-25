@@ -102,6 +102,9 @@ void roboticslab::DetectorThread::run()
 
     bool ok = iDetector->detect(inYarpImg, detectedObjects);
 
+    if(!ok)
+        CD_WARNING("Detector failed!\n");
+
     // paint on image
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
     yarp::sig::PixelRgb red(255, 0, 0);
