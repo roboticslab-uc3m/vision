@@ -22,6 +22,7 @@ git clone https://github.com/roboticslab-uc3m/vision.git  # Download vision soft
 cd vision && mkdir build && cd build && cmake ..  # Configure the vision software
 make -j$(nproc)  # compile
 sudo make install  # Install :-)
+sudo ldconfig # For libTravisLib.so
 ```
 
 You may want to (from the same build dir):
