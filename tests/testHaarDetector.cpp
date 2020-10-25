@@ -6,7 +6,7 @@
 #include <yarp/dev/PolyDriver.h>
 
 #include <yarp/sig/Image.h>
-#include <yarp/sig/ImageDraw.h>
+#include <yarp/sig/ImageFile.h>
 
 #include <ColorDebug.h>
 
@@ -66,6 +66,8 @@ TEST_F( HaarDetectorTest, HaarDetector1)
 TEST_F( HaarDetectorTest, HaarDetector2)
 {
     yarpImage.zero();
+    bool ok = yarp::sig::file::read(yarpImage, "file.jpg", yarp::sig::file::FORMAT_JPG);
+    ASSERT_TRUE(ok);
 
     /*yarp::sig::VectorOf<DetectedObject> detectedObjects;
     iDetector->detect(yarpImage,detectedObjects);
