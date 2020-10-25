@@ -28,7 +28,7 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
-    rf.setDefaultContext("switchDetection2D"); //rf.setDefaultContext(context);
+    rf.setDefaultContext("HaarDetector"); //rf.setDefaultContext(context);
     std::string xmlCascadeFullName = rf.findFileByName(xmlCascade);
     if(xmlCascadeFullName.empty())
     {

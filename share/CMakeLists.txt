@@ -11,8 +11,8 @@ yarp_install(FILES applications/ymanager.ini
 
 ### Go through single applications
 
+add_subdirectory(HaarDetector)
 add_subdirectory(colorRegionDetection)
 add_subdirectory(switchDetection)
 add_subdirectory(tensorflowDetection2D)
-#add_subdirectory(pointAtObject)  # never had a cmake
 add_subdirectory(sensors)
