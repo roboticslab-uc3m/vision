@@ -1,11 +1,12 @@
 #include "gtest/gtest.h"
 
-#include <cmath>
-#include <vector>
+#include <yarp/os/Property.h>
 
-#include <yarp/os/all.h>
 #include <yarp/dev/Drivers.h>
 #include <yarp/dev/PolyDriver.h>
+
+#include <yarp/sig/Image.h>
+#include <yarp/sig/ImageDraw.h>
 
 #include <ColorDebug.h>
 
@@ -26,6 +27,7 @@ class ColorRegionDetectorTest : public testing::Test
         {
             yarp::os::Property deviceOptions;
             deviceOptions.put("device", "ColorRegionDetector");
+            deviceOptions.put("algorithm", "redMinusGreen");
 
             if(!detectorDevice.open(deviceOptions))
             {
@@ -38,19 +40,41 @@ class ColorRegionDetectorTest : public testing::Test
                 CD_ERROR("Problems acquiring detector interface\n");
                 return;
             }
+
+            yarpImage.resize(300,200);
         }
 
         virtual void TearDown()
         {
         }
 
+
     protected:
         roboticslab::IDetector *iDetector;
         yarp::dev::PolyDriver detectorDevice;
+        yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImage;
 };
 
 TEST_F( ColorRegionDetectorTest, ColorRegionDetector1)
 {
+    yarpImage.zero();
+    yarp::sig::VectorOf<DetectedObject> detectedObjects;
+    iDetector->detect(yarpImage,detectedObjects);
+    ASSERT_EQ(detectedObjects.size(), 0);
+}
+
+TEST_F( ColorRegionDetectorTest, ColorRegionDetector2)
+{
+    yarpImage.zero();
+    yarp::sig::draw::addCircle(yarpImage,yarp::sig::PixelRgb(255,0,0),
+                               yarpImage.width()/2,yarpImage.height()/2,
+                               yarpImage.height()/4); // x, y, radius
+
+    yarp::sig::VectorOf<DetectedObject> detectedObjects;
+    iDetector->detect(yarpImage,detectedObjects);
+    ASSERT_EQ(detectedObjects.size(), 1);
+    ASSERT_NEAR(detectedObjects[0].cx(), yarpImage.width()/2, 2);
+    ASSERT_NEAR(detectedObjects[0].cy(), yarpImage.height()/2, 2);
 }
 
 }  // namespace roboticslab
