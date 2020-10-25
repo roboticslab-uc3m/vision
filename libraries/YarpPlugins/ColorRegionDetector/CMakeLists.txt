@@ -13,22 +13,27 @@ yarp_prepare_plugin(ColorRegionDetector
 
 if(NOT SKIP_ColorRegionDetector)
 
+    if(NOT YARP_VERSION VERSION_GREATER_EQUAL 3.4)
+        set(CMAKE_INCLUDE_CURRENT_DIR TRUE) # yarp plugin builder needs this
+    endif()
+
     yarp_add_plugin(ColorRegionDetector ColorRegionDetector.hpp
                                         ColorRegionDetector.cpp)
 
     target_link_libraries(ColorRegionDetector PUBLIC YARP::YARP_os
+                                                     YARP::YARP_dev
                                                      VisionInterfaces
                                               PRIVATE YARP::YARP_cv
                                                       ${OpenCV_LIBS}
                                                       ROBOTICSLAB::ColorDebug
                                                       TravisLib)
 
+    target_compile_features(ColorRegionDetector PUBLIC cxx_std_11)
+
     yarp_install(TARGETS ColorRegionDetector
-                 EXPORT ROBOTICSLAB_VISION
-                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-                 PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+                 LIBRARY DESTINATION ${ROBOTICSLAB-VISION_DYNAMIC_PLUGINS_INSTALL_DIR}
+                 ARCHIVE DESTINATION ${ROBOTICSLAB-VISION_STATIC_PLUGINS_INSTALL_DIR}
+                 YARP_INI DESTINATION ${ROBOTICSLAB-VISION_PLUGIN_MANIFESTS_INSTALL_DIR})
 
 else()
 
