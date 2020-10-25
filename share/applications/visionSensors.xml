@@ -9,4 +9,10 @@
         <deployer>yarpdev</deployer>
     </module>
 
+    <module>
+        <name>yarpdev</name>
+        <parameters>--context sensors --from asus-xtion.ini</parameters>
+        <node>localhost</node>
+    </module>
+
 </application>
