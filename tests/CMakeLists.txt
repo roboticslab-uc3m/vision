@@ -25,6 +25,16 @@ if(ENABLE_tests)
         gtest_discover_tests(testColorRegionDetector)
     endif()
 
+    if(TARGET HaarDetector)
+        add_executable(testHaarDetector testHaarDetector.cpp)
+
+        target_link_libraries(testHaarDetector VisionInterfaces YARP::YARP_dev gtest_main)
+
+        target_compile_features(testHaarDetector PUBLIC cxx_std_11)
+
+        gtest_discover_tests(testHaarDetector)
+    endif()
+
 else()
 
     set(ENABLE_tests OFF CACHE BOOL "Enable/disable unit tests" FORCE)
