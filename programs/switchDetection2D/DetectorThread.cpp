@@ -6,7 +6,7 @@
 
 #include "DetectorThread.hpp"
 
-#define DEFAULT_DETECTOR "Haar"
+#define DEFAULT_DETECTOR "HaarDetector"
 
 /************************************************************************/
 
