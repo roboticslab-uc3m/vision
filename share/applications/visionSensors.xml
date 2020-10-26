@@ -15,4 +15,10 @@
         <node>localhost</node>
     </module>
 
+    <module>
+        <name>yarpdev</name>
+        <parameters>--context sensors --from realsense-d4xx.ini</parameters>
+        <node>localhost</node>
+    </module>
+
 </application>
