@@ -62,7 +62,7 @@ bool ColorRegionDetector::open(yarp::os::Searchable& config)
 /*****************************************************************/
 
 bool ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                                 yarp::sig::VectorOf<DetectedObject>& detectedObjects)
+                                 std::vector<yarp::os::Property> &detectedObjects)
 {
     cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImg);
 
@@ -93,11 +93,12 @@ bool ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpI
     {
         cv::Point tl = blobsRect[i].tl();
         cv::Point br = blobsRect[i].br();
-        DetectedObject detectedObject;
-        detectedObject.setBoundingBox(tl.x,
-                                      tl.y,
-                                      br.x,
-                                      br.y);
+
+        yarp::os::Property detectedObject;
+        detectedObject.put("tlx", tl.x);
+        detectedObject.put("tly", tl.y);
+        detectedObject.put("brx", br.x);
+        detectedObject.put("bry", br.y);
         detectedObjects.push_back(detectedObject);
     }
 
