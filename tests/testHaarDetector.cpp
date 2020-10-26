@@ -59,7 +59,7 @@ class HaarDetectorTest : public testing::Test
 TEST_F( HaarDetectorTest, HaarDetector1)
 {
     yarpImage.zero();
-    yarp::sig::VectorOf<DetectedObject> detectedObjects;
+    std::vector<yarp::os::Property> detectedObjects;
     iDetector->detect(yarpImage,detectedObjects);
     ASSERT_EQ(detectedObjects.size(), 0);
 }
@@ -76,11 +76,20 @@ TEST_F( HaarDetectorTest, HaarDetector2)
     bool ok = yarp::sig::file::read(yarpImage, faceFullName, yarp::sig::file::FORMAT_PGM);
     ASSERT_TRUE(ok);
 
-    yarp::sig::VectorOf<DetectedObject> detectedObjects;
+    std::vector<yarp::os::Property> detectedObjects;
     iDetector->detect(yarpImage,detectedObjects);
     ASSERT_EQ(detectedObjects.size(), 1);
-    ASSERT_NEAR(detectedObjects[0].cx(), yarpImage.width()/2, 25);
-    ASSERT_NEAR(detectedObjects[0].cy(), yarpImage.height()/2, 25);
+
+    ASSERT_TRUE(detectedObjects[0].check("tlx"));
+    ASSERT_TRUE(detectedObjects[0].check("brx"));
+    ASSERT_TRUE(detectedObjects[0].check("tly"));
+    ASSERT_TRUE(detectedObjects[0].check("bry"));
+
+    int cx = (detectedObjects[0].find("tlx").asInt32() + detectedObjects[0].find("brx").asInt32()) / 2;
+    int cy = (detectedObjects[0].find("tly").asInt32() + detectedObjects[0].find("bry").asInt32()) / 2;
+
+    ASSERT_NEAR(cx, yarpImage.width()/2, 25);
+    ASSERT_NEAR(cy, yarpImage.height()/2, 25);
 }
 
 }  // namespace roboticslab

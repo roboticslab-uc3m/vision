@@ -18,7 +18,7 @@ public:
     bool open(yarp::os::Searchable& config) override;
 
     bool detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                yarp::sig::VectorOf<DetectedObject>& detectedObjects) override;
+                std::vector<yarp::os::Property>& detectedObjects) override;
 
 private:
     std::string algorithm;

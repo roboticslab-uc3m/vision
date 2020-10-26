@@ -97,7 +97,7 @@ void roboticslab::DetectorThread::run()
 
     //CD_DEBUG("\n");
 
-    yarp::sig::VectorOf<DetectedObject> detectedObjects;
+    std::vector<yarp::os::Property> detectedObjects;
     yarp::os::Bottle output;
 
     bool ok = iDetector->detect(inYarpImg, detectedObjects);
@@ -113,19 +113,19 @@ void roboticslab::DetectorThread::run()
     yarp::sig::PixelRgb red(255, 0, 0);
     for (size_t i = 0; i < detectedObjects.size(); i++)
     {
+        int cx = (detectedObjects[i].find("tlx").asInt32() + detectedObjects[i].find("brx").asInt32()) / 2;
+        int cy = (detectedObjects[i].find("tly").asInt32() + detectedObjects[i].find("bry").asInt32()) / 2;
+        int width = detectedObjects[i].find("brx").asInt32() - detectedObjects[i].find("tlx").asInt32();
+        int height = detectedObjects[i].find("bry").asInt32() - detectedObjects[i].find("tly").asInt32();
+
         yarp::sig::draw::addRectangleOutline(outYarpImg,
                                              red,
-                                             detectedObjects[i].cx(),
-                                             detectedObjects[i].cy(),
-                                             detectedObjects[i].width() / 2,
-                                             detectedObjects[i].height() / 2);
+                                             cx,
+                                             cy,
+                                             width / 2,
+                                             height / 2);
 
-        yarp::os::Bottle b;
-        b.addInt32(detectedObjects[i].cx());
-        b.addInt32(detectedObjects[i].cy());
-        b.addInt32(detectedObjects[i].width());
-        b.addInt32(detectedObjects[i].height());
-        output.addList() = b;
+        output.addDict() = detectedObjects[i];
     }
 
     pOutImg->prepare() = outYarpImg;

@@ -50,7 +50,7 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
 /*****************************************************************/
 
 bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
-                          yarp::sig::VectorOf<DetectedObject>& detectedObjects)
+                          std::vector<yarp::os::Property> &detectedObjects)
 {
     cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImg);
 
@@ -59,11 +59,11 @@ bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
 
     for(size_t i; i<objects.size(); i++)
     {
-        DetectedObject detectedObject;
-        detectedObject.setBoundingBox(objects[i].x,
-                                      objects[i].y,
-                                      objects[i].x + objects[i].width,
-                                      objects[i].y + objects[i].height);
+        yarp::os::Property detectedObject;
+        detectedObject.put("tlx", objects[i].x);
+        detectedObject.put("tly", objects[i].y);
+        detectedObject.put("brx", objects[i].x + objects[i].width);
+        detectedObject.put("bry", objects[i].y + objects[i].height);
         detectedObjects.push_back(detectedObject);
     }
 
