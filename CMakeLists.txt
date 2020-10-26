@@ -87,6 +87,7 @@ add_subdirectory(libraries)
 add_subdirectory(programs)
 add_subdirectory(tests)
 add_subdirectory(share)
+add_subdirectory(bindings)
 add_subdirectory(doc)
 
 # Retrieve global properties.
