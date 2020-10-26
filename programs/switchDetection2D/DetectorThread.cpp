@@ -113,18 +113,23 @@ void roboticslab::DetectorThread::run()
     yarp::sig::PixelRgb red(255, 0, 0);
     for (size_t i = 0; i < detectedObjects.size(); i++)
     {
+        int cx = (detectedObjects[0]._tlx + detectedObjects[0]._brx) / 2;
+        int cy = (detectedObjects[0]._tly + detectedObjects[0]._bry) / 2;
+        int width = detectedObjects[0]._brx - detectedObjects[0]._tlx;
+        int height = detectedObjects[0]._bry - detectedObjects[0]._tly;
+
         yarp::sig::draw::addRectangleOutline(outYarpImg,
                                              red,
-                                             detectedObjects[i].cx(),
-                                             detectedObjects[i].cy(),
-                                             detectedObjects[i].width() / 2,
-                                             detectedObjects[i].height() / 2);
+                                             cx,
+                                             cy,
+                                             width / 2,
+                                             height / 2);
 
         yarp::os::Bottle b;
-        b.addInt32(detectedObjects[i].cx());
-        b.addInt32(detectedObjects[i].cy());
-        b.addInt32(detectedObjects[i].width());
-        b.addInt32(detectedObjects[i].height());
+        b.addInt32(detectedObjects[i]._tlx);
+        b.addInt32(detectedObjects[i]._tly);
+        b.addInt32(detectedObjects[i]._brx);
+        b.addInt32(detectedObjects[i]._bry);
         output.addList() = b;
     }
 

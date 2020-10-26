@@ -79,8 +79,12 @@ TEST_F( HaarDetectorTest, HaarDetector2)
     yarp::sig::VectorOf<DetectedObject> detectedObjects;
     iDetector->detect(yarpImage,detectedObjects);
     ASSERT_EQ(detectedObjects.size(), 1);
-    ASSERT_NEAR(detectedObjects[0].cx(), yarpImage.width()/2, 25);
-    ASSERT_NEAR(detectedObjects[0].cy(), yarpImage.height()/2, 25);
+
+    int cx = (detectedObjects[0]._tlx + detectedObjects[0]._brx) / 2;
+    int cy = (detectedObjects[0]._tly + detectedObjects[0]._bry) / 2;
+
+    ASSERT_NEAR(cx, yarpImage.width()/2, 25);
+    ASSERT_NEAR(cy, yarpImage.height()/2, 25);
 }
 
 }  // namespace roboticslab

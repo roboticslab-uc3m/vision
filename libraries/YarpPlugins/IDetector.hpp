@@ -18,11 +18,7 @@ public:
     {
         _tlx = tlx; _tly = tly; _brx = brx; _bry = bry;
     }
-    int cx() { return (_tlx+_brx)/2; }
-    int cy() { return (_tly+_bry)/2; }
-    int width() { return (_brx-_tlx); }
-    int height() { return (_bry-_tly); }
-private:
+
     int _tlx, _tly, _brx, _bry;
 };
 
