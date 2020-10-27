@@ -40,8 +40,6 @@ class ColorRegionDetectorTest : public testing::Test
                 CD_ERROR("Problems acquiring detector interface\n");
                 return;
             }
-
-            yarpImage.resize(300,200);
         }
 
         virtual void TearDown()
@@ -52,26 +50,34 @@ class ColorRegionDetectorTest : public testing::Test
     protected:
         roboticslab::IDetector *iDetector;
         yarp::dev::PolyDriver detectorDevice;
-        yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImage;
 };
 
 TEST_F( ColorRegionDetectorTest, ColorRegionDetector1)
 {
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImage;
+    yarpImage.resize(300,200);
     yarpImage.zero();
+
     std::vector<yarp::os::Property> detectedObjects;
+
     iDetector->detect(yarpImage,detectedObjects);
+
     ASSERT_EQ(detectedObjects.size(), 0);
 }
 
 TEST_F( ColorRegionDetectorTest, ColorRegionDetector2)
 {
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImage;
+    yarpImage.resize(300,200);
     yarpImage.zero();
     yarp::sig::draw::addCircle(yarpImage,yarp::sig::PixelRgb(255,0,0),
                                yarpImage.width()/2,yarpImage.height()/2,
                                yarpImage.height()/4); // x, y, radius
 
     std::vector<yarp::os::Property> detectedObjects;
+
     iDetector->detect(yarpImage,detectedObjects);
+
     ASSERT_EQ(detectedObjects.size(), 1);
 
     ASSERT_TRUE(detectedObjects[0].check("tlx"));
