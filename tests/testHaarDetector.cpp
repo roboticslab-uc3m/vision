@@ -41,8 +41,6 @@ class HaarDetectorTest : public testing::Test
                 CD_ERROR("Problems acquiring detector interface\n");
                 return;
             }
-
-            yarpImage.resize(300,200);
         }
 
         virtual void TearDown()
@@ -53,14 +51,18 @@ class HaarDetectorTest : public testing::Test
     protected:
         roboticslab::IDetector *iDetector;
         yarp::dev::PolyDriver detectorDevice;
-        yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImage;
 };
 
 TEST_F( HaarDetectorTest, HaarDetector1)
 {
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImage;
+    yarpImage.resize(300,200);
     yarpImage.zero();
+
     std::vector<yarp::os::Property> detectedObjects;
+
     iDetector->detect(yarpImage,detectedObjects);
+
     ASSERT_EQ(detectedObjects.size(), 0);
 }
 
@@ -72,12 +74,14 @@ TEST_F( HaarDetectorTest, HaarDetector2)
     std::string faceFullName = rf.findFileByName("tests/face-nc.pgm");
     ASSERT_FALSE(faceFullName.empty());
 
-    yarpImage.zero();
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImage;
     bool ok = yarp::sig::file::read(yarpImage, faceFullName, yarp::sig::file::FORMAT_PGM);
     ASSERT_TRUE(ok);
 
     std::vector<yarp::os::Property> detectedObjects;
+
     iDetector->detect(yarpImage,detectedObjects);
+
     ASSERT_EQ(detectedObjects.size(), 1);
 
     ASSERT_TRUE(detectedObjects[0].check("tlx"));
