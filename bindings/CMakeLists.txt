@@ -10,12 +10,27 @@ endif()
 
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR} ${CMAKE_MODULE_PATH})
 
-find_package(YARP REQUIRED)
 link_libraries(${YARP_LIBRARIES})
 
 find_package(ROBOTICSLAB_VISION REQUIRED)
 get_target_property(_vision_interface_include_dirs VisionInterfaces INTERFACE_INCLUDE_DIRECTORIES)
 include_directories(${_vision_interface_include_dirs})
+
+set(_components conf os sig dev)
+# This is necessary for SWIG to parse yarp.i file
+# TODO This might no longer be necessary with some updated UseSWIG.cmake version
+foreach(_component IN LISTS _components)
+  get_property(_include_dirs TARGET YARP::YARP_${_component} PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
+  foreach(_dir IN LISTS _include_dirs)
+    if("${_dir}" MATCHES "\\\$<BUILD_INTERFACE:(.+)>$")
+      include_directories("${CMAKE_MATCH_1}")
+    elseif("${_dir}" MATCHES "\\\$<INSTALL_INTERFACE:(.+)>$")
+      # Nothing to do
+    else()
+      include_directories(${_dir})
+    endif()
+  endforeach()
+endforeach()
 
 # for yarp.i
 include_directories($ENV{YARP_ROOT}/bindings)
@@ -41,8 +56,6 @@ if (CREATE_PYTHON)
   FIND_PACKAGE(PythonLibs ${CREATE_PYTHON_VERSION})
   INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 
-  #include_directories(${CMAKE_SOURCE_DIR}/../libraries/YarpPlugins)
-
   LINK_LIBRARIES(${PYTHON_LIBRARY})
   
   ## in Windows it seems necessary to declare explictly the link_directory
@@ -51,12 +64,13 @@ if (CREATE_PYTHON)
     link_directories(${PYTHON_DIR})
   endif()
   
-  SWIG_ADD_MODULE(roboticslab_vision python roboticslab_vision.i)
-  #j#swig_add_library(roboticslab_vision
-  #j#                 LANGUAGE python
-  #j#                 SOURCES roboticslab_vision.i)
+  #SWIG_ADD_MODULE(roboticslab_vision python roboticslab_vision.i)
+  swig_add_library(roboticslab_vision
+                   LANGUAGE python
+                   SOURCES roboticslab_vision.i)
   #swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY} VisionInterfaces)
   #target_include_directories(roboticslab_vision SYSTEM PRIVATE ${PYTHON_INCLUDE_PATH})
+  #swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY} YARP_os YARP_sig)
 
   # uncomment if we want a debug version of the library
   #ADD_DEFINITIONS(-DPy_DEBUG)
