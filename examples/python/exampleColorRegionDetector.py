@@ -17,6 +17,6 @@ yarpImg = yarp.ImageRgb()
 yarpImg.zero()
 
 print("detect()")
-#iDetector.detect(yarpImg, std::vector< yarp::os::Property > &)
+detectedObjects = iDetector.detect(yarpImg)
 
 detectorDevice.close()
