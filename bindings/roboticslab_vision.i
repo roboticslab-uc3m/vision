@@ -16,6 +16,14 @@
 
 //%import "yarp.i"
 
+%include <typemaps.i>
+%include <std_vector.i>
+%{
+#include "yarp/os/Property.h"
+%}
+
+%template(PropertyVector) std::vector<yarp::os::Property>;
+
 %{
 /* Includes the header in the wrapper code */
 #include "IDetector.hpp"
