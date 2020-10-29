@@ -36,8 +36,6 @@ swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY}
 set_target_properties(${SWIG_MODULE_roboticslab_vision_python_REAL_NAME} PROPERTIES OUTPUT_NAME "_roboticslab_vision"
                                                                       LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/python")
 
-#  install(FILES ${CMAKE_BINARY_DIR}/roboticslab_vision.py ${CMAKE_BINARY_DIR}/lib/_roboticslab_vision.so 
-
 # installation path is determined reliably on most platforms using distutils
 execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(1,0,prefix=''))"
                 OUTPUT_VARIABLE PYTHON_INSTDIR
