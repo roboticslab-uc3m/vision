@@ -27,12 +27,11 @@ set(CMAKE_SWIG_OUTDIR "${CMAKE_BINARY_DIR}/lib/python")
 swig_add_library(roboticslab_vision
                  LANGUAGE python
                  SOURCES ${SWIG_BINDINGS_SOURCE_FILE})
-#swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY} VisionInterfaces)
-#target_include_directories(roboticslab_vision SYSTEM PRIVATE ${PYTHON_INCLUDE_PATH})
 swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY}
                                        YARP::YARP_os
                                        YARP::YARP_sig
                                        VisionInterfaces)
+#target_include_directories(roboticslab_vision SYSTEM PRIVATE ${PYTHON_INCLUDE_PATH})
 
 set_target_properties(${SWIG_MODULE_roboticslab_vision_python_REAL_NAME} PROPERTIES OUTPUT_NAME "_roboticslab_vision"
                                                                       LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/python")
