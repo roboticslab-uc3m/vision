@@ -15,10 +15,7 @@ include(GNUInstallDirs)
 # disable all warnings for current folder and subfolders
 set(CMAKE_C_FLAGS -w)
 set(CMAKE_CXX_FLAGS -w)
-
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR} ${CMAKE_MODULE_PATH})
-
-link_libraries(${YARP_LIBRARIES})
+set(CMAKE_CXX_STANDARD 11) # alternatively would get via YARP target property
 
 get_target_property(_vision_interface_include_dirs VisionInterfaces INTERFACE_INCLUDE_DIRECTORIES)
 include_directories(${_vision_interface_include_dirs})
