@@ -61,7 +61,7 @@ if(NOT CMAKE_SKIP_RPATH AND NOT CMAKE_SKIP_INSTALL_RPATH)
   else()
     list(APPEND _current_rpath "\$ORIGIN/${_rel_path}")
   endif()
-  set_target_properties(${SWIG_MODULE_yarp_python_REAL_NAME} PROPERTIES INSTALL_RPATH "${_current_rpath}")
+  set_target_properties(${SWIG_MODULE_roboticslab_vision_python_REAL_NAME} PROPERTIES INSTALL_RPATH "${_current_rpath}")
 endif()
 
 install(TARGETS ${SWIG_MODULE_roboticslab_vision_REAL_NAME}
