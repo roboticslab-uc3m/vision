@@ -15,7 +15,6 @@ include(GNUInstallDirs)
 # disable all warnings for current folder and subfolders
 set(CMAKE_C_FLAGS -w)
 set(CMAKE_CXX_FLAGS -w)
-set(CMAKE_CXX_STANDARD 11) # alternatively would get via YARP target property
 
 get_target_property(_vision_interface_include_dirs VisionInterfaces INTERFACE_INCLUDE_DIRECTORIES)
 include_directories(${_vision_interface_include_dirs})
@@ -69,7 +68,9 @@ if (CREATE_PYTHON)
                    SOURCES roboticslab_vision.i)
   #swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY} VisionInterfaces)
   #target_include_directories(roboticslab_vision SYSTEM PRIVATE ${PYTHON_INCLUDE_PATH})
-  swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY} YARP_os YARP_sig)
+  swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY}
+                                         YARP::YARP_os
+                                         YARP::YARP_sig)
 
   # uncomment if we want a debug version of the library
   #ADD_DEFINITIONS(-DPy_DEBUG)
