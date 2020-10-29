@@ -37,24 +37,22 @@ endforeach()
 
 set(CREATE_PYTHON FALSE CACHE BOOL "Create Python interface")
 
-FIND_PACKAGE(SWIG REQUIRED)
-INCLUDE(${SWIG_USE_FILE})
-MESSAGE(STATUS "${SWIG_USE_FILE}")
-SET (MIN_SWIG_VERSION "1.3.29")
-IF ("${SWIG_VERSION}" VERSION_LESS "${MIN_SWIG_VERSION}")
-  MESSAGE( FATAL_ERROR "Please update your SWIG. Current version: ${SWIG_VERSION}. The minimum version needed: ${MIN_SWIG_VERSION}")
-ENDIF ("${SWIG_VERSION}" VERSION_LESS "${MIN_SWIG_VERSION}")
+find_package(SWIG REQUIRED)
+include(${SWIG_USE_FILE})
+message(STATUS "${SWIG_USE_FILE}")
 
-SET_SOURCE_FILES_PROPERTIES(roboticslab_vision.i PROPERTIES CPLUSPLUS ON)
+set_source_files_properties(roboticslab_vision.i PROPERTIES CPLUSPLUS ON)
 
 if (CREATE_PYTHON)
-  set(CMAKE_SWIG_OUTDIR "${CMAKE_BINARY_DIR}")
-  SET(CMAKE_SWIG_FLAGS "-Wall;-module;roboticslab_vision;-threads")
-  SET(CREATE_PYTHON_VERSION "" CACHE STRING "Control python version used, if you wish." )
-  FIND_PACKAGE(PythonLibs ${CREATE_PYTHON_VERSION})
-  INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 
-  LINK_LIBRARIES(${PYTHON_LIBRARY})
+  set(CMAKE_SWIG_OUTDIR "${CMAKE_BINARY_DIR}")
+  set(CMAKE_SWIG_FLAGS "-Wall;-module;roboticslab_vision;-threads")
+  set(CREATE_PYTHON_VERSION "" CACHE STRING "Control python version used, if you wish." )
+
+  find_package(PythonLibs ${CREATE_PYTHON_VERSION})
+  include_directories(${PYTHON_INCLUDE_PATH})
+
+  link_libraries(${PYTHON_LIBRARY})
   
   ## in Windows it seems necessary to declare explictly the link_directory
   if (WIN32)
@@ -76,23 +74,23 @@ if (CREATE_PYTHON)
   #ADD_DEFINITIONS(-DPy_DEBUG)
 
   # installation path is determined reliably on most platforms using distutils
-  FIND_PACKAGE(PythonInterp ${CREATE_PYTHON_VERSION})
+  find_package(PythonInterp ${CREATE_PYTHON_VERSION})
 
-  EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} 
+  execute_process(COMMAND ${PYTHON_EXECUTABLE} 
     -c "from distutils import sysconfig; print(sysconfig.get_python_lib(1,0,prefix='${CMAKE_INSTALL_PREFIX}'))" 
     OUTPUT_VARIABLE PYTHON_INSTDIR OUTPUT_STRIP_TRAILING_WHITESPACE )
-  INSTALL(FILES ${CMAKE_BINARY_DIR}/roboticslab_vision.py ${CMAKE_BINARY_DIR}/lib/_roboticslab_vision.so 
+  install(FILES ${CMAKE_BINARY_DIR}/roboticslab_vision.py ${CMAKE_BINARY_DIR}/lib/_roboticslab_vision.so 
     DESTINATION ${PYTHON_INSTDIR} )
   #j#INSTALL(FILES ${CMAKE_BINARY_DIR}/roboticslab_vision.py
   #j#  DESTINATION ${PYTHON_INSTDIR} )
 
-  IF (WIN32)
+  if (WIN32)
     # Check if we have a target called _roboticslab_vision as SWIG_ADD_MODULE
     # will currently give. If not, we're probably in the distant
     # future, and we'd best not meddle.
-    GET_TARGET_PROPERTY(roboticslab_vision_lib_location _roboticslab_vision LOCATION)
-    IF (roboticslab_vision_lib_location)
-      SET_TARGET_PROPERTIES(_roboticslab_vision PROPERTIES SUFFIX ".pyd")
-    ENDIF ()    
-  ENDIF (WIN32)
+    get_target_property(roboticslab_vision_lib_location _roboticslab_vision LOCATION)
+    if (roboticslab_vision_lib_location)
+      set_target_properties(_roboticslab_vision PROPERTIES SUFFIX ".pyd")
+    endif ()    
+  endif (WIN32)
 endif (CREATE_PYTHON)
