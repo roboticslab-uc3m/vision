@@ -69,7 +69,7 @@ if (CREATE_PYTHON)
                    SOURCES roboticslab_vision.i)
   #swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY} VisionInterfaces)
   #target_include_directories(roboticslab_vision SYSTEM PRIVATE ${PYTHON_INCLUDE_PATH})
-  #swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY} YARP_os YARP_sig)
+  swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY} YARP_os YARP_sig)
 
   # uncomment if we want a debug version of the library
   #ADD_DEFINITIONS(-DPy_DEBUG)
