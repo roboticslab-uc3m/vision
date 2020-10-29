@@ -35,13 +35,17 @@ foreach(_component IN LISTS _components)
   endforeach()
 endforeach()
 
-set(SWIG_BINDINGS_SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/roboticslab_vision.i")
+set(SWIG_EXTRA_FLAGS "" CACHE STRING "Extra flags passed to swig commands (e.g. -Wall)")
+mark_as_advanced(SWIG_EXTRA_FLAGS)
+unset(SWIG_COMMON_FLAGS)
+list(APPEND SWIG_COMMON_FLAGS ${SWIG_EXTRA_FLAGS})
 
 set(CREATE_PYTHON FALSE CACHE BOOL "Create Python interface")
 
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
-message(STATUS "${SWIG_USE_FILE}")
+
+set(SWIG_BINDINGS_SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/roboticslab_vision.i")
 
 set_source_files_properties(roboticslab_vision.i PROPERTIES CPLUSPLUS ON)
 
