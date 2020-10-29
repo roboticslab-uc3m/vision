@@ -4,9 +4,10 @@
 # this is set in the parent directory, but for some reason it does not get inherited
 set_source_files_properties(${SWIG_BINDINGS_SOURCE_FILE} PROPERTIES CPLUSPLUS ON)
 
-set(CMAKE_SWIG_OUTDIR "${CMAKE_BINARY_DIR}")
 set(CMAKE_SWIG_FLAGS "-Wall;-module;roboticslab_vision;-threads")
 set(CREATE_PYTHON_VERSION "" CACHE STRING "Control python version used, if you wish." )
+
+find_package(PythonInterp ${CREATE_PYTHON_VERSION})
 
 find_package(PythonLibs ${CREATE_PYTHON_VERSION})
 include_directories(${PYTHON_INCLUDE_PATH})
@@ -18,8 +19,9 @@ if (WIN32)
   get_filename_component(PYTHON_DIR ${PYTHON_LIBRARY} PATH)
   link_directories(${PYTHON_DIR})
 endif()
+
+set(CMAKE_SWIG_OUTDIR "${CMAKE_BINARY_DIR}/lib/python")
   
-#SWIG_ADD_MODULE(roboticslab_vision python roboticslab_vision.i)
 swig_add_library(roboticslab_vision
                  LANGUAGE python
                  SOURCES ${SWIG_BINDINGS_SOURCE_FILE})
@@ -29,11 +31,6 @@ swig_link_libraries(roboticslab_vision ${PYTHON_LIBRARY}
                                        YARP::YARP_os
                                        YARP::YARP_sig)
 
-# uncomment if we want a debug version of the library
-#ADD_DEFINITIONS(-DPy_DEBUG)
-
-# installation path is determined reliably on most platforms using distutils
-find_package(PythonInterp ${CREATE_PYTHON_VERSION})
 
 execute_process(COMMAND ${PYTHON_EXECUTABLE} 
   -c "from distutils import sysconfig; print(sysconfig.get_python_lib(1,0,prefix='${CMAKE_INSTALL_PREFIX}'))" 
