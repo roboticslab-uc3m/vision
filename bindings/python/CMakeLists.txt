@@ -4,7 +4,7 @@
 # this is set in the parent directory, but for some reason it does not get inherited
 set_source_files_properties(${SWIG_BINDINGS_SOURCE_FILE} PROPERTIES CPLUSPLUS ON)
 
-set(CMAKE_SWIG_FLAGS "-Wall;-module;roboticslab_vision;-threads")
+set(CMAKE_SWIG_FLAGS "-Wall;-module;roboticslab_vision;-threads;${SWIG_COMMON_FLAGS}")
 set(CREATE_PYTHON_VERSION "" CACHE STRING "Control python version used, if you wish." )
 
 mark_as_advanced(VISION_USE_PYTHON_VERSION)

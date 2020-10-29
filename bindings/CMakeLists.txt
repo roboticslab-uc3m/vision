@@ -16,6 +16,9 @@ include(GNUInstallDirs)
 set(CMAKE_C_FLAGS -w)
 set(CMAKE_CXX_FLAGS -w)
 
+get_target_property(_vision_interface_include_dirs VisionInterfaces INTERFACE_INCLUDE_DIRECTORIES)
+include_directories(${_vision_interface_include_dirs})
+
 set(_components conf os sig dev)
 # This is necessary for SWIG to parse yarp.i file
 # TODO This might no longer be necessary with some updated UseSWIG.cmake version
