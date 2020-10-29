@@ -5,8 +5,7 @@
 set_source_files_properties(${SWIG_BINDINGS_SOURCE_FILE} PROPERTIES CPLUSPLUS ON)
 
 set(CMAKE_SWIG_FLAGS "-module;roboticslab_vision;-threads;${SWIG_COMMON_FLAGS}")
-set(CREATE_PYTHON_VERSION "" CACHE STRING "Control python version used, if you wish." )
-
+set(VISION_USE_PYTHON_VERSION "" CACHE STRING "Specify python version to use" )
 mark_as_advanced(VISION_USE_PYTHON_VERSION)
 find_package(PythonInterp ${VISION_USE_PYTHON_VERSION} REQUIRED)
 set(VISION_USE_PYTHON_VERSION_ARGS)
