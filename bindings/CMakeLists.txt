@@ -8,11 +8,18 @@ if(${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.13)
   cmake_policy(SET CMP0078 OLD)
 endif()
 
+include(CMakeDependentOption)
+include(CheckCXXCompilerFlag)
+include(GNUInstallDirs)
+
+# disable all warnings for current folder and subfolders
+set(CMAKE_C_FLAGS -w)
+set(CMAKE_CXX_FLAGS -w)
+
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR} ${CMAKE_MODULE_PATH})
 
 link_libraries(${YARP_LIBRARIES})
 
-find_package(ROBOTICSLAB_VISION REQUIRED)
 get_target_property(_vision_interface_include_dirs VisionInterfaces INTERFACE_INCLUDE_DIRECTORIES)
 include_directories(${_vision_interface_include_dirs})
 
@@ -32,9 +39,6 @@ foreach(_component IN LISTS _components)
   endforeach()
 endforeach()
 
-# for yarp.i
-include_directories($ENV{YARP_ROOT}/bindings)
-
 set(CREATE_PYTHON FALSE CACHE BOOL "Create Python interface")
 
 FIND_PACKAGE(SWIG REQUIRED)
@@ -46,8 +50,6 @@ IF ("${SWIG_VERSION}" VERSION_LESS "${MIN_SWIG_VERSION}")
 ENDIF ("${SWIG_VERSION}" VERSION_LESS "${MIN_SWIG_VERSION}")
 
 SET_SOURCE_FILES_PROPERTIES(roboticslab_vision.i PROPERTIES CPLUSPLUS ON)
-
-include(GNUInstallDirs)
 
 if (CREATE_PYTHON)
   set(CMAKE_SWIG_OUTDIR "${CMAKE_BINARY_DIR}")

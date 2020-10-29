@@ -4,17 +4,15 @@
 
 //////////////////////////////////////////////////////////////////////////
 // 
-// This is a configuration file to explain ROBOT_DEVASTATION_ROBOTS to SWIG
+// This is a configuration file to explain VISION to SWIG
 //
-// SWIG, for the most part, understands ROBOT_DEVASTATION_ROBOTS auto-magically.
+// SWIG, for the most part, understands VISION auto-magically.
 // There are a few things that need to be explained:
 //  + use of multiple inheritance
 //  + use of names that clash with special names in Java/Python/Perl/...
 //  + use of templates
 
 %module roboticslab_vision
-
-//%import "yarp.i"
 
 %include <typemaps.i>
 %include <std_vector.i>
