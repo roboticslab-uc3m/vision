@@ -1,8 +1,6 @@
 # Created by Juan G Victores 2013 @ UC3M
 # Thanks to Paul Fitzpatrick for all the YARP and iCub SWIG stuff for inspiration
 
-cmake_minimum_required(VERSION 3.12)
-
 # UseSWIG generates now standard target names.
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.13)
   cmake_policy(SET CMP0078 OLD)
