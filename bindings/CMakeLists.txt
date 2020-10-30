@@ -35,20 +35,25 @@ foreach(_component IN LISTS _components)
   endforeach()
 endforeach()
 
-set(SWIG_EXTRA_FLAGS "" CACHE STRING "Extra flags passed to swig commands (e.g. -Wall)")
-mark_as_advanced(SWIG_EXTRA_FLAGS)
-unset(SWIG_COMMON_FLAGS)
-list(APPEND SWIG_COMMON_FLAGS ${SWIG_EXTRA_FLAGS})
+option(CREATE_BINDINGS "Compile optional language bindings" TRUE)
 
-set(CREATE_PYTHON FALSE CACHE BOOL "Create Python interface")
+if(CREATE_BINDINGS)
 
-find_package(SWIG REQUIRED)
-include(${SWIG_USE_FILE})
+  set(SWIG_EXTRA_FLAGS "" CACHE STRING "Extra flags passed to swig commands (e.g. -Wall)")
+  mark_as_advanced(SWIG_EXTRA_FLAGS)
+  unset(SWIG_COMMON_FLAGS)
+  list(APPEND SWIG_COMMON_FLAGS ${SWIG_EXTRA_FLAGS})
 
-set(SWIG_BINDINGS_SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/roboticslab_vision.i")
+  set(CREATE_BINDINGS_PYTHON FALSE CACHE BOOL "Create Python interface")
 
-set_source_files_properties(roboticslab_vision.i PROPERTIES CPLUSPLUS ON)
+  find_package(SWIG REQUIRED)
+  include(${SWIG_USE_FILE})
 
-if(CREATE_PYTHON)
-  add_subdirectory(python)
-endif (CREATE_PYTHON)
+  set(SWIG_BINDINGS_SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/roboticslab_vision.i")
+
+  set_source_files_properties(roboticslab_vision.i PROPERTIES CPLUSPLUS ON)
+
+  if(CREATE_BINDINGS_PYTHON)
+    add_subdirectory(python)
+  endif()
+endif()
