@@ -44,7 +44,11 @@ find_package(COLOR_DEBUG REQUIRED)
 # Soft dependencies.
 
 find_package(OpenCV QUIET)
-find_package(PCL 1.6 QUIET)
+if("${CREATE_BINDINGS_PYTHON_VERSION}" GREATER_EQUAL 3)
+  MESSAGE(AUTHOR_WARNING "Skipping find_package(PCL 1.6 QUIET) so we can compile Python 3 bindings")
+else()
+  find_package(PCL 1.6 QUIET)
+endif()
 find_package(TensorflowCC 1.12 QUIET)
 find_package(GTestSources 1.6.0 QUIET)
 find_package(Doxygen QUIET)

@@ -5,14 +5,14 @@
 set_source_files_properties(${SWIG_BINDINGS_SOURCE_FILE} PROPERTIES CPLUSPLUS ON)
 
 set(CMAKE_SWIG_FLAGS "-module;roboticslab_vision;-threads;${SWIG_COMMON_FLAGS}")
-set(VISION_USE_PYTHON_VERSION "" CACHE STRING "Specify python version to use" )
-mark_as_advanced(VISION_USE_PYTHON_VERSION)
-find_package(PythonInterp ${VISION_USE_PYTHON_VERSION} REQUIRED)
-set(VISION_USE_PYTHON_VERSION_ARGS)
-if(NOT VISION_USE_PYTHON_VERSION)
-  set (VISION_USE_PYTHON_VERSION ${PYTHON_VERSION_STRING})
+set(CREATE_BINDINGS_PYTHON_VERSION "" CACHE STRING "Specify python version to use" )
+#mark_as_advanced(CREATE_BINDINGS_PYTHON_VERSION)
+find_package(PythonInterp ${CREATE_BINDINGS_PYTHON_VERSION} REQUIRED)
+set(CREATE_BINDINGS_PYTHON_VERSION_ARGS)
+if(NOT CREATE_BINDINGS_PYTHON_VERSION)
+  set (CREATE_BINDINGS_PYTHON_VERSION ${PYTHON_VERSION_STRING})
 endif()
-find_package(PythonLibs ${VISION_USE_PYTHON_VERSION} EXACT)
+find_package(PythonLibs ${CREATE_BINDINGS_PYTHON_VERSION} EXACT)
 
 
 ## in Windows it seems necessary to declare explictly the link_directory
