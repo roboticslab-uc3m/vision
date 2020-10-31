@@ -32,6 +32,9 @@ addons:
     - libopencv-dev
     - libpcl-dev
     - libproj-dev # needed by libpcl-dev on Xenial (known bug)
+    - libgtest-dev # unit testing
+    - swig # bindings
+    - lcov # code coverage
 
 before_install:
   #-- Code coverage
@@ -70,7 +73,7 @@ before_script:
   - export YARP_DATA_DIRS=$PWD/install/share/roboticslab-vision:$YARP_DATA_DIRS
 
 script:
-  - echo "No unit tests available"
+  - cd "$TRAVIS_BUILD_DIR/build/tests" && ctest -V
 
 after_success:
   #-- Code coverage

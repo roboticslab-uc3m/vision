@@ -51,6 +51,7 @@ else()
 endif()
 find_package(TensorflowCC 1.12 QUIET)
 find_package(GTestSources 1.6.0 QUIET)
+find_package(SWIG QUIET)
 find_package(Doxygen QUIET)
 
 # Xenial + PCL 1.7 bug
