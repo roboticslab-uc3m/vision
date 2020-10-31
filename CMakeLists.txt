@@ -44,8 +44,8 @@ find_package(COLOR_DEBUG REQUIRED)
 # Soft dependencies.
 
 find_package(OpenCV QUIET)
-if("${CREATE_BINDINGS_PYTHON_VERSION}" GREATER_EQUAL 3)
-  MESSAGE(AUTHOR_WARNING "Skipping find_package(PCL 1.6 QUIET) so we can compile Python 3 bindings")
+if(CREATE_BINDINGS_PYTHON_VERSION VERSION_GREATER_EQUAL 3)
+  message(AUTHOR_WARNING "Skipping find_package(PCL 1.6 QUIET) so we can compile Python 3 bindings")
 else()
   find_package(PCL 1.6 QUIET)
 endif()
@@ -57,6 +57,12 @@ find_package(Doxygen QUIET)
 # https://github.com/PointCloudLibrary/pcl/issues/2406
 if(DEFINED PCL_LIBRARIES)
     list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
+endif()
+
+# Focal + PCL 1.10 + OpenNI workaround (idea: use CMake components to find_package(PCL)?)
+if(PCL_VERSION VERSION_EQUAL 1.10)
+    include_directories(/usr/include/ni)
+    link_libraries(/usr/lib/libOpenNI.so)
 endif()
 
 # Always build YARP devices as MODULE libraries.

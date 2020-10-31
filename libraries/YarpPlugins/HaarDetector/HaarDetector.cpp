@@ -24,7 +24,7 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
         xmlCascade = parameters.find("xmlCascade").asString();
         CD_DEBUG("\"xmlCascade\" parameter found: \"%s\"\n", xmlCascade.c_str());
     }
-    CD_DEBUG("Using \"xmlCascade\":\n", xmlCascade.c_str());
+    CD_DEBUG("Using \"xmlCascade\": %s\n", xmlCascade.c_str());
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);

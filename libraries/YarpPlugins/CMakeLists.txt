@@ -6,6 +6,8 @@
 add_library(VisionInterfaces INTERFACE)
 
 # Configure usage requirements.
+target_link_libraries(VisionInterfaces INTERFACE YARP::YARP_sig)
+
 target_include_directories(VisionInterfaces INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                                                       $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
@@ -19,6 +21,7 @@ install(TARGETS VisionInterfaces
 
 # Export variables to the global scope.
 set_property(GLOBAL APPEND PROPERTY _exported_targets VisionInterfaces)
+set_property(GLOBAL APPEND PROPERTY _exported_dependencies YARP_sig)
 
 # YARP devices.
 add_subdirectory(ColorRegionDetector)
