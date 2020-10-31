@@ -19,7 +19,7 @@ class HaarDetector : public yarp::dev::DeviceDriver, public IDetector
 public:
     bool open(yarp::os::Searchable& config) override;
 
-    bool detect(yarp::sig::FlexImage inYarpImg,
+    bool detect(const yarp::sig::FlexImage& inYarpImg,
                 std::vector<yarp::os::Property>& detectedObjects) override;
 private:
     cv::CascadeClassifier object_cascade;

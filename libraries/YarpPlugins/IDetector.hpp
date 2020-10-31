@@ -15,7 +15,7 @@ class IDetector
 {
 public:
     virtual ~IDetector() {}
-    virtual bool detect(yarp::sig::FlexImage inYarpImg,
+    virtual bool detect(const yarp::sig::FlexImage& inYarpImg,
                         std::vector<yarp::os::Property>& detectedObjects) = 0;
 };
 
