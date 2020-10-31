@@ -61,10 +61,13 @@ bool ColorRegionDetector::open(yarp::os::Searchable& config)
 
 /*****************************************************************/
 
-bool ColorRegionDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
+bool ColorRegionDetector::detect(yarp::sig::FlexImage inYarpImg,
                                  std::vector<yarp::os::Property> &detectedObjects)
 {
-    cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImg);
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImgRgb;
+    inYarpImgRgb.setExternal(inYarpImg.getRawImage(), inYarpImg.width(), inYarpImg.height());
+
+    cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImgRgb);
 
     // Because Travis stuff goes with [openCv Mat Bgr] for now
     Travis travis(false,true);    // ::Travis(quiet=true, overwrite=true);
