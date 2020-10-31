@@ -14,10 +14,15 @@ detectorDevice = yarp.PolyDriver(detectorOptions)
 
 iDetector = roboticslab_vision.viewIDetector(detectorDevice)
 
-yarpImg = yarp.ImageRgb()
-yarpImg.zero()
+yarpImgRgb = yarp.ImageRgb()
+yarpImgRgb.zero()
+
+yarpImgFlex = yarp.FlexImage()
+yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode())
+yarpImgFlex.setQuantum(yarpImgRgb.getQuantum())
+yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height())
 
 print("detect()")
-detectedObjects = iDetector.detect(yarpImg)
+detectedObjects = iDetector.detect(yarpImgFlex)
 
 detectorDevice.close()

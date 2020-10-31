@@ -14,15 +14,20 @@ detectorDevice = yarp.PolyDriver(detectorOptions)
 
 iDetector = roboticslab_vision.viewIDetector(detectorDevice)
 
-yarpImg = yarp.ImageRgb()
+yarpImgRgb = yarp.ImageRgb()
 
 rf = yarp.ResourceFinder()
 rf.setDefaultContext("HaarDetector")
 faceFullName = rf.findFileByName("tests/face-nc.pgm")
-yarp.read(yarpImg, faceFullName, yarp.FORMAT_PGM)
+yarp.read(yarpImgRgb, faceFullName, yarp.FORMAT_PGM)
+
+yarpImgFlex = yarp.FlexImage()
+yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode())
+yarpImgFlex.setQuantum(yarpImgRgb.getQuantum())
+yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height())
 
 print("detect()")
-detectedObjects = iDetector.detect(yarpImg)
+detectedObjects = iDetector.detect(yarpImgFlex)
 
 print(detectedObjects[0].find("tlx").asInt32()) # 90
 print(detectedObjects[0].find("brx").asInt32()) # 168
