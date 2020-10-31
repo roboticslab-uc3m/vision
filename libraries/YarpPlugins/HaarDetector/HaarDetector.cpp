@@ -49,7 +49,7 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
 
 /*****************************************************************/
 
-bool HaarDetector::detect(const yarp::sig::FlexImage &inYarpImg,
+bool HaarDetector::detect(const yarp::sig::Image &inYarpImg,
                           std::vector<yarp::os::Property> &detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImgRgb;

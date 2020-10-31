@@ -61,7 +61,7 @@ bool ColorRegionDetector::open(yarp::os::Searchable& config)
 
 /*****************************************************************/
 
-bool ColorRegionDetector::detect(const yarp::sig::FlexImage& inYarpImg,
+bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg,
                                  std::vector<yarp::os::Property>& detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImgRgb;

@@ -58,14 +58,8 @@ TEST_F( ColorRegionDetectorTest, ColorRegionDetector1)
     yarpImgRgb.resize(300,200);
     yarpImgRgb.zero();
 
-    yarp::sig::FlexImage yarpImgFlex;
-    yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode());
-    yarpImgFlex.setQuantum(yarpImgRgb.getQuantum());
-    yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height());
-
     std::vector<yarp::os::Property> detectedObjects;
-
-    iDetector->detect(yarpImgFlex,detectedObjects);
+    iDetector->detect(yarpImgRgb,detectedObjects);
 
     ASSERT_EQ(detectedObjects.size(), 0);
 }
@@ -79,14 +73,8 @@ TEST_F( ColorRegionDetectorTest, ColorRegionDetector2)
                                yarpImgRgb.width()/2,yarpImgRgb.height()/2,
                                yarpImgRgb.height()/4); // x, y, radius
 
-    yarp::sig::FlexImage yarpImgFlex;
-    yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode());
-    yarpImgFlex.setQuantum(yarpImgRgb.getQuantum());
-    yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height());
-
     std::vector<yarp::os::Property> detectedObjects;
-
-    iDetector->detect(yarpImgFlex,detectedObjects);
+    iDetector->detect(yarpImgRgb,detectedObjects);
 
     ASSERT_EQ(detectedObjects.size(), 1);
 
