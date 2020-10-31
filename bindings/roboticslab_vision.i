@@ -42,7 +42,7 @@ roboticslab::IDetector *viewIDetector(yarp::dev::PolyDriver& d)
 extern roboticslab::IDetector *viewIDetector(yarp::dev::PolyDriver& d);
 
 %extend roboticslab::IDetector {
-    std::vector<yarp::os::Property> detect(yarp::sig::ImageOf<yarp::sig::PixelRgb>& inYarpImg) {
+    std::vector<yarp::os::Property> detect(yarp::sig::FlexImage& inYarpImg) {
         std::vector<yarp::os::Property> detectedObjects;
         bool ok = self->detect(inYarpImg, detectedObjects);
         return detectedObjects;
