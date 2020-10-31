@@ -22,7 +22,6 @@ if(NOT SKIP_HaarDetector)
 
     target_link_libraries(HaarDetector YARP::YARP_os
                                        YARP::YARP_dev
-                                       YARP::YARP_cv
                                        ${OpenCV_LIBS}
                                        ROBOTICSLAB::ColorDebug
                                        VisionInterfaces)
