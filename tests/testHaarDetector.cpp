@@ -60,7 +60,8 @@ TEST_F( HaarDetectorTest, HaarDetector1)
     yarpImgRgb.zero();
 
     yarp::sig::FlexImage yarpImgFlex;
-    yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode()); // required for test (else Trying to allocate an invalid pixel type image) as of yarp 3.3
+    yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode());
+    yarpImgFlex.setQuantum(yarpImgRgb.getQuantum());
     yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height());
 
     std::vector<yarp::os::Property> detectedObjects;
@@ -83,7 +84,8 @@ TEST_F( HaarDetectorTest, HaarDetector2)
     ASSERT_TRUE(ok);
 
     yarp::sig::FlexImage yarpImgFlex;
-    //yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode()); // breaks test as of yarp 3.3
+    yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode());
+    yarpImgFlex.setQuantum(yarpImgRgb.getQuantum());
     yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height());
 
     std::vector<yarp::os::Property> detectedObjects;

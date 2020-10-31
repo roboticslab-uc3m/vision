@@ -97,7 +97,8 @@ void roboticslab::DetectorThread::run()
 
     //CD_DEBUG("\n");
     yarp::sig::FlexImage inYarpImgFlex;
-    inYarpImgFlex.setPixelCode(inYarpImgRgb.getPixelCode()); // ?? look at tests for insight as of yarp 3.3
+    inYarpImgFlex.setPixelCode(inYarpImgRgb.getPixelCode());
+    inYarpImgFlex.setQuantum(inYarpImgRgb.getQuantum());
     inYarpImgFlex.setExternal(inYarpImgRgb.getRawImage(), inYarpImgRgb.width(), inYarpImgRgb.height());
 
     std::vector<yarp::os::Property> detectedObjects;

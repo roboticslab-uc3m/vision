@@ -65,7 +65,8 @@ bool ColorRegionDetector::detect(yarp::sig::FlexImage inYarpImg,
                                  std::vector<yarp::os::Property> &detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImgRgb;
-    inYarpImgRgb.setExternal(inYarpImg.getRawImage(), inYarpImg.width(), inYarpImg.height());
+    //inYarpImgRgb.setExternal(inYarpImg.getRawImage(), inYarpImg.width(), inYarpImg.height());
+    inYarpImgRgb.copy(inYarpImg);
 
     cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImgRgb);
 
