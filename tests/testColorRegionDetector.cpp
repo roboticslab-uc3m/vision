@@ -54,29 +54,39 @@ class ColorRegionDetectorTest : public testing::Test
 
 TEST_F( ColorRegionDetectorTest, ColorRegionDetector1)
 {
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImage;
-    yarpImage.resize(300,200);
-    yarpImage.zero();
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
+    yarpImgRgb.resize(300,200);
+    yarpImgRgb.zero();
+
+    yarp::sig::FlexImage yarpImgFlex;
+    yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode());
+    yarpImgFlex.setQuantum(yarpImgRgb.getQuantum());
+    yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height());
 
     std::vector<yarp::os::Property> detectedObjects;
 
-    iDetector->detect(yarpImage,detectedObjects);
+    iDetector->detect(yarpImgFlex,detectedObjects);
 
     ASSERT_EQ(detectedObjects.size(), 0);
 }
 
 TEST_F( ColorRegionDetectorTest, ColorRegionDetector2)
 {
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImage;
-    yarpImage.resize(300,200);
-    yarpImage.zero();
-    yarp::sig::draw::addCircle(yarpImage,yarp::sig::PixelRgb(255,0,0),
-                               yarpImage.width()/2,yarpImage.height()/2,
-                               yarpImage.height()/4); // x, y, radius
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
+    yarpImgRgb.resize(300,200);
+    yarpImgRgb.zero();
+    yarp::sig::draw::addCircle(yarpImgRgb,yarp::sig::PixelRgb(255,0,0),
+                               yarpImgRgb.width()/2,yarpImgRgb.height()/2,
+                               yarpImgRgb.height()/4); // x, y, radius
+
+    yarp::sig::FlexImage yarpImgFlex;
+    yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode());
+    yarpImgFlex.setQuantum(yarpImgRgb.getQuantum());
+    yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height());
 
     std::vector<yarp::os::Property> detectedObjects;
 
-    iDetector->detect(yarpImage,detectedObjects);
+    iDetector->detect(yarpImgFlex,detectedObjects);
 
     ASSERT_EQ(detectedObjects.size(), 1);
 
@@ -88,8 +98,8 @@ TEST_F( ColorRegionDetectorTest, ColorRegionDetector2)
     int cx = (detectedObjects[0].find("tlx").asInt32() + detectedObjects[0].find("brx").asInt32()) / 2;
     int cy = (detectedObjects[0].find("tly").asInt32() + detectedObjects[0].find("bry").asInt32()) / 2;
 
-    ASSERT_NEAR(cx, yarpImage.width()/2, 2);
-    ASSERT_NEAR(cy, yarpImage.height()/2, 2);
+    ASSERT_NEAR(cx, yarpImgRgb.width()/2, 2);
+    ASSERT_NEAR(cy, yarpImgRgb.height()/2, 2);
 }
 
 }  // namespace roboticslab

@@ -55,13 +55,18 @@ class HaarDetectorTest : public testing::Test
 
 TEST_F( HaarDetectorTest, HaarDetector1)
 {
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImage;
-    yarpImage.resize(300,200);
-    yarpImage.zero();
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
+    yarpImgRgb.resize(300,200);
+    yarpImgRgb.zero();
+
+    yarp::sig::FlexImage yarpImgFlex;
+    yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode());
+    yarpImgFlex.setQuantum(yarpImgRgb.getQuantum());
+    yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height());
 
     std::vector<yarp::os::Property> detectedObjects;
 
-    iDetector->detect(yarpImage,detectedObjects);
+    iDetector->detect(yarpImgFlex,detectedObjects);
 
     ASSERT_EQ(detectedObjects.size(), 0);
 }
@@ -74,13 +79,18 @@ TEST_F( HaarDetectorTest, HaarDetector2)
     std::string faceFullName = rf.findFileByName("tests/face-nc.pgm");
     ASSERT_FALSE(faceFullName.empty());
 
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImage;
-    bool ok = yarp::sig::file::read(yarpImage, faceFullName, yarp::sig::file::FORMAT_PGM);
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
+    bool ok = yarp::sig::file::read(yarpImgRgb, faceFullName, yarp::sig::file::FORMAT_PGM);
     ASSERT_TRUE(ok);
+
+    yarp::sig::FlexImage yarpImgFlex;
+    yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode());
+    yarpImgFlex.setQuantum(yarpImgRgb.getQuantum());
+    yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height());
 
     std::vector<yarp::os::Property> detectedObjects;
 
-    iDetector->detect(yarpImage,detectedObjects);
+    iDetector->detect(yarpImgFlex,detectedObjects);
 
     ASSERT_EQ(detectedObjects.size(), 1);
 
@@ -92,8 +102,8 @@ TEST_F( HaarDetectorTest, HaarDetector2)
     int cx = (detectedObjects[0].find("tlx").asInt32() + detectedObjects[0].find("brx").asInt32()) / 2;
     int cy = (detectedObjects[0].find("tly").asInt32() + detectedObjects[0].find("bry").asInt32()) / 2;
 
-    ASSERT_NEAR(cx, yarpImage.width()/2, 25);
-    ASSERT_NEAR(cy, yarpImage.height()/2, 25);
+    ASSERT_NEAR(cx, yarpImgRgb.width()/2, 25);
+    ASSERT_NEAR(cy, yarpImgRgb.height()/2, 25);
 }
 
 }  // namespace roboticslab

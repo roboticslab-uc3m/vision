@@ -89,18 +89,22 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
 
 void roboticslab::DetectorThread::run()
 {
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg;
-    if (!camera->getImage(inYarpImg))
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImgRgb;
+    if (!camera->getImage(inYarpImgRgb))
     {
         return;
     }
 
     //CD_DEBUG("\n");
+    yarp::sig::FlexImage inYarpImgFlex;
+    inYarpImgFlex.setPixelCode(inYarpImgRgb.getPixelCode());
+    inYarpImgFlex.setQuantum(inYarpImgRgb.getQuantum());
+    inYarpImgFlex.setExternal(inYarpImgRgb.getRawImage(), inYarpImgRgb.width(), inYarpImgRgb.height());
 
     std::vector<yarp::os::Property> detectedObjects;
     yarp::os::Bottle output;
 
-    bool ok = iDetector->detect(inYarpImg, detectedObjects);
+    bool ok = iDetector->detect(inYarpImgFlex, detectedObjects);
 
     if(!ok)
     {
@@ -109,7 +113,7 @@ void roboticslab::DetectorThread::run()
     }
 
     // paint on image
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImg;
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg = inYarpImgRgb;
     yarp::sig::PixelRgb red(255, 0, 0);
     for (size_t i = 0; i < detectedObjects.size(); i++)
     {

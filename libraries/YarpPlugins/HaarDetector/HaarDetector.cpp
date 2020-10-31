@@ -49,10 +49,14 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
 
 /*****************************************************************/
 
-bool HaarDetector::detect(yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImg,
+bool HaarDetector::detect(const yarp::sig::FlexImage &inYarpImg,
                           std::vector<yarp::os::Property> &detectedObjects)
 {
-    cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImg);
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImgRgb;
+    //inYarpImgRgb.setExternal(inYarpImg.getRawImage(), inYarpImg.width(), inYarpImg.height());
+    inYarpImgRgb.copy(inYarpImg);
+
+    cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImgRgb);
 
     std::vector<cv::Rect> objects;
     object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
