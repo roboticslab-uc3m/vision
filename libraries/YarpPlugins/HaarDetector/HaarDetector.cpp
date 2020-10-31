@@ -54,11 +54,12 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
 bool HaarDetector::detect(const yarp::sig::Image &inYarpImg,
                           std::vector<yarp::os::Property> &detectedObjects)
 {
-    cv::Mat inCvMat(inYarpImg.height(), inYarpImg.width(), CV_8UC3, inYarpImg.getRawImage(), inYarpImg.getRowSize());
-    cv::cvtColor(inCvMat, inCvMat, CV_RGB2BGR);
+    cv::Mat inCvMatBgr;
+    cv::Mat inCvMatRgb(inYarpImg.height(), inYarpImg.width(), CV_8UC3, inYarpImg.getRawImage(), inYarpImg.getRowSize());
+    cv::cvtColor(inCvMatRgb, inCvMatBgr, CV_RGB2BGR);
 
     std::vector<cv::Rect> objects;
-    object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
+    object_cascade.detectMultiScale(inCvMatBgr, objects, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
 
     for(size_t i; i<objects.size(); i++)
     {
@@ -69,7 +70,6 @@ bool HaarDetector::detect(const yarp::sig::Image &inYarpImg,
         detectedObject.put("bry", objects[i].y + objects[i].height);
         detectedObjects.push_back(detectedObject);
     }
-
 
     return true;
 }
