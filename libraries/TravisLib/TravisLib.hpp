@@ -22,15 +22,15 @@ namespace roboticslab
  * @ingroup TravisLib
  * @brief The Travis class implements all the algorithms on a single image.
  */
-class Travis {
+class Travis
+{
 public:
-
     /**
      * Travis class constructor.
      * @param quiet suppress messages displayed upon success/failure.
      * @param overwrite will not make a copy (faster, less memory), but will overwrite the image you pass.
      */
-    Travis(bool quiet=true, bool overwrite=true) : _quiet(quiet), _overwrite(overwrite) { }
+    Travis(bool quiet=true, bool overwrite=true) : _quiet(quiet), _overwrite(overwrite) {}
 
     /**
      * Set the image in cv::Mat format.
@@ -51,12 +51,14 @@ public:
      * @param algorithm implemented: "redMinusGreen", "greenMinusRed".
      */
     bool binarize(const char* algorithm);
+
     /**
      * Binarize the image.
      * @param algorithm implemented: "redMinusGreen", "greenMinusRed".
      * @param threshold i.e. 50.
      */
     bool binarize(const char* algorithm, const double& threshold);
+
     /**
      * Binarize the image.
      * @param algorithm implemented: "redMinusGreen", "greenMinusRed".
@@ -88,7 +90,7 @@ public:
      * Push a contour.
      * @param contour to be pushed on to the stack. Use with care.
      */
-    void pushContour(const std::vector <cv::Point>& contour);
+    void pushContour(const std::vector<cv::Point>& contour);
 
     /**
      * This function calculates X and Y as moments directly extracted from the stored contours.
@@ -100,20 +102,22 @@ public:
      * This function calculates the Area of the blobs (contours).
      * @param areas returned.
      */
-    bool getBlobsArea(std::vector <double>& areas);
+    bool getBlobsArea(std::vector<double>& areas);
 
     /**
      * This function calculates the Solidity of the blobs (contours).
      * @param solidities returned.
      */
-    bool getBlobsSolidity(std::vector <double>& solidities);
+    bool getBlobsSolidity(std::vector<double>& solidities);
+
+    bool getBlobsRect(std::vector<cv::Rect>& rects);
 
     /**
      * This function calculates ALPHA, and _minRotatedRects as a side effect.
      * @param method 0=box, 1=ellipse.
      * @param angles returned.
      */
-    bool getBlobsAngle(const int& method, std::vector <double>& angles);
+    bool getBlobsAngle(const int& method, std::vector<double>& angles);
 
     /**
      * This function calculates the Aspect Ratios and Axes of the stored _minRotatedRects.
@@ -121,15 +125,15 @@ public:
      * @param axisFirsts returned.
      * @param axisSeconds returned.
      */
-    bool getBlobsAspectRatio(std::vector <double>& aspectRatios, std::vector <double>& axisFirsts, std::vector <double>& axisSeconds);
+    bool getBlobsAspectRatio(std::vector<double>& aspectRatios, std::vector<double>& axisFirsts, std::vector<double>& axisSeconds);
 
-    bool getBlobsPerimeter(std::vector <double>& perimeters);
+    bool getBlobsPerimeter(std::vector<double>& perimeters);
 
     /**
      * This function calculates the Rectangularities of the stored _minRotatedRects.
      * @param rectangularities returned.
      */
-    bool getBlobsRectangularity(std::vector <double>& rectangularities);
+    bool getBlobsRectangularity(std::vector<double>& rectangularities);
 
     /**
      * This function calculates HSV Means and Standard Deviations.
@@ -140,8 +144,8 @@ public:
      * @param valStdDevs returned.
      * @param satStdDevs returned.
      */
-    bool getBlobsHSV(std::vector <double>& hues, std::vector <double>& vals, std::vector <double>& sats,
-        std::vector <double>& hueStdDevs, std::vector <double>& valStdDevs, std::vector <double>& satStdDevs);
+    bool getBlobsHSV(std::vector<double>& hues, std::vector<double>& vals, std::vector<double>& sats,
+                     std::vector<double>& hueStdDevs, std::vector<double>& valStdDevs, std::vector<double>& satStdDevs);
 
     /**
      * Get the image in cv::Mat format.
@@ -176,10 +180,10 @@ protected:
     cv::Mat _imgBin3;
 
     /** Store the contours (blob contours). */
-    std::vector < std::vector <cv::Point> > _contours;
+    std::vector<std::vector<cv::Point> > _contours;
 
     /** Store the box. */
-    std::vector < cv::RotatedRect > _minRotatedRects;
+    std::vector<cv::RotatedRect> _minRotatedRects;
 
 };
 
@@ -187,7 +191,7 @@ protected:
  * @ingroup travis_functions
  * Can be used as a comparison function object for sorting.
  */
-bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 );
+bool compareContourAreas (std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 );
 
 /**
  * Crop the image.
@@ -200,55 +204,55 @@ bool travisCrop(const int x, const int y, const int width, const int height, cv:
  * @ingroup travis_functions
  * This function gets the biggest contour.
  */
-std::vector <cv::Point> getBiggestContour(const cv::Mat image);
+std::vector<cv::Point> getBiggestContour(const cv::Mat image);
 
 /**
  * @ingroup travis_functions
  * This function calculates X and Y.
  */
-void calcLocationXY(float& locX, float& locY, const std::vector <cv::Point> biggestCont);
+void calcLocationXY(float& locX, float& locY, const std::vector<cv::Point> biggestCont);
 
 /**
  * @ingroup travis_functions
  * This function calculates the mask.
  */
-void calcMask(cv::Mat& mask, const std::vector <cv::Point> biggestCont);
+void calcMask(cv::Mat& mask, const std::vector<cv::Point> biggestCont);
 
 /**
  * @ingroup travis_functions
  * This function calculates the area.
  */
-void calcArea(float& area, const std::vector <cv::Point> biggestCont);
+void calcArea(float& area, const std::vector<cv::Point> biggestCont);
 
 /**
  * @ingroup travis_functions
  * This function calculates the rectangularity.
  */
-void calcRectangularity(float& rectangularity, const std::vector <cv::Point> biggestCont);
+void calcRectangularity(float& rectangularity, const std::vector<cv::Point> biggestCont);
 
 /**
  * @ingroup travis_functions
  * This function calculates the angle.
  */
-void calcAngle(float& angle, const std::vector <cv::Point> biggestCont);
+void calcAngle(float& angle, const std::vector<cv::Point> biggestCont);
 
 /**
  * @ingroup travis_functions
  * This function calculates the mass center.
  */
-void calcMassCenter(float& massCenterLocX, float& massCenterLocY , const std::vector <cv::Point> biggestCont);
+void calcMassCenter(float& massCenterLocX, float& massCenterLocY , const std::vector<cv::Point> biggestCont);
 
 /**
  * @ingroup travis_functions
  * This function calculates the aspect ratio.
  */
-void calcAspectRatio(float& aspectRatio, float& axisFirst, float& axisSecond ,const std::vector <cv::Point> biggestCont);
+void calcAspectRatio(float& aspectRatio, float& axisFirst, float& axisSecond ,const std::vector<cv::Point> biggestCont);
 
 /**
  * @ingroup travis_functions
  * This function calculates the solidity.
  */
-void calcSolidity(float& solidity, const std::vector <cv::Point> biggestCont);
+void calcSolidity(float& solidity, const std::vector<cv::Point> biggestCont);
 
 /**
  * @ingroup travis_functions
@@ -263,25 +267,25 @@ void calcHSVMeanStdDev(const cv::Mat image, const cv::Mat mask, float& hue_mean,
  * This function calculates the HSV peak color.
  */
 void calcHSVPeakColor(const cv::Mat image, const cv::Mat mask, float& hue_mode, float& hue_peak,
-                       float& value_mode, float& value_peak);
+                      float& value_mode, float& value_peak);
 
 /**
  * @ingroup travis_functions
  * This function calculates the moments.
  */
-void calcMoments(cv::Mat& theHuMoments, const std::vector <cv::Point> biggestCont );
+void calcMoments(cv::Mat& theHuMoments, const std::vector<cv::Point> biggestCont );
 
 /**
  * @ingroup travis_functions
  * This function calculates the arc length.
  */
-void calcArcLength(float& arc, const std::vector <cv::Point> biggestCont );
+void calcArcLength(float& arc, const std::vector<cv::Point> biggestCont );
 
 /**
  * @ingroup travis_functions
  * This function calculates the circle.
  */
-void calcCircle(float& radius, const std::vector <cv::Point> biggestCont );
+void calcCircle(float& radius, const std::vector<cv::Point> biggestCont );
 
 }  // namespace roboticslab
 

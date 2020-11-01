@@ -33,7 +33,8 @@ if(NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 # Pick up our cmake modules.
-#list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake
+                              ${CMAKE_SOURCE_DIR}/cmake/find-modules)
 
 # Hard dependencies.
 find_package(YCM 0.11 REQUIRED)
@@ -41,15 +42,28 @@ find_package(YARP 3.3 REQUIRED COMPONENTS os dev sig)
 find_package(COLOR_DEBUG REQUIRED)
 
 # Soft dependencies.
-find_package(Doxygen QUIET)
+
 find_package(OpenCV QUIET)
-find_package(PCL 1.6 QUIET)
+if(CREATE_BINDINGS_PYTHON_VERSION VERSION_GREATER_EQUAL 3)
+  message(AUTHOR_WARNING "Skipping find_package(PCL 1.6 QUIET) so we can compile Python 3 bindings")
+else()
+  find_package(PCL 1.6 QUIET)
+endif()
 find_package(TensorflowCC 1.12 QUIET)
+find_package(GTestSources 1.6.0 QUIET)
+find_package(SWIG QUIET)
+find_package(Doxygen QUIET)
 
 # Xenial + PCL 1.7 bug
 # https://github.com/PointCloudLibrary/pcl/issues/2406
 if(DEFINED PCL_LIBRARIES)
     list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
+endif()
+
+# Focal + PCL 1.10 + OpenNI workaround (idea: use CMake components to find_package(PCL)?)
+if(PCL_VERSION VERSION_EQUAL 1.10)
+    include_directories(/usr/include/ni)
+    link_libraries(/usr/lib/libOpenNI.so)
 endif()
 
 # Always build YARP devices as MODULE libraries.
@@ -82,7 +96,9 @@ include(CMakeDependentOption)
 # Add main contents.
 add_subdirectory(libraries)
 add_subdirectory(programs)
+add_subdirectory(tests)
 add_subdirectory(share)
+add_subdirectory(bindings)
 add_subdirectory(doc)
 
 # Retrieve global properties.

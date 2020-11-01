@@ -1,0 +1,24 @@
+<application>
+<name>visionSensors App</name>
+
+    <!-- Requires YARP compiled with ENABLE_yarpmod_opencv_grabber -->
+    <module>
+        <name>opencv_grabber</name>
+        <parameters>--name /grabber</parameters>
+        <node>localhost</node>
+        <deployer>yarpdev</deployer>
+    </module>
+
+    <module>
+        <name>yarpdev</name>
+        <parameters>--context sensors --from asus-xtion.ini</parameters>
+        <node>localhost</node>
+    </module>
+
+    <module>
+        <name>yarpdev</name>
+        <parameters>--context sensors --from realsense-d4xx.ini</parameters>
+        <node>localhost</node>
+    </module>
+
+</application>

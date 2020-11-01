@@ -1,0 +1,19 @@
+<application>
+<name>visionFakeSensors App</name>
+
+    <module>
+        <name>test_grabber</name>
+        <parameters>--name /grabber</parameters>
+        <node>localhost</node>
+        <deployer>yarpdev</deployer>
+    </module>
+
+    <!-- Requires YARP compiled with ENABLE_yarpmod_fakeDepthCamera -->
+    <module>
+        <name>fakeDepthCamera</name>
+        <parameters>--name /rgbd</parameters>
+        <node>localhost</node>
+        <deployer>yarpdev</deployer>
+    </module>
+
+</application>
