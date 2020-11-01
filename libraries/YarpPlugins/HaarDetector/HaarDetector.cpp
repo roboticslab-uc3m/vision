@@ -3,9 +3,7 @@
 #include "HaarDetector.hpp"
 
 #include <yarp/os/ResourceFinder.h>
-
-#include <opencv2/imgproc.hpp>
-#include <opencv2/imgproc/types_c.h>
+#include <yarp/cv/Cv.h>
 
 #include <ColorDebug.h>
 
@@ -54,12 +52,12 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
 bool HaarDetector::detect(const yarp::sig::Image &inYarpImg,
                           std::vector<yarp::os::Property> &detectedObjects)
 {
-    cv::Mat inCvMatBgr;
-    cv::Mat inCvMatRgb(inYarpImg.height(), inYarpImg.width(), CV_8UC3, inYarpImg.getRawImage(), inYarpImg.getRowSize());
-    cv::cvtColor(inCvMatRgb, inCvMatBgr, CV_RGB2BGR);
+    yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
+    inYarpImgBgr.copy(inYarpImg);
+    cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImgBgr);
 
     std::vector<cv::Rect> objects;
-    object_cascade.detectMultiScale(inCvMatBgr, objects, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
+    object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
 
     for(size_t i; i<objects.size(); i++)
     {
