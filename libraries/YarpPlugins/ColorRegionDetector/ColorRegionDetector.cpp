@@ -1,7 +1,9 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
 #include <yarp/os/Value.h>
-#include <yarp/cv/Cv.h>
+
+#include <opencv2/imgproc.hpp>
+#include <opencv2/imgproc/types_c.h>
 
 #include "TravisLib.hpp"
 
@@ -61,18 +63,16 @@ bool ColorRegionDetector::open(yarp::os::Searchable& config)
 
 /*****************************************************************/
 
-bool ColorRegionDetector::detect(const yarp::sig::FlexImage& inYarpImg,
+bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg,
                                  std::vector<yarp::os::Property>& detectedObjects)
 {
-    yarp::sig::ImageOf<yarp::sig::PixelRgb> inYarpImgRgb;
-    //inYarpImgRgb.setExternal(inYarpImg.getRawImage(), inYarpImg.width(), inYarpImg.height());
-    inYarpImgRgb.copy(inYarpImg);
-
-    cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImgRgb);
+    cv::Mat inCvMatBgr;
+    cv::Mat inCvMatRgb(inYarpImg.height(), inYarpImg.width(), CV_8UC3, inYarpImg.getRawImage(), inYarpImg.getRowSize());
+    cv::cvtColor(inCvMatRgb, inCvMatBgr, CV_RGB2BGR);
 
     // Because Travis stuff goes with [openCv Mat Bgr] for now
     Travis travis(false,true);    // ::Travis(quiet=true, overwrite=true);
-    travis.setCvMat(inCvMat);
+    travis.setCvMat(inCvMatBgr);
     if (algorithm=="hue")
         travis.binarize("hue", threshold-5,threshold+5);
     else if(algorithm=="canny")

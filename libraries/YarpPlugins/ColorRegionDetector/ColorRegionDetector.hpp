@@ -17,7 +17,7 @@ class ColorRegionDetector :  public yarp::dev::DeviceDriver, public IDetector
 public:
     bool open(yarp::os::Searchable& config) override;
 
-    bool detect(const yarp::sig::FlexImage& inYarpImg,
+    bool detect(const yarp::sig::Image& inYarpImg,
                 std::vector<yarp::os::Property>& detectedObjects) override;
 
 private:

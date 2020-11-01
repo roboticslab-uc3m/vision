@@ -11,14 +11,19 @@ if(ENABLE_tests)
 
     add_subdirectory(${GTestSources_SOURCE_DIR} ${CMAKE_BINARY_DIR}/gtest)
 
-    include_directories(${GTestSources_INCLUDE_DIR}})
+    include_directories(${GTestSources_INCLUDE_DIR})
 
     # testColorRegionDetector
 
     if(TARGET ColorRegionDetector)
         add_executable(testColorRegionDetector testColorRegionDetector.cpp)
 
-        target_link_libraries(testColorRegionDetector VisionInterfaces YARP::YARP_dev gtest_main)
+        target_link_libraries(testColorRegionDetector YARP::YARP_os
+                                                      YARP::YARP_dev
+                                                      YARP::YARP_sig
+                                                      ROBOTICSLAB::ColorDebug
+                                                      VisionInterfaces
+                                                      gtest_main)
 
         target_compile_features(testColorRegionDetector PUBLIC cxx_std_11)
 
@@ -28,7 +33,12 @@ if(ENABLE_tests)
     if(TARGET HaarDetector)
         add_executable(testHaarDetector testHaarDetector.cpp)
 
-        target_link_libraries(testHaarDetector VisionInterfaces YARP::YARP_dev gtest_main)
+        target_link_libraries(testHaarDetector YARP::YARP_os
+                                               YARP::YARP_dev
+                                               YARP::YARP_sig
+                                               ROBOTICSLAB::ColorDebug
+                                               VisionInterfaces
+                                               gtest_main)
 
         target_compile_features(testHaarDetector PUBLIC cxx_std_11)
 

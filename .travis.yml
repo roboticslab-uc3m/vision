@@ -32,6 +32,9 @@ addons:
     - libopencv-dev
     - libpcl-dev
     - libproj-dev # needed by libpcl-dev on Xenial (known bug)
+    - libgtest-dev # unit testing
+    - swig # bindings
+    - lcov # code coverage
 
 before_install:
   #-- Code coverage
@@ -64,13 +67,13 @@ install:
 
 before_script:
   - mkdir -p "$TRAVIS_BUILD_DIR/build" && cd "$_"
-  - cmake .. -DCMAKE_INSTALL_PREFIX="$PWD/install" -DENABLE_coverage:BOOL=ON
+  - cmake .. -DCMAKE_INSTALL_PREFIX="$PWD/install" -DCREATE_BINDINGS_PYTHON:BOOL=ON -DENABLE_coverage:BOOL=ON
   - make install
   - export LD_LIBRARY_PATH=$PWD/install/lib:$LD_LIBRARY_PATH
   - export YARP_DATA_DIRS=$PWD/install/share/roboticslab-vision:$YARP_DATA_DIRS
 
 script:
-  - echo "No unit tests available"
+  - cd "$TRAVIS_BUILD_DIR/build/tests" && ctest -V
 
 after_success:
   #-- Code coverage

@@ -1,5 +1,5 @@
 if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_HaarDetector OR ENABLE_HaarDetector))
-    message(WARNING "OpenCV package not found, disabling HaarDetector library")
+    message(WARNING "OpenCV package not found, disabling HaarDetector device")
 endif()
 
 cmake_dependent_option(ENABLE_HaarDetector "Enable/disable HaarDetector" ON
@@ -20,11 +20,11 @@ if(NOT SKIP_HaarDetector)
     yarp_add_plugin(HaarDetector HaarDetector.hpp
                                  HaarDetector.cpp)
 
-    target_link_libraries(HaarDetector PUBLIC YARP::YARP_os
-                                              YARP::YARP_dev
-                                              VisionInterfaces
-                                       PRIVATE ${OpenCV_LIBS}
-                                               ROBOTICSLAB::ColorDebug)
+    target_link_libraries(HaarDetector YARP::YARP_os
+                                       YARP::YARP_dev
+                                       ${OpenCV_LIBS}
+                                       ROBOTICSLAB::ColorDebug
+                                       VisionInterfaces)
 
     target_compile_features(HaarDetector PUBLIC cxx_std_11)
 
@@ -35,6 +35,6 @@ if(NOT SKIP_HaarDetector)
 
 else()
 
-    set(ENABLE_HaarDetector OFF CACHE BOOL "Enable/disable HaarDetector library" FORCE)
+    set(ENABLE_HaarDetector OFF CACHE BOOL "Enable/disable HaarDetector device" FORCE)
 
 endif()

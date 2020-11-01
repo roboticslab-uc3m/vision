@@ -59,14 +59,8 @@ TEST_F( HaarDetectorTest, HaarDetector1)
     yarpImgRgb.resize(300,200);
     yarpImgRgb.zero();
 
-    yarp::sig::FlexImage yarpImgFlex;
-    yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode());
-    yarpImgFlex.setQuantum(yarpImgRgb.getQuantum());
-    yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height());
-
     std::vector<yarp::os::Property> detectedObjects;
-
-    iDetector->detect(yarpImgFlex,detectedObjects);
+    iDetector->detect(yarpImgRgb,detectedObjects);
 
     ASSERT_EQ(detectedObjects.size(), 0);
 }
@@ -83,14 +77,8 @@ TEST_F( HaarDetectorTest, HaarDetector2)
     bool ok = yarp::sig::file::read(yarpImgRgb, faceFullName, yarp::sig::file::FORMAT_PGM);
     ASSERT_TRUE(ok);
 
-    yarp::sig::FlexImage yarpImgFlex;
-    yarpImgFlex.setPixelCode(yarpImgRgb.getPixelCode());
-    yarpImgFlex.setQuantum(yarpImgRgb.getQuantum());
-    yarpImgFlex.setExternal(yarpImgRgb.getRawImage(), yarpImgRgb.width(), yarpImgRgb.height());
-
     std::vector<yarp::os::Property> detectedObjects;
-
-    iDetector->detect(yarpImgFlex,detectedObjects);
+    iDetector->detect(yarpImgRgb,detectedObjects);
 
     ASSERT_EQ(detectedObjects.size(), 1);
 

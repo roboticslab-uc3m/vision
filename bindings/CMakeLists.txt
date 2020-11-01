@@ -33,7 +33,8 @@ foreach(_component IN LISTS _components)
   endforeach()
 endforeach()
 
-option(CREATE_BINDINGS "Compile optional language bindings" TRUE)
+cmake_dependent_option(CREATE_BINDINGS "Compile optional language bindings" ON
+                       SWIG_FOUND OFF)
 
 if(CREATE_BINDINGS)
 
@@ -44,7 +45,6 @@ if(CREATE_BINDINGS)
 
   set(CREATE_BINDINGS_PYTHON FALSE CACHE BOOL "Create Python interface")
 
-  find_package(SWIG REQUIRED)
   include(${SWIG_USE_FILE})
 
   set(SWIG_BINDINGS_SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/roboticslab_vision.i")
