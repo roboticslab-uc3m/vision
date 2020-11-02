@@ -9,6 +9,7 @@
 #include <yarp/cv/Cv.h>
 
 #include <opencv2/core/types.hpp>
+#include <opencv2/core/version.hpp>
 
 using namespace roboticslab;
 
@@ -36,15 +37,22 @@ bool QRDetector::detect(const yarp::sig::Image& inYarpImg,
     inYarpImgBgr.copy(inYarpImg);
     cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImgBgr);
 
+    std::vector<std::string> texts;
     std::vector<cv::Point> corners;
-    std::string text = qrcode.detectAndDecode(inCvMat, corners);
 
-    for (auto i = 0; i < corners.size(); i += 4)
+#if CV_MINOR_VERSION >= 3
+    qrcode.detectAndDecodeMulti(inCvMat, texts, corners);
+#else
+    std::string text = qrcode.detectAndDecode(inCvMat, corners);
+    texts.emplace_back(std::move(text));
+#endif
+
+    for (auto i = 0; i < texts.size(); i++)
     {
-        const auto & tl = corners[i];
-        const auto & tr = corners[i + 1];
-        const auto & br = corners[i + 2];
-        const auto & bl = corners[i + 3];
+        const auto & tl = corners[4 * i];
+        const auto & tr = corners[4 * i + 1];
+        const auto & br = corners[4 * i + 2];
+        const auto & bl = corners[4 * i + 3];
 
         yarp::os::Property detectedObject {
             {"tlx", yarp::os::Value(tl.x)},
@@ -55,7 +63,7 @@ bool QRDetector::detect(const yarp::sig::Image& inYarpImg,
             {"bry", yarp::os::Value(br.y)},
             {"blx", yarp::os::Value(bl.x)},
             {"bly", yarp::os::Value(bl.y)},
-            {"text", yarp::os::Value(text)}};
+            {"text", yarp::os::Value(texts[i])}};
 
         detectedObjects.emplace_back(std::move(detectedObject));
     }
