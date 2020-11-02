@@ -26,3 +26,4 @@ set_property(GLOBAL APPEND PROPERTY _exported_dependencies YARP_sig)
 # YARP devices.
 add_subdirectory(ColorRegionDetector)
 add_subdirectory(HaarDetector)
+add_subdirectory(QRDetector)
