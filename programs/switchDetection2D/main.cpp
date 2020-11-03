@@ -3,41 +3,40 @@
 /**
  * @ingroup vision_programs
  *
- * @defgroup SwitchDetection2D SwitchDetection2D
+ * @defgroup switchDetection2D switchDetection2D
  *
  * @brief Creates an instance of roboticslab::SwitchDetection2D.
  *
  * @section switchDetection2DOptions switchDetection2D options:
  *
- * | PROPERTY     | DESCRIPTION                          | DEFAULT          |
- * |--------------|--------------------------------------|------------------|
- * | help         |                                      |                  |
- * | from         | file.ini                             |                  |
- * | context      | path                                 |                  |
- * | cropSelector |                                      | 0                |
- * | cameraDevice | device we create                     | remote_grabber   |
- * | cameraLocal  | if accesing remote, local port name  | /haarDetection2D |
- * | cameraRemote | if accesing remote, remote port name | /frameGrabber2D  |
- * | watchdog     |                                      | 2.000000         |
+ * | PROPERTY     | DESCRIPTION                          | DEFAULT               |
+ * |--------------|--------------------------------------|-----------------------|
+ * | help         |                                      |                       |
+ * | from         | file.ini                             | switchDetection2D.ini |
+ * | context      | context name                         | switchDetection2D     |
+ * | cropSelector |                                      | 0                     |
+ * | cameraDevice | device we create                     | remote_grabber        |
+ * | cameraLocal  | if accesing remote, local port name  | /switchDetection2D    |
+ * | cameraRemote | if accesing remote, remote port name | /grabber              |
+ * | watchdog     |                                      | 2.000000              |
  *
  *
- * @section  haarDetection2DPorts HaarDetector output ports:
+ * @section  switchDetection2DPorts Detector output ports:
  *
- * | OUTPUT PORT              | CONTENT                                                 |
- * |--------------------------|---------------------------------------------------------|
- * | /modeDetection2D/img:o   | Output camera image with object detection using squares |
- * | /modeDetection2D/state:o | xy coordinates of object detection                      |
+ * | OUTPUT PORT                | CONTENT                                                 |
+ * |----------------------------|---------------------------------------------------------|
+ * | /switchDetection2D/img:o   | output camera image with object detection using squares |
+ * | /switchDetection2D/state:o | detected objects                                        |
  *
- * @section setectorThread DetectorThread options:
+ * @section detectorThread Detector thread options:
  *
- * | PROPERTY   | DESCRIPTION | DEFAULT                      |
- * |------------|-------------|------------------------------|
- * | help       |             |                              |
- * | from       | file.ini    |                              |
- * | context    | path        |                              |
- * | switchMode |             | haarDetection                |
- * | rateMs     |             | 20                           |
- * | xmlCascade | file.xml    | haarcascade_cocacola_can.xml |
+ * | PROPERTY   | DESCRIPTION     | DEFAULT      |
+ * |------------|-----------------|--------------|
+ * | help       |                 |              |
+ * | from       | file.ini        |              |
+ * | context    | context name    |              |
+ * | rateMs     |                 | 20           |
+ * | detector   | detector device | HaarDetector |
  */
 
 #include <yarp/os/Network.h>
@@ -52,7 +51,6 @@
 
 int main(int argc, char** argv)
 {
-
     yarp::os::ResourceFinder rf;
     rf.setVerbose(true);;
     rf.setDefaultContext(DEFAULT_CONTEXT);
