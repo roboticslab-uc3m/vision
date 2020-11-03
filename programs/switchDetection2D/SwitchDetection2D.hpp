@@ -25,6 +25,9 @@ namespace roboticslab
 class SwitchDetection2D : public yarp::os::RFModule
 {
 public:
+    ~SwitchDetection2D()
+    { close(); }
+
     bool configure(yarp::os::ResourceFinder &rf);
 
 private:

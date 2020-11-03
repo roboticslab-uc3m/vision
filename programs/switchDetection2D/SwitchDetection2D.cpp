@@ -141,6 +141,8 @@ bool roboticslab::SwitchDetection2D::updateModule()
 
 bool roboticslab::SwitchDetection2D::interruptModule()
 {
+    detectorThread.askToStop();
+
     outImg.interrupt();
     outPort.interrupt();
 
@@ -159,7 +161,10 @@ bool roboticslab::SwitchDetection2D::close()
 {
     CD_INFO("Closing...\n");
 
-    detectorThread.stop();
+    if (detectorThread.isRunning())
+    {
+        detectorThread.stop();
+    }
 
     cameraDevice.close();
     outImg.close();
