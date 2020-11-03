@@ -45,6 +45,21 @@ if(ENABLE_tests)
         gtest_discover_tests(testHaarDetector)
     endif()
 
+    if(TARGET QRDetector)
+        add_executable(testQRDetector testQRDetector.cpp)
+
+        target_link_libraries(testQRDetector YARP::YARP_os
+                                             YARP::YARP_dev
+                                             YARP::YARP_sig
+                                             ROBOTICSLAB::ColorDebug
+                                             VisionInterfaces
+                                             gtest_main)
+
+        target_compile_features(testQRDetector PUBLIC cxx_std_11)
+
+        gtest_discover_tests(testQRDetector)
+    endif()
+
 else()
 
     set(ENABLE_tests OFF CACHE BOOL "Enable/disable unit tests" FORCE)
