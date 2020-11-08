@@ -1,8 +1,8 @@
 if(NOT DEFINED ENABLE_QRDetector OR ENABLE_QRDetector)
     if(NOT OpenCV_FOUND OR NOT OpenCV_VERSION_MAJOR EQUAL 4)
-        message(WARNING "OpenCV 4.x package not found, disabling HaarDetector device")
+        message(WARNING "OpenCV 4.x package not found, disabling QRDetector device")
     elseif(NOT YARP_cv_FOUND)
-        message(WARNING "YARP_cv package not found, disabling HaarDetector device")
+        message(WARNING "YARP_cv package not found, disabling QRDetector device")
     endif()
 endif()
 
