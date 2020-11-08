@@ -6,14 +6,12 @@ if(NOT DEFINED ENABLE_HaarDetector OR ENABLE_HaarDetector)
     endif()
 endif()
 
-cmake_dependent_option(ENABLE_HaarDetector "Enable/disable HaarDetector" ON
-                       "OpenCV_FOUND;YARP_cv_FOUND" OFF)
-
 yarp_prepare_plugin(HaarDetector
                     CATEGORY device
                     TYPE roboticslab::HaarDetector
                     INCLUDE HaarDetector.hpp
-                    DEFAULT ON)
+                    DEFAULT ON
+                    DEPENDS "OpenCV_FOUND;YARP_cv_FOUND")
 
 if(NOT SKIP_HaarDetector)
 

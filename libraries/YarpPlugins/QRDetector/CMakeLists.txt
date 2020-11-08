@@ -6,14 +6,12 @@ if(NOT DEFINED ENABLE_QRDetector OR ENABLE_QRDetector)
     endif()
 endif()
 
-cmake_dependent_option(QRDetector "Enable/disable QRDetector" ON
-                       "OpenCV_VERSION_MAJOR EQUAL 4;YARP_cv_FOUND" OFF)
-
 yarp_prepare_plugin(QRDetector
                     CATEGORY device
                     TYPE roboticslab::QRDetector
                     INCLUDE QRDetector.hpp
-                    DEFAULT ON)
+                    DEFAULT ON
+                    DEPENDS "OpenCV_VERSION_MAJOR EQUAL 4;YARP_cv_FOUND")
 
 if(NOT SKIP_QRDetector)
 

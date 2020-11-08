@@ -2,14 +2,12 @@ if(NOT YARP_cv_FOUND AND (NOT DEFINED ENABLE_ColorRegionDetector OR ENABLE_Color
     message(WARNING "YARP_cv package not found, disabling ColorRegionDetector device")
 endif()
 
-cmake_dependent_option(ENABLE_ColorRegionDetector "Enable/disable ColorRegionDetector" ON
-                       "ENABLE_TravisLib;YARP_cv_FOUND" OFF)
-
 yarp_prepare_plugin(ColorRegionDetector
                     CATEGORY device
                     TYPE roboticslab::ColorRegionDetector
                     INCLUDE ColorRegionDetector.hpp
-                    DEFAULT ON)
+                    DEFAULT ON
+                    DEPENDS "ENABLE_TravisLib;YARP_cv_FOUND")
 
 if(NOT SKIP_ColorRegionDetector)
 
