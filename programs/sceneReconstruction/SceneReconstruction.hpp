@@ -3,6 +3,8 @@
 #ifndef __SCENE_RECONSTRUCTION_HPP__
 #define __SCENE_RECONSTRUCTION_HPP__
 
+#include <atomic>
+
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/RpcServer.h>
 #include <yarp/os/RFModule.h>
@@ -24,7 +26,7 @@ namespace roboticslab
 class SceneReconstruction : public yarp::os::RFModule
 {
 public:
-    SceneReconstruction() : period(DEFAULT_PERIOD), iRGBDSensor(nullptr)
+    SceneReconstruction() : period(DEFAULT_PERIOD), isRunning(false), iRGBDSensor(nullptr)
     {}
 
     ~SceneReconstruction() override
@@ -41,8 +43,11 @@ public:
 
     bool close() override;
 
+    bool respond(const yarp::os::Bottle & command, yarp::os::Bottle & reply) override;
+
 private:
     double period;
+    std::atomic_bool isRunning;
     yarp::dev::PolyDriver cameraDriver;
     yarp::dev::IRGBDSensor * iRGBDSensor;
     yarp::os::RpcServer rpcServer;
