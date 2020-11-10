@@ -4,10 +4,11 @@
 #define __SCENE_RECONSTRUCTION_HPP__
 
 #include <yarp/os/BufferedPort.h>
+#include <yarp/os/RpcServer.h>
 #include <yarp/os/RFModule.h>
 #include <yarp/dev/IRGBDSensor.h>
 #include <yarp/dev/PolyDriver.h>
-#include <yarp/sig/PointCloud.h>
+#include <yarp/sig/Image.h>
 
 #define DEFAULT_PREFIX "/sceneReconstruction"
 #define DEFAULT_PERIOD 0.02 // [s]
@@ -26,7 +27,7 @@ public:
     SceneReconstruction() : period(DEFAULT_PERIOD), iRGBDSensor(nullptr)
     {}
 
-    ~SceneReconstruction()
+    ~SceneReconstruction() override
     { close(); }
 
     bool configure(yarp::os::ResourceFinder & rf) override;
@@ -44,7 +45,8 @@ private:
     double period;
     yarp::dev::PolyDriver cameraDriver;
     yarp::dev::IRGBDSensor * iRGBDSensor;
-    yarp::os::BufferedPort<yarp::sig::PointCloudXYZNormal> outPort;
+    yarp::os::RpcServer rpcServer;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> renderPort;
 };
 
 } // namespace roboticslab

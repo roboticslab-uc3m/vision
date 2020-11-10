@@ -42,9 +42,15 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 
     cameraDriver.view(iRGBDSensor);
 
-    if (!outPort.open(prefix + "/cloud:o"))
+    if (!rpcServer.open(prefix + "/rpc:s"))
     {
-        CD_ERROR("Unable to open out port %s\n", outPort.getName().c_str());
+        CD_ERROR("Unable to open RPC server port %s\n", rpcServer.getName().c_str());
+        return false;
+    }
+
+    if (!renderPort.open(prefix + "/cloud:o"))
+    {
+        CD_ERROR("Unable to open render port %s\n", renderPort.getName().c_str());
         return false;
     }
 
@@ -58,12 +64,14 @@ bool SceneReconstruction::updateModule()
 
 bool SceneReconstruction::interruptModule()
 {
-    outPort.interrupt();
+    renderPort.interrupt();
+    rpcServer.interrupt();
     return true;
 }
 
 bool SceneReconstruction::close()
 {
-    outPort.close();
+    rpcServer.close();
+    renderPort.close();
     return cameraDriver.close();
 }
