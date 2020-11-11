@@ -12,12 +12,15 @@
 #include <yarp/dev/PolyDriver.h>
 #include <yarp/sig/Image.h>
 
+#include "KinectFusionAdapter.hpp"
+
 #define DEFAULT_PREFIX "/sceneReconstruction"
 #define DEFAULT_PERIOD 0.02 // [s]
 #define DEFAULT_ALGORITHM "kinfu"
 
 namespace roboticslab
 {
+
 /**
  * @ingroup sceneReconstruction
  *
@@ -26,7 +29,11 @@ namespace roboticslab
 class SceneReconstruction : public yarp::os::RFModule
 {
 public:
-    SceneReconstruction() : period(DEFAULT_PERIOD), isRunning(false), iRGBDSensor(nullptr)
+    SceneReconstruction()
+        : period(DEFAULT_PERIOD),
+          isRunning(false),
+          kinfu(nullptr),
+          iRGBDSensor(nullptr)
     {}
 
     ~SceneReconstruction() override
@@ -48,6 +55,7 @@ public:
 private:
     double period;
     std::atomic_bool isRunning;
+    std::unique_ptr<KinectFusionAdapter> kinfu;
     yarp::dev::PolyDriver cameraDriver;
     yarp::dev::IRGBDSensor * iRGBDSensor;
     yarp::os::RpcServer rpcServer;

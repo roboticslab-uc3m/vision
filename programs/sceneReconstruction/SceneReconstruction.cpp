@@ -71,7 +71,44 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         return false;
     }
 
-    cameraDriver.view(iRGBDSensor);
+    if (!cameraDriver.view(iRGBDSensor))
+    {
+        CD_ERROR("Unable to acquire RGBD sensor interface handle.\n");
+        return false;
+    }
+
+    yarp::os::Property depthParams;
+    yarp::sig::IntrinsicParams depthIntrinsic;
+
+    if (!iRGBDSensor->getDepthIntrinsicParam(depthParams))
+    {
+        CD_ERROR("Unable to retrieve depth intrinsic parameters.\n");
+        return false;
+    }
+
+    depthIntrinsic.fromProperty(depthParams);
+
+    int width = iRGBDSensor->getDepthWidth();
+    int height = iRGBDSensor->getDepthHeight();
+    
+    std::string algorithm = rf.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM), "algorithm identifier").asString();
+
+    if (algorithm == "kinfu")
+    {
+        const auto & config = rf.findGroup("kinfu");
+        kinfu = makeKinFu(config, depthIntrinsic, width, height);
+    }
+    else
+    {
+        CD_ERROR("Unsupported or unrecognized algorithm: %s (available: kinfu).\n", algorithm.c_str());
+        return false;
+    }
+
+    if (!kinfu)
+    {
+        CD_ERROR("Algorithm handle could not successfully initialize.\n");
+        return false;
+    }
 
     if (!rpcServer.open(prefix + "/rpc:s"))
     {
@@ -79,7 +116,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         return false;
     }
 
-    if (!renderPort.open(prefix + "/cloud:o"))
+    if (!renderPort.open(prefix + "/render:o"))
     {
         CD_ERROR("Unable to open render port %s.\n", renderPort.getName().c_str());
         return false;
