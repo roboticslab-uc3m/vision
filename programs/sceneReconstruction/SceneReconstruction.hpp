@@ -4,6 +4,7 @@
 #define __SCENE_RECONSTRUCTION_HPP__
 
 #include <atomic>
+#include <mutex>
 
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/RpcServer.h>
@@ -26,7 +27,8 @@ namespace roboticslab
  *
  * @brief ...
  */
-class SceneReconstruction : public yarp::os::RFModule
+class SceneReconstruction : public yarp::os::RFModule,
+                            private yarp::os::PortReader
 {
 public:
     SceneReconstruction()
@@ -50,11 +52,12 @@ public:
 
     bool close() override;
 
-    bool respond(const yarp::os::Bottle & command, yarp::os::Bottle & reply) override;
+    bool read(yarp::os::ConnectionReader & reader) override;
 
 private:
     double period;
     std::atomic_bool isRunning;
+    std::mutex kinfuMutex;
     std::unique_ptr<KinectFusionAdapter> kinfu;
     yarp::dev::PolyDriver cameraDriver;
     yarp::dev::IRGBDSensor * iRGBDSensor;

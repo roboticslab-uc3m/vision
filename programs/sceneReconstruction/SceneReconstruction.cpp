@@ -8,12 +8,14 @@
 
 #include <ColorDebug.h>
 
+constexpr auto VOCAB_OK = yarp::os::createVocab('o','k');
+constexpr auto VOCAB_FAIL = yarp::os::createVocab('f','a','i','l');
 constexpr auto VOCAB_HELP = yarp::os::createVocab('h','e','l','p');
 constexpr auto VOCAB_CMD_PAUSE = yarp::os::createVocab('p','a','u','s');
 constexpr auto VOCAB_CMD_RESUME = yarp::os::createVocab('r','s','m');
-constexpr auto VOCAB_GET_CLOUD = yarp::os::createVocab('g','p','c');
-constexpr auto VOCAB_GET_NORMALS = yarp::os::createVocab('g','n','r','m');
-constexpr auto VOCAB_GET_CLOUD_AND_NORMALS = yarp::os::createVocab('g','p','c','n');
+constexpr auto VOCAB_GET_POSE = yarp::os::createVocab('g','p','o','s');
+constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab('g','p','c');
+constexpr auto VOCAB_GET_POINTS_AND_NORMALS = yarp::os::createVocab('g','p','c','n');
 
 using namespace roboticslab;
 
@@ -22,19 +24,18 @@ namespace
     yarp::os::Bottle makeUsage()
     {
         return {
-            yarp::os::Value(yarp::os::createVocab('m','a','n','y'), true),
             yarp::os::Value(VOCAB_HELP, true),
             yarp::os::Value("\tlist commands"),
             yarp::os::Value(VOCAB_CMD_PAUSE, true),
             yarp::os::Value("\tpause scene reconstruction, don't process next frames"),
             yarp::os::Value(VOCAB_CMD_RESUME, true),
             yarp::os::Value("\tstart/resume scene reconstruction, process incoming frames"),
-            yarp::os::Value(VOCAB_GET_CLOUD, true),
+            yarp::os::Value(VOCAB_GET_POSE, true),
+            yarp::os::Value("\tretrieve current camera pose"),
+            yarp::os::Value(VOCAB_GET_POINTS, true),
             yarp::os::Value("\tretrieve point cloud"),
-            yarp::os::Value(VOCAB_GET_NORMALS, true),
-            yarp::os::Value("\tretrieve normals, same order as in point cloud"),
-            yarp::os::Value(VOCAB_GET_CLOUD_AND_NORMALS, true),
-            yarp::os::Value("\tretrieve cloud and normals alongside each other"),
+            yarp::os::Value(VOCAB_GET_POINTS_AND_NORMALS, true),
+            yarp::os::Value("\tretrieve point cloud with normals"),
         };
     }
 }
@@ -122,12 +123,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         return false;
     }
 
-    if (!yarp::os::RFModule::attach(rpcServer))
-    {
-        CD_ERROR("Unable to attach responder to RPC server port.\n");
-        return false;
-    }
-
+    rpcServer.setReader(*this);
     return true;
 }
 
@@ -135,7 +131,26 @@ bool SceneReconstruction::updateModule()
 {
     if (isRunning)
     {
-        ;
+        yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
+
+        if (!iRGBDSensor->getDepthImage(depthFrame))
+        {
+            CD_ERROR("Unable to retrieve depth frame.\n");
+            return true;
+        }
+
+        kinfuMutex.lock();
+
+        if (!kinfu->update(depthFrame))
+        {
+            CD_WARNING("reset");
+            kinfu->reset();
+        }
+
+        auto & rendered = renderPort.prepare();
+        kinfu->render(rendered);
+        kinfuMutex.unlock();
+        renderPort.write();
     }
 
     return true;
@@ -156,8 +171,16 @@ bool SceneReconstruction::close()
     return cameraDriver.close();
 }
 
-bool SceneReconstruction::respond(const yarp::os::Bottle & command, yarp::os::Bottle & reply)
+bool SceneReconstruction::read(yarp::os::ConnectionReader & connection)
 {
+    auto * writer = connection.getWriter();
+    yarp::os::Bottle command;
+    
+    if (!command.read(connection) || writer == nullptr)
+    {
+        return false;
+    }
+
     if (command.size() == 0)
     {
         CD_WARNING("Got empty bottle.\n");
@@ -169,20 +192,55 @@ bool SceneReconstruction::respond(const yarp::os::Bottle & command, yarp::os::Bo
     switch (command.get(0).asVocab())
     {
     case VOCAB_HELP:
+    {
         static auto usage = makeUsage();
-        reply.append(usage);
+
+        for (auto i = 0; i < usage.size(); i++)
+        {
+            yarp::os::Bottle reply {usage.get(i)};
+            reply.write(*writer);
+        }
+        
         return true;
+    }
     case VOCAB_CMD_PAUSE:
+    {
         isRunning = false;
-        return true;
+        yarp::os::Bottle reply {yarp::os::Value(VOCAB_OK, true)};
+        return reply.write(*writer);
+    }
     case VOCAB_CMD_RESUME:
+    {
         isRunning = true;
-        return true;
-    case VOCAB_GET_CLOUD:
-    case VOCAB_GET_NORMALS:
-    case VOCAB_GET_CLOUD_AND_NORMALS:
-        return true;
+        yarp::os::Bottle reply {yarp::os::Value(VOCAB_OK, true)};
+        return reply.write(*writer);
+    }
+    case VOCAB_GET_POSE:
+    {
+        yarp::sig::Matrix pose;
+        kinfuMutex.lock();
+        kinfu->getPose(pose);
+        kinfuMutex.unlock();
+        return pose.write(*writer);
+    }
+    case VOCAB_GET_POINTS:
+    {
+        yarp::sig::PointCloudXYZ cloud;
+        kinfuMutex.lock();
+        kinfu->getPoints(cloud);
+        kinfuMutex.unlock();
+        return cloud.write(*writer);
+    }
+    case VOCAB_GET_POINTS_AND_NORMALS:
+    {
+        yarp::sig::PointCloudXYZNormal cloudWithNormals;
+        kinfuMutex.lock();
+        kinfu->getCloud(cloudWithNormals);
+        kinfuMutex.unlock();
+        return cloudWithNormals.write(*writer);
+    }
     default:
-        return yarp::os::RFModule::respond(command, reply);
+        yarp::os::Bottle reply {yarp::os::Value(VOCAB_FAIL, true)};
+        return reply.write(*writer);
     }
 }

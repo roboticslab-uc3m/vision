@@ -19,19 +19,17 @@ class KinectFusionAdapter
 public:
     virtual ~KinectFusionAdapter() {}
 
-    virtual void getCloud(yarp::sig::PointCloudXYZNormal & cloudWithNormals) = 0;
+    virtual void getCloud(yarp::sig::PointCloudXYZNormal & cloudWithNormals) const = 0;
 
-    virtual void getPoints(yarp::sig::PointCloudXYZ & cloud) = 0;
+    virtual void getPoints(yarp::sig::PointCloudXYZ & cloud) const = 0;
 
-    virtual void getNormals(yarp::sig::PointCloudNormal & normals) = 0;
-
-    virtual void getPose(yarp::sig::Matrix & pose) = 0;
+    virtual void getPose(yarp::sig::Matrix & pose) const = 0;
 
     virtual bool update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame) = 0;
 
     virtual void reset() = 0;
 
-    virtual void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) = 0;
+    virtual void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) const = 0;
 };
 
 std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height);

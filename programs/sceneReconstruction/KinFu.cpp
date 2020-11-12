@@ -11,6 +11,8 @@
 #include <opencv2/core/version.hpp>
 #include <opencv2/rgbd/kinfu.hpp>
 
+#include <yarp/cv/Cv.h>
+
 #include <ColorDebug.h>
 
 namespace
@@ -74,28 +76,67 @@ public:
     KinFu(const cv::Ptr<cv::kinfu::Params> & params) : handle(cv::kinfu::KinFu::create(params))
     {}
 
-    void getCloud(yarp::sig::PointCloudXYZNormal & cloudWithNormals) override
-    {}
+    void getCloud(yarp::sig::PointCloudXYZNormal & cloudWithNormals) const override
+    {
+        cv::Mat points, normals;
+        handle->getCloud(points, normals);
+        cloudWithNormals.resize(points.rows);
 
-    void getPoints(yarp::sig::PointCloudXYZ & cloud) override
-    {}
+        for (auto i = 0; i < points.rows; i++)
+        {
+            const auto & point = points.at<cv::Vec4f>(i);
+            const auto & normal = normals.at<cv::Vec4f>(i);
+            cloudWithNormals(i) = {{point[0], point[1], point[2]}, {normal[0], normal[1], normal[2]}};
+        }
+    }
 
-    void getNormals(yarp::sig::PointCloudNormal & normals) override
-    {}
+    void getPoints(yarp::sig::PointCloudXYZ & cloud) const override
+    {
+        cv::Mat points;
+        handle->getPoints(points);
+        cloud.resize(points.rows);
 
-    void getPose(yarp::sig::Matrix & pose) override
-    {}
+        for (auto i = 0; i < points.rows; i++)
+        {
+            const auto & point = points.at<cv::Vec4f>(i);
+            cloud(i) = {point[0], point[1], point[2]};
+        }
+    }
+
+    void getPose(yarp::sig::Matrix & pose) const override
+    {
+        const auto & affine = handle->getPose().matrix;
+        pose.resize(4, 4);
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; i < 4; j++)
+            {
+                pose(i, j) = affine(i, j);
+            }
+        }
+    }
 
     bool update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame) override
     {
-        return true;
+        // Cast away constness so that toCvMat accepts the YARP image. This function
+        // does not alter the inner structure of PixelFloat images anyway.
+        auto & nonConstDepthFrame = const_cast<yarp::sig::ImageOf<yarp::sig::PixelFloat> &>(depthFrame);
+        cv::Mat mat = yarp::cv::toCvMat(nonConstDepthFrame);
+        return handle->update(mat);
     }
 
     void reset() override
-    {}
+    {
+        handle->reset();
+    }
 
-    void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) override
-    {}
+    void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) const override
+    {
+        cv::Mat imageMat;
+        handle->render(imageMat);
+        image = yarp::cv::fromCvMat<yarp::sig::PixelRgb>(imageMat);
+    }
 
 private:
     cv::Ptr<cv::kinfu::KinFu> handle;
