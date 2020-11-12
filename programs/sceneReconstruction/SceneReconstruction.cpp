@@ -58,9 +58,9 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 
     yarp::os::Property cameraOptions {
         {"device", yarp::os::Value("RGBDSensorClient")},
-        {"localImagePort", yarp::os::Value(prefix + "/rgbImage:i")},
-        {"localDepthPort", yarp::os::Value(prefix + "/depthImage:i")},
-        {"localRpcPort", yarp::os::Value(prefix + "/rpc:o")},
+        {"localImagePort", yarp::os::Value(prefix + "/client/rgbImage:i")},
+        {"localDepthPort", yarp::os::Value(prefix + "/client/depthImage:i")},
+        {"localRpcPort", yarp::os::Value(prefix + "/client/rpc:o")},
         {"remoteImagePort", yarp::os::Value(remote + "/rgbImage:o")},
         {"remoteDepthPort", yarp::os::Value(remote + "/depthImage:o")},
         {"remoteRpcPort", yarp::os::Value(remote + "/rpc:i")}
@@ -143,7 +143,7 @@ bool SceneReconstruction::updateModule()
 
         if (!kinfu->update(depthFrame))
         {
-            CD_WARNING("reset");
+            CD_WARNING("reset\n");
             kinfu->reset();
         }
 
@@ -184,7 +184,8 @@ bool SceneReconstruction::read(yarp::os::ConnectionReader & connection)
     if (command.size() == 0)
     {
         CD_WARNING("Got empty bottle.\n");
-        return false;
+        yarp::os::Bottle reply {yarp::os::Value(VOCAB_FAIL, true)};
+        return reply.write(*writer);
     }
 
     CD_DEBUG("command: %s\n", command.toString().c_str());
@@ -194,14 +195,9 @@ bool SceneReconstruction::read(yarp::os::ConnectionReader & connection)
     case VOCAB_HELP:
     {
         static auto usage = makeUsage();
-
-        for (auto i = 0; i < usage.size(); i++)
-        {
-            yarp::os::Bottle reply {usage.get(i)};
-            reply.write(*writer);
-        }
-        
-        return true;
+        yarp::os::Bottle reply {yarp::os::Value(yarp::os::createVocab('m','a','n','y'), true)};
+        reply.append(usage);
+        return reply.write(*writer);
     }
     case VOCAB_CMD_PAUSE:
     {

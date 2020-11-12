@@ -39,11 +39,11 @@ namespace
         if (config.check(name, description))
         {
             params.*param = getValue<T>(config.find(name));
-            ss << " (DEFAULT): ";
+            ss << ": ";
         }
         else
         {
-            ss << ": ";
+            ss << " (DEFAULT): ";
         }
 
         ss << params.*param << "\n";
@@ -56,6 +56,7 @@ namespace
         // https://stackoverflow.com/a/8581865
         std::ostringstream oss;
         std::copy(vec.begin(), vec.end() - 1, std::ostream_iterator<T>(oss, delimiter.c_str()));
+        oss << vec.back();
         return oss.str();
     }
 
@@ -74,7 +75,9 @@ class KinFu : public KinectFusionAdapter
 {
 public:
     KinFu(const cv::Ptr<cv::kinfu::Params> & params) : handle(cv::kinfu::KinFu::create(params))
-    {}
+    {
+        cv::setUseOptimized(true);
+    }
 
     void getCloud(yarp::sig::PointCloudXYZNormal & cloudWithNormals) const override
     {
@@ -110,7 +113,7 @@ public:
 
         for (int i = 0; i < 4; i++)
         {
-            for (int j = 0; i < 4; j++)
+            for (int j = 0; j < 4; j++)
             {
                 pose(i, j) = affine(i, j);
             }
@@ -149,7 +152,7 @@ std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & conf
     auto params = Params::defaultParams();
 
     params->frameSize = cv::Size(width, height);
-    CD_INFO("Using width %d, height %d.\n", width, height);
+    CD_INFO("dimensions: width = %d, height = %d\n", width, height);
 
     float fx = intrinsic.focalLengthX;
     float fy = intrinsic.focalLengthY;
@@ -160,7 +163,7 @@ std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & conf
                                 0, fy, cy,
                                 0,  0,  1);
 
-    CD_INFO("Using intrinsic params: fx = %f, fy = %f, cx = %f, cy = %f.\n", fx, fy, cx, cy);
+    CD_INFO("intrinsic params: fx = %f, fy = %f, cx = %f, cy = %f\n", fx, fy, cx, cy);
 
     updateParam(*params, &Params::depthFactor, config, "depthFactor", "pre-scale per 1 meter for input values");
     updateParam(*params, &Params::voxelSize, config, "voxelSize", "size of voxel in meters");
@@ -263,12 +266,12 @@ std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & conf
         }
 
         params->volumeType = stringToCvVolume[volumeType];
-        CD_INFO("volumeType: %s.\n", volumeType.c_str());
+        CD_INFO("volumeType: %s\n", volumeType.c_str());
     }
     else
     {
         auto res = std::find_if(stringToCvVolume.begin(), stringToCvVolume.end(), [&params](const auto & el) { return el.second == params->volumeType; });
-        CD_INFO("volumeType (DEFAULT): %s.\n", res->first.c_str());
+        CD_INFO("volumeType (DEFAULT): %s\n", res->first.c_str());
     }
 #endif
 
