@@ -91,7 +91,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 
     int width = iRGBDSensor->getDepthWidth();
     int height = iRGBDSensor->getDepthHeight();
-    
+
     std::string algorithm = rf.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM), "algorithm identifier").asString();
 
     if (algorithm == "kinfu")
@@ -175,7 +175,7 @@ bool SceneReconstruction::read(yarp::os::ConnectionReader & connection)
 {
     auto * writer = connection.getWriter();
     yarp::os::Bottle command;
-    
+
     if (!command.read(connection) || writer == nullptr)
     {
         return false;

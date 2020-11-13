@@ -126,7 +126,9 @@ public:
         // does not alter the inner structure of PixelFloat images anyway.
         auto & nonConstDepthFrame = const_cast<yarp::sig::ImageOf<yarp::sig::PixelFloat> &>(depthFrame);
         cv::Mat mat = yarp::cv::toCvMat(nonConstDepthFrame);
-        return handle->update(mat);
+        cv::UMat umat;
+        mat.convertTo(umat, mat.type(), 1000.0); // OpenCV uses milimeters
+        return handle->update(umat);
     }
 
     void reset() override
@@ -136,9 +138,10 @@ public:
 
     void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) const override
     {
-        cv::Mat imageMat;
-        handle->render(imageMat);
-        image = yarp::cv::fromCvMat<yarp::sig::PixelRgb>(imageMat);
+        cv::UMat umat;
+        handle->render(umat);
+        cv::Mat mat = umat.getMat(cv::ACCESS_RW);
+        image = yarp::cv::fromCvMat<yarp::sig::PixelRgb>(mat);
     }
 
 private:
@@ -308,7 +311,7 @@ std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & conf
     updateParam(*params, &Params::tsdf_max_weight, config, "tsdfMaxWeight", "max number of frames per voxel");
     updateParam(*params, &Params::tsdf_min_camera_movement, config, "tsdfMinCameraMovement", "minimal camera movement in meters");
     updateParam(*params, &Params::tsdf_trunc_dist, config, "tsdfTruncDist", "distance to truncate in meters");
-    
+
     return std::make_unique<KinFu>(params);
 }
 
