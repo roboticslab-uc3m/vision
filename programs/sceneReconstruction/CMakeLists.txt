@@ -26,6 +26,11 @@ if(ENABLE_sceneReconstruction)
                                               opencv_rgbd
                                               ROBOTICSLAB::ColorDebug)
 
+    if(OpenCV_VERSION VERSION_GREATER_EQUAL 4.2)
+        target_sources(sceneReconstruction PRIVATE DynaFu.cpp)
+        target_compile_definitions(sceneReconstruction PRIVATE HAVE_DYNAFU)
+    endif()
+
     install(TARGETS sceneReconstruction
             DESTINATION ${CMAKE_INSTALL_BINDIR})
 

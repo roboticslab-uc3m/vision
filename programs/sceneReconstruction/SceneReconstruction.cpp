@@ -114,9 +114,16 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         const auto & config = rf.findGroup("kinfu");
         kinfu = makeKinFu(config, depthIntrinsic, width, height);
     }
+#ifdef HAVE_DYNAFU
+    else if (algorithm == "dynafu")
+    {
+        const auto & config = rf.findGroup("dynafu");
+        kinfu = makeDynaFu(config, depthIntrinsic, width, height);
+    }
+#endif
     else
     {
-        CD_ERROR("Unsupported or unrecognized algorithm: %s (available: kinfu).\n", algorithm.c_str());
+        CD_ERROR("Unsupported or unrecognized algorithm: %s (available: kinfu, dynafu).\n", algorithm.c_str());
         return false;
     }
 

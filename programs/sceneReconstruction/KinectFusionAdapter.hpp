@@ -34,6 +34,8 @@ public:
 
 std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height);
 
+std::unique_ptr<KinectFusionAdapter> makeDynaFu(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height);
+
 } // namespace roboticslab
 
 #endif // __KINECT_FUSION_ADAPTER_HPP__
