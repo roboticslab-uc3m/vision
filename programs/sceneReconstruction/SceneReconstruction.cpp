@@ -44,27 +44,42 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 {
     CD_DEBUG("config: %s\n", rf.toString().c_str());
 
-    if (!rf.check("remote", "remote RGBD camera port"))
-    {
-        CD_ERROR("Missing --remote parameter.\n");
-        return false;
-    }
+    period = rf.check("period", yarp::os::Value(DEFAULT_PERIOD * 1000), "update period (ms)").asInt32() * 0.001;
 
-    std::string remote = rf.find("remote").asString();
     std::string prefix = rf.check("prefix", yarp::os::Value(DEFAULT_PREFIX), "port prefix").asString();
-    int periodInMs = rf.check("period", yarp::os::Value(DEFAULT_PERIOD * 1000), "update period (ms)").asInt32();
+    yarp::os::Property cameraOptions;
 
-    period = periodInMs * 0.001;
+    if (rf.check("remote", "remote RGBD camera port"))
+    {
+        std::string remote = rf.find("remote").asString();
+        CD_INFO("Using remote camera at port prefix %s.\n", remote.c_str());
 
-    yarp::os::Property cameraOptions {
-        {"device", yarp::os::Value("RGBDSensorClient")},
-        {"localImagePort", yarp::os::Value(prefix + "/client/rgbImage:i")},
-        {"localDepthPort", yarp::os::Value(prefix + "/client/depthImage:i")},
-        {"localRpcPort", yarp::os::Value(prefix + "/client/rpc:o")},
-        {"remoteImagePort", yarp::os::Value(remote + "/rgbImage:o")},
-        {"remoteDepthPort", yarp::os::Value(remote + "/depthImage:o")},
-        {"remoteRpcPort", yarp::os::Value(remote + "/rpc:i")}
-    };
+        cameraOptions = {
+            {"device", yarp::os::Value("RGBDSensorClient")},
+            {"localImagePort", yarp::os::Value(prefix + "/client/rgbImage:i")},
+            {"localDepthPort", yarp::os::Value(prefix + "/client/depthImage:i")},
+            {"localRpcPort", yarp::os::Value(prefix + "/client/rpc:o")},
+            {"remoteImagePort", yarp::os::Value(remote + "/rgbImage:o")},
+            {"remoteDepthPort", yarp::os::Value(remote + "/depthImage:o")},
+            {"remoteRpcPort", yarp::os::Value(remote + "/rpc:i")}
+        };
+
+        if (rf.check("carrier", "carrier for remote connection to depth camera"))
+        {
+            cameraOptions.put("DepthCarrier", rf.find("carrier"));
+        }
+    }
+    else
+    {
+        CD_INFO("Using local camera.\n");
+        cameraOptions.fromString(rf.toString());
+
+        if (cameraOptions.check("subdevice"))
+        {
+            cameraOptions.put("device", cameraOptions.find("subdevice"));
+            cameraOptions.unput("subdevice");
+        }
+    }
 
     if (!cameraDriver.open(cameraOptions))
     {
