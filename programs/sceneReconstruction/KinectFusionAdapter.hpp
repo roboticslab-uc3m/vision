@@ -29,7 +29,7 @@ public:
 
     virtual void reset() = 0;
 
-    virtual void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) const = 0;
+    virtual void render(yarp::sig::ImageOf<yarp::sig::PixelMono> & image) const = 0;
 };
 
 std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height);

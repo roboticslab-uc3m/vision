@@ -127,12 +127,13 @@ public:
         handle->reset();
     }
 
-    void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) const override
+    void render(yarp::sig::ImageOf<yarp::sig::PixelMono> & image) const override
     {
         cv::UMat umat;
         handle->render(umat);
-        cv::Mat mat = umat.getMat(cv::ACCESS_RW);
-        image = yarp::cv::fromCvMat<yarp::sig::PixelRgb>(mat);
+        cv::Mat mat = umat.getMat(cv::ACCESS_FAST); // no memcpy
+        const auto & temp = yarp::cv::fromCvMat<yarp::sig::PixelBgra>(mat); // no conversion
+        image.copy(temp); // bgra to grayscale (single step convert+assign)
     }
 
 private:
