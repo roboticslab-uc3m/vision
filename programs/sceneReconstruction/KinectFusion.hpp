@@ -34,7 +34,9 @@ public:
 
 std::unique_ptr<KinectFusion> makeKinFu(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height);
 
+#ifdef HAVE_DYNAFU
 std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height);
+#endif
 
 } // namespace roboticslab
 
