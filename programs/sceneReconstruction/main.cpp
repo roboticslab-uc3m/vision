@@ -20,7 +20,7 @@ int main(int argc, char * argv[])
     yarp::os::ResourceFinder rf;
     rf.setVerbose(true);
     rf.setDefaultContext("sceneReconstruction");
-    rf.setDefaultConfigFile("sceneReconstruction");
+    rf.setDefaultConfigFile("sceneReconstruction.ini");
     rf.configure(argc, argv);
 
     roboticslab::SceneReconstruction mod;

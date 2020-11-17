@@ -108,17 +108,16 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     int height = iRGBDSensor->getDepthHeight();
 
     std::string algorithm = rf.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM), "algorithm identifier").asString();
+    const auto & kinfuParams = rf.findGroup("KINECT_FUSION");
 
     if (algorithm == "kinfu")
     {
-        const auto & config = rf.findGroup("kinfu");
-        kinfu = makeKinFu(config, depthIntrinsic, width, height);
+        kinfu = makeKinFu(kinfuParams, depthIntrinsic, width, height);
     }
 #ifdef HAVE_DYNAFU
     else if (algorithm == "dynafu")
     {
-        const auto & config = rf.findGroup("dynafu");
-        kinfu = makeDynaFu(config, depthIntrinsic, width, height);
+        kinfu = makeDynaFu(kinfuParams, depthIntrinsic, width, height);
     }
 #endif
     else

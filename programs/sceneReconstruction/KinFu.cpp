@@ -184,7 +184,7 @@ std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & conf
         }
 
         params->volumeDims = cv::Vec3i(volumeDims->get(0).asInt32(), volumeDims->get(1).asInt32(), volumeDims->get(2).asInt32());
-        CD_INFO("volumeDims: %s\n", volumeDims->toString().c_str());
+        CD_INFO("volumeDims: (%s)\n", volumeDims->toString().c_str());
     }
     else
     {
@@ -203,7 +203,7 @@ std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & conf
         }
 
         params->lightPose = cv::Vec3f(lightPose->get(0).asFloat32(), lightPose->get(1).asFloat32(), lightPose->get(2).asFloat32());
-        CD_INFO("lightPose: %s\n", lightPose->toString().c_str());
+        CD_INFO("lightPose: (%s)\n", lightPose->toString().c_str());
     }
     else
     {
@@ -223,7 +223,7 @@ std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & conf
 
         auto transl = cv::Vec3f(volumePoseTransl->get(0).asFloat32(), volumePoseTransl->get(1).asFloat32(), volumePoseTransl->get(2).asFloat32());
         params->volumePose.translation(transl);
-        CD_INFO("volumePoseTransl: %s\n", volumePoseTransl->toString().c_str());
+        CD_INFO("volumePoseTransl: (%s)\n", volumePoseTransl->toString().c_str());
     }
     else
     {
@@ -246,7 +246,7 @@ std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & conf
                                volumePoseRot->get(6).asFloat32(), volumePoseRot->get(7).asFloat32(), volumePoseRot->get(8).asFloat32());
 
         params->volumePose.rotation(rot);
-        CD_INFO("volumePoseRot: %s\n", volumePoseRot->toString().c_str());
+        CD_INFO("volumePoseRot: (%s)\n", volumePoseRot->toString().c_str());
     }
     else
     {
@@ -297,12 +297,14 @@ std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & conf
             return nullptr;
         }
 
+        params->icpIterations.resize(icpIterations->size());
+
         for (auto i = 0; i < icpIterations->size(); i++)
         {
-            params->icpIterations.push_back(icpIterations->get(i).asInt32());
+            params->icpIterations[i] = icpIterations->get(i).asInt32();
         }
 
-        CD_INFO("icpIterations: %s\n", icpIterations->toString().c_str());
+        CD_INFO("icpIterations: (%s)\n", icpIterations->toString().c_str());
     }
     else
     {
