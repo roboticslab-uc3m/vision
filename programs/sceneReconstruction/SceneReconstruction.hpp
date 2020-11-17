@@ -13,7 +13,7 @@
 #include <yarp/dev/PolyDriver.h>
 #include <yarp/sig/Image.h>
 
-#include "KinectFusionAdapter.hpp"
+#include "KinectFusion.hpp"
 
 #define DEFAULT_PREFIX "/sceneReconstruction"
 #define DEFAULT_PERIOD 0.02 // [s]
@@ -58,7 +58,7 @@ private:
     double period;
     std::atomic_bool isRunning;
     std::mutex kinfuMutex;
-    std::unique_ptr<KinectFusionAdapter> kinfu;
+    std::unique_ptr<KinectFusion> kinfu;
     yarp::dev::PolyDriver cameraDriver;
     yarp::dev::IRGBDSensor * iRGBDSensor;
     yarp::os::RpcServer rpcServer;

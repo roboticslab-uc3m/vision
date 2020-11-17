@@ -168,8 +168,7 @@ bool SceneReconstruction::updateModule()
             kinfu->reset();
         }
 
-        auto & rendered = renderPort.prepare();
-        kinfu->render(rendered);
+        kinfu->render(renderPort.prepare());
         kinfuMutex.unlock();
         renderPort.write();
     }

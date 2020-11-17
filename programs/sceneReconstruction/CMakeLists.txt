@@ -15,7 +15,8 @@ if(ENABLE_sceneReconstruction)
     add_executable(sceneReconstruction main.cpp
                                        SceneReconstruction.hpp
                                        SceneReconstruction.cpp
-                                       KinectFusionAdapter.hpp
+                                       KinectFusion.hpp
+                                       KinectFusionImpl.hpp
                                        KinFu.cpp)
 
     target_link_libraries(sceneReconstruction YARP::YARP_os

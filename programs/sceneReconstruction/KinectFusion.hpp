@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __KINECT_FUSION_ADAPTER_HPP__
-#define __KINECT_FUSION_ADAPTER_HPP__
+#ifndef __KINECT_FUSION_HPP__
+#define __KINECT_FUSION_HPP__
 
 #include <memory>
 
@@ -14,10 +14,10 @@
 namespace roboticslab
 {
 
-class KinectFusionAdapter
+class KinectFusion
 {
 public:
-    virtual ~KinectFusionAdapter() {}
+    virtual ~KinectFusion() {}
 
     virtual void getCloud(yarp::sig::PointCloudXYZNormal & cloudWithNormals) const = 0;
 
@@ -32,10 +32,10 @@ public:
     virtual void render(yarp::sig::ImageOf<yarp::sig::PixelMono> & image) const = 0;
 };
 
-std::unique_ptr<KinectFusionAdapter> makeKinFu(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height);
+std::unique_ptr<KinectFusion> makeKinFu(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height);
 
-std::unique_ptr<KinectFusionAdapter> makeDynaFu(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height);
+std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height);
 
 } // namespace roboticslab
 
-#endif // __KINECT_FUSION_ADAPTER_HPP__
+#endif // __KINECT_FUSION_HPP__
