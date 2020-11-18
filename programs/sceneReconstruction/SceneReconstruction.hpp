@@ -25,7 +25,7 @@ namespace roboticslab
 /**
  * @ingroup sceneReconstruction
  *
- * @brief ...
+ * @brief Exposes Kinect Fusion as a YARP service via RPC.
  */
 class SceneReconstruction : public yarp::os::RFModule,
                             private yarp::os::PortReader
