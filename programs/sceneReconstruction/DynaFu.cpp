@@ -15,6 +15,8 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
 
     auto params = Params::defaultParams();
 
+    CD_INFO("algorithm: DynaFu\n");
+
     params->frameSize = cv::Size(width, height);
     CD_INFO("dimensions: width = %d, height = %d\n", width, height);
 

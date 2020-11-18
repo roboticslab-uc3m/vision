@@ -28,6 +28,8 @@ std::unique_ptr<KinectFusion> makeKinFu(const yarp::os::Searchable & config, con
 
     auto params = Params::defaultParams();
 
+    CD_INFO("algorithm: KinFu\n");
+
     params->frameSize = cv::Size(width, height);
     CD_INFO("dimensions: width = %d, height = %d\n", width, height);
 
