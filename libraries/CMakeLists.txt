@@ -2,4 +2,5 @@
 # Authors: Juan G. Victores
 
 add_subdirectory(TravisLib)
+add_subdirectory(YarpCloudUtils)
 add_subdirectory(YarpPlugins)
