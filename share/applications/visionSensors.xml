@@ -4,7 +4,15 @@
     <!-- Requires YARP compiled with ENABLE_yarpmod_opencv_grabber -->
     <module>
         <name>opencv_grabber</name>
-        <parameters>--name /grabber</parameters>
+        <parameters>--name /grabber --camera 0</parameters>
+        <node>localhost</node>
+        <deployer>yarpdev</deployer>
+    </module>
+
+    <!-- Requires YARP compiled with ENABLE_yarpmod_usbCamera -->
+    <module>
+        <name>usbCamera</name>
+        <parameters>--name /grabber --d /dev/video0</parameters>
         <node>localhost</node>
         <deployer>yarpdev</deployer>
     </module>
