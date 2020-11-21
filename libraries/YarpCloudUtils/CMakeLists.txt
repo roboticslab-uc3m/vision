@@ -8,7 +8,8 @@ if(ENABLE_YarpCloudUtils)
 
     set_target_properties(YarpCloudUtils PROPERTIES PUBLIC_HEADER YarpCloudUtils.hpp)
 
-    target_link_libraries(YarpCloudUtils PUBLIC YARP::YARP_sig)
+    target_link_libraries(YarpCloudUtils PUBLIC YARP::YARP_sig
+                                         PRIVATE YARP::YARP_os)
 
     target_include_directories(YarpCloudUtils PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                                                      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
