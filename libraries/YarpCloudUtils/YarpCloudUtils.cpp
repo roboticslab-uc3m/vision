@@ -224,7 +224,7 @@ namespace
             std::memcpy(buffer_xyz.get() + i * xyzSize, cloud(i).data, xyzSize);
             std::memcpy(buffer_normal.get() + i * normalSize, cloud(i).normal, offset);
             std::memcpy(buffer_normal.get() + i * normalSize + offset, &cloud(i).curvature, sizeof(float));
-            std::memcpy(buffer_xyz.get() + i * rgbaSize, &cloud(i).rgba, rgbaSize);
+            std::memcpy(buffer_rgba.get() + i * rgbaSize, &cloud(i).rgba, rgbaSize);
         }
 
         ply.add_properties_to_element(
