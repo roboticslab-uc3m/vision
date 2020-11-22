@@ -39,17 +39,13 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake
 # Hard dependencies.
 find_package(YCM 0.11 REQUIRED)
 find_package(YARP 3.3 REQUIRED COMPONENTS os dev sig
-                               OPTIONAL_COMPONENTS cv)
+                               OPTIONAL_COMPONENTS cv pcl)
 find_package(COLOR_DEBUG REQUIRED)
 
 # Soft dependencies.
 
 find_package(OpenCV QUIET)
-if(CREATE_BINDINGS_PYTHON_VERSION VERSION_GREATER_EQUAL 3)
-  message(AUTHOR_WARNING "Skipping find_package(PCL 1.6 QUIET) so we can compile Python 3 bindings")
-else()
-  find_package(PCL 1.6 QUIET)
-endif()
+find_package(PCL 1.6 QUIET)
 find_package(TensorflowCC 1.12 QUIET)
 find_package(GTestSources 1.6.0 QUIET)
 find_package(SWIG QUIET)
