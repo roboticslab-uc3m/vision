@@ -18,7 +18,7 @@
 
 namespace
 {
-    void write(std::ostream & os, const yarp::sig::PointCloudXY & cloud, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXY & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
@@ -31,10 +31,22 @@ namespace
             tinyply::Type::INVALID,
             0);
 
+        if (vertices.size() != 0)
+        {
+            ply.add_properties_to_element(
+                "face",
+                {"vertex_indices"},
+                tinyply::Type::UINT32,
+                vertices.size(),
+                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                tinyply::Type::UINT8,
+                3);
+        }
+
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudXYZ & cloud, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXYZ & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
@@ -55,10 +67,22 @@ namespace
             tinyply::Type::INVALID,
             0);
 
+        if (vertices.size() != 0)
+        {
+            ply.add_properties_to_element(
+                "face",
+                {"vertex_indices"},
+                tinyply::Type::UINT32,
+                vertices.size(),
+                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                tinyply::Type::UINT8,
+                3);
+        }
+
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudNormal & cloud, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudNormal & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
@@ -81,10 +105,22 @@ namespace
             tinyply::Type::INVALID,
             0);
 
+        if (vertices.size() != 0)
+        {
+            ply.add_properties_to_element(
+                "face",
+                {"vertex_indices"},
+                tinyply::Type::UINT32,
+                vertices.size(),
+                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                tinyply::Type::UINT8,
+                3);
+        }
+
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudXYZRGBA & cloud, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXYZRGBA & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
@@ -118,10 +154,22 @@ namespace
             tinyply::Type::INVALID,
             0);
 
+        if (vertices.size() != 0)
+        {
+            ply.add_properties_to_element(
+                "face",
+                {"vertex_indices"},
+                tinyply::Type::UINT32,
+                vertices.size(),
+                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                tinyply::Type::UINT8,
+                3);
+        }
+
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudXYZI & cloud, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXYZI & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
@@ -144,10 +192,22 @@ namespace
             tinyply::Type::INVALID,
             0);
 
+        if (vertices.size() != 0)
+        {
+            ply.add_properties_to_element(
+                "face",
+                {"vertex_indices"},
+                tinyply::Type::UINT32,
+                vertices.size(),
+                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                tinyply::Type::UINT8,
+                3);
+        }
+
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudInterestPointXYZ & cloud, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudInterestPointXYZ & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
@@ -170,10 +230,22 @@ namespace
             tinyply::Type::INVALID,
             0);
 
+        if (vertices.size() != 0)
+        {
+            ply.add_properties_to_element(
+                "face",
+                {"vertex_indices"},
+                tinyply::Type::UINT32,
+                vertices.size(),
+                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                tinyply::Type::UINT8,
+                3);
+        }
+
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudXYZNormal & cloud, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXYZNormal & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
@@ -209,10 +281,22 @@ namespace
             tinyply::Type::INVALID,
             0);
 
+        if (vertices.size() != 0)
+        {
+            ply.add_properties_to_element(
+                "face",
+                {"vertex_indices"},
+                tinyply::Type::UINT32,
+                vertices.size(),
+                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                tinyply::Type::UINT8,
+                3);
+        }
+
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudXYZNormalRGBA & cloud, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXYZNormalRGBA & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
@@ -261,6 +345,18 @@ namespace
             tinyply::Type::INVALID,
             0);
 
+        if (vertices.size() != 0)
+        {
+            ply.add_properties_to_element(
+                "face",
+                {"vertex_indices"},
+                tinyply::Type::UINT32,
+                vertices.size(),
+                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                tinyply::Type::UINT8,
+                3);
+        }
+
         ply.write(os, isBinary);
     }
 
@@ -277,14 +373,19 @@ namespace
         return it->size;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXY & cloud)
+    bool read(std::ifstream & ifs, yarp::sig::PointCloudXY & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
         if (file.parse_header(ifs))
         {
+            std::shared_ptr<tinyply::PlyData> faces;
+
             auto x = file.request_properties_from_element("vertex", {"x"});
             auto y = file.request_properties_from_element("vertex", {"y"});
+
+            try { faces = file.request_properties_from_element("face", {"vertex_indices"}, 3); }
+            catch (...) {}
 
             file.read(ifs);
             cloud.resize(getNumberOfElements(file, "vertex"));
@@ -298,18 +399,26 @@ namespace
                 std::memcpy(&cloud(n).y, y->buffer.get_const() + n * size_y, size_y);
             }
 
+            if (faces)
+            {
+                vertices.reserve(faces->count * 3);
+                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+            }
+
             return true;
         }
 
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZ & cloud)
+    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZ & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
         if (file.parse_header(ifs))
         {
+            std::shared_ptr<tinyply::PlyData> faces;
+
             auto x = file.request_properties_from_element("vertex", {"x"});
             auto y = file.request_properties_from_element("vertex", {"y"});
             auto z = file.request_properties_from_element("vertex", {"z"});
@@ -328,19 +437,25 @@ namespace
                 std::memcpy(&cloud(n).z, z->buffer.get_const() + n * size_z, size_z);
             }
 
+            if (faces)
+            {
+                vertices.reserve(faces->count * 3);
+                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+            }
+
             return true;
         }
 
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudNormal & cloud)
+    bool read(std::ifstream & ifs, yarp::sig::PointCloudNormal & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
         if (file.parse_header(ifs))
         {
-            std::shared_ptr<tinyply::PlyData> c;
+            std::shared_ptr<tinyply::PlyData> c, faces;
             std::size_t size_c;
 
             auto nx = file.request_properties_from_element("vertex", {"nx"});
@@ -348,6 +463,9 @@ namespace
             auto nz = file.request_properties_from_element("vertex", {"nz"});
 
             try { c = file.request_properties_from_element("vertex", {"curvature"}); }
+            catch (...) {}
+
+            try { faces = file.request_properties_from_element("face", {"vertex_indices"}, 3); }
             catch (...) {}
 
             file.read(ifs);
@@ -374,19 +492,25 @@ namespace
                 }
             }
 
+            if (faces)
+            {
+                vertices.reserve(faces->count * 3);
+                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+            }
+
             return true;
         }
 
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZRGBA & cloud)
+    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZRGBA & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
         if (file.parse_header(ifs))
         {
-            std::shared_ptr<tinyply::PlyData> a;
+            std::shared_ptr<tinyply::PlyData> a, faces;
             std::size_t size_a;
 
             auto x = file.request_properties_from_element("vertex", {"x"});
@@ -398,6 +522,9 @@ namespace
             auto b = file.request_properties_from_element("vertex", {"blue"});
 
             try { a = file.request_properties_from_element("vertex", {"alpha"}); }
+            catch (...) {}
+
+            try { faces = file.request_properties_from_element("face", {"vertex_indices"}, 3); }
             catch (...) {}
 
             file.read(ifs);
@@ -432,19 +559,25 @@ namespace
                 }
             }
 
+            if (faces)
+            {
+                vertices.reserve(faces->count * 3);
+                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+            }
+
             return true;
         }
 
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZI & cloud)
+    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZI & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
         if (file.parse_header(ifs))
         {
-            std::shared_ptr<tinyply::PlyData> i;
+            std::shared_ptr<tinyply::PlyData> i, faces;
             std::size_t size_i;
 
             auto x = file.request_properties_from_element("vertex", {"x"});
@@ -452,6 +585,9 @@ namespace
             auto z = file.request_properties_from_element("vertex", {"z"});
 
             try { i = file.request_properties_from_element("vertex", {"intensity"}); }
+            catch (...) {}
+
+            try { faces = file.request_properties_from_element("face", {"vertex_indices"}, 3); }
             catch (...) {}
 
             file.read(ifs);
@@ -478,19 +614,25 @@ namespace
                 }
             }
 
+            if (faces)
+            {
+                vertices.reserve(faces->count * 3);
+                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+            }
+
             return true;
         }
 
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudInterestPointXYZ & cloud)
+    bool read(std::ifstream & ifs, yarp::sig::PointCloudInterestPointXYZ & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
         if (file.parse_header(ifs))
         {
-            std::shared_ptr<tinyply::PlyData> s;
+            std::shared_ptr<tinyply::PlyData> s, faces;
             std::size_t size_s;
 
             auto x = file.request_properties_from_element("vertex", {"x"});
@@ -498,6 +640,9 @@ namespace
             auto z = file.request_properties_from_element("vertex", {"z"});
 
             try { s = file.request_properties_from_element("vertex", {"strength"}); }
+            catch (...) {}
+
+            try { faces = file.request_properties_from_element("face", {"vertex_indices"}, 3); }
             catch (...) {}
 
             file.read(ifs);
@@ -524,19 +669,25 @@ namespace
                 }
             }
 
+            if (faces)
+            {
+                vertices.reserve(faces->count * 3);
+                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+            }
+
             return true;
         }
 
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZNormal & cloud)
+    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZNormal & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
         if (file.parse_header(ifs))
         {
-            std::shared_ptr<tinyply::PlyData> c;
+            std::shared_ptr<tinyply::PlyData> c, faces;
             std::size_t size_c;
 
             auto x = file.request_properties_from_element("vertex", {"x"});
@@ -548,6 +699,9 @@ namespace
             auto nz = file.request_properties_from_element("vertex", {"nz"});
 
             try { c = file.request_properties_from_element("vertex", {"curvature"}); }
+            catch (...) {}
+
+            try { faces = file.request_properties_from_element("face", {"vertex_indices"}, 3); }
             catch (...) {}
 
             file.read(ifs);
@@ -582,19 +736,25 @@ namespace
                 }
             }
 
+            if (faces)
+            {
+                vertices.reserve(faces->count * 3);
+                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+            }
+
             return true;
         }
 
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZNormalRGBA & cloud)
+    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZNormalRGBA & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
         if (file.parse_header(ifs))
         {
-            std::shared_ptr<tinyply::PlyData> c, a;
+            std::shared_ptr<tinyply::PlyData> c, a, faces;
             std::size_t size_c, size_a;
 
             auto x = file.request_properties_from_element("vertex", {"x"});
@@ -613,6 +773,9 @@ namespace
             auto b = file.request_properties_from_element("vertex", {"blue"});
 
             try { a = file.request_properties_from_element("vertex", {"alpha"}); }
+            catch (...) {}
+
+            try { faces = file.request_properties_from_element("face", {"vertex_indices"}, 3); }
             catch (...) {}
 
             file.read(ifs);
@@ -665,6 +828,12 @@ namespace
                 }
             }
 
+            if (faces)
+            {
+                vertices.reserve(faces->count * 3);
+                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+            }
+
             return true;
         }
 
@@ -680,6 +849,12 @@ namespace YarpCloudUtils
 
 template <typename T>
 bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & cloud, bool isBinary)
+{
+    return savePLY(filename, cloud, {}, isBinary);
+}
+
+template <typename T>
+bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
 {
     auto modes = std::ios::out;
 
@@ -701,7 +876,7 @@ bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & clou
 
     try
     {
-        write(os, cloud, isBinary);
+        write(os, cloud, vertices, isBinary);
         return true;
     }
     catch (const std::exception & e)
@@ -712,13 +887,14 @@ bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & clou
 }
 
 template <typename T>
-bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
+bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
 {
-    return false;
+    yarp::sig::VectorOf<int> vertices;
+    return loadPLY(filename, cloud, vertices);
 }
 
 template <typename T>
-bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
+bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yarp::sig::VectorOf<int> & vertices)
 {
     std::ifstream ifs(filename);
 
@@ -730,19 +906,13 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
 
     try
     {
-        return read(ifs, cloud);
+        return read(ifs, cloud, vertices);
     }
     catch (const std::exception & e)
     {
         yError() << e.what();
         return false;
     }
-}
-
-template <typename T>
-bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yarp::sig::VectorOf<int> & vertices)
-{
-    return false;
 }
 
 } // namespace YarpCloudUtils
