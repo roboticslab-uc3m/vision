@@ -6,6 +6,7 @@
 #include <string>
 
 #include <yarp/sig/PointCloud.h>
+#include <yarp/sig/Vector.h>
 
 /**
  * @ingroup vision_libraries
@@ -22,7 +23,13 @@ template <typename T>
 bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & cloud, bool isBinary);
 
 template <typename T>
+bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary);
+
+template <typename T>
 bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud);
+
+template <typename T>
+bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yarp::sig::VectorOf<int> & vertices);
 
 } // namespace YarpCloudUtils
 

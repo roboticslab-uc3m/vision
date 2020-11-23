@@ -712,6 +712,12 @@ bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & clou
 }
 
 template <typename T>
+bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
+{
+    return false;
+}
+
+template <typename T>
 bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
 {
     std::ifstream ifs(filename);
@@ -731,6 +737,12 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
         yError() << e.what();
         return false;
     }
+}
+
+template <typename T>
+bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yarp::sig::VectorOf<int> & vertices)
+{
+    return false;
 }
 
 } // namespace YarpCloudUtils
