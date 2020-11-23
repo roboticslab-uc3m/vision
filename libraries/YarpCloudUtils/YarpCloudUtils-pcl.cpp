@@ -48,18 +48,17 @@ namespace
 
     auto verticesToPCL(const yarp::sig::VectorOf<int> & vertices)
     {
-        const std::size_t n_triangles = vertices.size() / 3;
         std::vector<pcl::Vertices> out;
-        out.reserve(n_triangles);
+        out.reserve(vertices.size() / 3);
 
-        for (auto i = 0; i < n_triangles; i += 3)
+        for (auto i = 0; i < vertices.size(); i += 3)
         {
             pcl::Vertices triangles;
 
             triangles.vertices = {
-                static_cast<decltype(triangles.vertices)::value_type>(vertices[3 * i]),
-                static_cast<decltype(triangles.vertices)::value_type>(vertices[3 * i + 1]),
-                static_cast<decltype(triangles.vertices)::value_type>(vertices[3 * i + 2])
+                static_cast<decltype(triangles.vertices)::value_type>(vertices[i]),
+                static_cast<decltype(triangles.vertices)::value_type>(vertices[i + 1]),
+                static_cast<decltype(triangles.vertices)::value_type>(vertices[i + 2])
             };
 
             out.emplace_back(std::move(triangles));
@@ -70,15 +69,14 @@ namespace
 
     auto verticesFromPCL(const std::vector<pcl::Vertices> & triangles)
     {
-        yarp::sig::VectorOf<int> out;
-        out.reserve(triangles.size() * 3);
+        yarp::sig::VectorOf<int> out(triangles.size() * 3);
 
         for (auto i = 0; i < triangles.size(); i++)
         {
             const auto & vertices = triangles[i].vertices;
-            out.emplace_back(vertices[0]);
-            out.emplace_back(vertices[1]);
-            out.emplace_back(vertices[2]);
+            out[3 * i] = vertices[0];
+            out[3 * i + 1] = vertices[1];
+            out[3 * i + 2] = vertices[2];
         }
 
         return out;

@@ -36,8 +36,8 @@ namespace
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
-                tinyply::Type::UINT32,
-                vertices.size(),
+                tinyply::Type::INT32,
+                vertices.size() / 3,
                 reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
@@ -72,8 +72,8 @@ namespace
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
-                tinyply::Type::UINT32,
-                vertices.size(),
+                tinyply::Type::INT32,
+                vertices.size() / 3,
                 reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
@@ -110,8 +110,8 @@ namespace
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
-                tinyply::Type::UINT32,
-                vertices.size(),
+                tinyply::Type::INT32,
+                vertices.size() / 3,
                 reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
@@ -159,8 +159,8 @@ namespace
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
-                tinyply::Type::UINT32,
-                vertices.size(),
+                tinyply::Type::INT32,
+                vertices.size() / 3,
                 reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
@@ -197,8 +197,8 @@ namespace
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
-                tinyply::Type::UINT32,
-                vertices.size(),
+                tinyply::Type::INT32,
+                vertices.size() / 3,
                 reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
@@ -235,8 +235,8 @@ namespace
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
-                tinyply::Type::UINT32,
-                vertices.size(),
+                tinyply::Type::INT32,
+                vertices.size() / 3,
                 reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
@@ -286,8 +286,8 @@ namespace
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
-                tinyply::Type::UINT32,
-                vertices.size(),
+                tinyply::Type::INT32,
+                vertices.size() / 3,
                 reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
@@ -350,8 +350,8 @@ namespace
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
-                tinyply::Type::UINT32,
-                vertices.size(),
+                tinyply::Type::INT32,
+                vertices.size() / 3,
                 reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
@@ -401,7 +401,7 @@ namespace
 
             if (faces)
             {
-                vertices.reserve(faces->count * 3);
+                vertices.resize(faces->count * 3);
                 std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
@@ -423,6 +423,9 @@ namespace
             auto y = file.request_properties_from_element("vertex", {"y"});
             auto z = file.request_properties_from_element("vertex", {"z"});
 
+            try { faces = file.request_properties_from_element("face", {"vertex_indices"}, 3); }
+            catch (...) {}
+
             file.read(ifs);
             cloud.resize(getNumberOfElements(file, "vertex"));
 
@@ -439,7 +442,7 @@ namespace
 
             if (faces)
             {
-                vertices.reserve(faces->count * 3);
+                vertices.resize(faces->count * 3);
                 std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
@@ -494,7 +497,7 @@ namespace
 
             if (faces)
             {
-                vertices.reserve(faces->count * 3);
+                vertices.resize(faces->count * 3);
                 std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
@@ -561,7 +564,7 @@ namespace
 
             if (faces)
             {
-                vertices.reserve(faces->count * 3);
+                vertices.resize(faces->count * 3);
                 std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
@@ -616,7 +619,7 @@ namespace
 
             if (faces)
             {
-                vertices.reserve(faces->count * 3);
+                vertices.resize(faces->count * 3);
                 std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
@@ -671,7 +674,7 @@ namespace
 
             if (faces)
             {
-                vertices.reserve(faces->count * 3);
+                vertices.resize(faces->count * 3);
                 std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
@@ -738,7 +741,7 @@ namespace
 
             if (faces)
             {
-                vertices.reserve(faces->count * 3);
+                vertices.resize(faces->count * 3);
                 std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
@@ -830,7 +833,7 @@ namespace
 
             if (faces)
             {
-                vertices.reserve(faces->count * 3);
+                vertices.resize(faces->count * 3);
                 std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
