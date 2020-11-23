@@ -3,11 +3,13 @@
 #include "YarpCloudUtils.hpp"
 
 #include <cstring>
+#include <algorithm>
 #include <exception>
 #include <fstream>
 #include <istream>
 #include <memory>
 #include <ostream>
+#include <stdexcept>
 #include <vector>
 
 #include <yarp/os/LogStream.h>
@@ -39,9 +41,9 @@ namespace
         constexpr auto xyzSize = sizeof(float) * 3;
         auto buffer = std::make_unique<unsigned char[]>(cloud.size() * xyzSize);
 
-        for (auto i = 0; i < cloud.size(); i++)
+        for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer.get() + i * xyzSize, cloud(i)._xyz, xyzSize);
+            std::memcpy(buffer.get() + n * xyzSize, cloud(n)._xyz, xyzSize);
         }
 
         ply.add_properties_to_element(
@@ -64,10 +66,10 @@ namespace
         constexpr auto offset = sizeof(float) * 3;
         auto buffer = std::make_unique<unsigned char[]>(cloud.size() * normalSize);
 
-        for (auto i = 0; i < cloud.size(); i++)
+        for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer.get() + i * normalSize, cloud(i).normal, offset);
-            std::memcpy(buffer.get() + i * normalSize + offset, &cloud(i).curvature, sizeof(float));
+            std::memcpy(buffer.get() + n * normalSize, cloud(n).normal, offset);
+            std::memcpy(buffer.get() + n * normalSize + offset, &cloud(n).curvature, sizeof(float));
         }
 
         ply.add_properties_to_element(
@@ -92,10 +94,10 @@ namespace
         constexpr auto rgbaSize = sizeof(unsigned char) * 4;
         auto buffer_rgba = std::make_unique<unsigned char[]>(cloud.size() * rgbaSize);
 
-        for (auto i = 0; i < cloud.size(); i++)
+        for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer_xyz.get() + i * xyzSize, cloud(i)._xyz, xyzSize);
-            std::memcpy(buffer_rgba.get() + i * rgbaSize, &cloud(i).rgba, rgbaSize);
+            std::memcpy(buffer_xyz.get() + n * xyzSize, cloud(n)._xyz, xyzSize);
+            std::memcpy(buffer_rgba.get() + n * rgbaSize, &cloud(n).rgba, rgbaSize);
         }
 
         ply.add_properties_to_element(
@@ -127,10 +129,10 @@ namespace
         constexpr auto offset = sizeof(float) * 3;
         auto buffer = std::make_unique<unsigned char[]>(cloud.size() * xyziSize);
 
-        for (auto i = 0; i < cloud.size(); i++)
+        for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer.get() + i * xyziSize, cloud(i)._xyz, offset);
-            std::memcpy(buffer.get() + i * xyziSize + offset, &cloud(i).intensity, sizeof(float));
+            std::memcpy(buffer.get() + n * xyziSize, cloud(n)._xyz, offset);
+            std::memcpy(buffer.get() + n * xyziSize + offset, &cloud(n).intensity, sizeof(float));
         }
 
         ply.add_properties_to_element(
@@ -153,10 +155,10 @@ namespace
         constexpr auto offset = sizeof(float) * 3;
         auto buffer = std::make_unique<unsigned char[]>(cloud.size() * xyzintSize);
 
-        for (auto i = 0; i < cloud.size(); i++)
+        for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer.get() + i * xyzintSize, cloud(i)._xyz, offset);
-            std::memcpy(buffer.get() + i * xyzintSize + offset, &cloud(i).strength, sizeof(float));
+            std::memcpy(buffer.get() + n * xyzintSize, cloud(n)._xyz, offset);
+            std::memcpy(buffer.get() + n * xyzintSize + offset, &cloud(n).strength, sizeof(float));
         }
 
         ply.add_properties_to_element(
@@ -182,11 +184,11 @@ namespace
         constexpr auto offset = sizeof(float) * 3;
         auto buffer_normal = std::make_unique<unsigned char[]>(cloud.size() * normalSize);
 
-        for (auto i = 0; i < cloud.size(); i++)
+        for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer_xyz.get() + i * xyzSize, cloud(i).data, xyzSize);
-            std::memcpy(buffer_normal.get() + i * normalSize, cloud(i).normal, offset);
-            std::memcpy(buffer_normal.get() + i * normalSize + offset, &cloud(i).curvature, sizeof(float));
+            std::memcpy(buffer_xyz.get() + n * xyzSize, cloud(n).data, xyzSize);
+            std::memcpy(buffer_normal.get() + n * normalSize, cloud(n).normal, offset);
+            std::memcpy(buffer_normal.get() + n * normalSize + offset, &cloud(n).curvature, sizeof(float));
         }
 
         ply.add_properties_to_element(
@@ -224,12 +226,12 @@ namespace
         constexpr auto rgbaSize = sizeof(unsigned char) * 4;
         auto buffer_rgba = std::make_unique<unsigned char[]>(cloud.size() * rgbaSize);
 
-        for (auto i = 0; i < cloud.size(); i++)
+        for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer_xyz.get() + i * xyzSize, cloud(i).data, xyzSize);
-            std::memcpy(buffer_normal.get() + i * normalSize, cloud(i).normal, offset);
-            std::memcpy(buffer_normal.get() + i * normalSize + offset, &cloud(i).curvature, sizeof(float));
-            std::memcpy(buffer_rgba.get() + i * rgbaSize, &cloud(i).rgba, rgbaSize);
+            std::memcpy(buffer_xyz.get() + n * xyzSize, cloud(n).data, xyzSize);
+            std::memcpy(buffer_normal.get() + n * normalSize, cloud(n).normal, offset);
+            std::memcpy(buffer_normal.get() + n * normalSize + offset, &cloud(n).curvature, sizeof(float));
+            std::memcpy(buffer_rgba.get() + n * rgbaSize, &cloud(n).rgba, rgbaSize);
         }
 
         ply.add_properties_to_element(
@@ -262,15 +264,40 @@ namespace
         ply.write(os, isBinary);
     }
 
+    auto getNumberOfElements(const tinyply::PlyFile & file, const std::string & name)
+    {
+        auto els = file.get_elements();
+        const auto it = std::find_if(els.cbegin(), els.cend(), [&name](const auto & el) { return el.name == name; });
+
+        if (it == els.cend())
+        {
+            throw std::invalid_argument("unknown element: " + name);
+        }
+
+        return it->size;
+    }
+
     bool read(std::ifstream & ifs, yarp::sig::PointCloudXY & cloud)
     {
         tinyply::PlyFile file;
 
         if (file.parse_header(ifs))
         {
-            auto vertices = file.request_properties_from_element("vertex", {"x", "y"});
+            auto x = file.request_properties_from_element("vertex", {"x"});
+            auto y = file.request_properties_from_element("vertex", {"y"});
+
             file.read(ifs);
-            cloud.fromExternalPC(reinterpret_cast<const char *>(vertices->buffer.get_const()), cloud.getPointType(), vertices->count, 1);
+            cloud.resize(getNumberOfElements(file, "vertex"));
+
+            std::size_t size_x = x->buffer.size_bytes() / x->count;
+            std::size_t size_y = y->buffer.size_bytes() / y->count;
+
+            for (auto n = 0; n < cloud.size(); n++)
+            {
+                std::memcpy(&cloud(n).x, x->buffer.get_const() + n * size_x, size_x);
+                std::memcpy(&cloud(n).y, y->buffer.get_const() + n * size_y, size_y);
+            }
+
             return true;
         }
 
@@ -280,20 +307,25 @@ namespace
     bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZ & cloud)
     {
         tinyply::PlyFile file;
-        
+
         if (file.parse_header(ifs))
         {
-            auto vertices = file.request_properties_from_element("vertex", {"x", "y", "z"});
-            file.read(ifs);
+            auto x = file.request_properties_from_element("vertex", {"x"});
+            auto y = file.request_properties_from_element("vertex", {"y"});
+            auto z = file.request_properties_from_element("vertex", {"z"});
 
-            constexpr auto xyzSize = sizeof(float) * 3;
-            auto buffer = std::make_unique<unsigned char[]>(vertices->count * xyzSize);
-            std::memcpy(buffer.get(), vertices->buffer.get_const(), vertices->buffer.size_bytes());
-            cloud.resize(vertices->count);
-            
-            for (auto i = 0; i < vertices->count; i++)
+            file.read(ifs);
+            cloud.resize(getNumberOfElements(file, "vertex"));
+
+            std::size_t size_x = x->buffer.size_bytes() / x->count;
+            std::size_t size_y = y->buffer.size_bytes() / y->count;
+            std::size_t size_z = z->buffer.size_bytes() / z->count;
+
+            for (auto n = 0; n < cloud.size(); n++)
             {
-                std::memcpy(cloud(i)._xyz, buffer.get() + i * xyzSize, xyzSize);
+                std::memcpy(&cloud(n).x, x->buffer.get_const() + n * size_x, size_x);
+                std::memcpy(&cloud(n).y, y->buffer.get_const() + n * size_y, size_y);
+                std::memcpy(&cloud(n).z, z->buffer.get_const() + n * size_z, size_z);
             }
 
             return true;
@@ -305,22 +337,41 @@ namespace
     bool read(std::ifstream & ifs, yarp::sig::PointCloudNormal & cloud)
     {
         tinyply::PlyFile file;
-        
+
         if (file.parse_header(ifs))
         {
-            auto normals = file.request_properties_from_element("vertex", {"nx", "ny", "nz", "curvature"});
-            file.read(ifs);
+            std::shared_ptr<tinyply::PlyData> c;
+            std::size_t size_c;
 
-            constexpr auto normalSize = sizeof(float) * 4;
-            constexpr auto offset = sizeof(float) * 3;
-            auto buffer_normal = std::make_unique<unsigned char[]>(normals->count * normalSize);
-            std::memcpy(buffer_normal.get(), normals->buffer.get_const(), normals->buffer.size_bytes());
-            cloud.resize(normals->count);
-            
-            for (auto i = 0; i < normals->count; i++)
+            auto nx = file.request_properties_from_element("vertex", {"nx"});
+            auto ny = file.request_properties_from_element("vertex", {"ny"});
+            auto nz = file.request_properties_from_element("vertex", {"nz"});
+
+            try { c = file.request_properties_from_element("vertex", {"curvature"}); }
+            catch (...) {}
+
+            file.read(ifs);
+            cloud.resize(getNumberOfElements(file, "vertex"));
+
+            std::size_t size_nx = nx->buffer.size_bytes() / nx->count;
+            std::size_t size_ny = ny->buffer.size_bytes() / ny->count;
+            std::size_t size_nz = nz->buffer.size_bytes() / nz->count;
+
+            if (c)
             {
-                std::memcpy(cloud(i).normal, buffer_normal.get() + i * normalSize, offset);
-                std::memcpy(&cloud(i).curvature, buffer_normal.get() + i * normalSize + offset, sizeof(float));
+                size_c = c->buffer.size_bytes() / c->count;
+            }
+
+            for (auto n = 0; n < cloud.size(); n++)
+            {
+                std::memcpy(&cloud(n).normal_x, nx->buffer.get_const() + n * size_nx, size_nx);
+                std::memcpy(&cloud(n).normal_y, ny->buffer.get_const() + n * size_ny, size_ny);
+                std::memcpy(&cloud(n).normal_z, nz->buffer.get_const() + n * size_nz, size_nz);
+
+                if (c)
+                {
+                    std::memcpy(&cloud(n).curvature, c->buffer.get_const() + n * size_c, size_c);
+                }
             }
 
             return true;
@@ -332,27 +383,53 @@ namespace
     bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZRGBA & cloud)
     {
         tinyply::PlyFile file;
-        
+
         if (file.parse_header(ifs))
         {
-            auto vertices = file.request_properties_from_element("vertex", {"x", "y", "z"});
-            auto rgba = file.request_properties_from_element("vertex", {"blue", "green", "red", "alpha"});
+            std::shared_ptr<tinyply::PlyData> a;
+            std::size_t size_a;
+
+            auto x = file.request_properties_from_element("vertex", {"x"});
+            auto y = file.request_properties_from_element("vertex", {"y"});
+            auto z = file.request_properties_from_element("vertex", {"z"});
+
+            auto r = file.request_properties_from_element("vertex", {"red"});
+            auto g = file.request_properties_from_element("vertex", {"green"});
+            auto b = file.request_properties_from_element("vertex", {"blue"});
+
+            try { a = file.request_properties_from_element("vertex", {"alpha"}); }
+            catch (...) {}
+
             file.read(ifs);
+            cloud.resize(getNumberOfElements(file, "vertex"));
 
-            constexpr auto xyzSize = sizeof(float) * 3;
-            auto buffer_xyz = std::make_unique<unsigned char[]>(vertices->count * xyzSize);
-            std::memcpy(buffer_xyz.get(), vertices->buffer.get_const(), vertices->buffer.size_bytes());
+            std::size_t size_x = x->buffer.size_bytes() / x->count;
+            std::size_t size_y = y->buffer.size_bytes() / y->count;
+            std::size_t size_z = z->buffer.size_bytes() / z->count;
 
-            constexpr auto rgbaSize = sizeof(unsigned char) * 4;
-            auto buffer_rgba = std::make_unique<unsigned char[]>(rgba->count * rgbaSize);
-            std::memcpy(buffer_rgba.get(), rgba->buffer.get_const(), rgba->buffer.size_bytes());
+            std::size_t size_r = r->buffer.size_bytes() / r->count;
+            std::size_t size_g = g->buffer.size_bytes() / g->count;
+            std::size_t size_b = b->buffer.size_bytes() / b->count;
 
-            cloud.resize(vertices->count);
-            
-            for (auto i = 0; i < vertices->count; i++)
+            if (a)
             {
-                std::memcpy(cloud(i)._xyz, buffer_xyz.get() + i * xyzSize, xyzSize);
-                std::memcpy(&cloud(i).rgba, buffer_rgba.get() + i * rgbaSize, rgbaSize);
+                size_a = a->buffer.size_bytes() / a->count;
+            }
+
+            for (auto n = 0; n < cloud.size(); n++)
+            {
+                std::memcpy(&cloud(n).x, x->buffer.get_const() + n * size_x, size_x);
+                std::memcpy(&cloud(n).y, y->buffer.get_const() + n * size_y, size_y);
+                std::memcpy(&cloud(n).z, z->buffer.get_const() + n * size_z, size_z);
+
+                std::memcpy(&cloud(n).r, r->buffer.get_const() + n * size_r, size_r);
+                std::memcpy(&cloud(n).g, g->buffer.get_const() + n * size_g, size_g);
+                std::memcpy(&cloud(n).b, b->buffer.get_const() + n * size_b, size_b);
+
+                if (a)
+                {
+                    std::memcpy(&cloud(n).a, a->buffer.get_const() + n * size_a, size_a);
+                }
             }
 
             return true;
@@ -364,22 +441,41 @@ namespace
     bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZI & cloud)
     {
         tinyply::PlyFile file;
-        
+
         if (file.parse_header(ifs))
         {
-            auto xyzi = file.request_properties_from_element("vertex", {"x", "y", "z", "intensity"});
-            file.read(ifs);
+            std::shared_ptr<tinyply::PlyData> i;
+            std::size_t size_i;
 
-            constexpr auto xyziSize = sizeof(float) * 4;
-            constexpr auto offset = sizeof(float) * 3;
-            auto buffer_xyzi = std::make_unique<unsigned char[]>(xyzi->count * xyziSize);
-            std::memcpy(buffer_xyzi.get(), xyzi->buffer.get_const(), xyzi->buffer.size_bytes());
-            cloud.resize(xyzi->count);
-            
-            for (auto i = 0; i < xyzi->count; i++)
+            auto x = file.request_properties_from_element("vertex", {"x"});
+            auto y = file.request_properties_from_element("vertex", {"y"});
+            auto z = file.request_properties_from_element("vertex", {"z"});
+
+            try { i = file.request_properties_from_element("vertex", {"intensity"}); }
+            catch (...) {}
+
+            file.read(ifs);
+            cloud.resize(getNumberOfElements(file, "vertex"));
+
+            std::size_t size_x = x->buffer.size_bytes() / x->count;
+            std::size_t size_y = y->buffer.size_bytes() / y->count;
+            std::size_t size_z = z->buffer.size_bytes() / z->count;
+
+            if (i)
             {
-                std::memcpy(cloud(i)._xyz, buffer_xyzi.get() + i * xyziSize, offset);
-                std::memcpy(&cloud(i).intensity, buffer_xyzi.get() + i * xyziSize + offset, sizeof(float));
+                size_i = i->buffer.size_bytes() / i->count;
+            }
+
+            for (auto n = 0; n < cloud.size(); n++)
+            {
+                std::memcpy(&cloud(n).x, x->buffer.get_const() + n * size_x, size_x);
+                std::memcpy(&cloud(n).y, y->buffer.get_const() + n * size_y, size_y);
+                std::memcpy(&cloud(n).z, z->buffer.get_const() + n * size_z, size_z);
+
+                if (i)
+                {
+                    std::memcpy(&cloud(n).intensity, i->buffer.get_const() + n * size_i, size_i);
+                }
             }
 
             return true;
@@ -391,22 +487,41 @@ namespace
     bool read(std::ifstream & ifs, yarp::sig::PointCloudInterestPointXYZ & cloud)
     {
         tinyply::PlyFile file;
-        
+
         if (file.parse_header(ifs))
         {
-            auto xyzint = file.request_properties_from_element("vertex", {"x", "y", "z", "strength"});
-            file.read(ifs);
+            std::shared_ptr<tinyply::PlyData> s;
+            std::size_t size_s;
 
-            constexpr auto xyzintSize = sizeof(float) * 4;
-            constexpr auto offset = sizeof(float) * 3;
-            auto buffer_xyzint = std::make_unique<unsigned char[]>(xyzint->count * xyzintSize);
-            std::memcpy(buffer_xyzint.get(), xyzint->buffer.get_const(), xyzint->buffer.size_bytes());
-            cloud.resize(xyzint->count);
-            
-            for (auto i = 0; i < xyzint->count; i++)
+            auto x = file.request_properties_from_element("vertex", {"x"});
+            auto y = file.request_properties_from_element("vertex", {"y"});
+            auto z = file.request_properties_from_element("vertex", {"z"});
+
+            try { s = file.request_properties_from_element("vertex", {"strength"}); }
+            catch (...) {}
+
+            file.read(ifs);
+            cloud.resize(getNumberOfElements(file, "vertex"));
+
+            std::size_t size_x = x->buffer.size_bytes() / x->count;
+            std::size_t size_y = y->buffer.size_bytes() / y->count;
+            std::size_t size_z = z->buffer.size_bytes() / z->count;
+
+            if (s)
             {
-                std::memcpy(cloud(i)._xyz, buffer_xyzint.get() + i * xyzintSize, offset);
-                std::memcpy(&cloud(i).strength, buffer_xyzint.get() + i * xyzintSize + offset, sizeof(float));
+                size_s = s->buffer.size_bytes() / s->count;
+            }
+
+            for (auto n = 0; n < cloud.size(); n++)
+            {
+                std::memcpy(&cloud(n).x, x->buffer.get_const() + n * size_x, size_x);
+                std::memcpy(&cloud(n).y, y->buffer.get_const() + n * size_y, size_y);
+                std::memcpy(&cloud(n).z, z->buffer.get_const() + n * size_z, size_z);
+
+                if (s)
+                {
+                    std::memcpy(&cloud(n).strength, s->buffer.get_const() + n * size_s, size_s);
+                }
             }
 
             return true;
@@ -418,29 +533,53 @@ namespace
     bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZNormal & cloud)
     {
         tinyply::PlyFile file;
-        
+
         if (file.parse_header(ifs))
         {
-            auto vertices = file.request_properties_from_element("vertex", {"x", "y", "z"});
-            auto normals = file.request_properties_from_element("vertex", {"nx", "ny", "nz", "curvature"});
+            std::shared_ptr<tinyply::PlyData> c;
+            std::size_t size_c;
+
+            auto x = file.request_properties_from_element("vertex", {"x"});
+            auto y = file.request_properties_from_element("vertex", {"y"});
+            auto z = file.request_properties_from_element("vertex", {"z"});
+
+            auto nx = file.request_properties_from_element("vertex", {"nx"});
+            auto ny = file.request_properties_from_element("vertex", {"ny"});
+            auto nz = file.request_properties_from_element("vertex", {"nz"});
+
+            try { c = file.request_properties_from_element("vertex", {"curvature"}); }
+            catch (...) {}
+
             file.read(ifs);
+            cloud.resize(getNumberOfElements(file, "vertex"));
 
-            constexpr auto xyzSize = sizeof(float) * 3;
-            auto buffer_xyz = std::make_unique<unsigned char[]>(vertices->count * xyzSize);
-            std::memcpy(buffer_xyz.get(), vertices->buffer.get_const(), vertices->buffer.size_bytes());
+            std::size_t size_x = x->buffer.size_bytes() / x->count;
+            std::size_t size_y = y->buffer.size_bytes() / y->count;
+            std::size_t size_z = z->buffer.size_bytes() / z->count;
 
-            constexpr auto normalSize = sizeof(float) * 4;
-            constexpr auto offset = sizeof(float) * 3;
-            auto buffer_normal = std::make_unique<unsigned char[]>(normals->count * normalSize);
-            std::memcpy(buffer_normal.get(), normals->buffer.get_const(), normals->buffer.size_bytes());
+            std::size_t size_nx = nx->buffer.size_bytes() / nx->count;
+            std::size_t size_ny = ny->buffer.size_bytes() / ny->count;
+            std::size_t size_nz = nz->buffer.size_bytes() / nz->count;
 
-            cloud.resize(vertices->count);
-            
-            for (auto i = 0; i < vertices->count; i++)
+            if (c)
             {
-                std::memcpy(cloud(i).data, buffer_xyz.get() + i * xyzSize, xyzSize);
-                std::memcpy(cloud(i).normal, buffer_normal.get() + i * normalSize, offset);
-                std::memcpy(&cloud(i).curvature, buffer_normal.get() + i * normalSize + offset, sizeof(float));
+                size_c = c->buffer.size_bytes() / c->count;
+            }
+
+            for (auto n = 0; n < cloud.size(); n++)
+            {
+                std::memcpy(&cloud(n).x, x->buffer.get_const() + n * size_x, size_x);
+                std::memcpy(&cloud(n).y, y->buffer.get_const() + n * size_y, size_y);
+                std::memcpy(&cloud(n).z, z->buffer.get_const() + n * size_z, size_z);
+
+                std::memcpy(&cloud(n).normal_x, nx->buffer.get_const() + n * size_nx, size_nx);
+                std::memcpy(&cloud(n).normal_y, ny->buffer.get_const() + n * size_ny, size_ny);
+                std::memcpy(&cloud(n).normal_z, nz->buffer.get_const() + n * size_nz, size_nz);
+
+                if (c)
+                {
+                    std::memcpy(&cloud(n).curvature, c->buffer.get_const() + n * size_c, size_c);
+                }
             }
 
             return true;
@@ -452,35 +591,78 @@ namespace
     bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZNormalRGBA & cloud)
     {
         tinyply::PlyFile file;
-        
+
         if (file.parse_header(ifs))
         {
-            auto vertices = file.request_properties_from_element("vertex", {"x", "y", "z"});
-            auto normals = file.request_properties_from_element("vertex", {"nx", "ny", "nz", "curvature"});
-            auto rgba = file.request_properties_from_element("vertex", {"blue", "green", "red", "alpha"});
+            std::shared_ptr<tinyply::PlyData> c, a;
+            std::size_t size_c, size_a;
+
+            auto x = file.request_properties_from_element("vertex", {"x"});
+            auto y = file.request_properties_from_element("vertex", {"y"});
+            auto z = file.request_properties_from_element("vertex", {"z"});
+
+            auto nx = file.request_properties_from_element("vertex", {"nx"});
+            auto ny = file.request_properties_from_element("vertex", {"ny"});
+            auto nz = file.request_properties_from_element("vertex", {"nz"});
+
+            try { c = file.request_properties_from_element("vertex", {"curvature"}); }
+            catch (...) {}
+
+            auto r = file.request_properties_from_element("vertex", {"red"});
+            auto g = file.request_properties_from_element("vertex", {"green"});
+            auto b = file.request_properties_from_element("vertex", {"blue"});
+
+            try { a = file.request_properties_from_element("vertex", {"alpha"}); }
+            catch (...) {}
+
             file.read(ifs);
+            cloud.resize(getNumberOfElements(file, "vertex"));
 
-            constexpr auto xyzSize = sizeof(float) * 3;
-            auto buffer_xyz = std::make_unique<unsigned char[]>(vertices->count * xyzSize);
-            std::memcpy(buffer_xyz.get(), vertices->buffer.get_const(), vertices->buffer.size_bytes());
+            std::size_t size_x = x->buffer.size_bytes() / x->count;
+            std::size_t size_y = y->buffer.size_bytes() / y->count;
+            std::size_t size_z = z->buffer.size_bytes() / z->count;
 
-            constexpr auto normalSize = sizeof(float) * 4;
-            constexpr auto offset = sizeof(float) * 3;
-            auto buffer_normal = std::make_unique<unsigned char[]>(normals->count * normalSize);
-            std::memcpy(buffer_normal.get(), normals->buffer.get_const(), normals->buffer.size_bytes());
+            std::size_t size_nx = nx->buffer.size_bytes() / nx->count;
+            std::size_t size_ny = ny->buffer.size_bytes() / ny->count;
+            std::size_t size_nz = nz->buffer.size_bytes() / nz->count;
 
-            constexpr auto rgbaSize = sizeof(unsigned char) * 4;
-            auto buffer_rgba = std::make_unique<unsigned char[]>(rgba->count * rgbaSize);
-            std::memcpy(buffer_rgba.get(), rgba->buffer.get_const(), rgba->buffer.size_bytes());
-
-            cloud.resize(vertices->count);
-            
-            for (auto i = 0; i < vertices->count; i++)
+            if (c)
             {
-                std::memcpy(cloud(i).data, buffer_xyz.get() + i * xyzSize, xyzSize);
-                std::memcpy(cloud(i).normal, buffer_normal.get() + i * normalSize, offset);
-                std::memcpy(&cloud(i).curvature, buffer_normal.get() + i * normalSize + offset, sizeof(float));
-                std::memcpy(&cloud(i).rgba, buffer_rgba.get() + i * rgbaSize, rgbaSize);
+                size_c = c->buffer.size_bytes() / c->count;
+            }
+
+            std::size_t size_r = r->buffer.size_bytes() / r->count;
+            std::size_t size_g = g->buffer.size_bytes() / g->count;
+            std::size_t size_b = b->buffer.size_bytes() / b->count;
+
+            if (a)
+            {
+                size_a = a->buffer.size_bytes() / a->count;
+            }
+
+            for (auto n = 0; n < cloud.size(); n++)
+            {
+                std::memcpy(&cloud(n).x, x->buffer.get_const() + n * size_x, size_x);
+                std::memcpy(&cloud(n).y, y->buffer.get_const() + n * size_y, size_y);
+                std::memcpy(&cloud(n).z, z->buffer.get_const() + n * size_z, size_z);
+
+                std::memcpy(&cloud(n).normal_x, nx->buffer.get_const() + n * size_nx, size_nx);
+                std::memcpy(&cloud(n).normal_y, ny->buffer.get_const() + n * size_ny, size_ny);
+                std::memcpy(&cloud(n).normal_z, nz->buffer.get_const() + n * size_nz, size_nz);
+
+                if (c)
+                {
+                    std::memcpy(&cloud(n).curvature, c->buffer.get_const() + n * size_c, size_c);
+                }
+
+                std::memcpy(&cloud(n).r, r->buffer.get_const() + n * size_r, size_r);
+                std::memcpy(&cloud(n).g, g->buffer.get_const() + n * size_g, size_g);
+                std::memcpy(&cloud(n).b, b->buffer.get_const() + n * size_b, size_b);
+
+                if (a)
+                {
+                    std::memcpy(&cloud(n).a, a->buffer.get_const() + n * size_a, size_a);
+                }
             }
 
             return true;
