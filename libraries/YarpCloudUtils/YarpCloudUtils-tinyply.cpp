@@ -52,7 +52,7 @@ namespace
             : memory_buffer(first_elem, size), std::istream(static_cast<std::streambuf *>(this)) {}
     };
 
-    void write(std::ostream & os, const yarp::sig::PointCloudXY & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXY & cloud, const yarp::sig::VectorOf<int> & indices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
@@ -65,14 +65,14 @@ namespace
             tinyply::Type::INVALID,
             0);
 
-        if (vertices.size() != 0)
+        if (indices.size() != 0)
         {
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
                 tinyply::Type::INT32,
-                vertices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                indices.size() / 3,
+                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -80,16 +80,16 @@ namespace
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudXYZ & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXYZ & cloud, const yarp::sig::VectorOf<int> & indices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
-        constexpr auto xyzSize = sizeof(float) * 3;
-        auto buffer = std::make_unique<unsigned char[]>(cloud.size() * xyzSize);
+        constexpr auto size_xyz = sizeof(float) * 3;
+        auto buffer_xyz = std::make_unique<unsigned char[]>(cloud.size() * size_xyz);
 
         for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer.get() + n * xyzSize, cloud(n)._xyz, xyzSize);
+            std::memcpy(buffer_xyz.get() + n * size_xyz, cloud(n)._xyz, size_xyz);
         }
 
         ply.add_properties_to_element(
@@ -97,18 +97,18 @@ namespace
             {"x", "y", "z"},
             tinyply::Type::FLOAT32,
             cloud.size(),
-            buffer.get(),
+            buffer_xyz.get(),
             tinyply::Type::INVALID,
             0);
 
-        if (vertices.size() != 0)
+        if (indices.size() != 0)
         {
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
                 tinyply::Type::INT32,
-                vertices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                indices.size() / 3,
+                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -116,18 +116,18 @@ namespace
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudNormal & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudNormal & cloud, const yarp::sig::VectorOf<int> & indices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
-        constexpr auto normalSize = sizeof(float) * 4;
+        constexpr auto size_normal = sizeof(float) * 4;
         constexpr auto offset = sizeof(float) * 3;
-        auto buffer = std::make_unique<unsigned char[]>(cloud.size() * normalSize);
+        auto buffer_normal = std::make_unique<unsigned char[]>(cloud.size() * size_normal);
 
         for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer.get() + n * normalSize, cloud(n).normal, offset);
-            std::memcpy(buffer.get() + n * normalSize + offset, &cloud(n).curvature, sizeof(float));
+            std::memcpy(buffer_normal.get() + n * size_normal, cloud(n).normal, offset);
+            std::memcpy(buffer_normal.get() + n * size_normal + offset, &cloud(n).curvature, size_normal - offset);
         }
 
         ply.add_properties_to_element(
@@ -135,18 +135,18 @@ namespace
             {"nx", "ny", "nz", "curvature"},
             tinyply::Type::FLOAT32,
             cloud.size(),
-            buffer.get(),
+            buffer_normal.get(),
             tinyply::Type::INVALID,
             0);
 
-        if (vertices.size() != 0)
+        if (indices.size() != 0)
         {
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
                 tinyply::Type::INT32,
-                vertices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                indices.size() / 3,
+                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -154,20 +154,20 @@ namespace
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudXYZRGBA & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXYZRGBA & cloud, const yarp::sig::VectorOf<int> & indices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
-        constexpr auto xyzSize = sizeof(float) * 3;
-        auto buffer_xyz = std::make_unique<unsigned char[]>(cloud.size() * xyzSize);
+        constexpr auto size_xyz = sizeof(float) * 3;
+        auto buffer_xyz = std::make_unique<unsigned char[]>(cloud.size() * size_xyz);
 
-        constexpr auto rgbaSize = sizeof(unsigned char) * 4;
-        auto buffer_rgba = std::make_unique<unsigned char[]>(cloud.size() * rgbaSize);
+        constexpr auto size_rgba = sizeof(unsigned char) * 4;
+        auto buffer_rgba = std::make_unique<unsigned char[]>(cloud.size() * size_rgba);
 
         for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer_xyz.get() + n * xyzSize, cloud(n)._xyz, xyzSize);
-            std::memcpy(buffer_rgba.get() + n * rgbaSize, &cloud(n).rgba, rgbaSize);
+            std::memcpy(buffer_xyz.get() + n * size_xyz, cloud(n)._xyz, size_xyz);
+            std::memcpy(buffer_rgba.get() + n * size_rgba, &cloud(n).rgba, size_rgba);
         }
 
         ply.add_properties_to_element(
@@ -188,14 +188,14 @@ namespace
             tinyply::Type::INVALID,
             0);
 
-        if (vertices.size() != 0)
+        if (indices.size() != 0)
         {
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
                 tinyply::Type::INT32,
-                vertices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                indices.size() / 3,
+                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -203,18 +203,18 @@ namespace
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudXYZI & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXYZI & cloud, const yarp::sig::VectorOf<int> & indices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
-        constexpr auto xyziSize = sizeof(float) * 4;
+        constexpr auto size_xyzi = sizeof(float) * 4;
         constexpr auto offset = sizeof(float) * 3;
-        auto buffer = std::make_unique<unsigned char[]>(cloud.size() * xyziSize);
+        auto buffer_xyzi = std::make_unique<unsigned char[]>(cloud.size() * size_xyzi);
 
         for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer.get() + n * xyziSize, cloud(n)._xyz, offset);
-            std::memcpy(buffer.get() + n * xyziSize + offset, &cloud(n).intensity, sizeof(float));
+            std::memcpy(buffer_xyzi.get() + n * size_xyzi, cloud(n)._xyz, offset);
+            std::memcpy(buffer_xyzi.get() + n * size_xyzi + offset, &cloud(n).intensity, size_xyzi - offset);
         }
 
         ply.add_properties_to_element(
@@ -222,18 +222,18 @@ namespace
             {"x", "y", "z", "intensity"},
             tinyply::Type::FLOAT32,
             cloud.size(),
-            buffer.get(),
+            buffer_xyzi.get(),
             tinyply::Type::INVALID,
             0);
 
-        if (vertices.size() != 0)
+        if (indices.size() != 0)
         {
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
                 tinyply::Type::INT32,
-                vertices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                indices.size() / 3,
+                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -241,18 +241,18 @@ namespace
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudInterestPointXYZ & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudInterestPointXYZ & cloud, const yarp::sig::VectorOf<int> & indices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
-        constexpr auto xyzintSize = sizeof(float) * 4;
+        constexpr auto size_xyzint = sizeof(float) * 4;
         constexpr auto offset = sizeof(float) * 3;
-        auto buffer = std::make_unique<unsigned char[]>(cloud.size() * xyzintSize);
+        auto buffer_xyzint = std::make_unique<unsigned char[]>(cloud.size() * size_xyzint);
 
         for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer.get() + n * xyzintSize, cloud(n)._xyz, offset);
-            std::memcpy(buffer.get() + n * xyzintSize + offset, &cloud(n).strength, sizeof(float));
+            std::memcpy(buffer_xyzint.get() + n * size_xyzint, cloud(n)._xyz, offset);
+            std::memcpy(buffer_xyzint.get() + n * size_xyzint + offset, &cloud(n).strength, size_xyzint - offset);
         }
 
         ply.add_properties_to_element(
@@ -260,18 +260,18 @@ namespace
             {"x", "y", "z", "strength"},
             tinyply::Type::FLOAT32,
             cloud.size(),
-            buffer.get(),
+            buffer_xyzint.get(),
             tinyply::Type::INVALID,
             0);
 
-        if (vertices.size() != 0)
+        if (indices.size() != 0)
         {
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
                 tinyply::Type::INT32,
-                vertices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                indices.size() / 3,
+                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -279,22 +279,22 @@ namespace
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudXYZNormal & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXYZNormal & cloud, const yarp::sig::VectorOf<int> & indices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
-        constexpr auto xyzSize = sizeof(float) * 3;
-        auto buffer_xyz = std::make_unique<unsigned char[]>(cloud.size() * xyzSize);
+        constexpr auto size_xyz = sizeof(float) * 3;
+        auto buffer_xyz = std::make_unique<unsigned char[]>(cloud.size() * size_xyz);
 
-        constexpr auto normalSize = sizeof(float) * 4;
+        constexpr auto size_normal = sizeof(float) * 4;
         constexpr auto offset = sizeof(float) * 3;
-        auto buffer_normal = std::make_unique<unsigned char[]>(cloud.size() * normalSize);
+        auto buffer_normal = std::make_unique<unsigned char[]>(cloud.size() * size_normal);
 
         for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer_xyz.get() + n * xyzSize, cloud(n).data, xyzSize);
-            std::memcpy(buffer_normal.get() + n * normalSize, cloud(n).normal, offset);
-            std::memcpy(buffer_normal.get() + n * normalSize + offset, &cloud(n).curvature, sizeof(float));
+            std::memcpy(buffer_xyz.get() + n * size_xyz, cloud(n).data, size_xyz);
+            std::memcpy(buffer_normal.get() + n * size_normal, cloud(n).normal, offset);
+            std::memcpy(buffer_normal.get() + n * size_normal + offset, &cloud(n).curvature, size_normal - offset);
         }
 
         ply.add_properties_to_element(
@@ -315,14 +315,14 @@ namespace
             tinyply::Type::INVALID,
             0);
 
-        if (vertices.size() != 0)
+        if (indices.size() != 0)
         {
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
                 tinyply::Type::INT32,
-                vertices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                indices.size() / 3,
+                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -330,26 +330,26 @@ namespace
         ply.write(os, isBinary);
     }
 
-    void write(std::ostream & os, const yarp::sig::PointCloudXYZNormalRGBA & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
+    void write(std::ostream & os, const yarp::sig::PointCloudXYZNormalRGBA & cloud, const yarp::sig::VectorOf<int> & indices, bool isBinary)
     {
         tinyply::PlyFile ply;
 
-        constexpr auto xyzSize = sizeof(float) * 3;
-        auto buffer_xyz = std::make_unique<unsigned char[]>(cloud.size() * xyzSize);
+        constexpr auto size_xyz = sizeof(float) * 3;
+        auto buffer_xyz = std::make_unique<unsigned char[]>(cloud.size() * size_xyz);
 
-        constexpr auto normalSize = sizeof(float) * 4;
+        constexpr auto size_normal = sizeof(float) * 4;
         constexpr auto offset = sizeof(float) * 3;
-        auto buffer_normal = std::make_unique<unsigned char[]>(cloud.size() * normalSize);
+        auto buffer_normal = std::make_unique<unsigned char[]>(cloud.size() * size_normal);
 
-        constexpr auto rgbaSize = sizeof(unsigned char) * 4;
-        auto buffer_rgba = std::make_unique<unsigned char[]>(cloud.size() * rgbaSize);
+        constexpr auto size_rgba = sizeof(unsigned char) * 4;
+        auto buffer_rgba = std::make_unique<unsigned char[]>(cloud.size() * size_rgba);
 
         for (auto n = 0; n < cloud.size(); n++)
         {
-            std::memcpy(buffer_xyz.get() + n * xyzSize, cloud(n).data, xyzSize);
-            std::memcpy(buffer_normal.get() + n * normalSize, cloud(n).normal, offset);
-            std::memcpy(buffer_normal.get() + n * normalSize + offset, &cloud(n).curvature, sizeof(float));
-            std::memcpy(buffer_rgba.get() + n * rgbaSize, &cloud(n).rgba, rgbaSize);
+            std::memcpy(buffer_xyz.get() + n * size_xyz, cloud(n).data, size_xyz);
+            std::memcpy(buffer_normal.get() + n * size_normal, cloud(n).normal, offset);
+            std::memcpy(buffer_normal.get() + n * size_normal + offset, &cloud(n).curvature, size_normal - offset);
+            std::memcpy(buffer_rgba.get() + n * size_rgba, &cloud(n).rgba, size_rgba);
         }
 
         ply.add_properties_to_element(
@@ -379,14 +379,14 @@ namespace
             tinyply::Type::INVALID,
             0);
 
-        if (vertices.size() != 0)
+        if (indices.size() != 0)
         {
             ply.add_properties_to_element(
                 "face",
                 {"vertex_indices"},
                 tinyply::Type::INT32,
-                vertices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(vertices.getMemoryBlock())),
+                indices.size() / 3,
+                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -407,7 +407,7 @@ namespace
         return it->size;
     }
 
-    bool read(std::istream & ifs, yarp::sig::PointCloudXY & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXY & cloud, yarp::sig::VectorOf<int> & indices)
     {
         tinyply::PlyFile file;
 
@@ -435,8 +435,8 @@ namespace
 
             if (faces)
             {
-                vertices.resize(faces->count * 3);
-                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                indices.resize(faces->count * 3);
+                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -445,7 +445,7 @@ namespace
         return false;
     }
 
-    bool read(std::istream & ifs, yarp::sig::PointCloudXYZ & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXYZ & cloud, yarp::sig::VectorOf<int> & indices)
     {
         tinyply::PlyFile file;
 
@@ -476,8 +476,8 @@ namespace
 
             if (faces)
             {
-                vertices.resize(faces->count * 3);
-                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                indices.resize(faces->count * 3);
+                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -486,7 +486,7 @@ namespace
         return false;
     }
 
-    bool read(std::istream & ifs, yarp::sig::PointCloudNormal & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudNormal & cloud, yarp::sig::VectorOf<int> & indices)
     {
         tinyply::PlyFile file;
 
@@ -531,8 +531,8 @@ namespace
 
             if (faces)
             {
-                vertices.resize(faces->count * 3);
-                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                indices.resize(faces->count * 3);
+                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -541,7 +541,7 @@ namespace
         return false;
     }
 
-    bool read(std::istream & ifs, yarp::sig::PointCloudXYZRGBA & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXYZRGBA & cloud, yarp::sig::VectorOf<int> & indices)
     {
         tinyply::PlyFile file;
 
@@ -598,8 +598,8 @@ namespace
 
             if (faces)
             {
-                vertices.resize(faces->count * 3);
-                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                indices.resize(faces->count * 3);
+                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -608,7 +608,7 @@ namespace
         return false;
     }
 
-    bool read(std::istream & ifs, yarp::sig::PointCloudXYZI & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXYZI & cloud, yarp::sig::VectorOf<int> & indices)
     {
         tinyply::PlyFile file;
 
@@ -653,8 +653,8 @@ namespace
 
             if (faces)
             {
-                vertices.resize(faces->count * 3);
-                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                indices.resize(faces->count * 3);
+                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -663,7 +663,7 @@ namespace
         return false;
     }
 
-    bool read(std::istream & ifs, yarp::sig::PointCloudInterestPointXYZ & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudInterestPointXYZ & cloud, yarp::sig::VectorOf<int> & indices)
     {
         tinyply::PlyFile file;
 
@@ -708,8 +708,8 @@ namespace
 
             if (faces)
             {
-                vertices.resize(faces->count * 3);
-                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                indices.resize(faces->count * 3);
+                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -718,7 +718,7 @@ namespace
         return false;
     }
 
-    bool read(std::istream & ifs, yarp::sig::PointCloudXYZNormal & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXYZNormal & cloud, yarp::sig::VectorOf<int> & indices)
     {
         tinyply::PlyFile file;
 
@@ -775,8 +775,8 @@ namespace
 
             if (faces)
             {
-                vertices.resize(faces->count * 3);
-                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                indices.resize(faces->count * 3);
+                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -785,7 +785,7 @@ namespace
         return false;
     }
 
-    bool read(std::istream & ifs, yarp::sig::PointCloudXYZNormalRGBA & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXYZNormalRGBA & cloud, yarp::sig::VectorOf<int> & indices)
     {
         tinyply::PlyFile file;
 
@@ -867,8 +867,8 @@ namespace
 
             if (faces)
             {
-                vertices.resize(faces->count * 3);
-                std::memcpy(vertices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                indices.resize(faces->count * 3);
+                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -885,7 +885,7 @@ namespace YarpCloudUtils
 {
 
 template <typename T>
-bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
+bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & cloud, const yarp::sig::VectorOf<int> & indices, bool isBinary)
 {
     auto modes = std::ios::out;
 
@@ -907,7 +907,7 @@ bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & clou
 
     try
     {
-        write(os, cloud, vertices, isBinary);
+        write(os, cloud, indices, isBinary);
         return true;
     }
     catch (const std::exception & e)
@@ -918,7 +918,7 @@ bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & clou
 }
 
 template <typename T>
-bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yarp::sig::VectorOf<int> & vertices)
+bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yarp::sig::VectorOf<int> & indices)
 {
     std::ifstream ifs(filename, std::ios::binary);
 
@@ -944,7 +944,7 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yar
 
     try
     {
-        return read(ms, cloud, vertices);
+        return read(ms, cloud, indices);
     }
     catch (const std::exception & e)
     {

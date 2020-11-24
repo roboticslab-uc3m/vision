@@ -20,7 +20,7 @@ namespace YarpCloudUtils
 {
 
 template <typename T>
-bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary = true);
+bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & cloud, const yarp::sig::VectorOf<int> & indices, bool isBinary = true);
 
 template <typename T>
 bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & cloud, bool isBinary = true)
@@ -29,13 +29,13 @@ bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & clou
 }
 
 template <typename T>
-bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yarp::sig::VectorOf<int> & vertices);
+bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yarp::sig::VectorOf<int> & indices);
 
 template <typename T>
 bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
 {
-    yarp::sig::VectorOf<int> vertices;
-    return loadPLY(filename, cloud, vertices);
+    yarp::sig::VectorOf<int> indices;
+    return loadPLY(filename, cloud, indices);
 }
 
 } // namespace YarpCloudUtils

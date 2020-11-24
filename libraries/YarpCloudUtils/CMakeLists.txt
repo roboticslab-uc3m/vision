@@ -7,9 +7,9 @@ if(ENABLE_YarpCloudUtils)
                                       YarpCloudUtils-pcl.cpp
                                       tinyply.h)
 
-    set_target_properties(YarpCloudUtils PROPERTIES PUBLIC_HEADER YarpCloudUtils.hpp)
+    set_property(TARGET YarpCloudUtils PROPERTY PUBLIC_HEADER YarpCloudUtils.hpp)
 
-    set_source_files_properties(YarpCloudUtils-tinyply.cpp PROPERTIES COMPILE_DEFINITIONS TINYPLY_IMPLEMENTATION)
+    set_property(SOURCE YarpCloudUtils-tinyply.cpp PROPERTY COMPILE_DEFINITIONS TINYPLY_IMPLEMENTATION)
 
     target_link_libraries(YarpCloudUtils PUBLIC YARP::YARP_sig
                                          PRIVATE YARP::YARP_os)
