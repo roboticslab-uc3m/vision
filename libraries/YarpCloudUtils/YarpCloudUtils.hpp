@@ -5,6 +5,7 @@
 
 #include <string>
 
+#include <yarp/os/Searchable.h>
 #include <yarp/sig/PointCloud.h>
 #include <yarp/sig/Vector.h>
 
@@ -37,6 +38,10 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
     yarp::sig::VectorOf<int> indices;
     return loadPLY(filename, cloud, indices);
 }
+
+template <typename T>
+bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::PointCloudXYZ & meshPoints, yarp::sig::VectorOf<int> & meshIndices,
+    const yarp::os::Searchable & options);
 
 } // namespace YarpCloudUtils
 
