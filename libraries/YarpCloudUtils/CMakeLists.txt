@@ -3,11 +3,16 @@ option(ENABLE_YarpCloudUtils "Enable/disable YarpCloudUtils" ON)
 if(ENABLE_YarpCloudUtils)
 
     add_library(YarpCloudUtils SHARED YarpCloudUtils.hpp
-                                      YarpCloudUtils-inst.hpp)
+                                      YarpCloudUtils-tinyply.cpp
+                                      YarpCloudUtils-pcl.cpp
+                                      tinyply.h)
 
     set_target_properties(YarpCloudUtils PROPERTIES PUBLIC_HEADER YarpCloudUtils.hpp)
 
-    target_link_libraries(YarpCloudUtils PUBLIC YARP::YARP_sig)
+    set_source_files_properties(YarpCloudUtils-tinyply.cpp PROPERTIES COMPILE_DEFINITIONS TINYPLY_IMPLEMENTATION)
+
+    target_link_libraries(YarpCloudUtils PUBLIC YARP::YARP_sig
+                                         PRIVATE YARP::YARP_os)
 
     target_include_directories(YarpCloudUtils PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                                                      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
@@ -23,13 +28,8 @@ if(ENABLE_YarpCloudUtils)
     set_property(GLOBAL APPEND PROPERTY _exported_dependencies YARP_sig)
 
     if(PCL_FOUND AND YARP_pcl_FOUND)
-        target_sources(YarpCloudUtils PRIVATE YarpCloudUtils-pcl.cpp)
+        set_property(SOURCE YarpCloudUtils-pcl.cpp PROPERTY COMPILE_DEFINITIONS HAVE_PCL)
         target_link_libraries(YarpCloudUtils PRIVATE YARP::YARP_pcl ${PCL_LIBRARIES})
-        set_property(GLOBAL APPEND PROPERTY _exported_dependencies PCL)
-    else()
-        target_sources(YarpCloudUtils PRIVATE YarpCloudUtils-tinyply.cpp tinyply.h)
-        target_link_libraries(YarpCloudUtils PRIVATE YARP::YARP_os)
-        set_property(SOURCE YarpCloudUtils-tinyply.cpp PROPERTY COMPILE_DEFINITIONS TINYPLY_IMPLEMENTATION)
     endif()
 
 else()
