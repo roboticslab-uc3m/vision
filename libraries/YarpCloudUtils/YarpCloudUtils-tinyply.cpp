@@ -10,6 +10,7 @@
 #include <memory>
 #include <ostream>
 #include <stdexcept>
+#include <streambuf>
 #include <vector>
 
 #include <yarp/os/LogStream.h>
@@ -18,6 +19,39 @@
 
 namespace
 {
+    // https://github.com/ddiakopoulos/tinyply/blob/master/source/example-utils.hpp
+
+    struct memory_buffer : public std::streambuf
+    {
+        char * p_start {nullptr};
+        char * p_end {nullptr};
+        std::size_t size;
+
+        memory_buffer(char const * first_elem, std::size_t size)
+            : p_start(const_cast<char *>(first_elem)), p_end(p_start + size), size(size)
+        {
+            setg(p_start, p_start, p_end);
+        }
+
+        pos_type seekoff(off_type off, std::ios_base::seekdir dir, std::ios_base::openmode which) override
+        {
+            if (dir == std::ios_base::cur) gbump(static_cast<int>(off));
+            else setg(p_start, (dir == std::ios_base::beg ? p_start : p_end) + off, p_end);
+            return gptr() - p_start;
+        }
+
+        pos_type seekpos(pos_type pos, std::ios_base::openmode which) override
+        {
+            return seekoff(pos, std::ios_base::beg, which);
+        }
+    };
+
+    struct memory_stream : virtual memory_buffer, public std::istream
+    {
+        memory_stream(char const * first_elem, size_t size)
+            : memory_buffer(first_elem, size), std::istream(static_cast<std::streambuf *>(this)) {}
+    };
+
     void write(std::ostream & os, const yarp::sig::PointCloudXY & cloud, const yarp::sig::VectorOf<int> & vertices, bool isBinary)
     {
         tinyply::PlyFile ply;
@@ -373,7 +407,7 @@ namespace
         return it->size;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXY & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXY & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
@@ -411,7 +445,7 @@ namespace
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZ & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXYZ & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
@@ -452,7 +486,7 @@ namespace
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudNormal & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudNormal & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
@@ -507,7 +541,7 @@ namespace
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZRGBA & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXYZRGBA & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
@@ -574,7 +608,7 @@ namespace
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZI & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXYZI & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
@@ -629,7 +663,7 @@ namespace
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudInterestPointXYZ & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudInterestPointXYZ & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
@@ -684,7 +718,7 @@ namespace
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZNormal & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXYZNormal & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
@@ -751,7 +785,7 @@ namespace
         return false;
     }
 
-    bool read(std::ifstream & ifs, yarp::sig::PointCloudXYZNormalRGBA & cloud, yarp::sig::VectorOf<int> & vertices)
+    bool read(std::istream & ifs, yarp::sig::PointCloudXYZNormalRGBA & cloud, yarp::sig::VectorOf<int> & vertices)
     {
         tinyply::PlyFile file;
 
@@ -899,7 +933,7 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
 template <typename T>
 bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yarp::sig::VectorOf<int> & vertices)
 {
-    std::ifstream ifs(filename);
+    std::ifstream ifs(filename, std::ios::binary);
 
     if (ifs.fail())
     {
@@ -907,9 +941,23 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yar
         return false;
     }
 
+    std::vector<std::uint8_t> fileBufferBytes;
+    ifs.seekg(0, std::ios::end);
+    std::size_t sizeBytes = ifs.tellg();
+    ifs.seekg(0, std::ios::beg);
+    fileBufferBytes.resize(sizeBytes);
+
+    if (!ifs.read((char *)fileBufferBytes.data(), sizeBytes))
+    {
+        yError() << "unable to read from" << filename;
+        return false;
+    }
+
+    memory_stream ms((char *)fileBufferBytes.data(), fileBufferBytes.size());
+
     try
     {
-        return read(ifs, cloud, vertices);
+        return read(ms, cloud, vertices);
     }
     catch (const std::exception & e)
     {
