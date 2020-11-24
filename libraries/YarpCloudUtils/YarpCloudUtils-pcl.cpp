@@ -8,6 +8,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/PolygonMesh.h>
+#include <pcl/features/normal_3d.h>
 #include <pcl/features/normal_3d_omp.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/search/kdtree.h>
@@ -34,40 +35,117 @@ namespace
         return out;
     }
 
-    bool meshFromCloudPCL(const pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud, pcl::PolygonMesh::Ptr & mesh, const yarp::os::Searchable & options)
+    void downsample(const pcl::PointCloud<pcl::PointXYZ>::Ptr & in, const pcl::PointCloud<pcl::PointXYZ>::Ptr & out, const yarp::os::Searchable & options)
+    {
+        auto leafSize = options.check("filterLeafSize", yarp::os::Value(0.01f)).asFloat32();
+        auto leafSizeX = options.check("filterLeafSizeX", yarp::os::Value(leafSize)).asFloat32();
+        auto leafSizeY = options.check("filterLeafSizeY", yarp::os::Value(leafSize)).asFloat32();
+        auto leafSizeZ = options.check("filterLeafSizeZ", yarp::os::Value(leafSize)).asFloat32();
+        auto limitMax = options.check("filterLimitMax", yarp::os::Value(FLT_MAX)).asFloat64();
+        auto limitMin = options.check("filterLimitMin", yarp::os::Value(-FLT_MAX)).asFloat64();
+        auto limitsNegative = options.check("filterLimitsNegative", yarp::os::Value(false)).asBool();
+        auto minPointsPerVoxel = options.check("filterMinPointsPerVoxel", yarp::os::Value(0)).asInt32();
+
+        pcl::VoxelGrid<pcl::PointXYZ> grid;
+        grid.setDownsampleAllData(false);
+        grid.setFilterLimits(limitMin, limitMax);
+        grid.setFilterLimitsNegative(limitsNegative);
+        grid.setInputCloud(in);
+        grid.setLeafSize(leafSizeX, leafSizeY, leafSizeZ);
+        grid.setMinimumPointsNumberPerVoxel(minPointsPerVoxel);
+        grid.filter(*out);
+    }
+
+    void estimateNormals(const pcl::PointCloud<pcl::PointXYZ>::Ptr & in, const pcl::PointCloud<pcl::Normal>::Ptr & out, const yarp::os::Searchable & options)
+    {
+        // Either radius search or nearest K search; one of these params must be zero.
+        auto k = options.check("estimatorK", yarp::os::Value(40)).asInt32();
+        auto radius = options.check("estimatorRadius", yarp::os::Value(0.0)).asFloat64();
+
+        pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal>::Ptr estimator;
+
+        if (options.check("estimatorUseOMP", yarp::os::Value(true)).asBool())
+        {
+            auto threads = options.check("estimatorThreads", yarp::os::Value(0)).asInt32();
+            auto * omp = new pcl::NormalEstimationOMP<pcl::PointXYZ, pcl::Normal>();
+            omp->setNumberOfThreads(threads);
+            estimator.reset(omp);
+        }
+        else
+        {
+            estimator.reset(new pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal>());
+        }
+
+        pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>());
+        tree->setInputCloud(in);
+        estimator->setInputCloud(in);
+        estimator->setKSearch(k);
+        estimator->setRadiusSearch(radius);
+        estimator->setSearchMethod(tree);
+        estimator->compute(*out);
+    }
+
+    void reconstruct(const pcl::PointCloud<pcl::PointNormal>::Ptr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
+    {
+        const auto fallback = "poisson";
+        auto method = options.check("surfaceMethod", yarp::os::Value(fallback)).asString();
+
+        pcl::PCLSurfaceBase<pcl::PointNormal>::Ptr surface;
+
+        if (method == "convex")
+        {
+            auto * convex = new pcl::ConvexHull<pcl::PointNormal>();
+            surface.reset(convex);
+        }
+        else if (method == "concave")
+        {
+            auto * concave = new pcl::ConcaveHull<pcl::PointNormal>();
+            surface.reset(concave);
+        }
+        else if (method == "gpt")
+        {
+            auto * gpt = new pcl::GreedyProjectionTriangulation<pcl::PointNormal>();
+            surface.reset(gpt);
+        }
+        else if (method == "gp")
+        {
+            auto * gp = new pcl::GridProjection<pcl::PointNormal>();
+            surface.reset(gp);
+        }
+        else if (method == "poisson")
+        {
+            auto * poisson = new pcl::Poisson<pcl::PointNormal>();
+            surface.reset(poisson);
+        }
+        else
+        {
+            yWarning() << "unrecognized surface method:" << method;
+            yInfo() << "falling back with default parameters to" << fallback;
+        }
+
+        pcl::search::KdTree<pcl::PointNormal>::Ptr tree(new pcl::search::KdTree<pcl::PointNormal>());
+        tree->setInputCloud(in);
+        surface->setInputCloud(in);
+        surface->setSearchMethod(tree);
+        surface->reconstruct(*out);
+    }
+
+    void meshFromCloudPCL(const pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud, const pcl::PolygonMesh::Ptr & mesh, const yarp::os::Searchable & options)
     {
         // Downsample so that further computations are actually feasible.
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud2(new pcl::PointCloud<pcl::PointXYZ>());
-        pcl::VoxelGrid<pcl::PointXYZ> grid;
-        grid.setInputCloud(cloud);
-        grid.setLeafSize(0.01f, 0.01f, 0.01f);
-        grid.filter(*cloud2);
+        downsample(cloud, cloud2, options);
 
         // Estimate normals.
         pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>());
-        pcl::NormalEstimationOMP<pcl::PointXYZ, pcl::Normal> estimator;
-        pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>());
-        tree->setInputCloud(cloud2);
-        estimator.setNumberOfThreads(0);
-        estimator.setInputCloud(cloud2);
-        estimator.setSearchMethod(tree);
-        estimator.setKSearch(40);
-        estimator.compute(*normals);
+        estimateNormals(cloud2, normals, options);
 
         // Concatenate point clouds.
         pcl::PointCloud<pcl::PointNormal>::Ptr cloudWithNormals(new pcl::PointCloud<pcl::PointNormal>());
         pcl::concatenateFields(*cloud2, *normals, *cloudWithNormals);
 
         // Reconstruct triangle mesh.
-        pcl::search::KdTree<pcl::PointNormal>::Ptr tree2(new pcl::search::KdTree<pcl::PointNormal>());
-        tree2->setInputCloud(cloudWithNormals);
-
-        pcl::Poisson<pcl::PointNormal> poisson;
-        poisson.setInputCloud(cloudWithNormals);
-        poisson.setSearchMethod(tree2);
-        poisson.reconstruct(*mesh);
-
-        return true;
+        reconstruct(cloudWithNormals, mesh, options);
     }
 }
 #endif
