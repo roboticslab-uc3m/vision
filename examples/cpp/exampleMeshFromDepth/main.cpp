@@ -2,18 +2,22 @@
 
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
-#include <yarp/os/RpcClient.h>
+#include <yarp/os/Property.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/os/Value.h>
-#include <yarp/os/Vocab.h>
+
+#include <yarp/dev/IRGBDSensor.h>
+#include <yarp/dev/PolyDriver.h>
+
+#include <yarp/sig/Image.h>
+#include <yarp/sig/IntrinsicParams.h>
 #include <yarp/sig/PointCloud.h>
+#include <yarp/sig/PointCloudUtils.h>
 
 #include <YarpCloudUtils.hpp>
 
-constexpr const char * DEFAULT_REMOTE = "/sceneReconstruction";
-constexpr const char * DEFAULT_PREFIX = "/exampleSceneReconstructionClient";
-
-constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab('g','p','c');
+constexpr const char * DEFAULT_REMOTE = "/realsense2";
+constexpr const char * DEFAULT_PREFIX = "/exampleMeshFromDepth";
 
 int main(int argc, char * argv[])
 {
@@ -31,7 +35,7 @@ int main(int argc, char * argv[])
     if (rf.check("help"))
     {
         yInfo() << argv[0] << "commands:";
-        yInfo() << "\t--remote" << "\tremote port to connect to, defaults to" << DEFAULT_REMOTE;
+        yInfo() << "\t--remote" << "\tremote port prefix to connect to, defaults to" << DEFAULT_REMOTE;
         yInfo() << "\t--prefix" << "\tlocal port prefix, defaults to" << DEFAULT_PREFIX;
         yInfo() << "\t--cloud" << "\tpath to file with .ply extension to export the point cloud to";
         yInfo() << "\t--mesh" << "\tpath to file with .ply extension to export the surface mesh to";
@@ -39,27 +43,55 @@ int main(int argc, char * argv[])
         return 0;
     }
 
-    std::string remote = rf.check("remote", yarp::os::Value(DEFAULT_REMOTE)).asString();
-    std::string prefix = rf.check("prefix", yarp::os::Value(DEFAULT_PREFIX)).asString();
-    std::string fileCloud = rf.check("cloud", yarp::os::Value("")).asString();
-    std::string fileMesh = rf.check("mesh", yarp::os::Value("")).asString();
+    auto remote = rf.check("remote", yarp::os::Value(DEFAULT_REMOTE)).asString();
+    auto prefix = rf.check("prefix", yarp::os::Value(DEFAULT_PREFIX)).asString();
+    auto fileCloud = rf.check("cloud", yarp::os::Value("")).asString();
+    auto fileMesh = rf.check("mesh", yarp::os::Value("")).asString();
 
-    yarp::os::RpcClient rpc;
+    yarp::os::Property sensorOptions = {
+        {"device", yarp::os::Value("RGBDSensorClient")},
+        {"localImagePort", yarp::os::Value(prefix + "/client/rgbImage:i")},
+        {"localDepthPort", yarp::os::Value(prefix + "/client/depthImage:i")},
+        {"localRpcPort", yarp::os::Value(prefix + "/client/rpc:o")},
+        {"remoteImagePort", yarp::os::Value(remote + "/rgbImage:o")},
+        {"remoteDepthPort", yarp::os::Value(remote + "/depthImage:o")},
+        {"remoteRpcPort", yarp::os::Value(remote + "/rpc:i")}
+    };
 
-    if (!rpc.open(prefix + "/rpc:c") || !yarp::os::Network::connect(rpc.getName(), remote + "/rpc:s"))
+    yarp::dev::PolyDriver sensorDevice;
+
+    if (!sensorDevice.open(sensorOptions))
     {
-        yError() << "unable to establish connection to remote server";
+        yError() << "unable to establish connection to remote RGBD sensor";
         return 1;
     }
 
-    yarp::os::Bottle cmd {yarp::os::Value(VOCAB_GET_POINTS, true)};
-    yarp::sig::PointCloudXYZ cloud;
+    yarp::dev::IRGBDSensor * iRGBDSensor;
 
-    if (!rpc.write(cmd, cloud))
+    if (!sensorDevice.view(iRGBDSensor))
     {
-        yError() << "unable to send remote command";
+        yError() << "unable to view IRGBDSensor interface";
         return 1;
     }
+
+    yarp::os::Property intrinsic;
+
+    if (!iRGBDSensor->getDepthIntrinsicParam(intrinsic))
+    {
+        yError() << "unable to retrieve depth intrinsic parameters";
+        return 1;
+    }
+
+    yarp::sig::IntrinsicParams depthParams(intrinsic);
+    yarp::sig::ImageOf<yarp::sig::PixelFloat> depthImage;
+
+    if (!iRGBDSensor->getDepthImage(depthImage))
+    {
+        yError() << "unable to acquire depth frame";
+        return 1;
+    }
+
+    auto cloud = yarp::sig::utils::depthToPC(depthImage, depthParams);
 
     yInfo() << "got cloud of" << cloud.size() << "points";
 
