@@ -454,7 +454,7 @@ namespace
         }
 
         // Reconstruct triangle mesh.
-        pcl::PolygonMesh::Ptr reconstructed;
+        pcl::PolygonMesh::Ptr reconstructed(new pcl::PolygonMesh());
         auto method = options.check("surfaceMethod", yarp::os::Value("")).asString();
 
         if (method == "concave" || method == "convex" || method == "organized")
