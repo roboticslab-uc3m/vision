@@ -4,6 +4,7 @@
 #include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/ResourceFinder.h>
+#include <yarp/os/Time.h>
 #include <yarp/os/Value.h>
 
 #include <yarp/dev/IRGBDSensor.h>
@@ -38,7 +39,7 @@ int main(int argc, char * argv[])
         yInfo() << "\t--remote" << "\tremote port prefix to connect to, defaults to" << DEFAULT_REMOTE;
         yInfo() << "\t--prefix" << "\tlocal port prefix, defaults to" << DEFAULT_PREFIX;
         yInfo() << "\t--cloud" << "\tpath to file with .ply extension to export the point cloud to";
-        yInfo() << "\t--mesh" << "\tpath to file with .ply extension to export the surface mesh to";
+        yInfo() << "\t--mesh " << "\tpath to file with .ply extension to export the surface mesh to";
         yInfo() << "additional parameters are used to configure the surface reconstruction method, if requested";
         return 0;
     }
@@ -48,51 +49,65 @@ int main(int argc, char * argv[])
     auto fileCloud = rf.check("cloud", yarp::os::Value("")).asString();
     auto fileMesh = rf.check("mesh", yarp::os::Value("")).asString();
 
-    yarp::os::Property sensorOptions = {
-        {"device", yarp::os::Value("RGBDSensorClient")},
-        {"localImagePort", yarp::os::Value(prefix + "/client/rgbImage:i")},
-        {"localDepthPort", yarp::os::Value(prefix + "/client/depthImage:i")},
-        {"localRpcPort", yarp::os::Value(prefix + "/client/rpc:o")},
-        {"remoteImagePort", yarp::os::Value(remote + "/rgbImage:o")},
-        {"remoteDepthPort", yarp::os::Value(remote + "/depthImage:o")},
-        {"remoteRpcPort", yarp::os::Value(remote + "/rpc:i")}
-    };
-
-    yarp::dev::PolyDriver sensorDevice;
-
-    if (!sensorDevice.open(sensorOptions))
-    {
-        yError() << "unable to establish connection to remote RGBD sensor";
-        return 1;
-    }
-
-    yarp::dev::IRGBDSensor * iRGBDSensor;
-
-    if (!sensorDevice.view(iRGBDSensor))
-    {
-        yError() << "unable to view IRGBDSensor interface";
-        return 1;
-    }
-
-    yarp::os::Property intrinsic;
-
-    if (!iRGBDSensor->getDepthIntrinsicParam(intrinsic))
-    {
-        yError() << "unable to retrieve depth intrinsic parameters";
-        return 1;
-    }
-
-    yarp::sig::IntrinsicParams depthParams(intrinsic);
+    yarp::sig::IntrinsicParams depthParams;
     yarp::sig::ImageOf<yarp::sig::PixelFloat> depthImage;
 
-    if (!iRGBDSensor->getDepthImage(depthImage))
     {
-        yError() << "unable to acquire depth frame";
-        return 1;
+        yarp::os::Property sensorOptions = {
+            {"device", yarp::os::Value("RGBDSensorClient")},
+            {"localImagePort", yarp::os::Value(prefix + "/client/rgbImage:i")},
+            {"localDepthPort", yarp::os::Value(prefix + "/client/depthImage:i")},
+            {"localRpcPort", yarp::os::Value(prefix + "/client/rpc:o")},
+            {"remoteImagePort", yarp::os::Value(remote + "/rgbImage:o")},
+            {"remoteDepthPort", yarp::os::Value(remote + "/depthImage:o")},
+            {"remoteRpcPort", yarp::os::Value(remote + "/rpc:i")}
+        };
+
+        yarp::dev::PolyDriver sensorDevice;
+
+        if (!sensorDevice.open(sensorOptions))
+        {
+            yError() << "unable to establish connection with remote RGBD sensor";
+            return 1;
+        }
+
+        yarp::dev::IRGBDSensor * iRGBDSensor;
+
+        if (!sensorDevice.view(iRGBDSensor))
+        {
+            yError() << "unable to view IRGBDSensor interface";
+            return 1;
+        }
+
+        yarp::os::Property intrinsic;
+
+        if (!iRGBDSensor->getDepthIntrinsicParam(intrinsic))
+        {
+            yError() << "unable to retrieve depth intrinsic parameters";
+            return 1;
+        }
+
+        depthParams.fromProperty(intrinsic);
+
+        for (auto n = 0;; n++)
+        {
+            iRGBDSensor->getDepthImage(depthImage);
+
+            if (depthImage.getRawImageSize() != 0)
+            {
+                break;
+            }
+            else if (n == 10)
+            {
+                yError() << "unable to acquire depth frame";
+                return 1;
+            }
+
+            yarp::os::Time::delay(0.1);
+        }
     }
 
     auto cloud = yarp::sig::utils::depthToPC(depthImage, depthParams);
-
     yInfo() << "got cloud of" << cloud.size() << "points";
 
     if (!fileCloud.empty())
@@ -122,7 +137,8 @@ int main(int argc, char * argv[])
             auto end = std::chrono::system_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-            yInfo() << "surface reconstructed in" << elapsed.count() << "ms, got mesh of" << meshPoints.size() << "points";
+            yInfo() << "surface reconstructed in" << elapsed.count() << "ms, got mesh of" << meshPoints.size() << "points and"
+                    << meshIndices.size() << "indices";
 
             if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices))
             {

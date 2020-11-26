@@ -34,7 +34,7 @@ int main(int argc, char * argv[])
         yInfo() << "\t--remote" << "\tremote port to connect to, defaults to" << DEFAULT_REMOTE;
         yInfo() << "\t--prefix" << "\tlocal port prefix, defaults to" << DEFAULT_PREFIX;
         yInfo() << "\t--cloud" << "\tpath to file with .ply extension to export the point cloud to";
-        yInfo() << "\t--mesh" << "\tpath to file with .ply extension to export the surface mesh to";
+        yInfo() << "\t--mesh " << "\tpath to file with .ply extension to export the surface mesh to";
         yInfo() << "additional parameters are used to configure the surface reconstruction method, if requested";
         return 0;
     }
