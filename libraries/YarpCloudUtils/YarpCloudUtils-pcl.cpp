@@ -24,6 +24,10 @@
 #include <pcl/surface/mls.h>
 #include <pcl/surface/organized_fast_mesh.h>
 #include <pcl/surface/poisson.h>
+#include <pcl/surface/vtk_smoothing/vtk_mesh_quadric_decimation.h>
+#include <pcl/surface/vtk_smoothing/vtk_mesh_smoothing_laplacian.h>
+#include <pcl/surface/vtk_smoothing/vtk_mesh_smoothing_windowed_sinc.h>
+#include <pcl/surface/vtk_smoothing/vtk_mesh_subdivision.h>
 
 namespace
 {
@@ -260,7 +264,7 @@ namespace
             {
                 if (triangulationTypeStr != "quad")
                 {
-                    yWarning() << "unknown triangulation type" << triangulationTypeStr << "for process step, falling back to quad";
+                    yWarning() << "unknown triangulation type" << triangulationTypeStr << "for reconstruct step, falling back to quad";
                 }
 
                 triangulationType = pcl::OrganizedFastMesh<pcl::PointNormal>::TriangulationType::QUAD_MESH;
@@ -323,23 +327,89 @@ namespace
         const auto fallback = "laplacian";
         auto method = options.check("processMethod", yarp::os::Value(fallback)).asString();
 
-        if (method == "ear")
-        {}
-        else if (method == "laplacian")
-        {}
+        pcl::MeshProcessing::Ptr processor;
+
+        if (method == "laplacian")
+        {
+            auto boundarySmoothing = options.check("processBoundarySmoothing", yarp::os::Value(true)).asBool();
+            auto convergence = options.check("processConvergence", yarp::os::Value(0.0f)).asFloat32();
+            auto edgeAngle = options.check("processEdgeAngle", yarp::os::Value(15.0f)).asFloat32();
+            auto featureAngle = options.check("processFeatureAngle", yarp::os::Value(45.0f)).asFloat32();
+            auto featureEdgeSmoothing = options.check("processFeatureEdgeSmoothing", yarp::os::Value(false)).asBool();
+            auto numIter = options.check("processNumIter", yarp::os::Value(20)).asInt32();
+            auto relaxationFactor = options.check("processRelaxationFactor", yarp::os::Value(0.01f)).asFloat32();
+
+            auto * laplacian = new pcl::MeshSmoothingLaplacianVTK();
+            laplacian->setBoundarySmoothing(boundarySmoothing);
+            laplacian->setConvergence(convergence);
+            laplacian->setEdgeAngle(edgeAngle);
+            laplacian->setFeatureAngle(featureAngle);
+            laplacian->setFeatureEdgeSmoothing(featureEdgeSmoothing);
+            laplacian->setNumIter(numIter);
+            laplacian->setRelaxationFactor(relaxationFactor);
+            processor.reset(laplacian);
+        }
         else if (method == "quadric")
-        {}
+        {
+            auto targetReductionFactor = options.check("processTargetReductionFactor", yarp::os::Value(0.5f)).asFloat32();
+            auto * quadric = new pcl::MeshQuadricDecimationVTK();
+            quadric->setTargetReductionFactor(targetReductionFactor);
+            processor.reset(quadric);
+        }
         else if (method == "subdivision")
-        {}
+        {
+            auto filterTypeStr = options.check("processFilterType", yarp::os::Value("linear")).asString();
+
+            pcl::MeshSubdivisionVTK::MeshSubdivisionVTKFilterType filterType;
+
+            if (filterTypeStr == "butterfly")
+            {
+                filterType = pcl::MeshSubdivisionVTK::MeshSubdivisionVTKFilterType::BUTTERFLY;
+            }
+            else if (filterTypeStr == "loop")
+            {
+                filterType = pcl::MeshSubdivisionVTK::MeshSubdivisionVTKFilterType::LOOP;
+            }
+            else
+            {
+                if (filterTypeStr != "linear")
+                {
+                    yWarning() << "unknown filter type" << filterTypeStr << "for process step, falling back to linear";
+                }
+
+                filterType = pcl::MeshSubdivisionVTK::MeshSubdivisionVTKFilterType::LINEAR;
+            }
+
+            auto * subdivision = new pcl::MeshSubdivisionVTK();
+            subdivision->setFilterType(filterType);
+            processor.reset(subdivision);
+        }
         else if (method == "windowed")
-        {}
+        {
+            auto boundarySmoothing = options.check("processBoundarySmoothing", yarp::os::Value(true)).asBool();
+            auto edgeAngle = options.check("processEdgeAngle", yarp::os::Value(15.0f)).asFloat32();
+            auto featureAngle = options.check("processFeatureAngle", yarp::os::Value(45.0f)).asFloat32();
+            auto featureEdgeSmoothing = options.check("processFeatureEdgeSmoothing", yarp::os::Value(false)).asBool();
+            auto normalizeCoordinates = options.check("processNormalizeCoordinates", yarp::os::Value(false)).asBool();
+            auto numIter = options.check("processNumIter", yarp::os::Value(20)).asInt32();
+            auto passBand = options.check("processPassBand", yarp::os::Value(0.1f)).asFloat32();
+
+            auto * windowed = new pcl::MeshSmoothingWindowedSincVTK();
+            windowed->setBoundarySmoothing(boundarySmoothing);
+            windowed->setEdgeAngle(edgeAngle);
+            windowed->setFeatureAngle(featureAngle);
+            windowed->setFeatureEdgeSmoothing(featureEdgeSmoothing);
+            windowed->setNormalizeCoordinates(normalizeCoordinates);
+            windowed->setNumIter(numIter);
+            windowed->setPassBand(passBand);
+            processor.reset(windowed);
+        }
         else
         {
             yWarning() << "unrecognized process method:" << method;
             yInfo() << "falling back with default parameters to" << fallback;
         }
 
-        pcl::MeshProcessing::Ptr processor;
         processor->setInputMesh(in);
         processor->process(*out);
     }
