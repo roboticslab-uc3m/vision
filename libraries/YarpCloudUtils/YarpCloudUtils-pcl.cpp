@@ -140,17 +140,16 @@ namespace
         estimator->compute(*out);
     }
 
-    void reconstruct(const pcl::PointCloud<pcl::PointNormal>::Ptr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
+    void reconstruct(const pcl::PointCloud<pcl::PointXYZ>::Ptr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
     {
-        const auto fallback = "poisson";
-        auto method = options.check("surfaceMethod", yarp::os::Value(fallback)).asString();
+        auto method = options.find("surfaceMethod").asString();
 
-        pcl::PCLSurfaceBase<pcl::PointNormal>::Ptr surface;
+        pcl::PCLSurfaceBase<pcl::PointXYZ>::Ptr surface;
 
         if (method == "concave")
         {
             auto alpha = options.check("surfaceAlpha", yarp::os::Value(0.0)).asFloat64();
-            auto * concave = new pcl::ConcaveHull<pcl::PointNormal>();
+            auto * concave = new pcl::ConcaveHull<pcl::PointXYZ>();
             concave->setAlpha(alpha);
             concave->setDimension(3);
             concave->setKeepInformation(false);
@@ -158,12 +157,82 @@ namespace
         }
         else if (method == "convex")
         {
-            auto * convex = new pcl::ConvexHull<pcl::PointNormal>();
+            auto * convex = new pcl::ConvexHull<pcl::PointXYZ>();
             convex->setComputeAreaVolume(false);
             convex->setDimension(3);
             surface.reset(convex);
         }
-        else if (method == "gp")
+        else if (method == "organized")
+        {
+            auto angleTolerance = options.check("surfaceAngleTolerance", yarp::os::Value(12.5 * M_PI / 180)).asFloat32();
+            auto depthDependent = options.check("surfaceDepthDependent", yarp::os::Value(false)).asBool();
+            auto distanceTolerance = options.check("surfaceDistanceTolerance", yarp::os::Value(-1.0f)).asFloat32();
+            auto maxEdgeLengthA = options.check("surfaceMaxEdgeLengthA", yarp::os::Value(0.0f)).asFloat32();
+            auto maxEdgeLengthB = options.check("surfaceMaxEdgeLengthB", yarp::os::Value(0.0f)).asFloat32();
+            auto maxEdgeLengthC = options.check("surfaceMaxEdgeLengthC", yarp::os::Value(0.0f)).asFloat32();
+            auto trianglePixelSize = options.check("surfaceTrianglePixelSize", yarp::os::Value(1)).asInt32();
+            auto trianglePixelSizeColumns = options.check("surfaceTrianglePixelSizeColumns", yarp::os::Value(trianglePixelSize)).asInt32();
+            auto trianglePixelSizeRows = options.check("surfaceTrianglePixelSizeRows", yarp::os::Value(trianglePixelSize)).asInt32();
+            auto triangulationTypeStr = options.check("surfaceTriangulationType", yarp::os::Value("quad")).asString();
+            auto useDepthAsDistance = options.check("surfaceUseDepthAsDistance", yarp::os::Value(false)).asBool();
+
+            pcl::OrganizedFastMesh<pcl::PointXYZ>::TriangulationType triangulationType;
+
+            if (triangulationTypeStr == "adaptive")
+            {
+                triangulationType = pcl::OrganizedFastMesh<pcl::PointXYZ>::TriangulationType::TRIANGLE_ADAPTIVE_CUT;
+            }
+            else if (triangulationTypeStr == "left")
+            {
+                triangulationType = pcl::OrganizedFastMesh<pcl::PointXYZ>::TriangulationType::TRIANGLE_LEFT_CUT;
+            }
+            else if (triangulationTypeStr == "right")
+            {
+                triangulationType = pcl::OrganizedFastMesh<pcl::PointXYZ>::TriangulationType::TRIANGLE_RIGHT_CUT;
+            }
+            else
+            {
+                if (triangulationTypeStr != "quad")
+                {
+                    yWarning() << "unknown triangulation type" << triangulationTypeStr << "for reconstruct step, falling back to quad";
+                }
+
+                triangulationType = pcl::OrganizedFastMesh<pcl::PointXYZ>::TriangulationType::QUAD_MESH;
+            }
+
+            auto * organized = new pcl::OrganizedFastMesh<pcl::PointXYZ>();
+            organized->setAngleTolerance(angleTolerance);
+            organized->setDistanceTolerance(distanceTolerance, depthDependent);
+            organized->setMaxEdgeLength(maxEdgeLengthA, maxEdgeLengthB, maxEdgeLengthC);
+            organized->setTrianglePixelSize(trianglePixelSize);
+            organized->setTrianglePixelSizeColumns(trianglePixelSizeColumns);
+            organized->setTrianglePixelSizeRows(trianglePixelSizeRows);
+            organized->setTriangulationType(triangulationType);
+            organized->storeShadowedFaces(false);
+            organized->useDepthAsDistance(useDepthAsDistance);
+            surface.reset(organized);
+        }
+        else
+        {
+            // we should not be here
+            yFatal() << "unrecognized surface method:" << method;
+        }
+
+        pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>());
+        tree->setInputCloud(in);
+        surface->setInputCloud(in);
+        surface->setSearchMethod(tree);
+        surface->reconstruct(*out);
+    }
+
+    void reconstruct(const pcl::PointCloud<pcl::PointNormal>::Ptr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
+    {
+        const auto fallback = "poisson";
+        auto method = options.check("surfaceMethod", yarp::os::Value(fallback)).asString();
+
+        pcl::PCLSurfaceBase<pcl::PointNormal>::Ptr surface;
+
+        if (method == "gp")
         {
             auto k = options.check("surfaceK", yarp::os::Value(50)).asInt32();
             auto maxBinarySearchLevel = options.check("surfaceMaxBinarySearchLevel", yarp::os::Value(10)).asInt32();
@@ -231,56 +300,6 @@ namespace
             rbf->setOffSurfaceDisplacement(offSurfaceDisplacement);
             rbf->setPercentageExtendGrid(percentageExtendGrid);
             surface.reset(rbf);
-        }
-        else if (method == "organized")
-        {
-            auto angleTolerance = options.check("surfaceAngleTolerance", yarp::os::Value(12.5 * M_PI / 180)).asFloat32();
-            auto depthDependent = options.check("surfaceDepthDependent", yarp::os::Value(false)).asBool();
-            auto distanceTolerance = options.check("surfaceDistanceTolerance", yarp::os::Value(-1.0f)).asFloat32();
-            auto maxEdgeLengthA = options.check("surfaceMaxEdgeLengthA", yarp::os::Value(0.0f)).asFloat32();
-            auto maxEdgeLengthB = options.check("surfaceMaxEdgeLengthB", yarp::os::Value(0.0f)).asFloat32();
-            auto maxEdgeLengthC = options.check("surfaceMaxEdgeLengthC", yarp::os::Value(0.0f)).asFloat32();
-            auto trianglePixelSize = options.check("surfaceTrianglePixelSize", yarp::os::Value(1)).asInt32();
-            auto trianglePixelSizeColumns = options.check("surfaceTrianglePixelSizeColumns", yarp::os::Value(trianglePixelSize)).asInt32();
-            auto trianglePixelSizeRows = options.check("surfaceTrianglePixelSizeRows", yarp::os::Value(trianglePixelSize)).asInt32();
-            auto triangulationTypeStr = options.check("surfaceTriangulationType", yarp::os::Value("quad")).asString();
-            auto useDepthAsDistance = options.check("surfaceUseDepthAsDistance", yarp::os::Value(false)).asBool();
-
-            pcl::OrganizedFastMesh<pcl::PointNormal>::TriangulationType triangulationType;
-
-            if (triangulationTypeStr == "adaptive")
-            {
-                triangulationType = pcl::OrganizedFastMesh<pcl::PointNormal>::TriangulationType::TRIANGLE_ADAPTIVE_CUT;
-            }
-            else if (triangulationTypeStr == "left")
-            {
-                triangulationType = pcl::OrganizedFastMesh<pcl::PointNormal>::TriangulationType::TRIANGLE_LEFT_CUT;
-            }
-            else if (triangulationTypeStr == "right")
-            {
-                triangulationType = pcl::OrganizedFastMesh<pcl::PointNormal>::TriangulationType::TRIANGLE_RIGHT_CUT;
-            }
-            else
-            {
-                if (triangulationTypeStr != "quad")
-                {
-                    yWarning() << "unknown triangulation type" << triangulationTypeStr << "for reconstruct step, falling back to quad";
-                }
-
-                triangulationType = pcl::OrganizedFastMesh<pcl::PointNormal>::TriangulationType::QUAD_MESH;
-            }
-
-            auto * organized = new pcl::OrganizedFastMesh<pcl::PointNormal>();
-            organized->setAngleTolerance(angleTolerance);
-            organized->setDistanceTolerance(distanceTolerance, depthDependent);
-            organized->setMaxEdgeLength(maxEdgeLengthA, maxEdgeLengthB, maxEdgeLengthC);
-            organized->setTrianglePixelSize(trianglePixelSize);
-            organized->setTrianglePixelSizeColumns(trianglePixelSizeColumns);
-            organized->setTrianglePixelSizeRows(trianglePixelSizeRows);
-            organized->setTriangulationType(triangulationType);
-            organized->storeShadowedFaces(false);
-            organized->useDepthAsDistance(useDepthAsDistance);
-            surface.reset(organized);
         }
         else if (method == "poisson")
         {
@@ -434,17 +453,26 @@ namespace
             smooth(filtered, smoothed, options);
         }
 
-        // Estimate normals.
-        pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>());
-        estimateNormals(smoothed, normals, options);
-
-        // Concatenate point clouds.
-        pcl::PointCloud<pcl::PointNormal>::Ptr cloudWithNormals(new pcl::PointCloud<pcl::PointNormal>());
-        pcl::concatenateFields(*filtered, *normals, *cloudWithNormals);
-
         // Reconstruct triangle mesh.
         pcl::PolygonMesh::Ptr reconstructed;
-        reconstruct(cloudWithNormals, reconstructed, options);
+        auto method = options.check("surfaceMethod", yarp::os::Value("")).asString();
+
+        if (method == "concave" || method == "convex" || method == "organized")
+        {
+            reconstruct(smoothed, reconstructed, options);
+        }
+        else
+        {
+            // Estimate normals.
+            pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>());
+            estimateNormals(smoothed, normals, options);
+
+            // Concatenate point clouds.
+            pcl::PointCloud<pcl::PointNormal>::Ptr cloudWithNormals(new pcl::PointCloud<pcl::PointNormal>());
+            pcl::concatenateFields(*filtered, *normals, *cloudWithNormals);
+
+            reconstruct(cloudWithNormals, reconstructed, options);
+        }
 
         // Post-process output mesh.
         pcl::PolygonMesh::Ptr processed = reconstructed;
