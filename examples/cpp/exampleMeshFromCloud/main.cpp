@@ -15,12 +15,14 @@ int main(int argc, char * argv[])
         yInfo() << argv[0] << "commands:";
         yInfo() << "\t--cloud" << "\tpath to file with .ply extension to export the point cloud to";
         yInfo() << "\t--mesh " << "\tpath to file with .ply extension to export the surface mesh to";
+        yInfo() << "\t--binary" << "\texport data in binary format (default: true)";
         yInfo() << "additional parameters are used to configure the surface reconstruction method, if requested";
         return 0;
     }
 
     auto fileCloud = rf.check("cloud", yarp::os::Value("")).asString();
     auto fileMesh = rf.check("mesh", yarp::os::Value("")).asString();
+    auto binary = rf.check("binary", yarp::os::Value(true)).asBool();
 
     if (fileCloud.empty() || fileMesh.empty())
     {
@@ -55,7 +57,7 @@ int main(int argc, char * argv[])
     yInfo() << "surface reconstructed in" << elapsed.count() << "ms, got mesh of" << meshPoints.size() << "points and"
             << meshIndices.size() << "indices";
 
-    if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices))
+    if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices, binary))
     {
         yError() << "unable to export mesh to" << fileMesh;
         return 1;

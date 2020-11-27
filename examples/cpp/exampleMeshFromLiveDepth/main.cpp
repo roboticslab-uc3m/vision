@@ -40,6 +40,7 @@ int main(int argc, char * argv[])
         yInfo() << "\t--prefix" << "\tlocal port prefix, defaults to" << DEFAULT_PREFIX;
         yInfo() << "\t--cloud" << "\tpath to file with .ply extension to export the point cloud to";
         yInfo() << "\t--mesh " << "\tpath to file with .ply extension to export the surface mesh to";
+        yInfo() << "\t--binary" << "\texport data in binary format (default: true)";
         yInfo() << "additional parameters are used to configure the surface reconstruction method, if requested";
         return 0;
     }
@@ -48,6 +49,7 @@ int main(int argc, char * argv[])
     auto prefix = rf.check("prefix", yarp::os::Value(DEFAULT_PREFIX)).asString();
     auto fileCloud = rf.check("cloud", yarp::os::Value("")).asString();
     auto fileMesh = rf.check("mesh", yarp::os::Value("")).asString();
+    auto binary = rf.check("binary", yarp::os::Value(true)).asBool();
 
     yarp::sig::IntrinsicParams depthParams;
     yarp::sig::ImageOf<yarp::sig::PixelFloat> depthImage;
@@ -140,7 +142,7 @@ int main(int argc, char * argv[])
             yInfo() << "surface reconstructed in" << elapsed.count() << "ms, got mesh of" << meshPoints.size() << "points and"
                     << meshIndices.size() << "indices";
 
-            if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices))
+            if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices, binary))
             {
                 yWarning() << "unable to export mesh to" << fileMesh;
             }
