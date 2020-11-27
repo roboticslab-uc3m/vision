@@ -18,7 +18,7 @@
 #include <YarpCloudUtils.hpp>
 
 constexpr const char * DEFAULT_REMOTE = "/realsense2";
-constexpr const char * DEFAULT_PREFIX = "/exampleMeshFromDepth";
+constexpr const char * DEFAULT_PREFIX = "/exampleMeshFromLiveDepth";
 
 int main(int argc, char * argv[])
 {
