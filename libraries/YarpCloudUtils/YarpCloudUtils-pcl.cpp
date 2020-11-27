@@ -80,14 +80,14 @@ namespace
 
     void downsample(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr & in, const pcl::PointCloud<pcl::PointXYZ>::Ptr & out, const yarp::os::Searchable & options)
     {
-        auto leafSize = options.check("filterLeafSize", yarp::os::Value(0.02f)).asFloat32();
-        auto leafSizeX = options.check("filterLeafSizeX", yarp::os::Value(leafSize)).asFloat32();
-        auto leafSizeY = options.check("filterLeafSizeY", yarp::os::Value(leafSize)).asFloat32();
-        auto leafSizeZ = options.check("filterLeafSizeZ", yarp::os::Value(leafSize)).asFloat32();
+        auto leafSize = options.check("downsampleLeafSize", yarp::os::Value(0.02f)).asFloat32();
+        auto leafSizeX = options.check("downsampleLeafSizeX", yarp::os::Value(leafSize)).asFloat32();
+        auto leafSizeY = options.check("downsampleLeafSizeY", yarp::os::Value(leafSize)).asFloat32();
+        auto leafSizeZ = options.check("downsampleLeafSizeZ", yarp::os::Value(leafSize)).asFloat32();
 
         pcl::Filter<pcl::PointXYZ>::Ptr downsampler;
 
-        if (options.check("filterUseApproximate", yarp::os::Value(false)).asBool())
+        if (options.check("downsampleUseApproximate", yarp::os::Value(false)).asBool())
         {
             auto * grid = new pcl::ApproximateVoxelGrid<pcl::PointXYZ>();
             grid->setDownsampleAllData(false); // just XYZ data
@@ -96,10 +96,10 @@ namespace
         }
         else
         {
-            auto limitMax = options.check("filterLimitMax", yarp::os::Value(FLT_MAX)).asFloat64();
-            auto limitMin = options.check("filterLimitMin", yarp::os::Value(-FLT_MAX)).asFloat64();
-            auto limitsNegative = options.check("filterLimitsNegative", yarp::os::Value(false)).asBool();
-            auto minimumPointsNumberPerVoxel = options.check("filterMinimumPointsNumberPerVoxel", yarp::os::Value(0)).asInt32();
+            auto limitMax = options.check("downsampleLimitMax", yarp::os::Value(FLT_MAX)).asFloat64();
+            auto limitMin = options.check("downsampleLimitMin", yarp::os::Value(-FLT_MAX)).asFloat64();
+            auto limitsNegative = options.check("downsampleLimitsNegative", yarp::os::Value(false)).asBool();
+            auto minimumPointsNumberPerVoxel = options.check("downsampleMinimumPointsNumberPerVoxel", yarp::os::Value(0)).asInt32();
 
             auto * grid = new pcl::VoxelGrid<pcl::PointXYZ>();
             grid->setDownsampleAllData(false); // just XYZ data
@@ -541,7 +541,7 @@ namespace
         // Downsample so that further computations are actually feasible.
         pcl::PointCloud<pcl::PointXYZ>::Ptr filtered = cropped;
 
-        if (!options.check("filterSkip", yarp::os::Value(false)).asBool())
+        if (!options.check("downsampleSkip", yarp::os::Value(false)).asBool())
         {
             filtered.reset(new pcl::PointCloud<pcl::PointXYZ>());
             downsample(cropped, filtered, options);
