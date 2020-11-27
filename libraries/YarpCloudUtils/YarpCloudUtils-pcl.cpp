@@ -17,6 +17,7 @@
 #include <pcl/features/normal_3d.h>
 #include <pcl/features/normal_3d_omp.h>
 #include <pcl/filters/approximate_voxel_grid.h>
+#include <pcl/filters/crop_box.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/search/kdtree.h>
 #include <pcl/surface/concave_hull.h>
@@ -48,6 +49,33 @@ namespace
         }
 
         return out;
+    }
+
+    void crop(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr & in, const pcl::PointCloud<pcl::PointXYZ>::Ptr & out, const yarp::os::Searchable & options)
+    {
+        auto maxX = options.check("cropMaxX", yarp::os::Value(0.0f)).asFloat32();
+        auto maxY = options.check("cropMaxY", yarp::os::Value(0.0f)).asFloat32();
+        auto maxZ = options.check("cropMaxZ", yarp::os::Value(0.0f)).asFloat32();
+        auto minX = options.check("cropMinX", yarp::os::Value(0.0f)).asFloat32();
+        auto minY = options.check("cropMinY", yarp::os::Value(0.0f)).asFloat32();
+        auto minZ = options.check("cropMinZ", yarp::os::Value(0.0f)).asFloat32();
+        auto negative = options.check("cropNegative", yarp::os::Value(false)).asBool();
+        auto rotationX = options.check("cropRotationX", yarp::os::Value(0.0f)).asFloat32();
+        auto rotationY = options.check("cropRotationY", yarp::os::Value(0.0f)).asFloat32();
+        auto rotationZ = options.check("cropRotationZ", yarp::os::Value(0.0f)).asFloat32();
+        auto translationX = options.check("cropTranslationX", yarp::os::Value(0.0f)).asFloat32();
+        auto translationY = options.check("cropTranslationY", yarp::os::Value(0.0f)).asFloat32();
+        auto translationZ = options.check("cropTranslationZ", yarp::os::Value(0.0f)).asFloat32();
+
+        pcl::CropBox<pcl::PointXYZ> cropper;
+        cropper.setInputCloud(in);
+        cropper.setKeepOrganized(true); // don't remove points from the cloud, fill holes with NaNs
+        cropper.setMax({maxX, maxY, maxZ, 1.0f});
+        cropper.setMin({minX, minY, minZ, 1.0f});
+        cropper.setNegative(negative);
+        cropper.setRotation({rotationX, rotationY, rotationZ});
+        cropper.setTranslation({translationX, translationY, translationZ});
+        cropper.filter(*out);
     }
 
     void downsample(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr & in, const pcl::PointCloud<pcl::PointXYZ>::Ptr & out, const yarp::os::Searchable & options)
@@ -501,13 +529,22 @@ namespace
 
     void meshFromCloudPCL(const pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud, pcl::PolygonMesh::Ptr & mesh, const yarp::os::Searchable & options)
     {
+        // Crop input cloud.
+        pcl::PointCloud<pcl::PointXYZ>::Ptr cropped = cloud;
+
+        if (!options.check("cropSkip", yarp::os::Value(true)).asBool())
+        {
+            cropped.reset(new pcl::PointCloud<pcl::PointXYZ>());
+            crop(cloud, cropped, options);
+        }
+
         // Downsample so that further computations are actually feasible.
-        pcl::PointCloud<pcl::PointXYZ>::Ptr filtered = cloud;
+        pcl::PointCloud<pcl::PointXYZ>::Ptr filtered = cropped;
 
         if (!options.check("filterSkip", yarp::os::Value(false)).asBool())
         {
             filtered.reset(new pcl::PointCloud<pcl::PointXYZ>());
-            downsample(cloud, filtered, options);
+            downsample(cropped, filtered, options);
         }
 
         // Pre-process input cloud.
