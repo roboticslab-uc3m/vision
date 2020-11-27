@@ -16,6 +16,7 @@
 #include <pcl/PolygonMesh.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/features/normal_3d_omp.h>
+#include <pcl/filters/approximate_voxel_grid.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/search/kdtree.h>
 #include <pcl/surface/concave_hull.h>
@@ -55,20 +56,35 @@ namespace
         auto leafSizeX = options.check("filterLeafSizeX", yarp::os::Value(leafSize)).asFloat32();
         auto leafSizeY = options.check("filterLeafSizeY", yarp::os::Value(leafSize)).asFloat32();
         auto leafSizeZ = options.check("filterLeafSizeZ", yarp::os::Value(leafSize)).asFloat32();
-        auto limitMax = options.check("filterLimitMax", yarp::os::Value(FLT_MAX)).asFloat64();
-        auto limitMin = options.check("filterLimitMin", yarp::os::Value(-FLT_MAX)).asFloat64();
-        auto limitsNegative = options.check("filterLimitsNegative", yarp::os::Value(false)).asBool();
-        auto minimumPointsNumberPerVoxel = options.check("filterMinimumPointsNumberPerVoxel", yarp::os::Value(0)).asInt32();
 
-        pcl::VoxelGrid<pcl::PointXYZ> grid;
-        grid.setDownsampleAllData(false); // just XYZ data
-        grid.setFilterLimits(limitMin, limitMax);
-        grid.setFilterLimitsNegative(limitsNegative);
-        grid.setInputCloud(in);
-        grid.setLeafSize(leafSizeX, leafSizeY, leafSizeZ);
-        grid.setMinimumPointsNumberPerVoxel(minimumPointsNumberPerVoxel);
-        grid.setSaveLeafLayout(false);
-        grid.filter(*out);
+        pcl::Filter<pcl::PointXYZ>::Ptr downsampler;
+
+        if (options.check("filterUseApproximate", yarp::os::Value(false)).asBool())
+        {
+            auto * grid = new pcl::ApproximateVoxelGrid<pcl::PointXYZ>();
+            grid->setDownsampleAllData(false); // just XYZ data
+            grid->setLeafSize(leafSizeX, leafSizeY, leafSizeZ);
+            downsampler.reset(grid);
+        }
+        else
+        {
+            auto limitMax = options.check("filterLimitMax", yarp::os::Value(FLT_MAX)).asFloat64();
+            auto limitMin = options.check("filterLimitMin", yarp::os::Value(-FLT_MAX)).asFloat64();
+            auto limitsNegative = options.check("filterLimitsNegative", yarp::os::Value(false)).asBool();
+            auto minimumPointsNumberPerVoxel = options.check("filterMinimumPointsNumberPerVoxel", yarp::os::Value(0)).asInt32();
+
+            auto * grid = new pcl::VoxelGrid<pcl::PointXYZ>();
+            grid->setDownsampleAllData(false); // just XYZ data
+            grid->setFilterLimits(limitMin, limitMax);
+            grid->setFilterLimitsNegative(limitsNegative);
+            grid->setLeafSize(leafSizeX, leafSizeY, leafSizeZ);
+            grid->setMinimumPointsNumberPerVoxel(minimumPointsNumberPerVoxel);
+            grid->setSaveLeafLayout(false);
+            downsampler.reset(grid);
+        }
+
+        downsampler->setInputCloud(in);
+        downsampler->filter(*out);
     }
 
     void smooth(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr & in, const pcl::PointCloud<pcl::PointXYZ>::Ptr & out, const yarp::os::Searchable & options)
