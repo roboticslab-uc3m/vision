@@ -252,6 +252,12 @@ namespace
         }
         else if (method == "organized")
         {
+            if (!in->isOrganized())
+            {
+                yWarning() << "input cloud must be organized (height > 1)";
+                return;
+            }
+
             auto angleTolerance = options.check("surfaceAngleTolerance", yarp::os::Value(12.5 * M_PI / 180)).asFloat32();
             auto depthDependent = options.check("surfaceDepthDependent", yarp::os::Value(false)).asBool();
             auto distanceTolerance = options.check("surfaceDistanceTolerance", yarp::os::Value(-1.0f)).asFloat32();
@@ -261,14 +267,14 @@ namespace
             auto trianglePixelSize = options.check("surfaceTrianglePixelSize", yarp::os::Value(1)).asInt32();
             auto trianglePixelSizeColumns = options.check("surfaceTrianglePixelSizeColumns", yarp::os::Value(trianglePixelSize)).asInt32();
             auto trianglePixelSizeRows = options.check("surfaceTrianglePixelSizeRows", yarp::os::Value(trianglePixelSize)).asInt32();
-            auto triangulationTypeStr = options.check("surfaceTriangulationType", yarp::os::Value("quadMesh")).asString();
+            auto triangulationTypeStr = options.check("surfaceTriangulationType", yarp::os::Value("triangleAdaptiveCut")).asString();
             auto useDepthAsDistance = options.check("surfaceUseDepthAsDistance", yarp::os::Value(false)).asBool();
 
             pcl::OrganizedFastMesh<pcl::PointXYZ>::TriangulationType triangulationType;
 
-            if (triangulationTypeStr == "triangleAdaptiveCut")
+            if (triangulationTypeStr == "quadMesh")
             {
-                triangulationType = decltype(triangulationType)::TRIANGLE_ADAPTIVE_CUT;
+                triangulationType = decltype(triangulationType)::QUAD_MESH;
             }
             else if (triangulationTypeStr == "triangleLeftCut")
             {
@@ -280,12 +286,12 @@ namespace
             }
             else
             {
-                if (triangulationTypeStr != "quadMesh")
+                if (triangulationTypeStr != "triangleAdaptiveCut")
                 {
-                    yWarning() << "unknown triangulation type" << triangulationTypeStr << "for reconstruct step, falling back to quadMesh";
+                    yWarning() << "unknown triangulation type" << triangulationTypeStr << "for reconstruct step, falling back to triangleAdaptiveCut";
                 }
 
-                triangulationType = decltype(triangulationType)::QUAD_MESH;
+                triangulationType = decltype(triangulationType)::TRIANGLE_ADAPTIVE_CUT;
             }
 
             auto * organized = new pcl::OrganizedFastMesh<pcl::PointXYZ>();
@@ -598,8 +604,7 @@ namespace YarpCloudUtils
 {
 
 template <typename T>
-bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::PointCloudXYZ & meshPoints, yarp::sig::VectorOf<int> & meshIndices,
-    const yarp::os::Searchable & options)
+bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::PointCloudXYZ & meshPoints, yarp::sig::VectorOf<int> & meshIndices, const yarp::os::Searchable & options)
 {
 #ifdef HAVE_PCL
     // Get a XYZ point cloud.

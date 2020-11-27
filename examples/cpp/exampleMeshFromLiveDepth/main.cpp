@@ -110,11 +110,11 @@ int main(int argc, char * argv[])
     }
 
     auto cloud = yarp::sig::utils::depthToPC(depthImage, depthParams);
-    yInfo() << "got cloud of" << cloud.size() << "points";
+    yInfo() << "got cloud of" << cloud.size() << "points, organized as" << cloud.width() << "x" << cloud.height();
 
     if (!fileCloud.empty())
     {
-        if (!roboticslab::YarpCloudUtils::savePLY(fileCloud, cloud))
+        if (!roboticslab::YarpCloudUtils::savePLY(fileCloud, cloud, binary))
         {
             yWarning() << "unable to export cloud to" << fileCloud;
         }
@@ -140,7 +140,7 @@ int main(int argc, char * argv[])
             auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
             yInfo() << "surface reconstructed in" << elapsed.count() << "ms, got mesh of" << meshPoints.size() << "points and"
-                    << meshIndices.size() << "indices";
+                    << meshIndices.size() / 3 << "faces";
 
             if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices, binary))
             {

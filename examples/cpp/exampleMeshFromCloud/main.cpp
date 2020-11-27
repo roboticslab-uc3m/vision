@@ -16,6 +16,8 @@ int main(int argc, char * argv[])
         yInfo() << "\t--cloud" << "\tpath to file with .ply extension to export the point cloud to";
         yInfo() << "\t--mesh " << "\tpath to file with .ply extension to export the surface mesh to";
         yInfo() << "\t--binary" << "\texport data in binary format (default: true)";
+        yInfo() << "\t--height" << "\tnumber of rows (for organized clouds)";
+        yInfo() << "\t--width" << "\tnumber of columns (for organized clouds)";
         yInfo() << "additional parameters are used to configure the surface reconstruction method, if requested";
         return 0;
     }
@@ -40,6 +42,19 @@ int main(int argc, char * argv[])
 
     yInfo() << "got cloud of" << cloud.size() << "points";
 
+    if (rf.check("height") && rf.check("width"))
+    {
+        auto height = rf.find("height").asInt32();
+        auto width = rf.find("width").asInt32();
+
+        if (height * width != cloud.size())
+        {
+            yWarning() << "organized cloud dimensions do not match number of points:" << height << "*" << width << "=" << height * width;
+        }
+
+        cloud.resize(width, height);
+    }
+
     yarp::sig::PointCloudXYZ meshPoints;
     yarp::sig::VectorOf<int> meshIndices;
 
@@ -55,7 +70,7 @@ int main(int argc, char * argv[])
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
     yInfo() << "surface reconstructed in" << elapsed.count() << "ms, got mesh of" << meshPoints.size() << "points and"
-            << meshIndices.size() << "indices";
+            << meshIndices.size() / 3 << "faces";
 
     if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices, binary))
     {
