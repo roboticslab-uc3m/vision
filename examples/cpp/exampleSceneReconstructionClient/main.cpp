@@ -90,7 +90,8 @@ int main(int argc, char * argv[])
             auto end = std::chrono::system_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-            yInfo() << "surface reconstructed in" << elapsed.count() << "ms, got mesh of" << meshPoints.size() << "points";
+            yInfo() << "surface reconstructed in" << elapsed.count() << "ms, got mesh of" << meshPoints.size() << "points and"
+                    << meshIndices.size() << "indices";
 
             if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices))
             {

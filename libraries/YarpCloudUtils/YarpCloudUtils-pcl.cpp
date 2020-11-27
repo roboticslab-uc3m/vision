@@ -4,9 +4,12 @@
 #ifdef HAVE_PCL
 #include <yarp/pcl/Pcl.h>
 
+#define _USE_MATH_DEFINES
 #include <cfloat>
 #include <cmath>
+#include <exception>
 
+#include <pcl/pcl_config.h>
 #include <pcl/conversions.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -46,34 +49,42 @@ namespace
         return out;
     }
 
-    void downsample(const pcl::PointCloud<pcl::PointXYZ>::Ptr & in, const pcl::PointCloud<pcl::PointXYZ>::Ptr & out, const yarp::os::Searchable & options)
+    void downsample(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr & in, const pcl::PointCloud<pcl::PointXYZ>::Ptr & out, const yarp::os::Searchable & options)
     {
-        auto leafSize = options.check("filterLeafSize", yarp::os::Value(0.01f)).asFloat32();
+        auto leafSize = options.check("filterLeafSize", yarp::os::Value(0.02f)).asFloat32();
         auto leafSizeX = options.check("filterLeafSizeX", yarp::os::Value(leafSize)).asFloat32();
         auto leafSizeY = options.check("filterLeafSizeY", yarp::os::Value(leafSize)).asFloat32();
         auto leafSizeZ = options.check("filterLeafSizeZ", yarp::os::Value(leafSize)).asFloat32();
         auto limitMax = options.check("filterLimitMax", yarp::os::Value(FLT_MAX)).asFloat64();
         auto limitMin = options.check("filterLimitMin", yarp::os::Value(-FLT_MAX)).asFloat64();
         auto limitsNegative = options.check("filterLimitsNegative", yarp::os::Value(false)).asBool();
-        auto minPointsPerVoxel = options.check("filterMinPointsPerVoxel", yarp::os::Value(0)).asInt32();
+        auto minimumPointsNumberPerVoxel = options.check("filterMinimumPointsNumberPerVoxel", yarp::os::Value(0)).asInt32();
 
         pcl::VoxelGrid<pcl::PointXYZ> grid;
-        grid.setDownsampleAllData(false);
+        grid.setDownsampleAllData(false); // just XYZ data
         grid.setFilterLimits(limitMin, limitMax);
         grid.setFilterLimitsNegative(limitsNegative);
         grid.setInputCloud(in);
         grid.setLeafSize(leafSizeX, leafSizeY, leafSizeZ);
-        grid.setMinimumPointsNumberPerVoxel(minPointsPerVoxel);
+        grid.setMinimumPointsNumberPerVoxel(minimumPointsNumberPerVoxel);
+        grid.setSaveLeafLayout(false);
         grid.filter(*out);
     }
 
-    void smooth(const pcl::PointCloud<pcl::PointXYZ>::Ptr & in, const pcl::PointCloud<pcl::PointXYZ>::Ptr & out, const yarp::os::Searchable & options)
+    void smooth(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr & in, const pcl::PointCloud<pcl::PointXYZ>::Ptr & out, const yarp::os::Searchable & options)
     {
-        auto order = options.check("smoothOrder", yarp::os::Value(2)).asInt32();
+        auto cacheMlsResults = options.check("smoothCacheMlsResults", yarp::os::Value(true)).asBool();
+        auto dilationIterations = options.check("smoothDilationIterations", yarp::os::Value(0)).asInt32();
+        auto dilationVoxelSize = options.check("smoothDilationVoxelSize", yarp::os::Value(1.0f)).asFloat32();
+        auto numberOfThreads = options.check("smoothNumberOfThreads", yarp::os::Value(1)).asInt32();
+        auto pointDensity = options.check("smoothPointDensity", yarp::os::Value(0)).asInt32();
+        auto polynomialOrder = options.check("smoothPolynomialOrder", yarp::os::Value(2)).asInt32();
         auto projectionMethodStr = options.check("smoothProjectionMethod", yarp::os::Value("simple")).asString();
         auto searchRadius = options.check("smoothSearchRadius", yarp::os::Value(0.0)).asFloat64();
         auto sqrGaussParam = options.check("smoothSqrGaussParam", yarp::os::Value(0.0)).asFloat64();
-        auto threads = options.check("smoothThreads", yarp::os::Value(1)).asInt32();
+        auto upsamplingMethodStr = options.check("smoothUpsamplingMethod", yarp::os::Value("none")).asString();
+        auto upsamplingRadius = options.check("smoothUpsamplingRadius", yarp::os::Value(0.0)).asFloat64();
+        auto upsamplingStepSize = options.check("smoothUpsamplingStepSize", yarp::os::Value(0.0)).asFloat64();
 
         pcl::MLSResult::ProjectionMethod projectionMethod;
 
@@ -95,35 +106,68 @@ namespace
             projectionMethod = pcl::MLSResult::ProjectionMethod::NONE;
         }
 
+        pcl::MovingLeastSquares<pcl::PointXYZ, pcl::PointXYZ>::UpsamplingMethod upsamplingMethod;
+
+        if (upsamplingMethodStr == "distinctCloud")
+        {
+            upsamplingMethod = decltype(upsamplingMethod)::DISTINCT_CLOUD;
+        }
+        else if (upsamplingMethodStr == "randomUniformDensity")
+        {
+            upsamplingMethod = decltype(upsamplingMethod)::RANDOM_UNIFORM_DENSITY;
+        }
+        else if (upsamplingMethodStr == "sampleLocalPlane")
+        {
+            upsamplingMethod = decltype(upsamplingMethod)::SAMPLE_LOCAL_PLANE;
+        }
+        else if (upsamplingMethodStr == "voxelGridDilation")
+        {
+            upsamplingMethod = decltype(upsamplingMethod)::VOXEL_GRID_DILATION;
+        }
+        else
+        {
+            if (upsamplingMethodStr != "none")
+            {
+                yWarning() << "unknown upsampling method" << upsamplingMethodStr << "for smooth step, falling back to none";
+            }
+
+            upsamplingMethod = decltype(upsamplingMethod)::NONE;
+        }
+
         pcl::MovingLeastSquares<pcl::PointXYZ, pcl::PointXYZ> mls;
         pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>());
         tree->setInputCloud(in);
+        mls.setCacheMLSResults(cacheMlsResults);
+        mls.setComputeNormals(false); // don't store normals
+        mls.setDilationIterations(dilationIterations);
+        mls.setDilationVoxelSize(dilationVoxelSize);
         mls.setInputCloud(in);
-        mls.setCacheMLSResults(true); // TODO
-        mls.setComputeNormals(false);
-        mls.setNumberOfThreads(threads);
-        mls.setPolynomialOrder(order);
+        mls.setNumberOfThreads(numberOfThreads);
+        mls.setPointDensity(pointDensity);
+        mls.setPolynomialOrder(polynomialOrder);
         mls.setProjectionMethod(projectionMethod);
         mls.setSearchMethod(tree);
         mls.setSearchRadius(searchRadius);
         mls.setSqrGaussParam(sqrGaussParam);
-        mls.setUpsamplingMethod(decltype(mls)::UpsamplingMethod::NONE);
+        mls.setUpsamplingMethod(upsamplingMethod);
+        mls.setUpsamplingRadius(upsamplingRadius);
+        mls.setUpsamplingStepSize(upsamplingStepSize);
         mls.process(*out);
     }
 
-    void estimateNormals(const pcl::PointCloud<pcl::PointXYZ>::Ptr & in, const pcl::PointCloud<pcl::Normal>::Ptr & out, const yarp::os::Searchable & options)
+    void estimateNormals(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr & in, const pcl::PointCloud<pcl::Normal>::Ptr & out, const yarp::os::Searchable & options)
     {
         // Either radius search or nearest K search; one of these params must be zero.
-        auto k = options.check("estimatorK", yarp::os::Value(40)).asInt32();
-        auto radius = options.check("estimatorRadius", yarp::os::Value(0.0)).asFloat64();
+        auto kSearch = options.check("estimatorKSearch", yarp::os::Value(40)).asInt32();
+        auto radiusSearch = options.check("estimatorRadiusSearch", yarp::os::Value(0.0)).asFloat64();
 
         pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal>::Ptr estimator;
 
         if (options.check("estimatorUseOMP", yarp::os::Value(true)).asBool())
         {
-            auto threads = options.check("estimatorThreads", yarp::os::Value(0)).asInt32();
+            auto numberOfThreads = options.check("estimatorNumberOfThreads", yarp::os::Value(0)).asInt32();
             auto * omp = new pcl::NormalEstimationOMP<pcl::PointXYZ, pcl::Normal>();
-            omp->setNumberOfThreads(threads);
+            omp->setNumberOfThreads(numberOfThreads);
             estimator.reset(omp);
         }
         else
@@ -134,13 +178,13 @@ namespace
         pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>());
         tree->setInputCloud(in);
         estimator->setInputCloud(in);
-        estimator->setKSearch(k);
-        estimator->setRadiusSearch(radius);
+        estimator->setKSearch(kSearch);
+        estimator->setRadiusSearch(radiusSearch);
         estimator->setSearchMethod(tree);
         estimator->compute(*out);
     }
 
-    void reconstruct(const pcl::PointCloud<pcl::PointXYZ>::Ptr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
+    void reconstruct(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
     {
         auto method = options.find("surfaceMethod").asString();
 
@@ -152,7 +196,7 @@ namespace
             auto * concave = new pcl::ConcaveHull<pcl::PointXYZ>();
             concave->setAlpha(alpha);
             concave->setDimension(3);
-            concave->setKeepInformation(false);
+            concave->setKeepInformation(false); // discard RGB, normals...
             surface.reset(concave);
         }
         else if (method == "convex")
@@ -173,31 +217,31 @@ namespace
             auto trianglePixelSize = options.check("surfaceTrianglePixelSize", yarp::os::Value(1)).asInt32();
             auto trianglePixelSizeColumns = options.check("surfaceTrianglePixelSizeColumns", yarp::os::Value(trianglePixelSize)).asInt32();
             auto trianglePixelSizeRows = options.check("surfaceTrianglePixelSizeRows", yarp::os::Value(trianglePixelSize)).asInt32();
-            auto triangulationTypeStr = options.check("surfaceTriangulationType", yarp::os::Value("quad")).asString();
+            auto triangulationTypeStr = options.check("surfaceTriangulationType", yarp::os::Value("quadMesh")).asString();
             auto useDepthAsDistance = options.check("surfaceUseDepthAsDistance", yarp::os::Value(false)).asBool();
 
             pcl::OrganizedFastMesh<pcl::PointXYZ>::TriangulationType triangulationType;
 
-            if (triangulationTypeStr == "adaptive")
+            if (triangulationTypeStr == "triangleAdaptiveCut")
             {
-                triangulationType = pcl::OrganizedFastMesh<pcl::PointXYZ>::TriangulationType::TRIANGLE_ADAPTIVE_CUT;
+                triangulationType = decltype(triangulationType)::TRIANGLE_ADAPTIVE_CUT;
             }
-            else if (triangulationTypeStr == "left")
+            else if (triangulationTypeStr == "triangleLeftCut")
             {
-                triangulationType = pcl::OrganizedFastMesh<pcl::PointXYZ>::TriangulationType::TRIANGLE_LEFT_CUT;
+                triangulationType = decltype(triangulationType)::TRIANGLE_LEFT_CUT;
             }
-            else if (triangulationTypeStr == "right")
+            else if (triangulationTypeStr == "triangleRightCut")
             {
-                triangulationType = pcl::OrganizedFastMesh<pcl::PointXYZ>::TriangulationType::TRIANGLE_RIGHT_CUT;
+                triangulationType = decltype(triangulationType)::TRIANGLE_RIGHT_CUT;
             }
             else
             {
-                if (triangulationTypeStr != "quad")
+                if (triangulationTypeStr != "quadMesh")
                 {
-                    yWarning() << "unknown triangulation type" << triangulationTypeStr << "for reconstruct step, falling back to quad";
+                    yWarning() << "unknown triangulation type" << triangulationTypeStr << "for reconstruct step, falling back to quadMesh";
                 }
 
-                triangulationType = pcl::OrganizedFastMesh<pcl::PointXYZ>::TriangulationType::QUAD_MESH;
+                triangulationType = decltype(triangulationType)::QUAD_MESH;
             }
 
             auto * organized = new pcl::OrganizedFastMesh<pcl::PointXYZ>();
@@ -225,7 +269,7 @@ namespace
         surface->reconstruct(*out);
     }
 
-    void reconstruct(const pcl::PointCloud<pcl::PointNormal>::Ptr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
+    void reconstruct(const pcl::PointCloud<pcl::PointNormal>::ConstPtr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
     {
         const auto fallback = "poisson";
         auto method = options.check("surfaceMethod", yarp::os::Value(fallback)).asString();
@@ -234,14 +278,14 @@ namespace
 
         if (method == "gp")
         {
-            auto k = options.check("surfaceK", yarp::os::Value(50)).asInt32();
             auto maxBinarySearchLevel = options.check("surfaceMaxBinarySearchLevel", yarp::os::Value(10)).asInt32();
+            auto nearestNeighborNum = options.check("surfaceNearestNeighborNum", yarp::os::Value(50)).asInt32();
             auto paddingSize = options.check("surfacePaddingSize", yarp::os::Value(3)).asInt32();
             auto resolution = options.check("surfaceResolution", yarp::os::Value(0.001)).asFloat64();
 
             auto * gp = new pcl::GridProjection<pcl::PointNormal>();
             gp->setMaxBinarySearchLevel(maxBinarySearchLevel);
-            gp->setNearestNeighborNum(k);
+            gp->setNearestNeighborNum(nearestNeighborNum);
             gp->setPaddingSize(paddingSize);
             gp->setResolution(resolution);
             surface.reset(gp);
@@ -306,13 +350,16 @@ namespace
             auto degree = options.check("surfaceDegree", yarp::os::Value(2)).asInt32();
             auto depth = options.check("surfaceDepth", yarp::os::Value(8)).asInt32();
             auto isoDivide = options.check("surfaceIsoDivide", yarp::os::Value(8)).asInt32();
-            auto manifold = options.check("surfaceManifold", yarp::os::Value(true)).asBool(); // TODO
+            auto manifold = options.check("surfaceManifold", yarp::os::Value(true)).asBool();
             auto minDepth = options.check("surfaceMinDepth", yarp::os::Value(5)).asInt32();
-            auto outputPolygons = options.check("surfaceOutputPolygons", yarp::os::Value(false)).asBool(); // TODO
+            auto outputPolygons = options.check("surfaceOutputPolygons", yarp::os::Value(false)).asBool();
             auto pointWeight = options.check("surfacePointWeight", yarp::os::Value(4.0f)).asFloat32();
             auto samplesPerNode = options.check("surfaceSamplesPerNode", yarp::os::Value(1.0f)).asFloat32();
             auto scale = options.check("surfaceScale", yarp::os::Value(1.1f)).asFloat32();
             auto solverDivide = options.check("surfaceSolverDivide", yarp::os::Value(8)).asInt32();
+#if PCL_VERSION_COMPARE(>=, 1, 12, 0)
+            auto threads = options.check("surfaceThreads", yarp::os::Value(1)).asInt32();
+#endif
 
             auto * poisson = new pcl::Poisson<pcl::PointNormal>();
             poisson->setConfidence(true); // all normals are presumed normalized to have unit-length prior to reconstruction
@@ -326,6 +373,9 @@ namespace
             poisson->setSamplesPerNode(samplesPerNode);
             poisson->setScale(scale);
             poisson->setSolverDivide(solverDivide);
+#if PCL_VERSION_COMPARE(>=, 1, 12, 0)
+            poisson->setThreads(threads);
+#endif
             surface.reset(poisson);
         }
         else
@@ -341,7 +391,7 @@ namespace
         surface->reconstruct(*out);
     }
 
-    void process(const pcl::PolygonMesh::Ptr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
+    void process(const pcl::PolygonMesh::ConstPtr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
     {
         const auto fallback = "laplacian";
         auto method = options.check("processMethod", yarp::os::Value(fallback)).asString();
@@ -508,7 +558,16 @@ bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::PointCloud
 
     // Perform surface reconstruction.
     pcl::PolygonMesh::Ptr pclMesh(new pcl::PolygonMesh());
-    meshFromCloudPCL(pclXYZ, pclMesh, options);
+
+    try
+    {
+        meshFromCloudPCL(pclXYZ, pclMesh, options);
+    }
+    catch (const std::exception & e)
+    {
+        yError() << "meshFromCloudPCL:" << e.what();
+        return false;
+    }
 
     // Extract point cloud of vertices from mesh.
     pcl::PointCloud<pcl::PointXYZ>::Ptr pclMeshPoints(new pcl::PointCloud<pcl::PointXYZ>());
