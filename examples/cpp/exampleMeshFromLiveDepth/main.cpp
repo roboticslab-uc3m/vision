@@ -174,7 +174,8 @@ int main(int argc, char * argv[])
             {"surfaceMethod", yarp::os::Value("organized")}, // preferred method for organized clouds
             {"surfaceMaxEdgeLengthA", yarp::os::Value(0.05)}, // fill some holes
             {"surfaceUseDepthAsDistance", yarp::os::Value(true)}, // use Z data
-            {"processSkip", yarp::os::Value(true)} // override this if you wish
+            {"processSkip", yarp::os::Value(true)}, // override this if you wish
+            {"simplifySkip", yarp::os::Value(true)} // set this to false to remove unused points if trianglePixelSize > 1
         };
 
         meshOptions.fromString(options.toString(), false); // overwrite above defaults with options provided by the user

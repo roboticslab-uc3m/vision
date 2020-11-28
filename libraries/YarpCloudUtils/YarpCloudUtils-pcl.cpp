@@ -29,6 +29,7 @@
 #include <pcl/surface/mls.h>
 #include <pcl/surface/organized_fast_mesh.h>
 #include <pcl/surface/poisson.h>
+#include <pcl/surface/simplification_remove_unused_vertices.h>
 #include <pcl/surface/vtk_smoothing/vtk_mesh_quadric_decimation.h>
 #include <pcl/surface/vtk_smoothing/vtk_mesh_smoothing_laplacian.h>
 #include <pcl/surface/vtk_smoothing/vtk_mesh_smoothing_windowed_sinc.h>
@@ -593,7 +594,17 @@ namespace
             process(reconstructed, processed, options);
         }
 
-        mesh = processed;
+        // Remove unused vertices from vertex cloud.
+        pcl::PolygonMesh::Ptr simplified = processed;
+
+        if (!options.check("simplifySkip", yarp::os::Value(true)).asBool())
+        {
+            simplified.reset(new pcl::PolygonMesh());
+            pcl::surface::SimplificationRemoveUnusedVertices cleaner;
+            cleaner.simplify(*processed, *simplified);
+        }
+
+        mesh = simplified;
     }
 }
 #endif
