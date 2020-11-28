@@ -126,11 +126,24 @@ int main(int argc, char * argv[])
 
     if (!fileMesh.empty())
     {
+        // set sensible defaults, most suitable for organized clouds
+        yarp::os::Property meshOptions = {
+            {"cropSkip", yarp::os::Value(true)}, // use ROI instead
+            {"downsampleSkip", yarp::os::Value(true)}, // use step parameter (along with ROI) for decimation instead
+            {"smoothSkip", yarp::os::Value(true)}, // bad, generates an unorganized cloud
+            {"surfaceMethod", yarp::os::Value("organized")}, // preferred method for organized clouds
+            {"surfaceMaxEdgeLengthA", yarp::os::Value(0.05)}, // fill some holes
+            {"surfaceUseDepthAsDistance", yarp::os::Value(true)}, // use Z data
+            {"processSkip", yarp::os::Value(true)} // override this if you wish
+        };
+
+        meshOptions.fromString(rf.toString(), false); // overwrite above defaults with options provided by the user
+
         yarp::sig::PointCloudXYZ meshPoints;
         yarp::sig::VectorOf<int> meshIndices;
         auto start = std::chrono::system_clock::now();
 
-        if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, rf))
+        if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, meshOptions))
         {
             yWarning() << "unable to reconstruct surface from cloud";
         }

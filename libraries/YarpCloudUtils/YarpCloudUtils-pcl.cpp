@@ -264,6 +264,7 @@ namespace
             auto maxEdgeLengthA = options.check("surfaceMaxEdgeLengthA", yarp::os::Value(0.0f)).asFloat32();
             auto maxEdgeLengthB = options.check("surfaceMaxEdgeLengthB", yarp::os::Value(0.0f)).asFloat32();
             auto maxEdgeLengthC = options.check("surfaceMaxEdgeLengthC", yarp::os::Value(0.0f)).asFloat32();
+            auto storeShadowedFaces = options.check("surfaceStoreShadowedFaces", yarp::os::Value(false)).asBool();
             auto trianglePixelSize = options.check("surfaceTrianglePixelSize", yarp::os::Value(1)).asInt32();
             auto trianglePixelSizeColumns = options.check("surfaceTrianglePixelSizeColumns", yarp::os::Value(trianglePixelSize)).asInt32();
             auto trianglePixelSizeRows = options.check("surfaceTrianglePixelSizeRows", yarp::os::Value(trianglePixelSize)).asInt32();
@@ -302,7 +303,7 @@ namespace
             organized->setTrianglePixelSizeColumns(trianglePixelSizeColumns);
             organized->setTrianglePixelSizeRows(trianglePixelSizeRows);
             organized->setTriangulationType(triangulationType);
-            organized->storeShadowedFaces(false);
+            organized->storeShadowedFaces(storeShadowedFaces);
             organized->useDepthAsDistance(useDepthAsDistance);
             surface.reset(organized);
         }
