@@ -38,9 +38,11 @@ int main(int argc, char * argv[])
         yInfo() << argv[0] << "commands:";
         yInfo() << "\t--remote" << "\tremote port prefix to connect to, defaults to" << DEFAULT_REMOTE;
         yInfo() << "\t--prefix" << "\tlocal port prefix, defaults to" << DEFAULT_PREFIX;
-        yInfo() << "\t--cloud" << "\tpath to file with .ply extension to export the point cloud to";
-        yInfo() << "\t--mesh " << "\tpath to file with .ply extension to export the surface mesh to";
-        yInfo() << "\t--binary" << "\texport data in binary format (default: true)";
+        yInfo() << "\t--roi   " << "\tROI to crop from as a 4-int list: (minX maxX minY maxY)";
+        yInfo() << "\t--step  " << "\tstep size for decimation as a 2-int list: (stepX stepY)";
+        yInfo() << "\t--cloud " << "\tpath to file with .ply extension to export the point cloud to";
+        yInfo() << "\t--mesh  " << "\tpath to file with .ply extension to export the surface mesh to";
+        yInfo() << "\t--binary" << "\texport data in binary format, defaults to true";
         yInfo() << "additional parameters are used to configure the surface reconstruction method, if requested";
         return 0;
     }
@@ -50,6 +52,47 @@ int main(int argc, char * argv[])
     auto fileCloud = rf.check("cloud", yarp::os::Value("")).asString();
     auto fileMesh = rf.check("mesh", yarp::os::Value("")).asString();
     auto binary = rf.check("binary", yarp::os::Value(true)).asBool();
+
+    const auto & v_roi = rf.find("roi");
+    const auto & v_step = rf.find("step");
+
+    yarp::sig::utils::PCL_ROI roi {0, 0, 0, 0};
+    auto stepX = 1;
+    auto stepY = 1;
+
+    if (!v_roi.isNull())
+    {
+        if (!v_roi.isList() || v_roi.asList()->size() != 4)
+        {
+            yError() << "--roi must be a list of 4 unsigned ints";
+            return 1;
+        }
+
+        const auto * b_roi = v_roi.asList();
+        roi.min_x = b_roi->get(0).asInt32();
+        roi.max_x = b_roi->get(1).asInt32();
+        roi.min_y = b_roi->get(2).asInt32();
+        roi.max_y = b_roi->get(3).asInt32();
+    }
+
+    if (!v_step.isNull())
+    {
+        if (!v_step.isList() || v_step.asList()->size() != 2)
+        {
+            yError() << "--step must be a list of 2 unsigned ints";
+            return 1;
+        }
+
+        const auto * b_step = v_step.asList();
+        stepX = b_step->get(0).asInt32();
+        stepY = b_step->get(1).asInt32();
+
+        if (stepX < 1 || stepY < 1)
+        {
+            yError() << "step cannot be less than 1";
+            return 1;
+        }
+    }
 
     yarp::sig::IntrinsicParams depthParams;
     yarp::sig::ImageOf<yarp::sig::PixelFloat> depthImage;
@@ -109,7 +152,7 @@ int main(int argc, char * argv[])
         }
     }
 
-    auto cloud = yarp::sig::utils::depthToPC(depthImage, depthParams);
+    auto cloud = yarp::sig::utils::depthToPC(depthImage, depthParams, roi, stepX, stepY);
     yInfo() << "got cloud of" << cloud.size() << "points, organized as" << cloud.width() << "x" << cloud.height();
 
     if (!fileCloud.empty())
