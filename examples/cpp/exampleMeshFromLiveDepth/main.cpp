@@ -1,10 +1,7 @@
-#include <chrono>
-
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
-#include <yarp/os/ResourceFinder.h>
-#include <yarp/os/Time.h>
+#include <yarp/os/SystemClock.h>
 #include <yarp/os/Value.h>
 
 #include <yarp/dev/IRGBDSensor.h>
@@ -30,10 +27,10 @@ int main(int argc, char * argv[])
         return 1;
     }
 
-    yarp::os::ResourceFinder rf;
-    rf.configure(argc, argv);
+    yarp::os::Property options;
+    options.fromCommand(argc, argv);
 
-    if (rf.check("help"))
+    if (options.check("help"))
     {
         yInfo() << argv[0] << "commands:";
         yInfo() << "\t--remote" << "\tremote port prefix to connect to, defaults to" << DEFAULT_REMOTE;
@@ -47,14 +44,14 @@ int main(int argc, char * argv[])
         return 0;
     }
 
-    auto remote = rf.check("remote", yarp::os::Value(DEFAULT_REMOTE)).asString();
-    auto prefix = rf.check("prefix", yarp::os::Value(DEFAULT_PREFIX)).asString();
-    auto fileCloud = rf.check("cloud", yarp::os::Value("")).asString();
-    auto fileMesh = rf.check("mesh", yarp::os::Value("")).asString();
-    auto binary = rf.check("binary", yarp::os::Value(true)).asBool();
+    auto remote = options.check("remote", yarp::os::Value(DEFAULT_REMOTE)).asString();
+    auto prefix = options.check("prefix", yarp::os::Value(DEFAULT_PREFIX)).asString();
+    auto fileCloud = options.check("cloud", yarp::os::Value("")).asString();
+    auto fileMesh = options.check("mesh", yarp::os::Value("")).asString();
+    auto binary = options.check("binary", yarp::os::Value(true)).asBool();
 
-    const auto & v_roi = rf.find("roi");
-    const auto & v_step = rf.find("step");
+    const auto & v_roi = options.find("roi");
+    const auto & v_step = options.find("step");
 
     yarp::sig::utils::PCL_ROI roi {0, 0, 0, 0};
     auto stepX = 1;
@@ -148,7 +145,7 @@ int main(int argc, char * argv[])
                 return 1;
             }
 
-            yarp::os::Time::delay(0.1);
+            yarp::os::SystemClock::delaySystem(0.1);
         }
     }
 
@@ -180,11 +177,12 @@ int main(int argc, char * argv[])
             {"processSkip", yarp::os::Value(true)} // override this if you wish
         };
 
-        meshOptions.fromString(rf.toString(), false); // overwrite above defaults with options provided by the user
+        meshOptions.fromString(options.toString(), false); // overwrite above defaults with options provided by the user
 
         yarp::sig::PointCloudXYZ meshPoints;
         yarp::sig::VectorOf<int> meshIndices;
-        auto start = std::chrono::system_clock::now();
+
+        auto start = yarp::os::SystemClock::nowSystem();
 
         if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, meshOptions))
         {
@@ -192,10 +190,10 @@ int main(int argc, char * argv[])
         }
         else
         {
-            auto end = std::chrono::system_clock::now();
-            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+            auto end = yarp::os::SystemClock::nowSystem();
+            auto elapsed = static_cast<int>((end - start) * 1000);
 
-            yInfo() << "surface reconstructed in" << elapsed.count() << "ms, got mesh of" << meshPoints.size() << "points and"
+            yInfo() << "surface reconstructed in" << elapsed << "ms, got mesh of" << meshPoints.size() << "points and"
                     << meshIndices.size() / 3 << "faces";
 
             if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices, binary))

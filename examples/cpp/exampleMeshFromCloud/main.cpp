@@ -1,16 +1,15 @@
-#include <chrono>
-
 #include <yarp/os/LogStream.h>
-#include <yarp/os/ResourceFinder.h>
+#include <yarp/os/Property.h>
+#include <yarp/os/SystemClock.h>
 
 #include <YarpCloudUtils.hpp>
 
 int main(int argc, char * argv[])
 {
-    yarp::os::ResourceFinder rf;
-    rf.configure(argc, argv);
+    yarp::os::Property options;
+    options.fromCommand(argc, argv);
 
-    if (rf.check("help"))
+    if (options.check("help"))
     {
         yInfo() << argv[0] << "commands:";
         yInfo() << "\t--cloud" << "\tpath to file with .ply extension to export the point cloud to";
@@ -22,9 +21,9 @@ int main(int argc, char * argv[])
         return 0;
     }
 
-    auto fileCloud = rf.check("cloud", yarp::os::Value("")).asString();
-    auto fileMesh = rf.check("mesh", yarp::os::Value("")).asString();
-    auto binary = rf.check("binary", yarp::os::Value(true)).asBool();
+    auto fileCloud = options.check("cloud", yarp::os::Value("")).asString();
+    auto fileMesh = options.check("mesh", yarp::os::Value("")).asString();
+    auto binary = options.check("binary", yarp::os::Value(true)).asBool();
 
     if (fileCloud.empty() || fileMesh.empty())
     {
@@ -42,10 +41,10 @@ int main(int argc, char * argv[])
 
     yInfo() << "got cloud of" << cloud.size() << "points";
 
-    if (rf.check("height") && rf.check("width"))
+    if (options.check("height") && options.check("width"))
     {
-        auto height = rf.find("height").asInt32();
-        auto width = rf.find("width").asInt32();
+        auto height = options.find("height").asInt32();
+        auto width = options.find("width").asInt32();
 
         if (height * width != cloud.size())
         {
@@ -58,18 +57,18 @@ int main(int argc, char * argv[])
     yarp::sig::PointCloudXYZ meshPoints;
     yarp::sig::VectorOf<int> meshIndices;
 
-    auto start = std::chrono::system_clock::now();
+    auto start = yarp::os::SystemClock::nowSystem();
 
-    if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, rf))
+    if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, options))
     {
         yError() << "unable to reconstruct surface from cloud";
         return 1;
     }
 
-    auto end = std::chrono::system_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    auto end = yarp::os::SystemClock::nowSystem();
+    auto elapsed = static_cast<int>((end - start) * 1000);
 
-    yInfo() << "surface reconstructed in" << elapsed.count() << "ms, got mesh of" << meshPoints.size() << "points and"
+    yInfo() << "surface reconstructed in" << elapsed << "ms, got mesh of" << meshPoints.size() << "points and"
             << meshIndices.size() / 3 << "faces";
 
     if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices, binary))
