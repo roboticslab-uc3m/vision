@@ -126,11 +126,11 @@ void SegmentorThread::run()
 
     std::vector<yarp::os::Property> detectedObjects;
 
-    /*if (!iDetector->detect(colorFrame, detectedObjects))
+    if (!iDetector->detect(colorFrame, detectedObjects))
     {
         CD_WARNING("Detector failed!\n");
         return;
-    }*/
+    }
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
     outYarpImg.copy(colorFrame);

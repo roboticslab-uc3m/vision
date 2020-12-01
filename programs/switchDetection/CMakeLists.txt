@@ -1,13 +1,6 @@
-if(NOT OpenCV_FOUND AND (NOT DEFINED ENABLE_switchDetection OR ENABLE_switchDetection))
-    message(WARNING "OpenCV package not found, disabling colorRegionDetection program")
-endif()
-
-cmake_dependent_option(ENABLE_switchDetection "Enable/disable switchDetection program" ON
-                       OpenCV_FOUND OFF)
+option(ENABLE_switchDetection "Enable/disable switchDetection program" ON)
 
 if(ENABLE_switchDetection)
-
-    include_directories(${OpenCV_INCLUDE_DIRS})
 
     add_executable(switchDetection main.cpp
                                    SwitchDetection.hpp
@@ -19,7 +12,8 @@ if(ENABLE_switchDetection)
                                           YARP::YARP_init
                                           YARP::YARP_dev
                                           YARP::YARP_sig
-                                          ${OpenCV_LIBS})
+                                          ROBOTICSLAB::ColorDebug
+                                          VisionInterfaces)
 
     install(TARGETS switchDetection
             DESTINATION ${CMAKE_INSTALL_BINDIR})

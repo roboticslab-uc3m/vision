@@ -15,8 +15,9 @@
 
 #include <yarp/sig/all.h>
 
-#define DEFAULT_RATE_MS 20
+#include "IDetector.hpp"
 
+#define DEFAULT_RATE_MS 20
 
 namespace roboticslab
 {
@@ -82,13 +83,17 @@ public:
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
     void setOutPort(yarp::os::Port *_pOutPort);
     bool init(yarp::os::ResourceFinder &rf);
-    void run();  // The periodical function
 
     void setCropSelector(int cropSelector) { this->cropSelector = cropSelector; }
     void setOutCropSelectorImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg) { this->outCropSelectorImg = outCropSelectorImg; }
     void setInCropSelectorPort(yarp::os::Port* inCropSelectorPort) { this->inCropSelectorPort = inCropSelectorPort; }
 
 private:
+    void run() override; // The periodical function
+
+    yarp::dev::PolyDriver detectorDevice;
+    IDetector* iDetector;
+
     yarp::dev::IRGBDSensor *iRGBDSensor;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
     yarp::os::Port *pOutPort;
