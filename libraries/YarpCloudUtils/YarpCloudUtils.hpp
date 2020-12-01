@@ -40,8 +40,7 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
 }
 
 template <typename T>
-bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::PointCloudXYZ & meshPoints, yarp::sig::VectorOf<int> & meshIndices,
-    const yarp::os::Searchable & options);
+bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::PointCloud<T> & meshPoints, yarp::sig::VectorOf<int> & meshIndices, const yarp::os::Searchable & options);
 
 } // namespace YarpCloudUtils
 

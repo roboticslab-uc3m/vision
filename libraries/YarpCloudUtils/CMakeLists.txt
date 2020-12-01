@@ -5,6 +5,7 @@ if(ENABLE_YarpCloudUtils)
     add_library(YarpCloudUtils SHARED YarpCloudUtils.hpp
                                       YarpCloudUtils-tinyply.cpp
                                       YarpCloudUtils-pcl.cpp
+                                      YarpCloudUtils-traits.hpp
                                       tinyply.h)
 
     set_property(TARGET YarpCloudUtils PROPERTY PUBLIC_HEADER YarpCloudUtils.hpp)
