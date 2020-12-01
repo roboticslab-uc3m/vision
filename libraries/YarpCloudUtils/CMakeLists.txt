@@ -3,14 +3,17 @@ option(ENABLE_YarpCloudUtils "Enable/disable YarpCloudUtils" ON)
 if(ENABLE_YarpCloudUtils)
 
     add_library(YarpCloudUtils SHARED YarpCloudUtils.hpp
-                                      YarpCloudUtils-tinyply.cpp
+                                      YarpCloudUtils-ply-export.cpp
+                                      YarpCloudUtils-ply-import.cpp
                                       YarpCloudUtils-pcl.cpp
                                       YarpCloudUtils-traits.hpp
                                       tinyply.h)
 
     set_property(TARGET YarpCloudUtils PROPERTY PUBLIC_HEADER YarpCloudUtils.hpp)
 
-    set_property(SOURCE YarpCloudUtils-tinyply.cpp PROPERTY COMPILE_DEFINITIONS TINYPLY_IMPLEMENTATION)
+    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/tinyply.cpp "#include \"tinyply.h\"")
+    set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/tinyply.cpp PROPERTY COMPILE_DEFINITIONS TINYPLY_IMPLEMENTATION)
+    target_sources(YarpCloudUtils PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/tinyply.cpp)
 
     target_link_libraries(YarpCloudUtils PUBLIC YARP::YARP_os YARP::YARP_sig)
 
