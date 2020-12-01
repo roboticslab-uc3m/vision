@@ -138,20 +138,19 @@ void SegmentorThread::run()
     yarp::sig::PixelRgb green(0,255,0);
     yarp::os::Bottle output;
 
-    /*double minZ = 999999;
+    double minZ = 999999;
     int closestFace = 999999;
-    for( int i = 0; i < faces.size(); i++ )
+    for( int i = 0; i < detectedObjects.size(); i++ )
     {
-        int pxX = faces[i].x+faces[i].width/2;
-        int pxY = faces[i].y+faces[i].height/2;
+        int pxX = (detectedObjects[i].find("tlx").asInt32() + detectedObjects[i].find("brx").asInt32()) / 2;
+        int pxY = (detectedObjects[i].find("tly").asInt32() + detectedObjects[i].find("bry").asInt32()) / 2;
         double depthX, depthY;
         scaleXY(colorFrame, depthFrame, pxX, pxY, &depthX, &depthY);
         double mmZ_tmp = depthFrame.pixel(int(depthX), int(depthY));
 
         if (mmZ_tmp < 0.001)
         {
-            fprintf(stderr,"[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n",i);
-            cvReleaseImage( &inIplImage );  // release the memory for the image
+            CD_WARNING("mmZ_tmp[%d] < 0.001.\n",i);
             return;
         }
 
@@ -161,17 +160,18 @@ void SegmentorThread::run()
         }
     }
 
-    for( int i = 0; i < faces.size(); i++ )
+    for( int i = 0; i < detectedObjects.size(); i++ )
     {
 
-        int pxX = faces[i].x+faces[i].width/2;
-        int pxY = faces[i].y+faces[i].height/2;
+        int pxX = (detectedObjects[i].find("tlx").asInt32() + detectedObjects[i].find("brx").asInt32()) / 2;
+        int pxY = (detectedObjects[i].find("tly").asInt32() + detectedObjects[i].find("bry").asInt32()) / 2;
+        int width = detectedObjects[i].find("brx").asInt32() - detectedObjects[i].find("tlx").asInt32();
+        int height = detectedObjects[i].find("bry").asInt32() - detectedObjects[i].find("tly").asInt32();
         double mmZ_tmp = depthFrame.pixel(pxX,pxY);
 
         if (mmZ_tmp < 0.001)
         {
-            fprintf(stderr,"[warning] SegmentorThread run(): mmZ_tmp[%d] < 0.001.\n",i);
-            cvReleaseImage( &inIplImage );  // release the memory for the image
+            CD_WARNING("mmZ_tmp[%d] < 0.001.\n",i);
             return;
         }
 
@@ -180,8 +180,12 @@ void SegmentorThread::run()
 
         if( i == closestFace )
         {
-            yarp::sig::draw::addRectangleOutline(outYarpImg,green,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
-                                faces[i].width/2,faces[i].height/2);
+            yarp::sig::draw::addRectangleOutline(outYarpImg,
+                                                 green,
+                                                 pxX,
+                                                 pxY,
+                                                 width / 2,
+                                                 height / 2);
 
             output.addFloat64( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
             output.addFloat64( mmY_tmp );    // Points down.
@@ -189,18 +193,23 @@ void SegmentorThread::run()
         }
         else
         {
-            yarp::sig::draw::addRectangleOutline(outYarpImg,red,faces[i].x+faces[i].width/2,faces[i].y+faces[i].height/2,
-                                faces[i].width/2,faces[i].height/2);
+            yarp::sig::draw::addRectangleOutline(outYarpImg,
+                                                 red,
+                                                 pxX,
+                                                 pxY,
+                                                 width / 2,
+                                                 height / 2);
         }
+        output.addDict() = detectedObjects[i];
     }
 
     pOutImg->prepare() = outYarpImg;
     pOutImg->write();
-    cvReleaseImage( &inIplImage );  // release the memory for the image
 
     if (output.size() > 0)
-        pOutPort->write(output);*/
-
+    {
+        pOutPort->write(output);
+    }
 }
 
 }  // namespace roboticslab
