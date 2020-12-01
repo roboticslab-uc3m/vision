@@ -3,6 +3,7 @@
 # CopyPolicy: Released under the terms of the GNU LGPL v2.1.
 
 yarp_install(FILES applications/ymanager.ini
+                   applications/example_switchDetection.xml
                    applications/example_switchDetection2D.xml
                    applications/visionFakeSensors.xml
                    applications/visionSensors.xml
