@@ -15,15 +15,7 @@
 
 #include <yarp/sig/all.h>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/objdetect/objdetect.hpp>
-
 #define DEFAULT_RATE_MS 20
-#define DEFAULT_SEE_BOUNDING 3
-#define DEFAULT_THRESHOLD 55
-#define DEFAULT_XMLCASCADE  "switchcascade_frontalface_alt.xml"
 
 
 namespace roboticslab
@@ -81,7 +73,21 @@ public:
  *
  * @brief Implements switchDetection PeriodicThread.
  */
-class SegmentorThread : public yarp::os::PeriodicThread {
+class SegmentorThread : public yarp::os::PeriodicThread
+{
+public:
+    SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
+
+    void setIRGBDSensor(yarp::dev::IRGBDSensor * _iRGBDSensor);
+    void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
+    void setOutPort(yarp::os::Port *_pOutPort);
+    bool init(yarp::os::ResourceFinder &rf);
+    void run();  // The periodical function
+
+    void setCropSelector(int cropSelector) { this->cropSelector = cropSelector; }
+    void setOutCropSelectorImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg) { this->outCropSelectorImg = outCropSelectorImg; }
+    void setInCropSelectorPort(yarp::os::Port* inCropSelectorPort) { this->inCropSelectorPort = inCropSelectorPort; }
+
 private:
     yarp::dev::IRGBDSensor *iRGBDSensor;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
@@ -93,26 +99,8 @@ private:
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg;
     yarp::os::Port* inCropSelectorPort;
     DataProcessor processor;
-
-    cv::CascadeClassifier face_cascade;
-
-
-public:
-    SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
-
-    void setIRGBDSensor(yarp::dev::IRGBDSensor * _iRGBDSensor);
-    void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
-    void setOutPort(yarp::os::Port *_pOutPort);
-    void init(yarp::os::ResourceFinder &rf);
-    void run();  // The periodical function
-
-    void setCropSelector(int cropSelector) { this->cropSelector = cropSelector; }
-    void setOutCropSelectorImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg) { this->outCropSelectorImg = outCropSelectorImg; }
-    void setInCropSelectorPort(yarp::os::Port* inCropSelectorPort) { this->inCropSelectorPort = inCropSelectorPort; }
-
 };
 
 }  // namespace roboticslab
 
 #endif  // __SEGMENTOR_THREAD_HPP__
-

@@ -1,13 +1,13 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "SegmentorThread.hpp"
-
-#include <opencv2/core/core_c.h>
-#include <opencv2/imgproc/imgproc_c.h>
-#include <opencv2/objdetect/objdetect.hpp> // CV_HAAR_SCALE_IMAGE (cv2), cv::CASCADE_SCALE_IMAGE (cv3/4)
-
 #include <yarp/conf/version.h>
 #include <yarp/os/Time.h>
+
+#include <ColorDebug.h>
+
+#include "SegmentorThread.hpp"
+
+#define DEFAULT_DETECTOR "HaarDetector"
 
 namespace
 {
@@ -30,22 +30,32 @@ namespace roboticslab
 {
 
 /************************************************************************/
-void SegmentorThread::setIRGBDSensor(yarp::dev::IRGBDSensor *_iRGBDSensor) {
+
+void SegmentorThread::setIRGBDSensor(yarp::dev::IRGBDSensor *_iRGBDSensor)
+{
     iRGBDSensor = _iRGBDSensor;
 }
 
 /************************************************************************/
-void SegmentorThread::setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg) {
+
+void SegmentorThread::setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg)
+{
     pOutImg = _pOutImg;
 }
 
 /************************************************************************/
-void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort) {
+
+void SegmentorThread::setOutPort(yarp::os::Port * _pOutPort)
+{
     pOutPort = _pOutPort;
 }
 
 /************************************************************************/
-void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
+
+bool SegmentorThread::init(yarp::os::ResourceFinder &rf)
+{
+    int rateMs = DEFAULT_RATE_MS;
+
     yarp::os::Property depthIntrinsicParams;
 
     iRGBDSensor->getDepthIntrinsicParam(depthIntrinsicParams);
@@ -55,36 +65,15 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     cx_d = depthIntrinsicParams.find("principalPointX").asFloat64();
     cy_d = depthIntrinsicParams.find("principalPointY").asFloat64();
 
-    int rateMs = DEFAULT_RATE_MS;
-
-    std::string xmlCascade = DEFAULT_XMLCASCADE;
-
-    printf("--------------------------------------------------------------\n");
-    if (rf.check("help")) {
-        printf("SegmentorThread options:\n");
-        printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-        printf("\t--rateMs (default: \"%d\")\n",rateMs);
-        printf("\t--xmlCascade [file.xml] (default: \"%s\")\n", xmlCascade.c_str());
-        // Do not exit: let last layer exit so we get help from the complete chain.
-    }
+    printf("SegmentorThread options:\n");
+    printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
+    printf("\t--rateMs (default: \"%d\")\n",rateMs);
+    std::printf("\t--detector (default: \"%s\")\n", DEFAULT_DETECTOR);
 
     printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
         fx_d,fy_d,cx_d,cy_d);
 
     if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt32();
-    if (rf.check("xmlCascade")) xmlCascade = rf.find("xmlCascade").asString();
-
-    printf("--------------------------------------------------------------\n");
-    if(rf.check("help")) {
-        ::exit(1);
-    }
-
-    std::string cascade = rf.findFileByName(xmlCascade);
-    if( ! face_cascade.load( cascade ) ) {
-        printf("[error] no cascade!\n");
-        ::exit(1);
-    }
-
 
     if(cropSelector != 0) {
         processor.reset();
@@ -98,13 +87,23 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf) {
     yarp::os::Time::delay(1);
 #endif
 
-    this->setPeriod(rateMs * 0.001);
-    this->start();
+    if(!setPeriod(rateMs * 0.001))
+    {
+        CD_ERROR("\n");
+        return false;
+    }
+
+    if(!start())
+    {
+        CD_ERROR("\n");
+        return false;
+    }
 }
 
 /************************************************************************/
-void SegmentorThread::run() {
-    // printf("[SegmentorThread] run()\n");
+void SegmentorThread::run()
+{
+    //printf("[SegmentorThread] run()\n");
 
     /*ImageOf<PixelRgb> *inYarpImg = pInImg->read(false);
     ImageOf<PixelFloat> *depth = pInDepth->read(false);
@@ -119,19 +118,19 @@ void SegmentorThread::run() {
 
     yarp::sig::FlexImage colorFrame;
     yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
-    if (!iRGBDSensor->getImages(colorFrame, depthFrame)) {
+
+    if (!iRGBDSensor->getImages(colorFrame, depthFrame))
+    {
         return;
     }
 
-    // {yarp ImageOf Rgb -> openCv Mat Bgr}
-    IplImage *inIplImage = cvCreateImage(cvSize(colorFrame.width(), colorFrame.height()),
-                                         IPL_DEPTH_8U, 1 );
-    cvCvtColor((IplImage*)colorFrame.getIplImage(), inIplImage, CV_RGB2GRAY);
-    cv::Mat inCvMat( cv::cvarrToMat(inIplImage) );
+    std::vector<yarp::os::Property> detectedObjects;
 
-    std::vector<cv::Rect> faces;
-    //face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0, Size(70, 70));
-    face_cascade.detectMultiScale( inCvMat, faces, 1.1, 2, 0|cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30) );
+    /*if (!iDetector->detect(colorFrame, detectedObjects))
+    {
+        CD_WARNING("Detector failed!\n");
+        return;
+    }*/
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
     outYarpImg.copy(colorFrame);
@@ -139,7 +138,7 @@ void SegmentorThread::run() {
     yarp::sig::PixelRgb green(0,255,0);
     yarp::os::Bottle output;
 
-    double minZ = 999999;
+    /*double minZ = 999999;
     int closestFace = 999999;
     for( int i = 0; i < faces.size(); i++ )
     {
@@ -200,7 +199,7 @@ void SegmentorThread::run() {
     cvReleaseImage( &inIplImage );  // release the memory for the image
 
     if (output.size() > 0)
-        pOutPort->write(output);
+        pOutPort->write(output);*/
 
 }
 
