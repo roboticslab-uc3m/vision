@@ -23,16 +23,16 @@
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_SEE_BOUNDING 3
 #define DEFAULT_THRESHOLD 55
-#define DEFAULT_XMLCASCADE  "haarcascade_frontalface_alt.xml"
+#define DEFAULT_XMLCASCADE  "switchcascade_frontalface_alt.xml"
 
 
 namespace roboticslab
 {
 
 /**
- * @ingroup haarDetection
+ * @ingroup switchDetection
  *
- * @brief Implements haarDetection callback on Bottle.
+ * @brief Implements switchDetection callback on Bottle.
  */
 class DataProcessor : public yarp::os::PortReader {
     virtual bool read(yarp::os::ConnectionReader& connection) {
@@ -77,9 +77,9 @@ public:
 };
 
 /**
- * @ingroup haarDetection
+ * @ingroup switchDetection
  *
- * @brief Implements haarDetection PeriodicThread.
+ * @brief Implements switchDetection PeriodicThread.
  */
 class SegmentorThread : public yarp::os::PeriodicThread {
 private:

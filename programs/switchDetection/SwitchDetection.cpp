@@ -1,12 +1,12 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "HaarDetection.hpp"
+#include "SwitchDetection.hpp"
 
 namespace roboticslab
 {
 
 /************************************************************************/
-bool HaarDetection::configure(yarp::os::ResourceFinder &rf) {
+bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
 
     cropSelector = DEFAULT_CROP_SELECTOR;
     std::string strRGBDDevice = DEFAULT_RGBD_DEVICE;
@@ -16,7 +16,7 @@ bool HaarDetection::configure(yarp::os::ResourceFinder &rf) {
 
     fprintf(stdout,"--------------------------------------------------------------\n");
     if (rf.check("help")) {
-        printf("HaarDetection options:\n");
+        printf("SwitchDetection options:\n");
         printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
         printf("\t--cropSelector (default: \"%d\")\n",cropSelector);
         printf("\t--RGBDDevice (device we create, default: \"%s\")\n",strRGBDDevice.c_str());
@@ -26,15 +26,15 @@ bool HaarDetection::configure(yarp::os::ResourceFinder &rf) {
         // Do not exit: let last layer exit so we get help from the complete chain.
     }
     if(rf.check("cropSelector")) cropSelector = rf.find("cropSelector").asInt32();
-    printf("HaarDetection using cropSelector: %d.\n",cropSelector);
+    printf("SwitchDetection using cropSelector: %d.\n",cropSelector);
     if(rf.check("RGBDDevice")) strRGBDDevice = rf.find("RGBDDevice").asString();
     if(rf.check("RGBDLocal")) strRGBDLocal = rf.find("RGBDLocal").asString();
     if(rf.check("RGBDRemote")) strRGBDRemote = rf.find("RGBDRemote").asString();
     if(rf.check("watchdog")) watchdog = rf.find("watchdog").asFloat64();
 
-    printf("HaarDetection using RGBDDevice: %s, RGBDLocal: %s, RGBDRemote: %s.\n",
+    printf("SwitchDetection using RGBDDevice: %s, RGBDLocal: %s, RGBDRemote: %s.\n",
         strRGBDDevice.c_str(), strRGBDLocal.c_str(), strRGBDRemote.c_str());
-    printf("HaarDetection using watchdog: %f.\n",watchdog);
+    printf("SwitchDetection using watchdog: %f.\n",watchdog);
 
     if (!rf.check("help")) {
         yarp::os::Property options;
@@ -51,9 +51,9 @@ bool HaarDetection::configure(yarp::os::ResourceFinder &rf) {
             printf("Waiting for RGBDDevice \"%s\"...\n",strRGBDDevice.c_str());
             yarp::os::Time::delay(1);
         }
-        printf("[HaarDetection] success: RGBDDevice available.\n");
-        if (! dd.view(iRGBDSensor) ) fprintf(stderr,"[HaarDetection] warning: RGBDDevice bad view.\n");
-        else printf("[HaarDetection] success: RGBDDevice ok view.\n");
+        printf("[SwitchDetection] success: RGBDDevice available.\n");
+        if (! dd.view(iRGBDSensor) ) fprintf(stderr,"[SwitchDetection] warning: RGBDDevice bad view.\n");
+        else printf("[SwitchDetection] success: RGBDDevice ok view.\n");
 
         segmentorThread.setIRGBDSensor(iRGBDSensor);
         segmentorThread.setOutImg(&outImg);
@@ -79,21 +79,21 @@ bool HaarDetection::configure(yarp::os::ResourceFinder &rf) {
 }
 
 /*****************************************************************/
-double HaarDetection::getPeriod() {
+double SwitchDetection::getPeriod() {
     return watchdog;  // [s]
 }
 
 /************************************************************************/
 
-bool HaarDetection::updateModule() {
-    printf("HaarDetection alive...\n");
+bool SwitchDetection::updateModule() {
+    printf("SwitchDetection alive...\n");
     return true;
 }
 
 /************************************************************************/
 
-bool HaarDetection::interruptModule() {
-    printf("HaarDetection closing...\n");
+bool SwitchDetection::interruptModule() {
+    printf("SwitchDetection closing...\n");
     segmentorThread.stop();
     outImg.interrupt();
     outPort.interrupt();

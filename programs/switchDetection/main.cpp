@@ -4,11 +4,11 @@
  *
  * @ingroup vision_programs
  *
- * \defgroup haarDetection haarDetection
+ * \defgroup switchDetection switchDetection
  *
- * @brief Creates an instance of roboticslab::HaarDetection.
+ * @brief Creates an instance of roboticslab::SwitchDetection.
  *
- * @section haarDetectionOptions HaarDetection options:
+ * @section switchDetectionOptions SwitchDetection options:
  *
  * |PROPERTY            | DESCRIPTION                           | DEFAULT              |
  * |--------------------|---------------------------------------|----------------------|
@@ -17,16 +17,16 @@
  * |context             |path                                   |                      |
  * |cropSelector        |                                       |0                     |
  * |RGBDDevice          |device we create                       |RGBDSensorClient      |
- * |RGBDLocal           |if accesing remote, local port name    |/haarDetection        |
+ * |RGBDLocal           |if accesing remote, local port name    |/switchDetection        |
  * |RGBDRemote          |if accesing remote, remote port name   |/rgbd                 |
  * |watchdog            |                                       |2.000000              |
  *
  *
- * @section  haarDetectionPorts HaarDetection output ports:
+ * @section  switchDetectionPorts SwitchDetection output ports:
  * |OUTPUT PORT            | CONTENT   |
  * |-----------------------|-----------|
- * |/haarDetection/img:o   | Output RGBD image with face detection using squares  |
- * |/haarDetection/state:o | xyz coordinates of face detection                    |
+ * |/switchDetection/img:o   | Output RGBD image with face detection using squares  |
+ * |/switchDetection/state:o | xyz coordinates of face detection                    |
  *
  * @section segmentorThread SegmentorThread options:
  *
@@ -36,7 +36,7 @@
  * |from                |file.ini                               |                               |
  * |context             |path                                   |                               |
  * |rateMs              |                                       |20                             |
- * |xmlCascade          |file.xml                               |haarcascade_frontalface_alt.xml|
+ * |xmlCascade          |file.xml                               |switchcascade_frontalface_alt.xml|
  *
  *
  *
@@ -45,17 +45,17 @@
 
 */
 
-#include "HaarDetection.hpp"
+#include "SwitchDetection.hpp"
 
 int main(int argc, char** argv) {
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(true);
-    rf.setDefaultContext("haarDetection");
-    rf.setDefaultConfigFile("haarDetection.ini");
+    rf.setDefaultContext("switchDetection");
+    rf.setDefaultConfigFile("switchDetection.ini");
     rf.configure(argc, argv);
 
-    roboticslab::HaarDetection mod;
+    roboticslab::SwitchDetection mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

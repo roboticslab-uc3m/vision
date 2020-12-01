@@ -1,13 +1,13 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __HAAR_DETECTION_HPP__
-#define __HAAR_DETECTION_HPP__
+#ifndef __SWITCH_DETECTION_HPP__
+#define __SWITCH_DETECTION_HPP__
 
 #include "SegmentorThread.hpp"
 
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
 #define DEFAULT_RGBD_DEVICE "RGBDSensorClient"
-#define DEFAULT_RGBD_LOCAL "/haarDetection"
+#define DEFAULT_RGBD_LOCAL "/switchDetection"
 #define DEFAULT_RGBD_REMOTE "/rgbd"
 #define DEFAULT_WATCHDOG    2       // [s]
 
@@ -16,11 +16,11 @@ namespace roboticslab
 {
 
 /**
- * @ingroup haarDetection
+ * @ingroup switchDetection
  *
  * @brief Computer Vision segment faces.
  */
-class HaarDetection : public yarp::os::RFModule {
+class SwitchDetection : public yarp::os::RFModule {
   private:
     SegmentorThread segmentorThread;
     //
@@ -45,5 +45,5 @@ class HaarDetection : public yarp::os::RFModule {
 
 }  // namespace roboticslab
 
-#endif  // __HAAR_DETECTION_HPP__
+#endif  // __SWITCH_DETECTION_HPP__
 
