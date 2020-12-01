@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
     std::string strRGBDRemote = "/rgbd";
 
     yarp::os::Property options;
+
     options.put("device","RGBDSensorClient");
     options.put("localImagePort",strRGBDLocal+"/rgbImage:i");
     options.put("localDepthPort",strRGBDLocal+"/depthImage:i");
@@ -39,7 +40,15 @@ int main(int argc, char *argv[])
     options.put("remoteImagePort",strRGBDRemote+"/rgbImage:o");
     options.put("remoteDepthPort",strRGBDRemote+"/depthImage:o");
     options.put("remoteRpcPort",strRGBDRemote+"/rpc:i");
-    //if(rf.check("noMirror")) options.put("noMirror",1);
+
+    // Alternative read directly from ROS (without any bridge module)
+    /*options.put("device","RGBDSensorFromRosTopic");
+    options.put("rgb_data_topic","/xtion/rgb/image_color");
+    options.put("rgb_info_topic","/xtion/rgb/camera_info");
+    options.put("depth_data_topic","/xtion/depth_registered/image_raw");
+    options.put("depth_data_info","/xtion/depth_registered/camera_info");*/
+
+    //options.put("noMirror",1);
 
     yarp::dev::PolyDriver dd(options);
 
