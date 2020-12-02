@@ -70,15 +70,30 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
         segmentorThread.setInCropSelectorPort(&inCropSelectorPort);
     }
 
-    segmentorThread.init(rf);
-
     //-----------------OPEN LOCAL PORTS------------//
-    outImg.open(strRGBDLocal + "/img:o");
-    outPort.open(strRGBDLocal + "/state:o");
-    if(cropSelector != 0) {
+    if(!outImg.open(strRGBDLocal + "/img:o"))
+    {
+        CD_ERROR("Bad outImg.open\n");
+        return false;
+    }
+    if(!outPort.open(strRGBDLocal + "/state:o"))
+    {
+        CD_ERROR("Bad outPort.open\n");
+        return false;
+    }
+    yarp::os::Time::delay(1);
+    if(cropSelector != 0)
+    {
         outCropSelectorImg.open(strRGBDLocal + "/cropSelector/img:o");
         inCropSelectorPort.open(strRGBDLocal + "/cropSelector/state:i");
     }
+
+    if(!segmentorThread.init(rf))
+    {
+        CD_ERROR("Bad segmentorThread.init\n");
+        return false;
+    }
+    CD_SUCCESS("\n");
     return true;
 }
 
