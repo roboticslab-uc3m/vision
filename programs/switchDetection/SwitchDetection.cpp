@@ -14,17 +14,14 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
     std::string strRGBDRemote = DEFAULT_RGBD_REMOTE;
     watchdog = DEFAULT_WATCHDOG;  // double
 
-    fprintf(stdout,"--------------------------------------------------------------\n");
-    if (rf.check("help")) {
-        printf("SwitchDetection options:\n");
-        printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-        printf("\t--cropSelector (default: \"%d\")\n",cropSelector);
-        printf("\t--RGBDDevice (device we create, default: \"%s\")\n",strRGBDDevice.c_str());
-        printf("\t--RGBDLocal (if accesing remote, local port name, default: \"%s\")\n",strRGBDLocal.c_str());
-        printf("\t--RGBDRemote (if accesing remote, remote port name, default: \"%s\")\n",strRGBDRemote.c_str());
-        printf("\t--watchdog ([s] default: \"%f\")\n",watchdog);
-        // Do not exit: let last layer exit so we get help from the complete chain.
-    }
+    printf("SwitchDetection options:\n");
+    printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
+    printf("\t--cropSelector (default: \"%d\")\n",cropSelector);
+    printf("\t--RGBDDevice (device we create, default: \"%s\")\n",strRGBDDevice.c_str());
+    printf("\t--RGBDLocal (if accesing remote, local port name, default: \"%s\")\n",strRGBDLocal.c_str());
+    printf("\t--RGBDRemote (if accesing remote, remote port name, default: \"%s\")\n",strRGBDRemote.c_str());
+    printf("\t--watchdog ([s] default: \"%f\")\n",watchdog);
+
     if(rf.check("cropSelector")) cropSelector = rf.find("cropSelector").asInt32();
     printf("SwitchDetection using cropSelector: %d.\n",cropSelector);
     if(rf.check("RGBDDevice")) strRGBDDevice = rf.find("RGBDDevice").asString();
@@ -36,34 +33,34 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
         strRGBDDevice.c_str(), strRGBDLocal.c_str(), strRGBDRemote.c_str());
     printf("SwitchDetection using watchdog: %f.\n",watchdog);
 
-    if (!rf.check("help")) {
-        yarp::os::Property options;
-        options.fromString( rf.toString() );  //-- Should get noMirror, noRGBMirror, noDepthMirror, video modes...
-        options.put("device",strRGBDDevice);  //-- Important to override in case there is a "device" in the future
-        options.put("localImagePort",strRGBDLocal+"/rgbImage:i");
-        options.put("localDepthPort",strRGBDLocal+"/depthImage:i");
-        options.put("localRpcPort",strRGBDLocal+"/rpc:o");
-        options.put("remoteImagePort",strRGBDRemote+"/rgbImage:o");
-        options.put("remoteDepthPort",strRGBDRemote+"/depthImage:o");
-        options.put("remoteRpcPort",strRGBDRemote+"/rpc:i");
-        //if(rf.check("noMirror")) options.put("noMirror",1);  //-- Replaced by options.fromString( rf.toString() );
-        while(!dd.open(options)) {
-            printf("Waiting for RGBDDevice \"%s\"...\n",strRGBDDevice.c_str());
-            yarp::os::Time::delay(1);
-        }
-        printf("[SwitchDetection] success: RGBDDevice available.\n");
-        if (! dd.view(iRGBDSensor) ) fprintf(stderr,"[SwitchDetection] warning: RGBDDevice bad view.\n");
-        else printf("[SwitchDetection] success: RGBDDevice ok view.\n");
+    yarp::os::Property options;
+    options.fromString( rf.toString() );  //-- Should get noMirror, noRGBMirror, noDepthMirror, video modes...
+    options.put("device",strRGBDDevice);  //-- Important to override in case there is a "device" in the future
+    options.put("localImagePort",strRGBDLocal+"/rgbImage:i");
+    options.put("localDepthPort",strRGBDLocal+"/depthImage:i");
+    options.put("localRpcPort",strRGBDLocal+"/rpc:o");
+    options.put("remoteImagePort",strRGBDRemote+"/rgbImage:o");
+    options.put("remoteDepthPort",strRGBDRemote+"/depthImage:o");
+    options.put("remoteRpcPort",strRGBDRemote+"/rpc:i");
+    //if(rf.check("noMirror")) options.put("noMirror",1);  //-- Replaced by options.fromString( rf.toString() );
 
-        segmentorThread.setIRGBDSensor(iRGBDSensor);
-        segmentorThread.setOutImg(&outImg);
-        segmentorThread.setOutPort(&outPort);
+    if(!dd.open(options))
+    {
+        printf("Bad RGBDDevice \"%s\"...\n",strRGBDDevice.c_str());
+        return false;
+    }
+    printf("[SwitchDetection] success: RGBDDevice available.\n");
+    if (! dd.view(iRGBDSensor) ) fprintf(stderr,"[SwitchDetection] warning: RGBDDevice bad view.\n");
+    else printf("[SwitchDetection] success: RGBDDevice ok view.\n");
 
-        segmentorThread.setCropSelector(cropSelector);
-        if(cropSelector != 0) {
-            segmentorThread.setOutCropSelectorImg(&outCropSelectorImg);
-            segmentorThread.setInCropSelectorPort(&inCropSelectorPort);
-        }
+    segmentorThread.setIRGBDSensor(iRGBDSensor);
+    segmentorThread.setOutImg(&outImg);
+    segmentorThread.setOutPort(&outPort);
+
+    segmentorThread.setCropSelector(cropSelector);
+    if(cropSelector != 0) {
+        segmentorThread.setOutCropSelectorImg(&outCropSelectorImg);
+        segmentorThread.setInCropSelectorPort(&inCropSelectorPort);
     }
 
     segmentorThread.init(rf);
