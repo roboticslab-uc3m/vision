@@ -7,17 +7,17 @@
 
 #include <ColorDebug.h>
 
-#include "SwitchDetection2D.hpp"
+#include "RgbDetection.hpp"
 
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
 #define DEFAULT_CAMERA_DEVICE "remote_grabber"
-#define DEFAULT_CAMERA_LOCAL "/switchDetection2D"
+#define DEFAULT_CAMERA_LOCAL "/rgbDetection"
 #define DEFAULT_CAMERA_REMOTE "/grabber"
 #define DEFAULT_WATCHDOG    2       // [s]
 
 /************************************************************************/
 
-bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
+bool roboticslab::RgbDetection::configure(yarp::os::ResourceFinder &rf)
 {
     cropSelector = DEFAULT_CROP_SELECTOR;
     std::string strCameraDevice = DEFAULT_CAMERA_DEVICE;
@@ -25,7 +25,7 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
     std::string strCameraRemote = DEFAULT_CAMERA_REMOTE;
     watchdog = DEFAULT_WATCHDOG;  // double
 
-    std::printf("SwitchDetection2D options:\n");
+    std::printf("RgbDetection options:\n");
     std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
     std::printf("\t--cropSelector (default: \"%d\")\n", cropSelector);
     std::printf("\t--cameraDevice (device we create, default: \"%s\")\n", strCameraDevice.c_str());
@@ -60,7 +60,7 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
         watchdog = rf.find("watchdog").asFloat64();
     }
 
-    strCameraLocal ="/switchDetection2D";
+    strCameraLocal ="/rgbDetection";
 
     CD_INFO("Using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s.\n",
         strCameraDevice.c_str(), strCameraLocal.c_str(), strCameraRemote.c_str());
@@ -107,7 +107,7 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
 
     //-----------------OPEN LOCAL PORTS------------//
 
-    std::string portPrefix("/switchDetection2D");
+    std::string portPrefix("/rgbDetection");
     portPrefix += strCameraRemote;
     outImg.open(portPrefix + "/img:o");
     outPort.open(portPrefix + "/state:o");
@@ -124,14 +124,14 @@ bool roboticslab::SwitchDetection2D::configure(yarp::os::ResourceFinder &rf)
 
 /*****************************************************************/
 
-double roboticslab::SwitchDetection2D::getPeriod()
+double roboticslab::RgbDetection::getPeriod()
 {
     return watchdog;  // [s]
 }
 
 /************************************************************************/
 
-bool roboticslab::SwitchDetection2D::updateModule()
+bool roboticslab::RgbDetection::updateModule()
 {
     CD_INFO("Alive...\n");
     return true;
@@ -139,7 +139,7 @@ bool roboticslab::SwitchDetection2D::updateModule()
 
 /************************************************************************/
 
-bool roboticslab::SwitchDetection2D::interruptModule()
+bool roboticslab::RgbDetection::interruptModule()
 {
     detectorThread.askToStop();
 
@@ -157,7 +157,7 @@ bool roboticslab::SwitchDetection2D::interruptModule()
 
 /************************************************************************/
 
-bool roboticslab::SwitchDetection2D::close()
+bool roboticslab::RgbDetection::close()
 {
     CD_INFO("Closing...\n");
 

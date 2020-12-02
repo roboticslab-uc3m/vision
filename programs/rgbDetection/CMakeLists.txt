@@ -1,26 +1,25 @@
-option(ENABLE_switchDetection2D "Enable/disable switchDetection2D program" ON)
+option(ENABLE_rgbDetection "Enable/disable rgbDetection program" ON)
 
-if(ENABLE_switchDetection2D)
+if(ENABLE_rgbDetection)
 
-    # switchDetection2D
-    add_executable(switchDetection2D main.cpp
-                                     SwitchDetection2D.hpp
-                                     SwitchDetection2D.cpp
-                                     DetectorThread.hpp
-                                     DetectorThread.cpp)
+    add_executable(rgbDetection main.cpp
+                                RgbDetection.hpp
+                                RgbDetection.cpp
+                                DetectorThread.hpp
+                                DetectorThread.cpp)
 
-    target_link_libraries(switchDetection2D YARP::YARP_os
-                                            YARP::YARP_init
-                                            YARP::YARP_dev
-                                            YARP::YARP_sig
-                                            ROBOTICSLAB::ColorDebug
-                                            VisionInterfaces)
+    target_link_libraries(rgbDetection YARP::YARP_os
+                                       YARP::YARP_init
+                                       YARP::YARP_dev
+                                       YARP::YARP_sig
+                                       ROBOTICSLAB::ColorDebug
+                                       VisionInterfaces)
 
-    install(TARGETS switchDetection2D
+    install(TARGETS rgbDetection
             DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 else()
 
-    set(ENABLE_switchDetection2D OFF CACHE BOOL "Enable/disable switchDetection2D program" FORCE)
+    set(ENABLE_rgbDetection OFF CACHE BOOL "Enable/disable rgbDetection program" FORCE)
 
 endif()
