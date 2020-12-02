@@ -209,9 +209,11 @@ void SegmentorThread::run()
                                                  width / 2,
                                                  height / 2);
 
-            output.addFloat64( - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
-            output.addFloat64( mmY_tmp );    // Points down.
-            output.addFloat64( mmZ_tmp );    // Points forward.
+            yarp::os::Property closestObjectDict;
+            closestObjectDict.put("mmX", - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
+            closestObjectDict.put("mmY", mmY_tmp );    // Points down.
+            closestObjectDict.put("mmZ", mmZ_tmp );    // Points forward.
+            output.addDict() = closestObjectDict;
         }
         else
         {
@@ -222,7 +224,7 @@ void SegmentorThread::run()
                                                  width / 2,
                                                  height / 2);
         }
-        output.addDict() = detectedObjects[i];
+        //output.addDict() = detectedObjects[i];
     }
 
     pOutImg->prepare() = outYarpImg;
