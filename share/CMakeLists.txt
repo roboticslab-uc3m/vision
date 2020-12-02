@@ -3,8 +3,8 @@
 # CopyPolicy: Released under the terms of the GNU LGPL v2.1.
 
 yarp_install(FILES applications/ymanager.ini
-                   applications/example_switchDetection.xml
                    applications/example_rgbDetection.xml
+                   applications/example_switchDetection.xml
                    applications/visionFakeSensors.xml
                    applications/visionSensors.xml
                    applications/visionTools.xml
@@ -15,7 +15,7 @@ yarp_install(FILES applications/ymanager.ini
 add_subdirectory(HaarDetector)
 add_subdirectory(QRDetector)
 add_subdirectory(colorRegionDetection)
-add_subdirectory(sceneReconstruction)
 add_subdirectory(rgbDetection)
-add_subdirectory(tensorflowDetection2D)
+add_subdirectory(sceneReconstruction)
 add_subdirectory(sensors)
+add_subdirectory(tensorflowDetection2D)
