@@ -12,7 +12,6 @@ if(ENABLE_switchDetection)
                                           YARP::YARP_init
                                           YARP::YARP_dev
                                           YARP::YARP_sig
-                                          ROBOTICSLAB::ColorDebug
                                           VisionInterfaces)
 
     install(TARGETS switchDetection
