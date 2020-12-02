@@ -5,7 +5,9 @@
 
 #include <string>
 
+#include <yarp/os/Property.h>
 #include <yarp/os/Searchable.h>
+
 #include <yarp/sig/PointCloud.h>
 #include <yarp/sig/Vector.h>
 
@@ -40,7 +42,15 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
 }
 
 template <typename T>
-bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::PointCloud<T> & meshPoints, yarp::sig::VectorOf<int> & meshIndices, const yarp::os::Searchable & options);
+bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud,
+                   yarp::sig::PointCloud<T> & meshPoints,
+                   yarp::sig::VectorOf<int> & meshIndices,
+                   const yarp::os::Searchable & options = yarp::os::Property({
+                                                              {"downsampleAlgorithm", yarp::os::Value("VoxelGrid")},
+                                                              {"downsampleLeafSize", yarp::os::Value(0.02f)},
+                                                              {"estimatorKSearch", yarp::os::Value(40)},
+                                                              {"surfaceAlgorithm", yarp::os::Value("Poisson")}
+                                                          }));
 
 } // namespace YarpCloudUtils
 
