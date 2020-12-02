@@ -1,7 +1,5 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include <ColorDebug.h>
-
 #include "SwitchDetection.hpp"
 
 namespace roboticslab
@@ -48,17 +46,17 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
 
     if(!dd.open(options))
     {
-        CD_ERROR("Bad RGBDDevice \"%s\"...\n",strRGBDDevice.c_str());
+        yError("Bad RGBDDevice \"%s\"...\n",strRGBDDevice.c_str());
         return false;
     }
-    CD_SUCCESS("RGBDDevice available.\n");
+    yInfo("RGBDDevice available.\n");
 
     if (! dd.view(iRGBDSensor) )
     {
-        CD_ERROR("RGBDDevice bad view.\n");
+        yError("RGBDDevice bad view.\n");
         return false;
     }
-    CD_SUCCESS("RGBDDevice ok view.\n");
+    yInfo("RGBDDevice ok view.\n");
 
     segmentorThread.setIRGBDSensor(iRGBDSensor);
     segmentorThread.setOutImg(&outImg);
@@ -75,12 +73,12 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
     portPrefix += strRGBDRemote;
     if(!outImg.open(portPrefix + "/img:o"))
     {
-        CD_ERROR("Bad outImg.open\n");
+        yError("Bad outImg.open\n");
         return false;
     }
     if(!outPort.open(portPrefix + "/state:o"))
     {
-        CD_ERROR("Bad outPort.open\n");
+        yError("Bad outPort.open\n");
         return false;
     }
 
@@ -92,10 +90,10 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
 
     if(!segmentorThread.init(rf))
     {
-        CD_ERROR("Bad segmentorThread.init\n");
+        yError("Bad segmentorThread.init\n");
         return false;
     }
-    CD_SUCCESS("\n");
+    yInfo("--- end: configure\n");
     return true;
 }
 

@@ -3,8 +3,6 @@
 #include <yarp/conf/version.h>
 #include <yarp/os/Time.h>
 
-#include <ColorDebug.h>
-
 #include "SegmentorThread.hpp"
 
 #define DEFAULT_DETECTOR "HaarDetector"
@@ -58,20 +56,23 @@ bool SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     yarp::os::Property depthIntrinsicParams;
 
-    iRGBDSensor->getDepthIntrinsicParam(depthIntrinsicParams);
+    if(!iRGBDSensor->getDepthIntrinsicParam(depthIntrinsicParams))
+    {
+        yError("\n");
+        return false;
+    }
 
     fx_d = depthIntrinsicParams.find("focalLengthX").asFloat64();
     fy_d = depthIntrinsicParams.find("focalLengthY").asFloat64();
     cx_d = depthIntrinsicParams.find("principalPointX").asFloat64();
     cy_d = depthIntrinsicParams.find("principalPointY").asFloat64();
 
-    printf("SegmentorThread options:\n");
-    printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-    printf("\t--rateMs (default: \"%d\")\n",rateMs);
-    std::printf("\t--detector (default: \"%s\")\n", DEFAULT_DETECTOR);
+    yInfo("SegmentorThread options:\n");
+    yInfo("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
+    yInfo("\t--rateMs (default: \"%d\")\n",rateMs);
+    yInfo("\t--detector (default: \"%s\")\n", DEFAULT_DETECTOR);
 
-    printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
-        fx_d,fy_d,cx_d,cy_d);
+    yInfo("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n", fx_d,fy_d,cx_d,cy_d);
 
     if (rf.check("rateMs"))
     {
@@ -85,17 +86,17 @@ bool SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     if(!detectorDevice.open(deviceOptions))
     {
-        CD_ERROR("Failed to open device: %s\n", rf.find("device").toString().c_str());
+        yError("Failed to open device: %s\n", rf.find("device").toString().c_str());
         return false;
     }
 
     if (!detectorDevice.view(iDetector))
     {
-        CD_ERROR("Problems acquiring detector interface\n");
+        yError("Problems acquiring detector interface\n");
         return false;
     }
 
-    CD_SUCCESS("Acquired detector interface\n");
+    yInfo("Acquired detector interface\n");
 
     if(cropSelector != 0)
     {
@@ -112,21 +113,22 @@ bool SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     if(!setPeriod(rateMs * 0.001))
     {
-        CD_ERROR("\n");
+        yError("\n");
         return false;
     }
 
     if(!start())
     {
-        CD_ERROR("\n");
+        yError("\n");
         return false;
     }
+    return true;
 }
 
 /************************************************************************/
 void SegmentorThread::run()
 {
-    //printf("[SegmentorThread] run()\n");
+    //yInfo("run()\n");
 
     /*ImageOf<PixelRgb> *inYarpImg = pInImg->read(false);
     ImageOf<PixelFloat> *depth = pInDepth->read(false);
@@ -150,7 +152,7 @@ void SegmentorThread::run()
     std::vector<yarp::os::Property> detectedObjects;
     if (!iDetector->detect(colorFrame, detectedObjects))
     {
-        CD_WARNING("Detector failed!\n");
+        yWarning("Detector failed!\n");
         return;
     }
 
@@ -172,7 +174,7 @@ void SegmentorThread::run()
 
         if (mmZ_tmp < 0.001)
         {
-            CD_WARNING("mmZ_tmp[%d] < 0.001.\n",i);
+            yWarning("mmZ_tmp[%d] < 0.001.\n",i);
             return;
         }
 
@@ -193,7 +195,7 @@ void SegmentorThread::run()
 
         if (mmZ_tmp < 0.001)
         {
-            CD_WARNING("mmZ_tmp[%d] < 0.001.\n",i);
+            yWarning("mmZ_tmp[%d] < 0.001.\n",i);
             return;
         }
 
