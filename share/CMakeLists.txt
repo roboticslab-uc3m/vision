@@ -15,7 +15,6 @@ yarp_install(FILES applications/ymanager.ini
 add_subdirectory(HaarDetector)
 add_subdirectory(QRDetector)
 add_subdirectory(colorRegionDetection)
-add_subdirectory(rgbDetection)
 add_subdirectory(sceneReconstruction)
 add_subdirectory(sensors)
 add_subdirectory(tensorflowDetection2D)
