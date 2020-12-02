@@ -112,6 +112,11 @@ namespace
         filter->setKeepOrganized(true); // don't remove points from the cloud, fill holes with NaNs
         filter->setNegative(negative);
         filter->filter(*out);
+
+        if (out->empty())
+        {
+            throw std::runtime_error("got empty cloud after crop step");
+        }
     }
 
     template <typename T>
@@ -156,6 +161,11 @@ namespace
 
         downsampler->setInputCloud(in);
         downsampler->filter(*out);
+
+        if (out->empty())
+        {
+            throw std::runtime_error("got empty cloud after downsampling step");
+        }
     }
 
     template <typename T>
@@ -253,6 +263,11 @@ namespace
 
         processor->setInputCloud(in);
         processor->process(*out);
+
+        if (out->empty())
+        {
+            throw std::runtime_error("got empty cloud after cloud smoothing step");
+        }
     }
 
     template <typename T>
@@ -287,6 +302,11 @@ namespace
         estimator->setRadiusSearch(radiusSearch);
         estimator->setSearchMethod(tree);
         estimator->compute(*out);
+
+        if (out->empty())
+        {
+            throw std::runtime_error("got empty cloud after normal estimation step");
+        }
     }
 
     template <typename T>
@@ -589,6 +609,11 @@ namespace
 
         processor->setInputMesh(in);
         processor->process(*out);
+
+        if (out->cloud.data.empty() || out->polygons.empty())
+        {
+            throw std::runtime_error("got empty mesh after mesh procesing step");
+        }
     }
 
     template <typename T>
@@ -622,6 +647,11 @@ namespace
             pcl::concatenateFields(*stripped, *normals, *cloudWithNormals);
 
             reconstructNormal<pcl_concatenated>(cloudWithNormals, out, options);
+        }
+
+        if (out->cloud.data.empty() || out->polygons.empty())
+        {
+            throw std::runtime_error("got empty mesh after surface reconstruction step");
         }
     }
 
