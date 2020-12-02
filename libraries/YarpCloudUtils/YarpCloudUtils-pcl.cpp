@@ -656,10 +656,8 @@ namespace
     }
 
     template <typename T, std::enable_if_t<is_unsupported_pcl_type<T>, bool> = true>
-    void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr & cloud, pcl::PolygonMesh::Ptr & mesh, const yarp::os::Searchable & options)
-    {
-        throw std::invalid_argument("unsupported point type");
-    }
+    void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr &, pcl::PolygonMesh::Ptr &, const yarp::os::Searchable &)
+    {}
 
     template <typename T, std::enable_if_t<!is_unsupported_pcl_type<T>, bool> = true>
     void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr & cloud, pcl::PolygonMesh::Ptr & mesh, const yarp::os::Searchable & options)
@@ -733,14 +731,27 @@ namespace roboticslab
 namespace YarpCloudUtils
 {
 
-template <typename T>
-bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::PointCloud<T> & meshPoints, yarp::sig::VectorOf<int> & meshIndices, const yarp::os::Searchable & options)
+template <typename T1, typename T2>
+bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud, yarp::sig::PointCloud<T2> & meshPoints, yarp::sig::VectorOf<int> & meshIndices, const yarp::os::Searchable & options)
 {
 #ifdef HAVE_PCL
-    using pcl_type = typename pcl_type_from_yarp<T>::type;
+    using pcl_input_type = typename pcl_type_from_yarp<T1>::type;
+    using pcl_output_type = typename pcl_type_from_yarp<T2>::type;
+
+    if (is_unsupported_pcl_type<pcl_input_type>)
+    {
+        yError() << "unsupported input point type";
+        return false;
+    }
+
+    if (is_unsupported_pcl_type<pcl_output_type>)
+    {
+        yError() << "unsupported output point type";
+        return false;
+    }
 
     // Convert YARP cloud to PCL cloud.
-    typename pcl::PointCloud<pcl_type>::Ptr pclXYZ(new pcl::PointCloud<pcl_type>());
+    typename pcl::PointCloud<pcl_input_type>::Ptr pclXYZ(new pcl::PointCloud<pcl_input_type>());
     yarp::pcl::toPCL(cloud, *pclXYZ);
 
     // Perform surface reconstruction.
@@ -748,7 +759,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::PointCloud
 
     try
     {
-        meshFromCloudPCL<pcl_type>(pclXYZ, pclMesh, options);
+        meshFromCloudPCL<pcl_input_type>(pclXYZ, pclMesh, options);
     }
     catch (const std::exception & e)
     {
@@ -757,7 +768,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::PointCloud
     }
 
     // Extract point cloud of vertices from mesh.
-    typename pcl::PointCloud<pcl_type>::Ptr pclMeshPoints(new pcl::PointCloud<pcl_type>());
+    typename pcl::PointCloud<pcl_output_type>::Ptr pclMeshPoints(new pcl::PointCloud<pcl_output_type>());
     pcl::fromPCLPointCloud2(pclMesh->cloud, *pclMeshPoints);
 
     // Convert PCL mesh to YARP cloud and vector of indices.
@@ -771,17 +782,11 @@ bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::PointCloud
 #endif
 }
 
-// explicit instantiations
-
-template bool meshFromCloud(const yarp::sig::PointCloudXY &, yarp::sig::PointCloudXY &, yarp::sig::VectorOf<int> &, const yarp::os::Searchable &);
-template bool meshFromCloud(const yarp::sig::PointCloudXYZ &, yarp::sig::PointCloudXYZ &, yarp::sig::VectorOf<int> &, const yarp::os::Searchable &);
-template bool meshFromCloud(const yarp::sig::PointCloudNormal &, yarp::sig::PointCloudNormal &, yarp::sig::VectorOf<int> &, const yarp::os::Searchable &);
-template bool meshFromCloud(const yarp::sig::PointCloudXYZRGBA &, yarp::sig::PointCloudXYZRGBA &, yarp::sig::VectorOf<int> &, const yarp::os::Searchable &);
-template bool meshFromCloud(const yarp::sig::PointCloudXYZI &, yarp::sig::PointCloudXYZI &, yarp::sig::VectorOf<int> &, const yarp::os::Searchable &);
-template bool meshFromCloud(const yarp::sig::PointCloudInterestPointXYZ &, yarp::sig::PointCloudInterestPointXYZ &, yarp::sig::VectorOf<int> &, const yarp::os::Searchable &);
-template bool meshFromCloud(const yarp::sig::PointCloudXYZNormal &, yarp::sig::PointCloudXYZNormal &, yarp::sig::VectorOf<int> &, const yarp::os::Searchable &);
-template bool meshFromCloud(const yarp::sig::PointCloudXYZNormalRGBA &, yarp::sig::PointCloudXYZNormalRGBA &, yarp::sig::VectorOf<int> &, const yarp::os::Searchable &);
-
 } // namespace YarpCloudUtils
 
 } // namespace roboticslab
+
+#ifdef HAVE_PCL
+// explicit instantiations
+#include "YarpCloudUtils-inst.hpp"
+#endif

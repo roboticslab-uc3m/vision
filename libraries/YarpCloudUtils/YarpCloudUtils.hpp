@@ -43,9 +43,9 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
     return loadPLY(filename, cloud, indices);
 }
 
-template <typename T>
-bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud,
-                   yarp::sig::PointCloud<T> & meshPoints,
+template <typename T1, typename T2>
+bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
+                   yarp::sig::PointCloud<T2> & meshPoints,
                    yarp::sig::VectorOf<int> & meshIndices,
                    const yarp::os::Searchable & options = yarp::os::Property({
                                                               {"downsampleAlgorithm", yarp::os::Value("VoxelGrid")},
