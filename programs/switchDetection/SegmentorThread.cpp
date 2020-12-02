@@ -73,9 +73,32 @@ bool SegmentorThread::init(yarp::os::ResourceFinder &rf)
     printf("SegmentorThread using fx_d: %f, fy_d: %f, cx_d: %f, cy_d: %f.\n",
         fx_d,fy_d,cx_d,cy_d);
 
-    if (rf.check("rateMs")) rateMs = rf.find("rateMs").asInt32();
+    if (rf.check("rateMs"))
+    {
+        rateMs = rf.find("rateMs").asInt32();
+    }
 
-    if(cropSelector != 0) {
+    yarp::os::Property deviceOptions;
+    deviceOptions.fromString(rf.toString());
+
+    deviceOptions.put("device", deviceOptions.check("detector", yarp::os::Value(DEFAULT_DETECTOR), "detector to be used"));
+
+    if(!detectorDevice.open(deviceOptions))
+    {
+        CD_ERROR("Failed to open device: %s\n", rf.find("device").toString().c_str());
+        return false;
+    }
+
+    if (!detectorDevice.view(iDetector))
+    {
+        CD_ERROR("Problems acquiring detector interface\n");
+        return false;
+    }
+
+    CD_SUCCESS("Acquired detector interface\n");
+
+    if(cropSelector != 0)
+    {
         processor.reset();
         inCropSelectorPort->setReader(processor);
     }
@@ -125,7 +148,6 @@ void SegmentorThread::run()
     }
 
     std::vector<yarp::os::Property> detectedObjects;
-
     if (!iDetector->detect(colorFrame, detectedObjects))
     {
         CD_WARNING("Detector failed!\n");
