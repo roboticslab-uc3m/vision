@@ -4,11 +4,11 @@
  *
  * @ingroup vision_programs
  *
- * \defgroup switchDetection switchDetection
+ * \defgroup rgbdDetection rgbdDetection
  *
- * @brief Creates an instance of roboticslab::SwitchDetection.
+ * @brief Creates an instance of roboticslab::RgbdDetection.
  *
- * @section switchDetectionOptions SwitchDetection options:
+ * @section rgbdDetectionOptions RgbdDetection options:
  *
  * |PROPERTY            | DESCRIPTION                           | DEFAULT              |
  * |--------------------|---------------------------------------|----------------------|
@@ -17,16 +17,16 @@
  * |context             |path                                   |                      |
  * |cropSelector        |                                       |0                     |
  * |RGBDDevice          |device we create                       |RGBDSensorClient      |
- * |RGBDLocal           |if accesing remote, local port name    |/switchDetection        |
+ * |RGBDLocal           |if accesing remote, local port name    |/rgbdDetection        |
  * |RGBDRemote          |if accesing remote, remote port name   |/rgbd                 |
  * |watchdog            |                                       |2.000000              |
  *
  *
- * @section  switchDetectionPorts SwitchDetection output ports:
+ * @section  rgbdDetectionPorts RgbdDetection output ports:
  * |OUTPUT PORT            | CONTENT   |
  * |-----------------------|-----------|
- * |/switchDetection/img:o   | Output RGBD image with face detection using squares  |
- * |/switchDetection/state:o | xyz coordinates of face detection                    |
+ * |/rgbdDetection/img:o   | Output RGBD image with face detection using squares  |
+ * |/rgbdDetection/state:o | xyz coordinates of face detection                    |
  *
  * @section segmentorThread SegmentorThread options:
  *
@@ -45,17 +45,17 @@
 
 */
 
-#include "SwitchDetection.hpp"
+#include "RgbdDetection.hpp"
 
 int main(int argc, char** argv) {
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(true);
-    rf.setDefaultContext("switchDetection");
-    rf.setDefaultConfigFile("switchDetection.ini");
+    rf.setDefaultContext("rgbdDetection");
+    rf.setDefaultConfigFile("rgbdDetection.ini");
     rf.configure(argc, argv);
 
-    roboticslab::SwitchDetection mod;
+    roboticslab::RgbdDetection mod;
     if(rf.check("help")) {
         return mod.runModule(rf);
     }

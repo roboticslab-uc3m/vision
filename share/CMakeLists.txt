@@ -4,7 +4,7 @@
 
 yarp_install(FILES applications/ymanager.ini
                    applications/example_rgbDetection.xml
-                   applications/example_switchDetection.xml
+                   applications/example_rgbdDetection.xml
                    applications/visionFakeSensors.xml
                    applications/visionSensors.xml
                    applications/visionTools.xml

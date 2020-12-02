@@ -23,9 +23,9 @@ namespace roboticslab
 {
 
 /**
- * @ingroup switchDetection
+ * @ingroup rgbdDetection
  *
- * @brief Implements switchDetection callback on Bottle.
+ * @brief Implements rgbdDetection callback on Bottle.
  */
 class DataProcessor : public yarp::os::PortReader {
     virtual bool read(yarp::os::ConnectionReader& connection) {
@@ -70,9 +70,9 @@ public:
 };
 
 /**
- * @ingroup switchDetection
+ * @ingroup rgbdDetection
  *
- * @brief Implements switchDetection PeriodicThread.
+ * @brief Implements rgbdDetection PeriodicThread.
  */
 class SegmentorThread : public yarp::os::PeriodicThread
 {

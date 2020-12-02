@@ -1,24 +1,24 @@
-option(ENABLE_switchDetection "Enable/disable switchDetection program" ON)
+option(ENABLE_rgbdDetection "Enable/disable rgbdDetection program" ON)
 
-if(ENABLE_switchDetection)
+if(ENABLE_rgbdDetection)
 
-    add_executable(switchDetection main.cpp
-                                   SwitchDetection.hpp
-                                   SwitchDetection.cpp
-                                   SegmentorThread.hpp
-                                   SegmentorThread.cpp)
+    add_executable(rgbdDetection main.cpp
+                                 RgbdDetection.hpp
+                                 RgbdDetection.cpp
+                                 SegmentorThread.hpp
+                                 SegmentorThread.cpp)
 
-    target_link_libraries(switchDetection YARP::YARP_os
-                                          YARP::YARP_init
-                                          YARP::YARP_dev
-                                          YARP::YARP_sig
-                                          VisionInterfaces)
+    target_link_libraries(rgbdDetection YARP::YARP_os
+                                        YARP::YARP_init
+                                        YARP::YARP_dev
+                                        YARP::YARP_sig
+                                        VisionInterfaces)
 
-    install(TARGETS switchDetection
+    install(TARGETS rgbdDetection
             DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 else()
 
-    set(ENABLE_switchDetection OFF CACHE BOOL "Enable/disable switchDetection program" FORCE)
+    set(ENABLE_rgbdDetection OFF CACHE BOOL "Enable/disable rgbdDetection program" FORCE)
 
 endif()

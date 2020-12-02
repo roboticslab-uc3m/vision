@@ -1,12 +1,12 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "SwitchDetection.hpp"
+#include "RgbdDetection.hpp"
 
 namespace roboticslab
 {
 
 /************************************************************************/
-bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
+bool RgbdDetection::configure(yarp::os::ResourceFinder &rf) {
 
     cropSelector = DEFAULT_CROP_SELECTOR;
     std::string strRGBDDevice = DEFAULT_RGBD_DEVICE;
@@ -14,7 +14,7 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
     std::string strRGBDRemote = DEFAULT_RGBD_REMOTE;
     watchdog = DEFAULT_WATCHDOG;  // double
 
-    printf("SwitchDetection options:\n");
+    printf("RgbdDetection options:\n");
     printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
     printf("\t--cropSelector (default: \"%d\")\n",cropSelector);
     printf("\t--RGBDDevice (device we create, default: \"%s\")\n",strRGBDDevice.c_str());
@@ -23,15 +23,15 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
     printf("\t--watchdog ([s] default: \"%f\")\n",watchdog);
 
     if(rf.check("cropSelector")) cropSelector = rf.find("cropSelector").asInt32();
-    printf("SwitchDetection using cropSelector: %d.\n",cropSelector);
+    printf("RgbdDetection using cropSelector: %d.\n",cropSelector);
     if(rf.check("RGBDDevice")) strRGBDDevice = rf.find("RGBDDevice").asString();
     if(rf.check("RGBDLocal")) strRGBDLocal = rf.find("RGBDLocal").asString();
     if(rf.check("RGBDRemote")) strRGBDRemote = rf.find("RGBDRemote").asString();
     if(rf.check("watchdog")) watchdog = rf.find("watchdog").asFloat64();
 
-    printf("SwitchDetection using RGBDDevice: %s, RGBDLocal: %s, RGBDRemote: %s.\n",
+    printf("RgbdDetection using RGBDDevice: %s, RGBDLocal: %s, RGBDRemote: %s.\n",
         strRGBDDevice.c_str(), strRGBDLocal.c_str(), strRGBDRemote.c_str());
-    printf("SwitchDetection using watchdog: %f.\n",watchdog);
+    printf("RgbdDetection using watchdog: %f.\n",watchdog);
 
     yarp::os::Property options;
     options.fromString( rf.toString() );  //-- Should get noMirror, noRGBMirror, noDepthMirror, video modes...
@@ -69,7 +69,7 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
     }
 
     //-----------------OPEN LOCAL PORTS------------//
-    std::string portPrefix("/switchDetection");
+    std::string portPrefix("/rgbdDetection");
     portPrefix += strRGBDRemote;
     if(!outImg.open(portPrefix + "/img:o"))
     {
@@ -98,21 +98,21 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
 }
 
 /*****************************************************************/
-double SwitchDetection::getPeriod() {
+double RgbdDetection::getPeriod() {
     return watchdog;  // [s]
 }
 
 /************************************************************************/
 
-bool SwitchDetection::updateModule() {
-    printf("SwitchDetection alive...\n");
+bool RgbdDetection::updateModule() {
+    printf("RgbdDetection alive...\n");
     return true;
 }
 
 /************************************************************************/
 
-bool SwitchDetection::interruptModule() {
-    printf("SwitchDetection closing...\n");
+bool RgbdDetection::interruptModule() {
+    printf("RgbdDetection closing...\n");
     segmentorThread.stop();
     outImg.interrupt();
     outPort.interrupt();
