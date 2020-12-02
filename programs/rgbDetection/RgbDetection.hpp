@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __SWITCH_DETECTION_2D_HPP__
-#define __SWITCH_DETECTION_2D_HPP__
+#ifndef __RGB_DETECTION_HPP__
+#define __RGB_DETECTION_2D_HPP__
 
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/Port.h>
@@ -18,14 +18,14 @@
 namespace roboticslab
 {
 /**
- * @ingroup switchDetection2D
+ * @ingroup rgbDetection
  *
  * @brief Computer Vision detection.
  */
-class SwitchDetection2D : public yarp::os::RFModule
+class RgbDetection : public yarp::os::RFModule
 {
 public:
-    ~SwitchDetection2D()
+    ~RgbDetection()
     { close(); }
 
     bool configure(yarp::os::ResourceFinder &rf);
@@ -54,4 +54,4 @@ private:
 
 }  // namespace roboticslab
 
-#endif  // __SWITCH_DETECTION_2D_HPP__
+#endif  // __RGB_DETECTION_HPP__

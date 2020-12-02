@@ -3,30 +3,30 @@
 /**
  * @ingroup vision_programs
  *
- * @defgroup switchDetection2D switchDetection2D
+ * @defgroup rgbDetection rgbDetection
  *
- * @brief Creates an instance of roboticslab::SwitchDetection2D.
+ * @brief Creates an instance of roboticslab::RgbDetection.
  *
- * @section switchDetection2DOptions switchDetection2D options:
+ * @section rgbDetectionOptions rgbDetection options:
  *
  * | PROPERTY     | DESCRIPTION                          | DEFAULT               |
  * |--------------|--------------------------------------|-----------------------|
  * | help         |                                      |                       |
- * | from         | file.ini                             | switchDetection2D.ini |
- * | context      | context name                         | switchDetection2D     |
+ * | from         | file.ini                             | rgbDetection.ini |
+ * | context      | context name                         | rgbDetection     |
  * | cropSelector |                                      | 0                     |
  * | cameraDevice | device we create                     | remote_grabber        |
- * | cameraLocal  | if accesing remote, local port name  | /switchDetection2D    |
+ * | cameraLocal  | if accesing remote, local port name  | /rgbDetection    |
  * | cameraRemote | if accesing remote, remote port name | /grabber              |
  * | watchdog     |                                      | 2.000000              |
  *
  *
- * @section  switchDetection2DPorts Detector output ports:
+ * @section  rgbDetectionPorts Detector output ports:
  *
  * | OUTPUT PORT                | CONTENT                                                 |
  * |----------------------------|---------------------------------------------------------|
- * | /switchDetection2D/img:o   | output camera image with object detection using squares |
- * | /switchDetection2D/state:o | detected objects                                        |
+ * | /rgbDetection/img:o   | output camera image with object detection using squares |
+ * | /rgbDetection/state:o | detected objects                                        |
  *
  * @section detectorThread Detector thread options:
  *
@@ -44,10 +44,10 @@
 
 #include <ColorDebug.h>
 
-#include "SwitchDetection2D.hpp"
+#include "RgbDetection.hpp"
 
-#define DEFAULT_CONTEXT    "switchDetection2D"
-#define DEFAULT_CONFIG_FILE    "switchDetection2D.ini"
+#define DEFAULT_CONTEXT    "rgbDetection"
+#define DEFAULT_CONFIG_FILE    "rgbDetection.ini"
 
 int main(int argc, char** argv)
 {
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
     rf.setDefaultConfigFile(DEFAULT_CONFIG_FILE);
     rf.configure(argc, argv);
 
-    roboticslab::SwitchDetection2D mod;
+    roboticslab::RgbDetection mod;
 
     if (rf.check("help"))
     {
