@@ -1,13 +1,13 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __COLOR_REGION_DETECTION_HPP__
-#define __COLOR_REGION_DETECTION_HPP__
+#ifndef __SWITCH_DETECTION_HPP__
+#define __SWITCH_DETECTION_HPP__
 
 #include "SegmentorThread.hpp"
 
 #define DEFAULT_CROP_SELECTOR 0  // 1=true
 #define DEFAULT_RGBD_DEVICE "RGBDSensorClient"
-#define DEFAULT_RGBD_LOCAL "/colorRegionDetection"
+#define DEFAULT_RGBD_LOCAL "/switchDetection"
 #define DEFAULT_RGBD_REMOTE "/rgbd"
 #define DEFAULT_WATCHDOG    2       // [s]
 
@@ -16,11 +16,11 @@ namespace roboticslab
 {
 
 /**
- * @ingroup colorRegionDetection
+ * @ingroup switchDetection
  *
- * @brief Computer Vision 1.
+ * @brief Computer Vision segment faces.
  */
-class ColorRegionDetection : public yarp::os::RFModule {
+class SwitchDetection : public yarp::os::RFModule {
   private:
     SegmentorThread segmentorThread;
     //
@@ -45,5 +45,5 @@ class ColorRegionDetection : public yarp::os::RFModule {
 
 }  // namespace roboticslab
 
-#endif  // __COLOR_REGION_DETECTION_HPP__
+#endif  // __SWITCH_DETECTION_HPP__
 
