@@ -271,45 +271,6 @@ namespace
     }
 
     template <typename T>
-    void estimateNormals(const typename pcl::PointCloud<T>::ConstPtr & in, const pcl::PointCloud<pcl::Normal>::Ptr & out, const yarp::os::Searchable & options)
-    {
-        auto algorithm = options.check("estimatorAlgorithm", yarp::os::Value("")).asString();
-        auto kSearch = options.check("estimatorKSearch", yarp::os::Value(0)).asInt32();
-        auto radiusSearch = options.check("estimatorRadiusSearch", yarp::os::Value(0.0)).asFloat64();
-
-        typename pcl::NormalEstimation<T, pcl::Normal>::Ptr estimator;
-
-        if (algorithm == "NormalEstimationOMP")
-        {
-            auto numberOfThreads = options.check("estimatorNumberOfThreads", yarp::os::Value(0)).asInt32();
-            auto * omp = new pcl::NormalEstimationOMP<T, pcl::Normal>();
-            omp->setNumberOfThreads(numberOfThreads);
-            estimator.reset(omp);
-        }
-        else if (algorithm == "NormalEstimation")
-        {
-            estimator.reset(new pcl::NormalEstimation<T, pcl::Normal>());
-        }
-        else
-        {
-            throw std::invalid_argument("unsupported normal estimation algorithm: " + algorithm);
-        }
-
-        typename pcl::search::KdTree<T>::Ptr tree(new pcl::search::KdTree<T>());
-        tree->setInputCloud(in);
-        estimator->setInputCloud(in);
-        estimator->setKSearch(kSearch);
-        estimator->setRadiusSearch(radiusSearch);
-        estimator->setSearchMethod(tree);
-        estimator->compute(*out);
-
-        if (out->empty())
-        {
-            throw std::runtime_error("got empty cloud after normal estimation step");
-        }
-    }
-
-    template <typename T>
     void reconstructHull(const typename pcl::PointCloud<T>::ConstPtr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
     {
         auto algorithm = options.find("surfaceAlgorithm").asString();
@@ -398,6 +359,45 @@ namespace
         organized.storeShadowedFaces(storeShadowedFaces);
         organized.useDepthAsDistance(useDepthAsDistance);
         organized.reconstruct(*out);
+    }
+
+    template <typename T>
+    void estimateNormals(const typename pcl::PointCloud<T>::ConstPtr & in, const pcl::PointCloud<pcl::Normal>::Ptr & out, const yarp::os::Searchable & options)
+    {
+        auto algorithm = options.check("estimatorAlgorithm", yarp::os::Value("")).asString();
+        auto kSearch = options.check("estimatorKSearch", yarp::os::Value(0)).asInt32();
+        auto radiusSearch = options.check("estimatorRadiusSearch", yarp::os::Value(0.0)).asFloat64();
+
+        typename pcl::NormalEstimation<T, pcl::Normal>::Ptr estimator;
+
+        if (algorithm == "NormalEstimation")
+        {
+            estimator.reset(new pcl::NormalEstimation<T, pcl::Normal>());
+        }
+        else if (algorithm == "NormalEstimationOMP")
+        {
+            auto numberOfThreads = options.check("estimatorNumberOfThreads", yarp::os::Value(0)).asInt32();
+            auto * omp = new pcl::NormalEstimationOMP<T, pcl::Normal>();
+            omp->setNumberOfThreads(numberOfThreads);
+            estimator.reset(omp);
+        }
+        else
+        {
+            throw std::invalid_argument("unsupported normal estimation algorithm: " + algorithm);
+        }
+
+        typename pcl::search::KdTree<T>::Ptr tree(new pcl::search::KdTree<T>());
+        tree->setInputCloud(in);
+        estimator->setInputCloud(in);
+        estimator->setKSearch(kSearch);
+        estimator->setRadiusSearch(radiusSearch);
+        estimator->setSearchMethod(tree);
+        estimator->compute(*out);
+
+        if (out->empty())
+        {
+            throw std::runtime_error("got empty cloud after normal estimation step");
+        }
     }
 
     template <typename T>

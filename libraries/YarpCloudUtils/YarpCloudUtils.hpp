@@ -50,6 +50,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud,
                    const yarp::os::Searchable & options = yarp::os::Property({
                                                               {"downsampleAlgorithm", yarp::os::Value("VoxelGrid")},
                                                               {"downsampleLeafSize", yarp::os::Value(0.02f)},
+                                                              {"estimatorAlgorithm", yarp::os::Value("NormalEstimationOMP")},
                                                               {"estimatorKSearch", yarp::os::Value(40)},
                                                               {"surfaceAlgorithm", yarp::os::Value("Poisson")}
                                                           }));
