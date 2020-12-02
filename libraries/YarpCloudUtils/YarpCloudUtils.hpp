@@ -55,6 +55,13 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
                                                               {"surfaceAlgorithm", yarp::os::Value("Poisson")}
                                                           }));
 
+template <typename T>
+bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::VectorOf<int> & meshIndices, const yarp::os::Searchable & options)
+{
+    yarp::sig::PointCloud<T> meshPoints;
+    return meshFromCloud(cloud, meshPoints, meshIndices, options);
+}
+
 } // namespace YarpCloudUtils
 
 } // namespace roboticslab
