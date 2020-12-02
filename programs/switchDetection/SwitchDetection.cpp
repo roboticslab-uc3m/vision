@@ -1,5 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
+#include <ColorDebug.h>
+
 #include "SwitchDetection.hpp"
 
 namespace roboticslab
@@ -46,12 +48,17 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
 
     if(!dd.open(options))
     {
-        printf("Bad RGBDDevice \"%s\"...\n",strRGBDDevice.c_str());
+        CD_ERROR("Bad RGBDDevice \"%s\"...\n",strRGBDDevice.c_str());
         return false;
     }
-    printf("[SwitchDetection] success: RGBDDevice available.\n");
-    if (! dd.view(iRGBDSensor) ) fprintf(stderr,"[SwitchDetection] warning: RGBDDevice bad view.\n");
-    else printf("[SwitchDetection] success: RGBDDevice ok view.\n");
+    CD_SUCCESS("RGBDDevice available.\n");
+
+    if (! dd.view(iRGBDSensor) )
+    {
+        CD_ERROR("RGBDDevice bad view.\n");
+        return false;
+    }
+    CD_SUCCESS("RGBDDevice ok view.\n");
 
     segmentorThread.setIRGBDSensor(iRGBDSensor);
     segmentorThread.setOutImg(&outImg);
