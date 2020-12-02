@@ -71,17 +71,19 @@ bool SwitchDetection::configure(yarp::os::ResourceFinder &rf) {
     }
 
     //-----------------OPEN LOCAL PORTS------------//
-    if(!outImg.open(strRGBDLocal + "/img:o"))
+    std::string portPrefix("/switchDetection");
+    portPrefix += strRGBDRemote;
+    if(!outImg.open(portPrefix + "/img:o"))
     {
         CD_ERROR("Bad outImg.open\n");
         return false;
     }
-    if(!outPort.open(strRGBDLocal + "/state:o"))
+    if(!outPort.open(portPrefix + "/state:o"))
     {
         CD_ERROR("Bad outPort.open\n");
         return false;
     }
-    yarp::os::Time::delay(1);
+
     if(cropSelector != 0)
     {
         outCropSelectorImg.open(strRGBDLocal + "/cropSelector/img:o");
