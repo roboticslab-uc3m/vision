@@ -11,6 +11,8 @@
 #include <yarp/sig/PointCloud.h>
 #include <yarp/sig/Vector.h>
 
+#include <SurfaceMeshingOptions.hpp>
+
 /**
  * @ingroup vision_libraries
  * @defgroup YarpCloudUtils
