@@ -48,33 +48,48 @@ struct pcl_type_from_yarp<yarp::sig::DataXYZNormalRGBA>
 /////////////////////////////////////////////////
 
 template <typename T>
-struct pcl_strip_normals
+struct pcl_surface_organized
 { typedef T type; };
 
 template <>
-struct pcl_strip_normals<pcl::PointXYZI>
+struct pcl_surface_organized<pcl::PointXYZI>
 { typedef pcl::PointXYZ type; };
 
 template <>
-struct pcl_strip_normals<pcl::InterestPoint>
+struct pcl_surface_organized<pcl::InterestPoint>
 { typedef pcl::PointXYZ type; };
 
 template <>
-struct pcl_strip_normals<pcl::PointNormal>
+struct pcl_surface_organized<pcl::PointNormal>
 { typedef pcl::PointXYZ type; };
 
 template <>
-struct pcl_strip_normals<pcl::PointXYZRGBNormal>
+struct pcl_surface_organized<pcl::PointXYZRGBNormal>
 { typedef pcl::PointXYZRGB type; };
 
 /////////////////////////////////////////////////
 
 template <typename T>
-struct pcl_concatenate_normals;
+struct pcl_surface_normal
+{ typedef T type; };
+
+template <>
+struct pcl_surface_normal<pcl::InterestPoint>
+{ typedef pcl::PointXYZ type; };
+
+/////////////////////////////////////////////////
+
+template <typename T>
+struct pcl_concatenate_normals
+{ typedef T type; };
 
 template <>
 struct pcl_concatenate_normals<pcl::PointXYZ>
 { typedef pcl::PointNormal type; };
+
+template <>
+struct pcl_concatenate_normals<pcl::PointXYZI>
+{ typedef pcl::PointXYZINormal type; };
 
 template <>
 struct pcl_concatenate_normals<pcl::PointXYZRGB>
@@ -83,7 +98,10 @@ struct pcl_concatenate_normals<pcl::PointXYZRGB>
 /////////////////////////////////////////////////
 
 template <typename T>
-constexpr auto is_unsupported_pcl_type = std::is_same<T, pcl::PointXY>::value || std::is_same<T, pcl::Normal>::value;
+constexpr auto is_unsupported_type = std::is_same<T, pcl::PointXY>::value || std::is_same<T, pcl::Normal>::value;
+
+template <typename T>
+constexpr auto is_normal_type = std::is_same<T, pcl::PointNormal>::value || std::is_same<T, pcl::PointXYZRGBNormal>::value;
 
 } // namespace
 

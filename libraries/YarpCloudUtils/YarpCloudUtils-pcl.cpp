@@ -429,6 +429,7 @@ namespace
             auto maximumSurfaceAngle = options.check("surfaceMaximumSurfaceAngle", yarp::os::Value(M_PI / 4)).asFloat64();
             auto minimumAngle = options.check("surfaceMinimumAngle", yarp::os::Value(M_PI / 18)).asFloat64();
             auto mu = options.check("surfaceMu", yarp::os::Value(0.0)).asFloat64();
+            auto normalConsistency = options.check("surfaceNormalConsistency", yarp::os::Value(false)).asBool();
             auto searchRadius = options.check("surfaceSearchRadius", yarp::os::Value(0.0)).asFloat64();
 
             auto * gp3 = new pcl::GreedyProjectionTriangulation<T>();
@@ -438,7 +439,7 @@ namespace
             gp3->setMaximumNearestNeighbors(maximumNearestNeighbors);
             gp3->setMinimumAngle(minimumAngle);
             gp3->setMu(mu);
-            gp3->setNormalConsistency(true); // input normals are oriented consistently
+            gp3->setNormalConsistency(normalConsistency);
             gp3->setSearchRadius(searchRadius);
             surface.reset(gp3);
         }
@@ -478,6 +479,7 @@ namespace
         }
         else if (algorithm == "Poisson")
         {
+            auto confidence = options.check("surfaceConfidence", yarp::os::Value(false)).asBool();
             auto degree = options.check("surfaceDegree", yarp::os::Value(2)).asInt32();
             auto depth = options.check("surfaceDepth", yarp::os::Value(8)).asInt32();
             auto isoDivide = options.check("surfaceIsoDivide", yarp::os::Value(8)).asInt32();
@@ -493,7 +495,7 @@ namespace
 #endif
 
             auto * poisson = new pcl::Poisson<T>();
-            poisson->setConfidence(true); // all normals are presumed normalized to have unit-length prior to reconstruction
+            poisson->setConfidence(confidence);
             poisson->setDegree(degree);
             poisson->setDepth(depth);
             poisson->setIsoDivide(isoDivide);
@@ -519,6 +521,57 @@ namespace
         surface->setInputCloud(in);
         surface->setSearchMethod(tree);
         surface->reconstruct(*out);
+    }
+
+    template <typename T>
+    void reconstruct(const typename pcl::PointCloud<T>::ConstPtr & in, pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
+    {
+        auto algorithm = options.check("surfaceAlgorithm", yarp::os::Value("")).asString();
+
+        if (algorithm == "ConcaveHull" || algorithm == "ConvexHull")
+        {
+            reconstructHull<T>(in, out, options);
+        }
+        else if (algorithm == "OrganizedFastMesh")
+        {
+            using pcl_organized_type = typename pcl_surface_organized<T>::type;
+            auto inXYZRGBA = initializeCloudPointer<T, pcl_organized_type>(in);
+            reconstructOrganized<pcl_organized_type>(inXYZRGBA, out, options);
+        }
+        else
+        {
+            using pcl_normal_type = typename pcl_surface_normal<T>::type;
+            using pcl_concatenated = typename pcl_concatenate_normals<pcl_normal_type>::type;
+
+            if (options.check("estimatorAlgorithm"))
+            {
+                auto stripped = initializeCloudPointer<T, pcl_normal_type>(in);
+
+                // Estimate normals.
+                pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>());
+                estimateNormals<pcl_normal_type>(stripped, normals, options);
+
+                // Concatenate point clouds.
+                typename pcl::PointCloud<pcl_concatenated>::Ptr cloudWithNormals(new pcl::PointCloud<pcl_concatenated>());
+                pcl::concatenateFields(*stripped, *normals, *cloudWithNormals);
+
+                reconstructNormal<pcl_concatenated>(cloudWithNormals, out, options);
+            }
+            else if (is_normal_type<T>)
+            {
+                auto cloudWithNormals = initializeCloudPointer<T, pcl_concatenated>(in);
+                reconstructNormal<pcl_concatenated>(cloudWithNormals, out, options);
+            }
+            else
+            {
+                throw std::invalid_argument("missing mandatory normal estimation algorithm for non-normal point type");
+            }
+        }
+
+        if (out->cloud.data.empty() || out->polygons.empty())
+        {
+            throw std::runtime_error("got empty mesh after surface reconstruction step");
+        }
     }
 
     void process(const pcl::PolygonMesh::ConstPtr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
@@ -612,54 +665,15 @@ namespace
 
         if (out->cloud.data.empty() || out->polygons.empty())
         {
-            throw std::runtime_error("got empty mesh after mesh procesing step");
+            throw std::runtime_error("got empty mesh after mesh processing step");
         }
     }
 
-    template <typename T>
-    void reconstruct(const typename pcl::PointCloud<T>::ConstPtr & in, pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
-    {
-        auto algorithm = options.check("surfaceAlgorithm", yarp::os::Value("")).asString();
-
-        if (algorithm == "ConcaveHull" || algorithm == "ConvexHull")
-        {
-            reconstructHull<T>(in, out, options);
-        }
-        else if (algorithm == "OrganizedFastMesh")
-        {
-            using pcl_xyzrgba_type = typename pcl_strip_normals<T>::type;
-            auto inXYZRGBA = initializeCloudPointer<T, pcl_xyzrgba_type>(in);
-            reconstructOrganized<pcl_xyzrgba_type>(inXYZRGBA, out, options);
-        }
-        else
-        {
-            using pcl_stripped_normals = typename pcl_strip_normals<T>::type;
-            auto stripped = initializeCloudPointer<T, pcl_stripped_normals>(in);
-
-            // Estimate normals.
-            pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>());
-            estimateNormals<pcl_stripped_normals>(stripped, normals, options);
-
-            using pcl_concatenated = typename pcl_concatenate_normals<pcl_stripped_normals>::type;
-
-            // Concatenate point clouds.
-            typename pcl::PointCloud<pcl_concatenated>::Ptr cloudWithNormals(new pcl::PointCloud<pcl_concatenated>());
-            pcl::concatenateFields(*stripped, *normals, *cloudWithNormals);
-
-            reconstructNormal<pcl_concatenated>(cloudWithNormals, out, options);
-        }
-
-        if (out->cloud.data.empty() || out->polygons.empty())
-        {
-            throw std::runtime_error("got empty mesh after surface reconstruction step");
-        }
-    }
-
-    template <typename T, std::enable_if_t<is_unsupported_pcl_type<T>, bool> = true>
+    template <typename T, std::enable_if_t<is_unsupported_type<T>, bool> = true>
     void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr &, pcl::PolygonMesh::Ptr &, const yarp::os::Searchable &)
     {}
 
-    template <typename T, std::enable_if_t<!is_unsupported_pcl_type<T>, bool> = true>
+    template <typename T, std::enable_if_t<!is_unsupported_type<T>, bool> = true>
     void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr & cloud, pcl::PolygonMesh::Ptr & mesh, const yarp::os::Searchable & options)
     {
         // Crop input cloud.
@@ -738,13 +752,13 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud, yarp::sig::PointClou
     using pcl_input_type = typename pcl_type_from_yarp<T1>::type;
     using pcl_output_type = typename pcl_type_from_yarp<T2>::type;
 
-    if (is_unsupported_pcl_type<pcl_input_type>)
+    if (is_unsupported_type<pcl_input_type>)
     {
         yError() << "unsupported input point type";
         return false;
     }
 
-    if (is_unsupported_pcl_type<pcl_output_type>)
+    if (is_unsupported_type<pcl_output_type>)
     {
         yError() << "unsupported output point type";
         return false;
