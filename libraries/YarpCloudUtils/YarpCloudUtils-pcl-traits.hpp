@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __YARP_CLOUD_UTILS_TRAITS_HPP__
-#define __YARP_CLOUD_UTILS_TRAITS_HPP__
+#ifndef __YARP_CLOUD_UTILS_PCL_TRAITS_HPP__
+#define __YARP_CLOUD_UTILS_PCL_TRAITS_HPP__
 
 #include <type_traits>
 #include <yarp/sig/PointCloudTypes.h>
@@ -87,4 +87,4 @@ constexpr auto is_unsupported_pcl_type = std::is_same<T, pcl::PointXY>::value ||
 
 } // namespace
 
-#endif // __YARP_CLOUD_UTILS_TRAITS_HPP__
+#endif // __YARP_CLOUD_UTILS_PCL_TRAITS_HPP__

@@ -40,7 +40,7 @@
 #include <pcl/surface/vtk_smoothing/vtk_mesh_smoothing_windowed_sinc.h>
 #include <pcl/surface/vtk_smoothing/vtk_mesh_subdivision.h>
 
-#include "YarpCloudUtils-traits.hpp"
+#include "YarpCloudUtils-pcl-traits.hpp"
 
 namespace
 {
@@ -788,5 +788,5 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud, yarp::sig::PointClou
 
 #ifdef HAVE_PCL
 // explicit instantiations
-#include "YarpCloudUtils-inst.hpp"
+#include "YarpCloudUtils-pcl-inst.hpp"
 #endif

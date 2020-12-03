@@ -33,7 +33,7 @@ if(ENABLE_YarpCloudUtils)
 
     if(PCL_FOUND AND YARP_pcl_FOUND)
         set_property(SOURCE YarpCloudUtils-pcl.cpp PROPERTY COMPILE_DEFINITIONS HAVE_PCL)
-        target_sources(YarpCloudUtils PRIVATE YarpCloudUtils-traits.hpp YarpCloudUtils-inst.hpp)
+        target_sources(YarpCloudUtils PRIVATE YarpCloudUtils-pcl-traits.hpp YarpCloudUtils-pcl-inst.hpp)
         target_link_libraries(YarpCloudUtils PRIVATE YARP::YARP_pcl ${PCL_LIBRARIES})
     endif()
 
