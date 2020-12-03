@@ -23,6 +23,9 @@
 #include <pcl/features/normal_3d_omp.h>
 #include <pcl/filters/approximate_voxel_grid.h>
 #include <pcl/filters/crop_box.h>
+#include <pcl/filters/fast_bilateral.h>
+#include <pcl/filters/fast_bilateral_omp.h>
+#include <pcl/filters/uniform_sampling.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/search/kdtree.h>
 #include <pcl/surface/concave_hull.h>
@@ -123,23 +126,36 @@ namespace
     void downsample(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
     {
         auto algorithm = options.check("downsampleAlgorithm", yarp::os::Value("")).asString();
-        auto downsampleAllData = options.check("downsampleDownsampleAllData", yarp::os::Value(true)).asBool();
-        auto leafSize = options.check("downsampleLeafSize", yarp::os::Value(0.0f)).asFloat32();
-        auto leafSizeX = options.check("downsampleLeafSizeX", yarp::os::Value(leafSize)).asFloat32();
-        auto leafSizeY = options.check("downsampleLeafSizeY", yarp::os::Value(leafSize)).asFloat32();
-        auto leafSizeZ = options.check("downsampleLeafSizeZ", yarp::os::Value(leafSize)).asFloat32();
 
         typename pcl::Filter<T>::Ptr downsampler;
 
         if (algorithm == "ApproximateVoxelGrid")
         {
+            auto downsampleAllData = options.check("downsampleDownsampleAllData", yarp::os::Value(true)).asBool();
+            auto leafSize = options.check("downsampleLeafSize", yarp::os::Value(0.0f)).asFloat32();
+            auto leafSizeX = options.check("downsampleLeafSizeX", yarp::os::Value(leafSize)).asFloat32();
+            auto leafSizeY = options.check("downsampleLeafSizeY", yarp::os::Value(leafSize)).asFloat32();
+            auto leafSizeZ = options.check("downsampleLeafSizeZ", yarp::os::Value(leafSize)).asFloat32();
+
             auto * grid = new pcl::ApproximateVoxelGrid<T>();
             grid->setDownsampleAllData(downsampleAllData);
             grid->setLeafSize(leafSizeX, leafSizeY, leafSizeZ);
             downsampler.reset(grid);
         }
+        else if (algorithm == "UniformSampling")
+        {
+            auto radiusSearch = options.check("downsampleRadiusSearch", yarp::os::Value(0.0)).asFloat64();
+            auto * uniform = new pcl::UniformSampling<T>();
+            uniform->setRadiusSearch(radiusSearch);
+            downsampler.reset(uniform);
+        }
         else if (algorithm == "VoxelGrid")
         {
+            auto downsampleAllData = options.check("downsampleDownsampleAllData", yarp::os::Value(true)).asBool();
+            auto leafSize = options.check("downsampleLeafSize", yarp::os::Value(0.0f)).asFloat32();
+            auto leafSizeX = options.check("downsampleLeafSizeX", yarp::os::Value(leafSize)).asFloat32();
+            auto leafSizeY = options.check("downsampleLeafSizeY", yarp::os::Value(leafSize)).asFloat32();
+            auto leafSizeZ = options.check("downsampleLeafSizeZ", yarp::os::Value(leafSize)).asFloat32();
             auto limitMax = options.check("downsampleLimitMax", yarp::os::Value(FLT_MAX)).asFloat64();
             auto limitMin = options.check("downsampleLimitMin", yarp::os::Value(-FLT_MAX)).asFloat64();
             auto limitsNegative = options.check("downsampleLimitsNegative", yarp::os::Value(false)).asBool();
@@ -169,7 +185,7 @@ namespace
     }
 
     template <typename T>
-    void smooth(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
+    void smoothMLS(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
     {
         auto algorithm = options.check("smoothAlgorithm", yarp::os::Value("")).asString();
 
@@ -258,11 +274,60 @@ namespace
         }
         else
         {
-            throw std::invalid_argument("unsupported mesh smoothing algorithm: " + algorithm);
+            throw std::invalid_argument("unsupported cloud smoothing algorithm: " + algorithm);
         }
 
         processor->setInputCloud(in);
         processor->process(*out);
+    }
+
+    template <typename T>
+    void smoothRGB(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
+    {
+        auto algorithm = options.check("smoothAlgorithm", yarp::os::Value("")).asString();
+        auto sigmaR = options.check("smoothSigmaR", yarp::os::Value(0.05f)).asFloat32();
+        auto sigmaS = options.check("smoothSigmaS", yarp::os::Value(15.0f)).asFloat32();
+
+        typename pcl::FastBilateralFilter<T>::Ptr filter;
+
+        if (algorithm == "FastBilateralFilter")
+        {
+            auto * fast = new pcl::FastBilateralFilter<T>();
+            filter.reset(fast);
+        }
+        else if (algorithm == "FastBilateralFilterOMP")
+        {
+            auto numberOfThreads = options.check("smoothNumberOfThreads", yarp::os::Value(0)).asInt32();
+            auto * omp = new pcl::FastBilateralFilterOMP<T>();
+            omp->setNumberOfThreads(numberOfThreads);
+            filter.reset(omp);
+        }
+        else
+        {
+            throw std::invalid_argument("unsupported cloud smoothing algorithm: " + algorithm);
+        }
+
+        filter->setInputCloud(in);
+        filter->setSigmaR(sigmaR);
+        filter->setSigmaS(sigmaS);
+        filter->filter(*out);
+    }
+
+    template <typename T>
+    void smooth(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
+    {
+        auto algorithm = options.check("smoothAlgorithm", yarp::os::Value("")).asString();
+
+        if (algorithm == "MovingLeastSquares")
+        {
+            smoothMLS<T>(in, out, options);
+        }
+        else
+        {
+            using pcl_organized_type = typename pcl_surface_organized<T>::type;
+            auto inXYZRGBA = initializeCloudPointer<T, pcl_organized_type>(in);
+            smoothRGB<pcl_organized_type>(inXYZRGBA, out, options);
+        }
 
         if (out->empty())
         {
