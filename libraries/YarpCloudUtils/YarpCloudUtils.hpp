@@ -43,7 +43,7 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud)
     return loadPLY(filename, cloud, indices);
 }
 
-template <typename T1, typename T2>
+template <typename T1, typename T2 = T1>
 bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
                    yarp::sig::PointCloud<T2> & meshPoints,
                    yarp::sig::VectorOf<int> & meshIndices,
