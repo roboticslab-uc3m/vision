@@ -7,26 +7,22 @@
  */
 
 #include <cstdio>
+#include <vector>
 
-#include <yarp/os/Network.h>
+//#include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/ResourceFinder.h>
-#include <yarp/os/Time.h>
 
 #include <yarp/dev/PolyDriver.h>
-#include <yarp/dev/IRGBDSensor.h>
 
 #include <yarp/sig/Image.h>
 #include <yarp/sig/ImageFile.h>
-
-#include <yarp/sig/Vector.h>
 
 #include <IDetector.hpp>
 
 int main(int argc, char *argv[])
 {
     /*yarp::os::Network yarp;
-
     if (!yarp::os::Network::checkNetwork())
     {
         std::printf("Please start a yarp name server first\n");
@@ -42,6 +38,7 @@ int main(int argc, char *argv[])
     std::string faceFullName = rf.findFileByName("tests/face-nc.pgm");
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
+
     if(!yarp::sig::file::read(yarpImgRgb, faceFullName, yarp::sig::file::FORMAT_PGM))
     {
         std::printf("Image file not available.\n");
