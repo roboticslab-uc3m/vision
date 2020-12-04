@@ -28,7 +28,6 @@ class HaarDetectorTest : public testing::Test
         {
             yarp::os::Property deviceOptions;
             deviceOptions.put("device", "HaarDetector");
-            deviceOptions.put("algorithm", "redMinusGreen");
 
             if(!detectorDevice.open(deviceOptions))
             {
