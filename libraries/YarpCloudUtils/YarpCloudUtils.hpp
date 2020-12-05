@@ -6,7 +6,6 @@
 #include <string>
 
 #include <yarp/os/Property.h>
-#include <yarp/os/Searchable.h>
 
 #include <yarp/sig/PointCloud.h>
 #include <yarp/sig/Vector.h>
@@ -47,16 +46,18 @@ template <typename T1, typename T2 = T1>
 bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
                    yarp::sig::PointCloud<T2> & meshPoints,
                    yarp::sig::VectorOf<int> & meshIndices,
-                   const yarp::os::Searchable & options = yarp::os::Property({
-                                                              {"downsampleAlgorithm", yarp::os::Value("VoxelGrid")},
-                                                              {"downsampleLeafSize", yarp::os::Value(0.02f)},
-                                                              {"estimatorAlgorithm", yarp::os::Value("NormalEstimationOMP")},
-                                                              {"estimatorKSearch", yarp::os::Value(40)},
-                                                              {"surfaceAlgorithm", yarp::os::Value("Poisson")}
-                                                          }));
+                   const yarp::sig::VectorOf<yarp::os::Property> & options = {
+                       {{"algorithm", yarp::os::Value("VoxelGrid")},
+                        {"leafSize", yarp::os::Value(0.02f)}},
+                       {{"algorithm", yarp::os::Value("NormalEstimationOMP")},
+                        {"kSearch", yarp::os::Value(40)}},
+                       {{"algorithm", yarp::os::Value("Poisson")}}
+                   });
 
 template <typename T>
-bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud, yarp::sig::VectorOf<int> & meshIndices, const yarp::os::Searchable & options)
+bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud,
+                   yarp::sig::VectorOf<int> & meshIndices,
+                   const yarp::sig::VectorOf<yarp::os::Property> & options)
 {
     yarp::sig::PointCloud<T> meshPoints;
     return meshFromCloud(cloud, meshPoints, meshIndices, options);

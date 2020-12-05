@@ -8,7 +8,7 @@
 #include <yarp/sig/Vector.h>
 
 #define YCU_PCL_INST_SIGNATURE(in, out) \
-    template bool meshFromCloud(const in &, out &, yarp::sig::VectorOf<int> &, const yarp::os::Searchable &);
+    template bool meshFromCloud(const in &, out &, yarp::sig::VectorOf<int> &, const yarp::sig::VectorOf<yarp::os::Property> &);
 
 namespace roboticslab
 {

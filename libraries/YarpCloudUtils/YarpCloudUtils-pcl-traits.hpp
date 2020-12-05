@@ -51,6 +51,8 @@ struct pcl_all_xyz_types_tag {};
 
 struct pcl_xyz_rgba_types_tag {};
 
+struct pcl_normal_types_tag {};
+
 /////////////////////////////////////////////////
 
 template <typename T, typename tag>
@@ -80,33 +82,25 @@ template <>
 struct pcl_convert<pcl::PointXYZRGBNormal, pcl_xyz_rgba_types_tag>
 { typedef pcl::PointXYZRGB type; };
 
-/////////////////////////////////////////////////
-
 template <typename T>
-struct pcl_surface_normal
+struct pcl_convert<T, pcl_normal_types_tag>
 { typedef T type; };
 
 template <>
-struct pcl_surface_normal<pcl::InterestPoint>
-{ typedef pcl::PointXYZ type; };
-
-/////////////////////////////////////////////////
-
-template <typename T>
-struct pcl_concatenate_normals
-{ typedef T type; };
-
-template <>
-struct pcl_concatenate_normals<pcl::PointXYZ>
+struct pcl_convert<pcl::PointXYZ, pcl_normal_types_tag>
 { typedef pcl::PointNormal type; };
 
 template <>
-struct pcl_concatenate_normals<pcl::PointXYZI>
+struct pcl_convert<pcl::PointXYZRGB, pcl_normal_types_tag>
+{ typedef pcl::PointXYZRGBNormal type; };
+
+template <>
+struct pcl_convert<pcl::PointXYZI, pcl_normal_types_tag>
 { typedef pcl::PointXYZINormal type; };
 
 template <>
-struct pcl_concatenate_normals<pcl::PointXYZRGB>
-{ typedef pcl::PointXYZRGBNormal type; };
+struct pcl_convert<pcl::InterestPoint, pcl_normal_types_tag>
+{ typedef pcl::PointNormal type; };
 
 /////////////////////////////////////////////////
 
@@ -114,12 +108,6 @@ template <typename T>
 constexpr auto is_unsupported_type =
     std::is_same<T, pcl::PointXY>::value ||
     std::is_same<T, pcl::Normal>::value;
-
-template <typename T>
-constexpr auto is_normal_type =
-    std::is_same<T, pcl::PointNormal>::value ||
-    std::is_same<T, pcl::PointXYZRGBNormal>::value ||
-    std::is_same<T, pcl::PointXYZINormal>::value;
 
 } // namespace
 
