@@ -44,7 +44,7 @@ bool QRDetector::detect(const yarp::sig::Image& inYarpImg,
     qrcode.detectAndDecodeMulti(inCvMat, texts, corners);
 #else
     std::string text = qrcode.detectAndDecode(inCvMat, corners);
-    texts.emplace_back(std::move(text));
+    texts.push_back(std::move(text));
 #endif
 
     for (auto i = 0; i < texts.size(); i++)
@@ -63,9 +63,10 @@ bool QRDetector::detect(const yarp::sig::Image& inYarpImg,
             {"bry", yarp::os::Value(br.y)},
             {"blx", yarp::os::Value(bl.x)},
             {"bly", yarp::os::Value(bl.y)},
-            {"text", yarp::os::Value(texts[i])}};
+            {"text", yarp::os::Value(texts[i])}
+        };
 
-        detectedObjects.emplace_back(std::move(detectedObject));
+        detectedObjects.push_back(std::move(detectedObject));
     }
 
     return true;
