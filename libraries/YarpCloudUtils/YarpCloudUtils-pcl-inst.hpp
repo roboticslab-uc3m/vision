@@ -3,6 +3,8 @@
 #ifndef __YARP_CLOUD_UTILS_PCL_INST_HPP__
 #define __YARP_CLOUD_UTILS_PCL_INST_HPP__
 
+#include <string>
+
 #include <yarp/os/Searchable.h>
 #include <yarp/sig/PointCloud.h>
 #include <yarp/sig/Vector.h>

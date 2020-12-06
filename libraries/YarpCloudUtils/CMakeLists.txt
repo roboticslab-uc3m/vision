@@ -14,7 +14,8 @@ if(ENABLE_YarpCloudUtils)
     set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/tinyply.cpp PROPERTY COMPILE_DEFINITIONS TINYPLY_IMPLEMENTATION)
     target_sources(YarpCloudUtils PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/tinyply.cpp)
 
-    target_link_libraries(YarpCloudUtils PUBLIC YARP::YARP_os YARP::YARP_sig)
+    target_link_libraries(YarpCloudUtils PUBLIC YARP::YARP_os
+                                                YARP::YARP_sig)
 
     target_include_directories(YarpCloudUtils PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                                                      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
@@ -31,8 +32,14 @@ if(ENABLE_YarpCloudUtils)
 
     if(PCL_FOUND AND YARP_pcl_FOUND)
         set_property(SOURCE YarpCloudUtils-pcl.cpp PROPERTY COMPILE_DEFINITIONS HAVE_PCL)
-        target_sources(YarpCloudUtils PRIVATE YarpCloudUtils-pcl-traits.hpp YarpCloudUtils-pcl-inst.hpp)
-        target_link_libraries(YarpCloudUtils PRIVATE YARP::YARP_pcl ${PCL_LIBRARIES})
+
+        target_sources(YarpCloudUtils PRIVATE YarpCloudUtils-pcl.hpp
+                                              YarpCloudUtils-pcl-traits.hpp
+                                              YarpCloudUtils-pcl-impl.hpp
+                                              YarpCloudUtils-pcl-inst.hpp)
+
+        target_link_libraries(YarpCloudUtils PRIVATE YARP::YARP_pcl
+                                                     ${PCL_LIBRARIES})
     endif()
 
 else()

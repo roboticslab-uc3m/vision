@@ -10,6 +10,8 @@
 namespace
 {
 
+// YARP point type to PCL point type
+
 template <typename T>
 struct pcl_type_from_yarp;
 
@@ -45,42 +47,48 @@ template <>
 struct pcl_type_from_yarp<yarp::sig::DataXYZNormalRGBA>
 { typedef pcl::PointXYZRGBNormal type; };
 
-/////////////////////////////////////////////////
+// PCL type tags
 
 struct pcl_all_xyz_types_tag {};
 
-struct pcl_xyz_rgba_types_tag {};
+struct pcl_xyz_rgb_types_tag {};
 
 struct pcl_normal_types_tag {};
 
-/////////////////////////////////////////////////
+// Convert PCL type according to selected tag
 
 template <typename T, typename tag>
 struct pcl_convert;
+
+// 1-to-1 mapping if T belongs to any of the supported XYZ types
 
 template <typename T>
 struct pcl_convert<T, pcl_all_xyz_types_tag>
 { typedef T type; };
 
+// Mappings for XYZ(RGB) types
+
 template <typename T>
-struct pcl_convert<T, pcl_xyz_rgba_types_tag>
+struct pcl_convert<T, pcl_xyz_rgb_types_tag>
 { typedef T type; };
 
 template <>
-struct pcl_convert<pcl::PointXYZI, pcl_xyz_rgba_types_tag>
+struct pcl_convert<pcl::PointXYZI, pcl_xyz_rgb_types_tag>
 { typedef pcl::PointXYZ type; };
 
 template <>
-struct pcl_convert<pcl::InterestPoint, pcl_xyz_rgba_types_tag>
+struct pcl_convert<pcl::InterestPoint, pcl_xyz_rgb_types_tag>
 { typedef pcl::PointXYZ type; };
 
 template <>
-struct pcl_convert<pcl::PointNormal, pcl_xyz_rgba_types_tag>
+struct pcl_convert<pcl::PointNormal, pcl_xyz_rgb_types_tag>
 { typedef pcl::PointXYZ type; };
 
 template <>
-struct pcl_convert<pcl::PointXYZRGBNormal, pcl_xyz_rgba_types_tag>
+struct pcl_convert<pcl::PointXYZRGBNormal, pcl_xyz_rgb_types_tag>
 { typedef pcl::PointXYZRGB type; };
+
+// Mappings for XYZ+normal types
 
 template <typename T>
 struct pcl_convert<T, pcl_normal_types_tag>
@@ -102,7 +110,7 @@ template <>
 struct pcl_convert<pcl::InterestPoint, pcl_normal_types_tag>
 { typedef pcl::PointNormal type; };
 
-/////////////////////////////////////////////////
+// Conditional switches
 
 template <typename T>
 constexpr auto is_unsupported_type =
