@@ -372,10 +372,11 @@ void doMeshSubdivisionVTK(const pcl::PolygonMesh::ConstPtr & in, const pcl::Poly
     checkOutput(out, "MeshSubdivisionVTK");
 }
 
-template <typename T>
-void doMovingLeastSquares(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
+template <typename T1, typename T2 = T1>
+void doMovingLeastSquares(const typename pcl::PointCloud<T1>::ConstPtr & in, const typename pcl::PointCloud<T2>::Ptr & out, const yarp::os::Searchable & options)
 {
     auto cacheMlsResults = options.check("cacheMlsResults", yarp::os::Value(true)).asBool();
+    auto computeNormals = options.check("computeNormals", yarp::os::Value(false)).asBool();
     auto dilationIterations = options.check("dilationIterations", yarp::os::Value(0)).asInt32();
     auto dilationVoxelSize = options.check("dilationVoxelSize", yarp::os::Value(1.0f)).asFloat32();
     auto numberOfThreads = options.check("numberOfThreads", yarp::os::Value(1)).asInt32();
@@ -407,7 +408,7 @@ void doMovingLeastSquares(const typename pcl::PointCloud<T>::ConstPtr & in, cons
         throw std::invalid_argument("unknown projection method: " + projectionMethodStr);
     }
 
-    typename pcl::MovingLeastSquares<T, T>::UpsamplingMethod upsamplingMethod;
+    typename pcl::MovingLeastSquares<T1, T2>::UpsamplingMethod upsamplingMethod;
 
     if (upsamplingMethodStr == "distinctCloud")
     {
@@ -434,12 +435,12 @@ void doMovingLeastSquares(const typename pcl::PointCloud<T>::ConstPtr & in, cons
         throw std::invalid_argument("unknown upsampling method: " + upsamplingMethodStr);
     }
 
-    typename pcl::search::KdTree<T>::Ptr tree(new pcl::search::KdTree<T>());
+    typename pcl::search::KdTree<T1>::Ptr tree(new pcl::search::KdTree<T1>());
     tree->setInputCloud(in);
 
-    pcl::MovingLeastSquares<T, T> mls;
+    pcl::MovingLeastSquares<T1, T2> mls;
     mls.setCacheMLSResults(cacheMlsResults);
-    mls.setComputeNormals(false); // don't store normals
+    mls.setComputeNormals(computeNormals);
     mls.setDilationIterations(dilationIterations);
     mls.setDilationVoxelSize(dilationVoxelSize);
     mls.setInputCloud(in);
@@ -455,7 +456,7 @@ void doMovingLeastSquares(const typename pcl::PointCloud<T>::ConstPtr & in, cons
     mls.setUpsamplingStepSize(upsamplingStepSize);
     mls.process(*out);
 
-    checkOutput<T>(out, "MovingLeastSquares");
+    checkOutput<T2>(out, "MovingLeastSquares");
 }
 
 template <typename T1, typename T2>

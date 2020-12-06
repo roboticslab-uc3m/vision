@@ -115,7 +115,10 @@ namespace
             doMeshSubdivisionVTK(prev.getMesh(), curr.setMesh(), options);
             break;
         case "MovingLeastSquares"_hash:
-            doMovingLeastSquares<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
+            if (options.check("computeNormals"), yarp::os::Value(false).asBool())
+                doMovingLeastSquares<any_xyz_t, normal_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<normal_t>(), options);
+            else
+                doMovingLeastSquares<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
             break;
         case "NormalEstimation"_hash:
             pcl::copyPointCloud(*prev.getCloud<any_xyz_t>(), *curr.setCloud<normal_t>());
