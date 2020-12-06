@@ -6,11 +6,10 @@
 #include <string>
 
 #include <yarp/os/Property.h>
+#include <yarp/os/Searchable.h>
 
 #include <yarp/sig/PointCloud.h>
 #include <yarp/sig/Vector.h>
-
-#include <SurfaceMeshingOptions.hpp>
 
 /**
  * @ingroup vision_libraries
@@ -54,14 +53,12 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
                        {{"algorithm", yarp::os::Value("Poisson")}}
                    });
 
-template <typename T>
-bool meshFromCloud(const yarp::sig::PointCloud<T> & cloud,
+template <typename T1, typename T2 = T1>
+bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
+                   yarp::sig::PointCloud<T2> & meshPoints,
                    yarp::sig::VectorOf<int> & meshIndices,
-                   const yarp::sig::VectorOf<yarp::os::Property> & options)
-{
-    yarp::sig::PointCloud<T> meshPoints;
-    return meshFromCloud(cloud, meshPoints, meshIndices, options);
-}
+                   const yarp::os::Searchable & config,
+                   const std::string & collection = "meshPipeline");
 
 } // namespace YarpCloudUtils
 

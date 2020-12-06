@@ -6,11 +6,9 @@ if(ENABLE_YarpCloudUtils)
                                       YarpCloudUtils-ply-export.cpp
                                       YarpCloudUtils-ply-import.cpp
                                       YarpCloudUtils-pcl.cpp
-                                      SurfaceMeshingOptions.hpp
-                                      SurfaceMeshingOptions.cpp
                                       tinyply.h)
 
-    set_property(TARGET YarpCloudUtils PROPERTY PUBLIC_HEADER YarpCloudUtils.hpp SurfaceMeshingOptions.hpp)
+    set_property(TARGET YarpCloudUtils PROPERTY PUBLIC_HEADER YarpCloudUtils.hpp)
 
     file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/tinyply.cpp "#include \"tinyply.h\"")
     set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/tinyply.cpp PROPERTY COMPILE_DEFINITIONS TINYPLY_IMPLEMENTATION)

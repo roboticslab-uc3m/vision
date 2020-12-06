@@ -920,6 +920,42 @@ namespace
 }
 #endif
 
+namespace
+{
+    auto makeFromConfig(const yarp::os::Searchable & config, const std::string & collection)
+    {
+        yarp::sig::VectorOf<yarp::os::Property> options;
+        const auto & pipeline = config.findGroup(collection);
+
+        if (!pipeline.isNull())
+        {
+            auto groups = pipeline.tail();
+
+            for (auto i = 0; i < groups.size(); i++)
+            {
+                auto groupName = groups.get(i).asString();
+                const auto & group = config.findGroup(groupName);
+
+                if (!group.isNull())
+                {
+                    auto groupConfig = group.tail();
+                    options.emplace_back(groupConfig.toString().c_str());
+                }
+                else
+                {
+                    yWarning() << "group not found:" << groupName;
+                }
+            }
+        }
+        else
+        {
+            yWarning() << "collection not found:" << collection;
+        }
+
+        return options;
+    }
+}
+
 namespace roboticslab
 {
 
@@ -984,6 +1020,16 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
     yError() << "meshFromCloud compiled with no PCL support";
     return false;
 #endif
+}
+
+template <typename T1, typename T2>
+bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
+                   yarp::sig::PointCloud<T2> & meshPoints,
+                   yarp::sig::VectorOf<int> & meshIndices,
+                   const yarp::os::Searchable & config,
+                   const std::string & collection)
+{
+    return meshFromCloud(cloud, meshPoints, meshIndices, makeFromConfig(config, collection));
 }
 
 } // namespace YarpCloudUtils
