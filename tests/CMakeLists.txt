@@ -60,6 +60,17 @@ if(ENABLE_tests)
         gtest_discover_tests(testQRDetector)
     endif()
 
+    if(TARGET YarpCloudUtils)
+        add_executable(testYarpCloudUtils testYarpCloudUtils.cpp)
+
+        target_link_libraries(testYarpCloudUtils YarpCloudUtils
+                                                 gtest_main)
+
+        target_compile_features(testYarpCloudUtils PUBLIC cxx_std_14)
+
+        gtest_discover_tests(testYarpCloudUtils)
+    endif()
+
 else()
 
     set(ENABLE_tests OFF CACHE BOOL "Enable/disable unit tests" FORCE)
