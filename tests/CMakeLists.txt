@@ -67,6 +67,7 @@ if(ENABLE_tests)
                                                  gtest_main)
 
         target_compile_features(testYarpCloudUtils PUBLIC cxx_std_14)
+        target_compile_definitions(testYarpCloudUtils PRIVATE PLY_PATH="${CMAKE_CURRENT_BINARY_DIR}/")
 
         gtest_discover_tests(testYarpCloudUtils)
     endif()
