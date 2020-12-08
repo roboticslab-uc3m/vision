@@ -222,6 +222,10 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
     using pcl_input_type = typename pcl_type_from_yarp<T1>::type;
     using pcl_output_type = typename pcl_type_from_yarp<T2>::type;
 
+    // Force the compiler/linker to instantiate this signature of meshFromCloud for unsupported
+    // point types. The following if clauses would make GCC strip several symbols from the .so.
+    typename pcl::PointCloud<pcl_input_type>::Ptr pclXYZ(new pcl::PointCloud<pcl_input_type>());
+
     if (is_unsupported_type<pcl_input_type>)
     {
         yError() << "unsupported input point type";
@@ -241,7 +245,6 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
     }
 
     // Convert YARP cloud to PCL cloud.
-    typename pcl::PointCloud<pcl_input_type>::Ptr pclXYZ(new pcl::PointCloud<pcl_input_type>());
     yarp::pcl::toPCL(cloud, *pclXYZ);
 
     // Perform surface reconstruction.
