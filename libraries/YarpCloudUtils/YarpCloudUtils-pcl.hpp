@@ -11,6 +11,8 @@
 #include <pcl/PolygonMesh.h>
 #include <pcl/common/io.h>
 
+#include "YarpCloudUtils-pcl-traits.hpp"
+
 namespace
 {
 
@@ -52,6 +54,13 @@ private:
 template <typename T1, typename T2, std::enable_if_t<!std::is_same<T1, T2>::value, bool>>
 inline auto cloud_container::initializeCloudPointer(const typename pcl::PointCloud<T1>::ConstPtr & in)
 {
+    if (!pcl_is_convertible<T1, T2>::value)
+    {
+        std::string name_lhs = pcl_descriptor<T1>::name;
+        std::string name_rhs = pcl_descriptor<T2>::name;
+        throw std::runtime_error("illegal conversion from " + name_lhs + " to " + name_rhs);
+    }
+
     typename pcl::PointCloud<T2>::Ptr out(new pcl::PointCloud<T2>());
     pcl::copyPointCloud(*in, *out);
     return out;

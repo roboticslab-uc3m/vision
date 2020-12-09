@@ -59,9 +59,9 @@ namespace
     template <typename T>
     void processStep(const cloud_container & prev, cloud_container & curr, const yarp::os::Searchable & options)
     {
-        using any_xyz_t = typename pcl_convert<T, pcl_all_xyz_types_tag>::type;
-        using xyz_rgba_t = typename pcl_convert<T, pcl_xyz_rgb_types_tag>::type;
-        using normal_t = typename pcl_convert<T, pcl_normal_types_tag>::type;
+        using any_xyz_t = typename pcl_decay<T, pcl_all_xyz_types_tag>::type;
+        using xyz_rgba_t = typename pcl_decay<T, pcl_xyz_rgb_types_tag>::type;
+        using normal_t = typename pcl_decay<T, pcl_normal_types_tag>::type;
 
         if (!options.check("algorithm"))
         {
@@ -230,13 +230,13 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
 
     if (is_unsupported_type<pcl_input_type>)
     {
-        yError() << "unsupported input point type" << descriptor<pcl_input_type>::name;
+        yError() << "unsupported input point type" << pcl_descriptor<pcl_input_type>::name;
         return false;
     }
 
     if (is_unsupported_type<pcl_output_type>)
     {
-        yError() << "unsupported output point type" << descriptor<pcl_output_type>::name;
+        yError() << "unsupported output point type" << pcl_descriptor<pcl_output_type>::name;
         return false;
     }
 

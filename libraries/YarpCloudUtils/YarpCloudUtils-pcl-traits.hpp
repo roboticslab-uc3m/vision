@@ -55,97 +55,121 @@ struct pcl_xyz_rgb_types_tag {};
 
 struct pcl_normal_types_tag {};
 
-// Convert PCL type according to selected tag
+// Map PCL type according to selected tag
 
 template <typename T, typename tag>
-struct pcl_convert;
+struct pcl_decay;
 
 // 1-to-1 mapping if T belongs to any of the supported XYZ types
 
 template <typename T>
-struct pcl_convert<T, pcl_all_xyz_types_tag>
+struct pcl_decay<T, pcl_all_xyz_types_tag>
 { typedef T type; };
 
 // Mappings for XYZ(RGB) types
 
 template <typename T>
-struct pcl_convert<T, pcl_xyz_rgb_types_tag>
+struct pcl_decay<T, pcl_xyz_rgb_types_tag>
 { typedef T type; };
 
 template <>
-struct pcl_convert<pcl::PointXYZI, pcl_xyz_rgb_types_tag>
+struct pcl_decay<pcl::PointXYZI, pcl_xyz_rgb_types_tag>
 { typedef pcl::PointXYZ type; };
 
 template <>
-struct pcl_convert<pcl::InterestPoint, pcl_xyz_rgb_types_tag>
+struct pcl_decay<pcl::InterestPoint, pcl_xyz_rgb_types_tag>
 { typedef pcl::PointXYZ type; };
 
 template <>
-struct pcl_convert<pcl::PointNormal, pcl_xyz_rgb_types_tag>
+struct pcl_decay<pcl::PointNormal, pcl_xyz_rgb_types_tag>
 { typedef pcl::PointXYZ type; };
 
 template <>
-struct pcl_convert<pcl::PointXYZRGBNormal, pcl_xyz_rgb_types_tag>
+struct pcl_decay<pcl::PointXYZRGBNormal, pcl_xyz_rgb_types_tag>
 { typedef pcl::PointXYZRGB type; };
 
 // Mappings for XYZ+normal types
 
 template <typename T>
-struct pcl_convert<T, pcl_normal_types_tag>
+struct pcl_decay<T, pcl_normal_types_tag>
 { typedef T type; };
 
 template <>
-struct pcl_convert<pcl::PointXYZ, pcl_normal_types_tag>
+struct pcl_decay<pcl::PointXYZ, pcl_normal_types_tag>
 { typedef pcl::PointNormal type; };
 
 template <>
-struct pcl_convert<pcl::PointXYZRGB, pcl_normal_types_tag>
+struct pcl_decay<pcl::PointXYZRGB, pcl_normal_types_tag>
 { typedef pcl::PointXYZRGBNormal type; };
 
 template <>
-struct pcl_convert<pcl::PointXYZI, pcl_normal_types_tag>
+struct pcl_decay<pcl::PointXYZI, pcl_normal_types_tag>
 { typedef pcl::PointXYZINormal type; };
 
 template <>
-struct pcl_convert<pcl::InterestPoint, pcl_normal_types_tag>
+struct pcl_decay<pcl::InterestPoint, pcl_normal_types_tag>
 { typedef pcl::PointNormal type; };
+
+// Register allowed conversions
+
+template <typename T1, typename T2>
+struct pcl_is_convertible : std::false_type {};
+
+template <typename T>
+struct pcl_is_convertible<T, pcl::PointXYZ> : std::true_type {}; // T->XYZ always allowed
+
+template <>
+struct pcl_is_convertible<pcl::PointXYZRGBNormal, pcl::PointXYZRGB> : std::true_type {};
+
+template <>
+struct pcl_is_convertible<pcl::PointXYZRGBNormal, pcl::PointNormal> : std::true_type {};
+
+template <>
+struct pcl_is_convertible<pcl::PointXYZINormal, pcl::PointXYZI> : std::true_type {};
+
+template <>
+struct pcl_is_convertible<pcl::PointXYZINormal, pcl::PointNormal> : std::true_type {};
 
 // Describe each type
 
 template <typename T>
-struct descriptor;
+struct pcl_descriptor;
 
 template <>
-struct descriptor<pcl::PointXY>
+struct pcl_descriptor<pcl::PointXY>
 { static constexpr const char * name = "XY"; };
 
 template <>
-struct descriptor<pcl::PointXYZ>
+struct pcl_descriptor<pcl::PointXYZ>
 { static constexpr const char * name = "XYZ"; };
 
 template <>
-struct descriptor<pcl::Normal>
+struct pcl_descriptor<pcl::Normal>
 { static constexpr const char * name = "NORMAL"; };
 
 template <>
-struct descriptor<pcl::PointXYZRGB>
+struct pcl_descriptor<pcl::PointXYZRGB>
 { static constexpr const char * name = "XYZ_RGB"; };
 
 template <>
-struct descriptor<pcl::PointXYZI>
+struct pcl_descriptor<pcl::PointXYZI>
 { static constexpr const char * name = "XYZI"; };
 
 template <>
-struct descriptor<pcl::InterestPoint>
+struct pcl_descriptor<pcl::InterestPoint>
 { static constexpr const char * name = "XYZ_INTEREST"; };
 
 template <>
-struct descriptor<pcl::PointNormal>
+struct pcl_descriptor<pcl::PointNormal>
 { static constexpr const char * name = "XYZ_NORMAL"; };
 
 template <>
-struct descriptor<pcl::PointXYZRGBNormal>
+struct pcl_descriptor<pcl::PointXYZRGBNormal>
 { static constexpr const char * name = "XYZ_RGB_NORMAL"; };
+
+template <>
+struct pcl_descriptor<pcl::PointXYZINormal>
+{ static constexpr const char * name = "XYZI_NORMAL"; };
 
 // Conditional switches
 
