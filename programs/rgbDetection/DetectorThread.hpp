@@ -25,9 +25,9 @@ namespace roboticslab
 {
 
 /**
- * @ingroup switchDetection2D
+ * @ingroup rgbDetection
  *
- * @brief Implements switchDetection2D callback on Bottle.
+ * @brief Implements rgbDetection callback on Bottle.
  */
 class CropSelectorProcessor : public yarp::os::PortReader
 {
@@ -82,9 +82,9 @@ public:
 };
 
 /**
- * @ingroup switchDetection2D
+ * @ingroup rgbDetection
  *
- * @brief Implements switchDetection2D PeriodicThread.
+ * @brief Implements rgbDetection PeriodicThread.
  */
 class DetectorThread : public yarp::os::PeriodicThread
 {

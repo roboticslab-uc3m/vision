@@ -354,6 +354,7 @@ bool Travis::getBlobsRect(std::vector<cv::Rect>& rects)
         //approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true ); // ?
         rects.push_back( boundingRect( cv::Mat(_contours[i]) ) );
     }
+    return true;
 }
 
 /************************************************************************/

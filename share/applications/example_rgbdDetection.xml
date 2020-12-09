@@ -1,0 +1,28 @@
+<application>
+    <name>example rgbdDetection App</name>
+
+    <!-- Expect instance that opens /rgbd from visionFakeSensors.xml or visionSensors.xml -->
+
+    <module>
+        <name>rgbdDetection</name>
+        <parameters>--detector ColorRegionDetector --algorithm greenMinusRed</parameters>
+        <node>localhost</node>
+    </module>
+    <!-- connection is performed automatically -->
+
+    <module>
+        <name>yarpview</name>
+        <parameters>--name /rgbdDetection/yarpview/img:i</parameters>
+        <node>localhost</node>
+    </module>
+    <connection>
+        <from>/rgbdDetection/rgbd/img:o</from>
+        <to>/rgbdDetection/yarpview/img:i</to>
+    </connection>
+
+    <module>
+        <name>gnome-terminal</name>
+        <parameters>-e "yarp read ... /rgbdDetection/rgbd/state:o"</parameters>
+        <node>localhost</node>
+    </module>
+</application>

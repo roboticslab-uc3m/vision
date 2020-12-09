@@ -3,7 +3,7 @@
 
     <module>
         <name>test_grabber</name>
-        <parameters>--name /grabber</parameters>
+        <parameters>--name /grabber --mode ball</parameters>
         <node>localhost</node>
         <deployer>yarpdev</deployer>
     </module>
@@ -11,7 +11,7 @@
     <!-- Requires YARP compiled with ENABLE_yarpmod_fakeDepthCamera -->
     <module>
         <name>fakeDepthCamera</name>
-        <parameters>--name /rgbd</parameters>
+        <parameters>--name /rgbd --mode ball</parameters>
         <node>localhost</node>
         <deployer>yarpdev</deployer>
     </module>

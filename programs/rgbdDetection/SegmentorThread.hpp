@@ -15,32 +15,17 @@
 
 #include <yarp/sig/all.h>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#include "IDetector.hpp"
 
-#include "TravisLib.hpp"
-
-#define DEFAULT_ALGORITHM "blueMinusRed"
-#define DEFAULT_LOCATE "centroid"
-#define DEFAULT_MAX_NUM_BLOBS 2
-#define DEFAULT_MORPH_CLOSING 2
-#define DEFAULT_MORPH_OPENING 0
-#define DEFAULT_OUT_FEATURES "mmX mmY mmZ"  // it's a bottle!!
-#define DEFAULT_OUT_FEATURES_FORMAT 0  // 0=bottled,1=minimal
-#define DEFAULT_OUT_IMAGE 1
 #define DEFAULT_RATE_MS 20
-#define DEFAULT_SEE_BOUNDING 3
-#define DEFAULT_THRESHOLD 55
-
 
 namespace roboticslab
 {
 
 /**
- * @ingroup colorRegionDetection
+ * @ingroup rgbdDetection
  *
- * @brief Implements colorRegionDetection callback on Bottle.
+ * @brief Implements rgbdDetection callback on Bottle.
  */
 class DataProcessor : public yarp::os::PortReader {
     virtual bool read(yarp::os::ConnectionReader& connection) {
@@ -85,51 +70,42 @@ public:
 };
 
 /**
- * @ingroup colorRegionDetection
+ * @ingroup rgbdDetection
  *
- * @brief Implements colorRegionDetection PeriodicThread.
+ * @brief Implements rgbdDetection PeriodicThread.
  */
-class SegmentorThread : public yarp::os::PeriodicThread {
-private:
-    yarp::dev::IRGBDSensor *iRGBDSensor;
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
-    yarp::os::Port *pOutPort;
-    //
-    std::string algorithm;
-    std::string locate;
-    int maxNumBlobs;
-    double morphClosing;
-    double morphOpening;
-    int outFeaturesFormat;
-    int outImage;
-    int seeBounding;
-    int threshold;
-    //
-    double fx_d,fy_d,cx_d,cy_d,fx_rgb,fy_rgb,cx_rgb,cy_rgb;
-    //
-    yarp::os::Bottle outFeatures;
-    //
-    int cropSelector;
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg;
-    yarp::os::Port* inCropSelectorPort;
-    DataProcessor processor;
-
+class SegmentorThread : public yarp::os::PeriodicThread
+{
 public:
     SegmentorThread() : PeriodicThread(DEFAULT_RATE_MS * 0.001) {}
 
     void setIRGBDSensor(yarp::dev::IRGBDSensor * _iRGBDSensor);
     void setOutImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > * _pOutImg);
     void setOutPort(yarp::os::Port *_pOutPort);
-    void init(yarp::os::ResourceFinder &rf);
-    void run();  // The periodical function
+    bool init(yarp::os::ResourceFinder &rf);
 
     void setCropSelector(int cropSelector) { this->cropSelector = cropSelector; }
     void setOutCropSelectorImg(yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg) { this->outCropSelectorImg = outCropSelectorImg; }
     void setInCropSelectorPort(yarp::os::Port* inCropSelectorPort) { this->inCropSelectorPort = inCropSelectorPort; }
 
+private:
+    void run() override; // The periodical function
+
+    yarp::dev::PolyDriver detectorDevice;
+    IDetector* iDetector;
+
+    yarp::dev::IRGBDSensor *iRGBDSensor;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > *pOutImg;  // for testing
+    yarp::os::Port *pOutPort;
+    //
+    double fx_d,fy_d,cx_d,cy_d;
+    //
+    int cropSelector;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >* outCropSelectorImg;
+    yarp::os::Port* inCropSelectorPort;
+    DataProcessor processor;
 };
 
 }  // namespace roboticslab
 
 #endif  // __SEGMENTOR_THREAD_HPP__
-
