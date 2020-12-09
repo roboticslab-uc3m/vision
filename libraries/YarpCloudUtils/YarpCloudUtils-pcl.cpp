@@ -68,6 +68,8 @@ namespace
             throw std::invalid_argument("missing algorithm parameter");
         }
 
+        yDebug() << "step:" << options.toString();
+
         auto algorithm = options.find("algorithm").asString();
 
         switch (makeHash(algorithm))
@@ -228,13 +230,13 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
 
     if (is_unsupported_type<pcl_input_type>)
     {
-        yError() << "unsupported input point type";
+        yError() << "unsupported input point type" << descriptor<pcl_input_type>::name;
         return false;
     }
 
     if (is_unsupported_type<pcl_output_type>)
     {
-        yError() << "unsupported output point type";
+        yError() << "unsupported output point type" << descriptor<pcl_output_type>::name;
         return false;
     }
 

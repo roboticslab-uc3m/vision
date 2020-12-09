@@ -110,6 +110,43 @@ template <>
 struct pcl_convert<pcl::InterestPoint, pcl_normal_types_tag>
 { typedef pcl::PointNormal type; };
 
+// Describe each type
+
+template <typename T>
+struct descriptor;
+
+template <>
+struct descriptor<pcl::PointXY>
+{ static constexpr const char * name = "XY"; };
+
+template <>
+struct descriptor<pcl::PointXYZ>
+{ static constexpr const char * name = "XYZ"; };
+
+template <>
+struct descriptor<pcl::Normal>
+{ static constexpr const char * name = "NORMAL"; };
+
+template <>
+struct descriptor<pcl::PointXYZRGB>
+{ static constexpr const char * name = "XYZ_RGB"; };
+
+template <>
+struct descriptor<pcl::PointXYZI>
+{ static constexpr const char * name = "XYZI"; };
+
+template <>
+struct descriptor<pcl::InterestPoint>
+{ static constexpr const char * name = "XYZ_INTEREST"; };
+
+template <>
+struct descriptor<pcl::PointNormal>
+{ static constexpr const char * name = "XYZ_NORMAL"; };
+
+template <>
+struct descriptor<pcl::PointXYZRGBNormal>
+{ static constexpr const char * name = "XYZ_RGB_NORMAL"; };
+
 // Conditional switches
 
 template <typename T>
