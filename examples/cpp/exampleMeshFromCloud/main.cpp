@@ -4,6 +4,8 @@
 
 #include <YarpCloudUtils.hpp>
 
+constexpr const char * DEFAULT_COLLECTION = "meshPipeline";
+
 int main(int argc, char * argv[])
 {
     yarp::os::Property options;
@@ -14,20 +16,21 @@ int main(int argc, char * argv[])
         yInfo() << argv[0] << "commands:";
         yInfo() << "\t--cloud" << "\tpath to file with .ply extension to export the point cloud to";
         yInfo() << "\t--mesh " << "\tpath to file with .ply extension to export the surface mesh to";
-        yInfo() << "\t--binary" << "\texport data in binary format (default: true)";
+        yInfo() << "\t--steps " << "\tsection collection defining the meshing pipeline, defaults to:" << DEFAULT_COLLECTION;
+        yInfo() << "\t--binary" << "\texport data in binary format, defaults to: true";
         yInfo() << "\t--height" << "\tnumber of rows (for organized clouds)";
         yInfo() << "\t--width" << "\tnumber of columns (for organized clouds)";
-        yInfo() << "additional parameters are used to configure the surface reconstruction method, if requested";
         return 0;
     }
 
     auto fileCloud = options.check("cloud", yarp::os::Value("")).asString();
     auto fileMesh = options.check("mesh", yarp::os::Value("")).asString();
+    auto collection = options.check("steps", yarp::os::Value(DEFAULT_COLLECTION)).asString();
     auto binary = options.check("binary", yarp::os::Value(true)).asBool();
 
     if (fileCloud.empty() || fileMesh.empty())
     {
-        yError() << "missing or empty --cloud and/or --mesh parameters";
+        yError() << "either of the --cloud and --mesh parameters are missing or empty";
         return 1;
     }
 
@@ -59,7 +62,7 @@ int main(int argc, char * argv[])
 
     auto start = yarp::os::SystemClock::nowSystem();
 
-    if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, options))
+    if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, options, collection))
     {
         yError() << "unable to reconstruct surface from cloud";
         return 1;

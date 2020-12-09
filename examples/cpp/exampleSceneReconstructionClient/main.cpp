@@ -11,6 +11,7 @@
 
 constexpr const char * DEFAULT_REMOTE = "/sceneReconstruction";
 constexpr const char * DEFAULT_PREFIX = "/exampleSceneReconstructionClient";
+constexpr const char * DEFAULT_COLLECTION = "meshPipeline";
 
 constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab('g','p','c');
 
@@ -30,12 +31,12 @@ int main(int argc, char * argv[])
     if (options.check("help"))
     {
         yInfo() << argv[0] << "commands:";
-        yInfo() << "\t--remote" << "\tremote port to connect to, defaults to" << DEFAULT_REMOTE;
-        yInfo() << "\t--prefix" << "\tlocal port prefix, defaults to" << DEFAULT_PREFIX;
-        yInfo() << "\t--cloud" << "\tpath to file with .ply extension to export the point cloud to";
-        yInfo() << "\t--mesh " << "\tpath to file with .ply extension to export the surface mesh to";
-        yInfo() << "\t--binary" << "\texport data in binary format (default: true)";
-        yInfo() << "additional parameters are used to configure the surface reconstruction method, if requested";
+        yInfo() << "\t--remote" << "\tremote port to connect to, defaults to:" << DEFAULT_REMOTE;
+        yInfo() << "\t--prefix" << "\tlocal port prefix, defaults to:" << DEFAULT_PREFIX;
+        yInfo() << "\t--cloud " << "\tpath to file with .ply extension to export the point cloud to";
+        yInfo() << "\t--mesh  " << "\tpath to file with .ply extension to export the surface mesh to";
+        yInfo() << "\t--steps " << "\tsection collection defining the meshing pipeline, defaults to:" << DEFAULT_COLLECTION;
+        yInfo() << "\t--binary" << "\texport data in binary format, defaults to: true";
         return 0;
     }
 
@@ -43,6 +44,7 @@ int main(int argc, char * argv[])
     auto prefix = options.check("prefix", yarp::os::Value(DEFAULT_PREFIX)).asString();
     auto fileCloud = options.check("cloud", yarp::os::Value("")).asString();
     auto fileMesh = options.check("mesh", yarp::os::Value("")).asString();
+    auto collection = options.check("steps", yarp::os::Value(DEFAULT_COLLECTION)).asString();
     auto binary = options.check("binary", yarp::os::Value(true)).asBool();
 
     yarp::os::RpcClient rpc;
@@ -83,7 +85,7 @@ int main(int argc, char * argv[])
 
         auto start = yarp::os::SystemClock::nowSystem();
 
-        if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, options))
+        if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, options, collection))
         {
             yWarning() << "unable to reconstruct surface from cloud";
         }

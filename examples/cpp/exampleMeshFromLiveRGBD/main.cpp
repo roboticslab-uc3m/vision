@@ -1,3 +1,5 @@
+#include <yarp/conf/version.h>
+
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
@@ -15,7 +17,8 @@
 #include <YarpCloudUtils.hpp>
 
 constexpr const char * DEFAULT_REMOTE = "/realsense2";
-constexpr const char * DEFAULT_PREFIX = "/exampleMeshFromLiveDepth";
+constexpr const char * DEFAULT_PREFIX = "/exampleMeshFromLiveRGBD";
+constexpr const char * DEFAULT_COLLECTION = "meshPipeline";
 
 int main(int argc, char * argv[])
 {
@@ -33,14 +36,12 @@ int main(int argc, char * argv[])
     if (options.check("help"))
     {
         yInfo() << argv[0] << "commands:";
-        yInfo() << "\t--remote" << "\tremote port prefix to connect to, defaults to" << DEFAULT_REMOTE;
-        yInfo() << "\t--prefix" << "\tlocal port prefix, defaults to" << DEFAULT_PREFIX;
-        yInfo() << "\t--roi   " << "\tROI to crop from as a 4-int list: (minX maxX minY maxY)";
-        yInfo() << "\t--step  " << "\tstep size for decimation as a 2-int list: (stepX stepY)";
+        yInfo() << "\t--remote" << "\tremote port prefix to connect to, defaults to:" << DEFAULT_REMOTE;
+        yInfo() << "\t--prefix" << "\tlocal port prefix, defaults to:" << DEFAULT_PREFIX;
         yInfo() << "\t--cloud " << "\tpath to file with .ply extension to export the point cloud to";
         yInfo() << "\t--mesh  " << "\tpath to file with .ply extension to export the surface mesh to";
-        yInfo() << "\t--binary" << "\texport data in binary format, defaults to true";
-        yInfo() << "additional parameters are used to configure the surface reconstruction method, if requested";
+        yInfo() << "\t--steps " << "\tsection collection defining the meshing pipeline, defaults to:" << DEFAULT_COLLECTION;
+        yInfo() << "\t--binary" << "\texport data in binary format, defaults to: true";
         return 0;
     }
 
@@ -48,54 +49,15 @@ int main(int argc, char * argv[])
     auto prefix = options.check("prefix", yarp::os::Value(DEFAULT_PREFIX)).asString();
     auto fileCloud = options.check("cloud", yarp::os::Value("")).asString();
     auto fileMesh = options.check("mesh", yarp::os::Value("")).asString();
+    auto collection = options.check("steps", yarp::os::Value(DEFAULT_COLLECTION)).asString();
     auto binary = options.check("binary", yarp::os::Value(true)).asBool();
 
-    const auto & v_roi = options.find("roi");
-    const auto & v_step = options.find("step");
-
-    yarp::sig::utils::PCL_ROI roi {0, 0, 0, 0};
-    auto stepX = 1;
-    auto stepY = 1;
-
-    if (!v_roi.isNull())
-    {
-        if (!v_roi.isList() || v_roi.asList()->size() != 4)
-        {
-            yError() << "--roi must be a list of 4 unsigned ints";
-            return 1;
-        }
-
-        const auto * b_roi = v_roi.asList();
-        roi.min_x = b_roi->get(0).asInt32();
-        roi.max_x = b_roi->get(1).asInt32();
-        roi.min_y = b_roi->get(2).asInt32();
-        roi.max_y = b_roi->get(3).asInt32();
-    }
-
-    if (!v_step.isNull())
-    {
-        if (!v_step.isList() || v_step.asList()->size() != 2)
-        {
-            yError() << "--step must be a list of 2 unsigned ints";
-            return 1;
-        }
-
-        const auto * b_step = v_step.asList();
-        stepX = b_step->get(0).asInt32();
-        stepY = b_step->get(1).asInt32();
-
-        if (stepX < 1 || stepY < 1)
-        {
-            yError() << "step cannot be less than 1";
-            return 1;
-        }
-    }
-
-    yarp::sig::IntrinsicParams depthParams;
+    yarp::sig::FlexImage colorImage;
     yarp::sig::ImageOf<yarp::sig::PixelFloat> depthImage;
+    yarp::sig::IntrinsicParams colorParams;
 
     {
-        yarp::os::Property sensorOptions = {
+        yarp::os::Property sensorOptions {
             {"device", yarp::os::Value("RGBDSensorClient")},
             {"localImagePort", yarp::os::Value(prefix + "/client/rgbImage:i")},
             {"localDepthPort", yarp::os::Value(prefix + "/client/depthImage:i")},
@@ -121,27 +83,34 @@ int main(int argc, char * argv[])
             return 1;
         }
 
+#if YARP_VERSION_MINOR < 5
+        // Wait for the first few frames to arrive. We kept receiving invalid pixel codes
+        // from the depthCamera device if started straight away.
+        // https://github.com/roboticslab-uc3m/vision/issues/88
+        yarp::os::SystemClock::delaySystem(1.0);
+#endif
+
         yarp::os::Property intrinsic;
 
-        if (!iRGBDSensor->getDepthIntrinsicParam(intrinsic))
+        if (!iRGBDSensor->getRgbIntrinsicParam(intrinsic))
         {
-            yError() << "unable to retrieve depth intrinsic parameters";
+            yError() << "unable to retrieve RGB intrinsic parameters";
             return 1;
         }
 
-        depthParams.fromProperty(intrinsic);
+        colorParams.fromProperty(intrinsic);
 
         for (auto n = 0;; n++)
         {
-            iRGBDSensor->getDepthImage(depthImage);
+            iRGBDSensor->getImages(colorImage, depthImage);
 
-            if (depthImage.getRawImageSize() != 0)
+            if (colorImage.getRawImageSize() != 0 && depthImage.getRawImageSize() != 0)
             {
                 break;
             }
             else if (n == 10)
             {
-                yError() << "unable to acquire depth frame";
+                yError() << "unable to acquire RGBD frames";
                 return 1;
             }
 
@@ -149,7 +118,9 @@ int main(int argc, char * argv[])
         }
     }
 
-    auto cloud = yarp::sig::utils::depthToPC(depthImage, depthParams, roi, stepX, stepY);
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> temp;
+    temp.copy(colorImage);
+    auto cloud = yarp::sig::utils::depthRgbToPC<yarp::sig::DataXYZRGBA>(depthImage, temp, colorParams);
     yInfo() << "got cloud of" << cloud.size() << "points, organized as" << cloud.width() << "x" << cloud.height();
 
     if (!fileCloud.empty())
@@ -166,26 +137,18 @@ int main(int argc, char * argv[])
 
     if (!fileMesh.empty())
     {
+#ifdef SAMPLE_CONFIG
         // set sensible defaults, most suitable for organized clouds
-        yarp::os::Property meshOptions = {
-            {"cropSkip", yarp::os::Value(true)}, // use ROI instead
-            {"downsampleSkip", yarp::os::Value(true)}, // use step parameter (along with ROI) for decimation instead
-            {"smoothSkip", yarp::os::Value(true)}, // bad, generates an unorganized cloud
-            {"surfaceMethod", yarp::os::Value("organized")}, // preferred method for organized clouds
-            {"surfaceMaxEdgeLengthA", yarp::os::Value(0.05)}, // fill some holes
-            {"surfaceUseDepthAsDistance", yarp::os::Value(true)}, // use Z data
-            {"processSkip", yarp::os::Value(true)}, // override this if you wish
-            {"simplifySkip", yarp::os::Value(true)} // set this to false to remove unused points if trianglePixelSize > 1
-        };
+        std::string sampleConfigFile = SAMPLE_CONFIG;
+        options.fromConfigFile(sampleConfigFile, false);
+#endif
 
-        meshOptions.fromString(options.toString(), false); // overwrite above defaults with options provided by the user
-
-        yarp::sig::PointCloudXYZ meshPoints;
+        yarp::sig::PointCloudXYZRGBA meshPoints;
         yarp::sig::VectorOf<int> meshIndices;
 
         auto start = yarp::os::SystemClock::nowSystem();
 
-        if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, meshOptions))
+        if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, options, collection))
         {
             yWarning() << "unable to reconstruct surface from cloud";
         }
