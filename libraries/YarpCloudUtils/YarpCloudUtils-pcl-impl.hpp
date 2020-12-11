@@ -4,12 +4,11 @@
 #define __YARP_CLOUD_UTILS_PCL_IMPL_HPP__
 
 #define _USE_MATH_DEFINES
-#include <cfloat>
-#include <cmath>
-#include <ctime>
+#include <cmath> // M_PI
+#include <ctime> // std::time
 
-#include <limits>
-#include <stdexcept>
+#include <limits> // std::numeric_limits
+#include <stdexcept> // std::invalid_argument, std::runtime_error
 #include <string>
 
 #include <pcl/pcl_config.h>
@@ -112,11 +111,6 @@ void doBilateralFilter(const typename pcl::PointCloud<T>::ConstPtr & in, const t
 template <typename T>
 void doBilateralUpsampling(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
-    if (!in->isOrganized())
-    {
-        throw std::invalid_argument("input cloud must be organized (height > 1) for BilateralUpsampling");
-    }
-
     auto sigmaColor = options.check("sigmaColor", yarp::os::Value(15.0f)).asFloat32();
     auto sigmaDepth = options.check("sigmaDepth", yarp::os::Value(0.5f)).asFloat32();
     auto windowSize = options.check("windowSize", yarp::os::Value(5)).asInt32();
@@ -191,11 +185,6 @@ void doCropBox(const typename pcl::PointCloud<T>::ConstPtr & in, const typename 
 template <typename T>
 void doFastBilateralFilter(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
-    if (!in->isOrganized())
-    {
-        throw std::invalid_argument("input cloud must be organized (height > 1) for FastBilateralFilter");
-    }
-
     auto sigmaR = options.check("sigmaR", yarp::os::Value(0.05f)).asFloat32();
     auto sigmaS = options.check("sigmaS", yarp::os::Value(15.0f)).asFloat32();
 
@@ -211,11 +200,6 @@ void doFastBilateralFilter(const typename pcl::PointCloud<T>::ConstPtr & in, con
 template <typename T>
 void doFastBilateralFilterOMP(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
-    if (!in->isOrganized())
-    {
-        throw std::invalid_argument("input cloud must be organized (height > 1) for FastBilateralFilterOMP");
-    }
-
     auto numberOfThreads = options.check("numberOfThreads", yarp::os::Value(0)).asInt32();
     auto sigmaR = options.check("sigmaR", yarp::os::Value(0.05f)).asFloat32();
     auto sigmaS = options.check("sigmaS", yarp::os::Value(15.0f)).asFloat32();
@@ -362,11 +346,6 @@ void doMarchingCubesRBF(const typename pcl::PointCloud<T>::ConstPtr & in, const 
 template <typename T>
 void doMedianFilter(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
-    if (!in->isOrganized())
-    {
-        throw std::invalid_argument("input cloud must be organized (height > 1) for MedianFilter");
-    }
-
     auto maxAllowedMovement = options.check("maxAllowedMovement", yarp::os::Value(std::numeric_limits<float>::max())).asFloat32();
     auto windowSize = options.check("windowSize", yarp::os::Value(5)).asInt32();
 
@@ -601,6 +580,7 @@ void doOrganizedFastMesh(const typename pcl::PointCloud<T>::ConstPtr & in, const
 {
     if (!in->isOrganized())
     {
+        // the implementation lacks a proper check
         throw std::invalid_argument("input cloud must be organized (height > 1) for OrganizedFastMesh");
     }
 
@@ -660,8 +640,8 @@ template <typename T>
 void doPassThrough(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
     auto filterFieldName = options.check("filterFieldName", yarp::os::Value("")).asString();
-    auto filterLimitMax = options.check("filterLimitMax", yarp::os::Value(FLT_MAX)).asFloat32();
-    auto filterLimitMin = options.check("filterLimitMin", yarp::os::Value(FLT_MIN)).asFloat32();
+    auto filterLimitMax = options.check("filterLimitMax", yarp::os::Value(std::numeric_limits<float>::max())).asFloat32();
+    auto filterLimitMin = options.check("filterLimitMin", yarp::os::Value(std::numeric_limits<float>::min())).asFloat32();
     auto negative = options.check("negative", yarp::os::Value(false)).asBool();
 
     pcl::PassThrough<T> pass;
@@ -828,8 +808,8 @@ void doVoxelGrid(const typename pcl::PointCloud<T>::ConstPtr & in, const typenam
     auto leafSizeX = options.check("leafSizeX", yarp::os::Value(leafSize)).asFloat32();
     auto leafSizeY = options.check("leafSizeY", yarp::os::Value(leafSize)).asFloat32();
     auto leafSizeZ = options.check("leafSizeZ", yarp::os::Value(leafSize)).asFloat32();
-    auto limitMax = options.check("limitMax", yarp::os::Value(FLT_MAX)).asFloat64();
-    auto limitMin = options.check("limitMin", yarp::os::Value(-FLT_MAX)).asFloat64();
+    auto limitMax = options.check("limitMax", yarp::os::Value(std::numeric_limits<float>::max())).asFloat64();
+    auto limitMin = options.check("limitMin", yarp::os::Value(-std::numeric_limits<float>::max())).asFloat64();
     auto limitsNegative = options.check("limitsNegative", yarp::os::Value(false)).asBool();
     auto minimumPointsNumberPerVoxel = options.check("minimumPointsNumberPerVoxel", yarp::os::Value(0)).asInt32();
 
