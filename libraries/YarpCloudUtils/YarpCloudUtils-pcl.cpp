@@ -186,11 +186,11 @@ namespace
     }
 
     template <typename T, std::enable_if_t<is_unsupported_type<T>, bool> = true>
-    void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr &, pcl::PolygonMesh::Ptr &, const yarp::sig::VectorOf<yarp::os::Property> &)
+    void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr &, pcl::PolygonMesh::ConstPtr &, const yarp::sig::VectorOf<yarp::os::Property> &)
     {}
 
     template <typename T, std::enable_if_t<!is_unsupported_type<T>, bool> = true>
-    void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr & cloud, pcl::PolygonMesh::Ptr & mesh, const yarp::sig::VectorOf<yarp::os::Property> & options)
+    void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr & cloud, pcl::PolygonMesh::ConstPtr & mesh, const yarp::sig::VectorOf<yarp::os::Property> & options)
     {
         cloud_container data;
         data.setCloud<T>() = cloud;
@@ -203,6 +203,26 @@ namespace
         }
 
         mesh = data.getMesh();
+    }
+
+    template <typename T1, typename T2, std::enable_if_t<is_unsupported_type<T1> || is_unsupported_type<T2>, bool> = true>
+    void processCloudPCL(const typename pcl::PointCloud<T1>::Ptr &, typename pcl::PointCloud<T2>::ConstPtr &, const yarp::sig::VectorOf<yarp::os::Property> &)
+    {}
+
+    template <typename T1, typename T2, std::enable_if_t<!is_unsupported_type<T1> && !is_unsupported_type<T2>, bool> = true>
+    void processCloudPCL(const typename pcl::PointCloud<T1>::Ptr & in, typename pcl::PointCloud<T2>::ConstPtr & out, const yarp::sig::VectorOf<yarp::os::Property> & options)
+    {
+        cloud_container data;
+        data.setCloud<T1>() = in;
+
+        for (const auto & step : options)
+        {
+            cloud_container temp;
+            processStep<T1>(data, temp, step);
+            data = std::move(temp);
+        }
+
+        out = data.getCloud<T2>();
     }
 }
 #endif
@@ -261,7 +281,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
 
     // Force the compiler/linker to instantiate this signature of meshFromCloud for unsupported
     // point types. The following if clauses would make GCC strip several symbols from the .so.
-    typename pcl::PointCloud<pcl_input_type>::Ptr pclXYZ(new pcl::PointCloud<pcl_input_type>());
+    typename pcl::PointCloud<pcl_input_type>::Ptr pclCloud(new pcl::PointCloud<pcl_input_type>());
 
     if (is_unsupported_type<pcl_input_type>)
     {
@@ -282,14 +302,14 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
     }
 
     // Convert YARP cloud to PCL cloud.
-    yarp::pcl::toPCL(cloud, *pclXYZ);
+    yarp::pcl::toPCL(cloud, *pclCloud);
 
     // Perform surface reconstruction.
-    pcl::PolygonMesh::Ptr pclMesh;
+    pcl::PolygonMesh::ConstPtr pclMesh;
 
     try
     {
-        meshFromCloudPCL<pcl_input_type>(pclXYZ, pclMesh, options);
+        meshFromCloudPCL<pcl_input_type>(pclCloud, pclMesh, options);
     }
     catch (const std::exception & e)
     {
@@ -320,6 +340,71 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
                    const std::string & collection)
 {
     return meshFromCloud(cloud, meshPoints, meshIndices, makeFromConfig(config, collection));
+}
+
+template <typename T1, typename T2>
+bool processCloud(const yarp::sig::PointCloud<T1> & in,
+                  yarp::sig::PointCloud<T2> & out,
+                  const yarp::sig::VectorOf<yarp::os::Property> & options)
+{
+#ifdef HAVE_PCL
+    using pcl_input_type = typename pcl_type_from_yarp<T1>::type;
+    using pcl_output_type = typename pcl_type_from_yarp<T2>::type;
+
+    // See analogous comment in meshFromCloud.
+    typename pcl::PointCloud<pcl_input_type>::Ptr pclCloudIn(new pcl::PointCloud<pcl_input_type>());
+
+    if (is_unsupported_type<pcl_input_type>)
+    {
+        yError() << "unsupported input point type" << pcl_descriptor<pcl_input_type>::name;
+        return false;
+    }
+
+    if (is_unsupported_type<pcl_output_type>)
+    {
+        yError() << "unsupported output point type" << pcl_descriptor<pcl_output_type>::name;
+        return false;
+    }
+
+    if (options.size() == 0)
+    {
+        yError() << "empty configuration";
+        return false;
+    }
+
+    // Convert YARP cloud to PCL cloud.
+    yarp::pcl::toPCL(in, *pclCloudIn);
+
+    // Perform cloud processing.
+    typename pcl::PointCloud<pcl_output_type>::ConstPtr pclCloudOut;
+
+    try
+    {
+        processCloudPCL<pcl_input_type, pcl_output_type>(pclCloudIn, pclCloudOut, options);
+    }
+    catch (const std::exception & e)
+    {
+        yError() << "processCloud:" << e.what();
+        return false;
+    }
+
+    // Convert PCL cloud to YARP cloud.
+    yarp::pcl::fromPCL(*pclCloudOut, out);
+
+    return true;
+#else
+    yError() << "processCloud compiled with no PCL support";
+    return false;
+#endif
+}
+
+template <typename T1, typename T2>
+bool processCloud(const yarp::sig::PointCloud<T1> & in,
+                  yarp::sig::PointCloud<T2> & out,
+                  const yarp::os::Searchable & config,
+                  const std::string & collection)
+{
+    return processCloud(in, out, makeFromConfig(config, collection));
 }
 
 } // namespace YarpCloudUtils

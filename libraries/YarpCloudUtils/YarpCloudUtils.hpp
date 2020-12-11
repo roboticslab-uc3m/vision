@@ -60,6 +60,17 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
                    const yarp::os::Searchable & config,
                    const std::string & collection = "meshPipeline");
 
+template <typename T1, typename T2 = T1>
+bool processCloud(const yarp::sig::PointCloud<T1> & in,
+                  yarp::sig::PointCloud<T2> & out,
+                  const yarp::sig::VectorOf<yarp::os::Property> & options);
+
+template <typename T1, typename T2 = T1>
+bool processCloud(const yarp::sig::PointCloud<T1> & in,
+                  yarp::sig::PointCloud<T2> & out,
+                  const yarp::os::Searchable & config,
+                  const std::string & collection = "cloudPipeline");
+
 } // namespace YarpCloudUtils
 
 } // namespace roboticslab

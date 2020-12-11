@@ -28,7 +28,7 @@ public:
     template <typename T>
     const typename pcl::PointCloud<T>::Ptr & useCloud() const;
 
-    const pcl::PolygonMesh::Ptr & getMesh() const;
+    pcl::PolygonMesh::ConstPtr getMesh() const;
 
     pcl::PolygonMesh::Ptr & setMesh();
 
@@ -208,7 +208,7 @@ const pcl::PointCloud<pcl::PointXYZINormal>::Ptr & cloud_container::useCloud<pcl
 
 // cloud_container::(get|set)Mesh
 
-inline const pcl::PolygonMesh::Ptr & cloud_container::getMesh() const
+inline pcl::PolygonMesh::ConstPtr cloud_container::getMesh() const
 {
     if (mesh)
     {
