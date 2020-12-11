@@ -51,11 +51,15 @@ struct pcl_type_from_yarp<yarp::sig::DataXYZNormalRGBA>
 
 struct pcl_all_xyz_types_tag {};
 
-struct pcl_xyz_rgb_types_tag {};
+struct pcl_xyz_rgb_types_tag {}; // XYZ or XYZ+RGB
+
+struct pcl_rgb_types_tag {}; // XYZ+RGB
+
+struct pcl_xyzi_types_tag {}; // XYZI(+Normal)
 
 struct pcl_normal_types_tag {};
 
-// Map PCL type according to selected tag
+// map PCL type according to selected tag
 
 template <typename T, typename tag>
 struct pcl_decay;
@@ -66,29 +70,45 @@ template <typename T>
 struct pcl_decay<T, pcl_all_xyz_types_tag>
 { typedef T type; };
 
-// Mappings for XYZ(RGB) types
+// mappings for XYZ or XYZ+RGB types
 
 template <typename T>
 struct pcl_decay<T, pcl_xyz_rgb_types_tag>
-{ typedef T type; };
-
-template <>
-struct pcl_decay<pcl::PointXYZI, pcl_xyz_rgb_types_tag>
 { typedef pcl::PointXYZ type; };
 
 template <>
-struct pcl_decay<pcl::InterestPoint, pcl_xyz_rgb_types_tag>
-{ typedef pcl::PointXYZ type; };
-
-template <>
-struct pcl_decay<pcl::PointNormal, pcl_xyz_rgb_types_tag>
-{ typedef pcl::PointXYZ type; };
+struct pcl_decay<pcl::PointXYZRGB, pcl_xyz_rgb_types_tag>
+{ typedef pcl::PointXYZRGB type; };
 
 template <>
 struct pcl_decay<pcl::PointXYZRGBNormal, pcl_xyz_rgb_types_tag>
 { typedef pcl::PointXYZRGB type; };
 
-// Mappings for XYZ+normal types
+// mappings for XYZ+RGB types
+
+template <typename T>
+struct pcl_decay<T, pcl_rgb_types_tag>
+{ typedef pcl::PointXYZRGB type; };
+
+// mappings for XYZI(+Normal) types
+
+template <typename T>
+struct pcl_decay<T, pcl_xyzi_types_tag>
+{ typedef pcl::PointXYZI type; };
+
+template <>
+struct pcl_decay<pcl::PointNormal, pcl_xyzi_types_tag>
+{ typedef pcl::PointXYZINormal type; };
+
+template <>
+struct pcl_decay<pcl::PointXYZRGBNormal, pcl_xyzi_types_tag>
+{ typedef pcl::PointXYZINormal type; };
+
+template <>
+struct pcl_decay<pcl::PointXYZINormal, pcl_xyzi_types_tag>
+{ typedef pcl::PointXYZINormal type; };
+
+// mappings for XYZ+normal types
 
 template <typename T>
 struct pcl_decay<T, pcl_normal_types_tag>
@@ -110,7 +130,7 @@ template <>
 struct pcl_decay<pcl::InterestPoint, pcl_normal_types_tag>
 { typedef pcl::PointNormal type; };
 
-// Register allowed conversions
+// register allowed conversions
 
 template <typename T1, typename T2>
 struct pcl_is_convertible : std::false_type {};
@@ -130,7 +150,7 @@ struct pcl_is_convertible<pcl::PointXYZINormal, pcl::PointXYZI> : std::true_type
 template <>
 struct pcl_is_convertible<pcl::PointXYZINormal, pcl::PointNormal> : std::true_type {};
 
-// Describe each type
+// describe each type
 
 template <typename T>
 struct pcl_descriptor;
@@ -171,7 +191,7 @@ template <>
 struct pcl_descriptor<pcl::PointXYZINormal>
 { static constexpr const char * name = "XYZI_NORMAL"; };
 
-// Conditional switches
+// conditional switches
 
 template <typename T>
 constexpr auto is_unsupported_type =

@@ -60,7 +60,9 @@ namespace
     void processStep(const cloud_container & prev, cloud_container & curr, const yarp::os::Searchable & options)
     {
         using any_xyz_t = typename pcl_decay<T, pcl_all_xyz_types_tag>::type;
-        using xyz_rgba_t = typename pcl_decay<T, pcl_xyz_rgb_types_tag>::type;
+        using xyz_rgb_t = typename pcl_decay<T, pcl_xyz_rgb_types_tag>::type;
+        using rgb_t = typename pcl_decay<T, pcl_rgb_types_tag>::type;
+        using xyzi_t = typename pcl_decay<T, pcl_xyzi_types_tag>::type;
         using normal_t = typename pcl_decay<T, pcl_normal_types_tag>::type;
 
         if (!options.check("algorithm"))
@@ -77,6 +79,12 @@ namespace
         case "ApproximateVoxelGrid"_hash:
             doApproximateVoxelGrid<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
             break;
+        case "BilateralFilter"_hash:
+            doBilateralFilter<xyzi_t>(prev.getCloud<xyzi_t>(), curr.setCloud<xyzi_t>(), options);
+            break;
+        case "BilateralUpsampling"_hash:
+            doBilateralUpsampling<rgb_t>(prev.getCloud<rgb_t>(), curr.setCloud<rgb_t>(), options);
+            break;
         case "ConcaveHull"_hash:
             doConcaveHull<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setMesh(), options);
             break;
@@ -87,10 +95,13 @@ namespace
             doCropBox<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
             break;
         case "FastBilateralFilter"_hash:
-            doFastBilateralFilter<xyz_rgba_t>(prev.getCloud<xyz_rgba_t>(), curr.setCloud<xyz_rgba_t>(), options);
+            doFastBilateralFilter<xyz_rgb_t>(prev.getCloud<xyz_rgb_t>(), curr.setCloud<xyz_rgb_t>(), options);
             break;
         case "FastBilateralFilterOMP"_hash:
-            doFastBilateralFilterOMP<xyz_rgba_t>(prev.getCloud<xyz_rgba_t>(), curr.setCloud<xyz_rgba_t>(), options);
+            doFastBilateralFilterOMP<xyz_rgb_t>(prev.getCloud<xyz_rgb_t>(), curr.setCloud<xyz_rgb_t>(), options);
+            break;
+        case "GridMinimum"_hash:
+            doGridMinimum<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
             break;
         case "GreedyProjectionTriangulation"_hash:
             doGreedyProjectionTriangulation<normal_t>(prev.getCloud<normal_t>(), curr.setMesh(), options);
@@ -98,11 +109,17 @@ namespace
         case "GridProjection"_hash:
             doGridProjection<normal_t>(prev.getCloud<normal_t>(), curr.setMesh(), options);
             break;
+        case "LocalMaximum"_hash:
+            doLocalMaximum<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
+            break;
         case "MarchingCubesHoppe"_hash:
             doMarchingCubesHoppe<normal_t>(prev.getCloud<normal_t>(), curr.setMesh(), options);
             break;
         case "MarchingCubesRBF"_hash:
             doMarchingCubesRBF<normal_t>(prev.getCloud<normal_t>(), curr.setMesh(), options);
+            break;
+        case "MedianFilter"_hash:
+            doMedianFilter<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
             break;
         case "MeshQuadricDecimationVTK"_hash:
             doMeshQuadricDecimationVTK(prev.getMesh(), curr.setMesh(), options);
@@ -131,13 +148,31 @@ namespace
             doNormalEstimationOMP<any_xyz_t, normal_t>(prev.getCloud<any_xyz_t>(), curr.useCloud<normal_t>(), options);
             break;
         case "OrganizedFastMesh"_hash:
-            doOrganizedFastMesh<xyz_rgba_t>(prev.getCloud<xyz_rgba_t>(), curr.setMesh(), options);
+            doOrganizedFastMesh<xyz_rgb_t>(prev.getCloud<xyz_rgb_t>(), curr.setMesh(), options);
+            break;
+        case "PassThrough"_hash:
+            doPassThrough<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
             break;
         case "Poisson"_hash:
             doPoisson<normal_t>(prev.getCloud<normal_t>(), curr.setMesh(), options);
             break;
+        case "RadiusOutlierRemoval"_hash:
+            doRadiusOutlierRemoval<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
+            break;
+        case "RandomSample"_hash:
+            doRandomSample<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
+            break;
+        case "SamplingSurfaceNormal"_hash:
+            doSamplingSurfaceNormal<normal_t>(prev.getCloud<normal_t>(), curr.setCloud<normal_t>(), options);
+            break;
+        case "ShadowPoints"_hash:
+            doShadowPoints<normal_t>(prev.getCloud<normal_t>(), curr.setCloud<normal_t>(), options);
+            break;
         case "SimplificationRemoveUnusedVertices"_hash:
             doSimplificationRemoveUnusedVertices(prev.getMesh(), curr.setMesh(), options);
+            break;
+        case "StatisticalOutlierRemoval"_hash:
+            doStatisticalOutlierRemoval<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
             break;
         case "UniformSampling"_hash:
             doUniformSampling<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
