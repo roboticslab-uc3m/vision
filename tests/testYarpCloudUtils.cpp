@@ -23,13 +23,13 @@ void populateCloud(yarp::sig::PointCloud<T> & cloud, int iterations, Fn && gener
 }
 
 template <typename Fn>
-void populateIndices(yarp::sig::VectorOf<int> & vertices, int faces, Fn && generator)
+void populateIndices(yarp::sig::VectorOf<int> & indices, int faces, Fn && generator)
 {
-    vertices.reserve(faces * 3);
+    indices.reserve(faces * 3);
 
     for (auto i = 0; i < faces * 3; i++)
     {
-        vertices.push_back(generator());
+        indices.push_back(generator());
     }
 }
 
@@ -356,182 +356,7 @@ TEST_F(YarpCloudUtilsTest, PLY_XYZ_Normal_RGBA)
     ASSERT_TRUE(indices_in2 == indices_out);
 }
 
-TEST_F(YarpCloudUtilsTest, meshFromCloud_emptyOptions)
-{
-    yarp::sig::PointCloudXY points_xy, vertices_xy;
-    yarp::sig::PointCloudXYZ points_xyz, vertices_xyz;
-    yarp::sig::PointCloudNormal points_normal, vertices_normal;
-    yarp::sig::PointCloudXYZRGBA points_xyz_rgba, vertices_xyz_rgba;
-    yarp::sig::PointCloudXYZI points_xyzi, vertices_xyzi;
-    yarp::sig::PointCloudInterestPointXYZ points_interest, vertices_interest;
-    yarp::sig::PointCloudXYZNormal points_xyz_normal, vertices_xyz_normal;
-    yarp::sig::PointCloudXYZNormalRGBA points_xyz_normal_rgba, vertices_xyz_normal_rgba;
-
-    yarp::sig::VectorOf<int> indices;
-    yarp::sig::VectorOf<yarp::os::Property> options {};
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xy, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz_rgba, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyzi, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_interest, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz_normal_rgba, indices, options));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xy, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz_rgba, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyzi, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_interest, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz_normal_rgba, indices, options));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xy, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz_rgba, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyzi, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_interest, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz_normal_rgba, indices, options));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xy, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz_rgba, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyzi, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_interest, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz_normal_rgba, indices, options));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xy, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz_rgba, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyzi, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_interest, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz_normal_rgba, indices, options));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xy, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz_rgba, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyzi, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_interest, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz_normal_rgba, indices, options));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xy, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz_rgba, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyzi, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_interest, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz_normal_rgba, indices, options));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xy, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_rgba, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyzi, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_interest, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_normal, indices, options));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_normal_rgba, indices, options));
-}
-
-TEST_F(YarpCloudUtilsTest, meshFromCloud_emptyConfig)
-{
-    yarp::sig::PointCloudXY points_xy, vertices_xy;
-    yarp::sig::PointCloudXYZ points_xyz, vertices_xyz;
-    yarp::sig::PointCloudNormal points_normal, vertices_normal;
-    yarp::sig::PointCloudXYZRGBA points_xyz_rgba, vertices_xyz_rgba;
-    yarp::sig::PointCloudXYZI points_xyzi, vertices_xyzi;
-    yarp::sig::PointCloudInterestPointXYZ points_interest, vertices_interest;
-    yarp::sig::PointCloudXYZNormal points_xyz_normal, vertices_xyz_normal;
-    yarp::sig::PointCloudXYZNormalRGBA points_xyz_normal_rgba, vertices_xyz_normal_rgba;
-
-    yarp::sig::VectorOf<int> indices;
-    yarp::os::Property config {};
-    std::string collection = "test";
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xy, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyzi, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_interest, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xy, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyzi, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_interest, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xy, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyzi, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_interest, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xy, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyzi, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_interest, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xy, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyzi, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_interest, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xy, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyzi, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_interest, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xy, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyzi, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_interest, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xy, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyzi, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_interest, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_normal_rgba, indices, config, collection));
-}
-
-TEST_F(YarpCloudUtilsTest, meshFromCloud_convexOptions)
+TEST_F(YarpCloudUtilsTest, meshFromCloud)
 {
     yarp::sig::PointCloudXYZ points;
     populateCloud(points, 100, [] { return yarp::sig::DataXYZ {rnf(), rnf(), rnf()}; });
@@ -623,100 +448,125 @@ TEST_F(YarpCloudUtilsTest, meshFromCloud_convexOptions)
     ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_interest, indices, options));
     ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_normal, indices, options));
     ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_normal_rgba, indices, options));
+
+    yarp::sig::VectorOf<yarp::os::Property> empty {};
+    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz, indices, empty));
 }
 
-TEST_F(YarpCloudUtilsTest, meshFromCloud_convexConfig)
+TEST_F(YarpCloudUtilsTest, processCloud)
 {
     yarp::sig::PointCloudXYZ points;
     populateCloud(points, 100, [] { return yarp::sig::DataXYZ {rnf(), rnf(), rnf()}; });
 
-    yarp::sig::PointCloudXY points_xy(points), vertices_xy;
-    yarp::sig::PointCloudXYZ points_xyz(points), vertices_xyz;
-    yarp::sig::PointCloudNormal points_normal(points), vertices_normal;
-    yarp::sig::PointCloudXYZRGBA points_xyz_rgba(points), vertices_xyz_rgba;
-    yarp::sig::PointCloudXYZI points_xyzi(points), vertices_xyzi;
-    yarp::sig::PointCloudInterestPointXYZ points_interest(points), vertices_interest;
-    yarp::sig::PointCloudXYZNormal points_xyz_normal(points), vertices_xyz_normal;
-    yarp::sig::PointCloudXYZNormalRGBA points_xyz_normal_rgba(points), vertices_xyz_normal_rgba;
+    yarp::sig::PointCloudXY in_xy(points), out_xy;
+    yarp::sig::PointCloudXYZ in_xyz(points), out_xyz;
+    yarp::sig::PointCloudNormal in_normal(points), out_normal;
+    yarp::sig::PointCloudXYZRGBA in_xyz_rgba(points), out_xyz_rgba;
+    yarp::sig::PointCloudXYZI in_xyzi(points), out_xyzi;
+    yarp::sig::PointCloudInterestPointXYZ in_interest(points), out_interest;
+    yarp::sig::PointCloudXYZNormal in_xyz_normal(points), out_xyz_normal;
+    yarp::sig::PointCloudXYZNormalRGBA in_xyz_normal_rgba(points), out_xyz_normal_rgba;
+
+    yarp::sig::VectorOf<yarp::os::Property> options {
+        {{"algorithm", yarp::os::Value("ApproximateVoxelGrid")}, {"leafSize", yarp::os::Value(0.5f)}}
+    };
+
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xy, out_xy, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xy, out_xyz, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xy, out_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xy, out_xyz_rgba, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xy, out_xyzi, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xy, out_interest, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xy, out_xyz_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xy, out_xyz_normal_rgba, options));
+
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz, out_xy, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyz, out_xyz, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz, out_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz, out_xyz_rgba, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz, out_xyzi, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz, out_interest, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz, out_xyz_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz, out_xyz_normal_rgba, options));
+
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_normal, out_xy, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_normal, out_xyz, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_normal, out_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_normal, out_xyz_rgba, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_normal, out_xyzi, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_normal, out_interest, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_normal, out_xyz_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_normal, out_xyz_normal_rgba, options));
+
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_rgba, out_xy, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyz_rgba, out_xyz, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_rgba, out_normal, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyz_rgba, out_xyz_rgba, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_rgba, out_xyzi, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_rgba, out_interest, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_rgba, out_xyz_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_rgba, out_xyz_normal_rgba, options));
+
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyzi, out_xy, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyzi, out_xyz, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyzi, out_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyzi, out_xyz_rgba, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyzi, out_xyzi, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyzi, out_interest, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyzi, out_xyz_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyzi, out_xyz_normal_rgba, options));
+
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_interest, out_xy, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_interest, out_xyz, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_interest, out_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_interest, out_xyz_rgba, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_interest, out_xyzi, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_interest, out_interest, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_interest, out_xyz_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_interest, out_xyz_normal_rgba, options));
+
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_normal, out_xy, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyz_normal, out_xyz, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_normal, out_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_normal, out_xyz_rgba, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_normal, out_xyzi, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_normal, out_interest, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyz_normal, out_xyz_normal, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_normal, out_xyz_normal_rgba, options));
+
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_normal_rgba, out_xy, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyz_normal_rgba, out_xyz, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_normal_rgba, out_normal, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyz_normal_rgba, out_xyz_rgba, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_normal_rgba, out_xyzi, options));
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz_normal_rgba, out_interest, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyz_normal_rgba, out_xyz_normal, options));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyz_normal_rgba, out_xyz_normal_rgba, options));
+
+    yarp::sig::VectorOf<yarp::os::Property> empty {};
+    ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz, out_xyz, empty));
+}
+
+TEST_F(YarpCloudUtilsTest, pipelineFromConfig)
+{
+    yarp::sig::PointCloudXYZ points, vertices, transformed;
+    populateCloud(points, 100, [] { return yarp::sig::DataXYZ {rnf(), rnf(), rnf()}; });
 
     yarp::sig::VectorOf<int> indices;
+    std::string collection = "test";
 
-    std::string collection = "testConvex";
-    yarp::os::Property config("(testConvex surface simplify)");
-    config.addGroup("surface") = {{"algorithm", yarp::os::Value("ConvexHull")}};
-    config.addGroup("simplify") = {{"algorithm", yarp::os::Value("SimplificationRemoveUnusedVertices")}};
+    yarp::os::Property meshConfig("(test surface simplify)");
+    meshConfig.addGroup("surface") = {{"algorithm", yarp::os::Value("ConvexHull")}};
+    meshConfig.addGroup("simplify") = {{"algorithm", yarp::os::Value("SimplificationRemoveUnusedVertices")}};
 
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xy, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyzi, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_interest, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xy, vertices_xyz_normal_rgba, indices, config, collection));
+    yarp::os::Property cloudConfig("(test downsample)");
+    cloudConfig.addGroup("downsample") = {
+        {"algorithm", yarp::os::Value("ApproximateVoxelGrid")},
+        {"leafSize", yarp::os::Value(0.5f)}
+    };
 
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xy, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyzi, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_interest, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xy, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyzi, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_interest, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz_normal, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_normal, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xy, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyzi, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_interest, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_rgba, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xy, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyzi, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_interest, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyzi, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xy, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_interest, vertices_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyzi, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_interest, vertices_interest, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_interest, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xy, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyzi, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_interest, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal, vertices_xyz_normal_rgba, indices, config, collection));
-
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xy, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz, indices, config, collection));
-    ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_rgba, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyzi, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_interest, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_normal, indices, config, collection));
-    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_normal_rgba, indices, config, collection));
+    ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points, vertices, indices, meshConfig, collection));
+    ASSERT_TRUE(YarpCloudUtils::processCloud(points, transformed, cloudConfig, collection));
 }
 
 } // namespace roboticslab
