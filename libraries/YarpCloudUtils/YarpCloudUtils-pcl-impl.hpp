@@ -42,7 +42,9 @@
 #include <pcl/surface/grid_projection.h>
 #include <pcl/surface/marching_cubes_hoppe.h>
 #include <pcl/surface/marching_cubes_rbf.h>
+#if PCL_VERSION_COMPARE(>=, 1, 9, 0)
 #include <pcl/surface/mls.h>
+#endif
 #include <pcl/surface/organized_fast_mesh.h>
 #include <pcl/surface/poisson.h>
 #include <pcl/surface/simplification_remove_unused_vertices.h>
@@ -296,7 +298,9 @@ void doLocalMaximum(const typename pcl::PointCloud<T>::ConstPtr & in, const type
 template <typename T>
 void doMarchingCubesHoppe(const typename pcl::PointCloud<T>::ConstPtr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
 {
+#if PCL_VERSION_COMPARE(>=, 1, 9, 0)
     auto distanceIgnore = options.check("distanceIgnore", yarp::os::Value(-1.0f)).asFloat32();
+#endif
     auto gridResolution = options.check("gridResolution", yarp::os::Value(32)).asInt32();
     auto gridResolutionX = options.check("gridResolutionX", yarp::os::Value(gridResolution)).asInt32();
     auto gridResolutionY = options.check("gridResolutionY", yarp::os::Value(gridResolution)).asInt32();
@@ -308,7 +312,9 @@ void doMarchingCubesHoppe(const typename pcl::PointCloud<T>::ConstPtr & in, cons
     tree->setInputCloud(in);
 
     pcl::MarchingCubesHoppe<T> hoppe;
+#if PCL_VERSION_COMPARE(>=, 1, 9, 0)
     hoppe.setDistanceIgnore(distanceIgnore);
+#endif
     hoppe.setGridResolution(gridResolutionX, gridResolutionY, gridResolutionZ);
     hoppe.setInputCloud(in);
     hoppe.setIsoLevel(isoLevel);
@@ -451,6 +457,7 @@ void doMeshSubdivisionVTK(const pcl::PolygonMesh::ConstPtr & in, const pcl::Poly
     checkOutput(out, "MeshSubdivisionVTK");
 }
 
+#if PCL_VERSION_COMPARE(>=, 1, 9, 0)
 template <typename T1, typename T2 = T1>
 void doMovingLeastSquares(const typename pcl::PointCloud<T1>::ConstPtr & in, const typename pcl::PointCloud<T2>::Ptr & out, const yarp::os::Searchable & options)
 {
@@ -537,6 +544,7 @@ void doMovingLeastSquares(const typename pcl::PointCloud<T1>::ConstPtr & in, con
 
     checkOutput<T2>(out, "MovingLeastSquares");
 }
+#endif
 
 template <typename T1, typename T2>
 void doNormalEstimation(const typename pcl::PointCloud<T1>::ConstPtr & in, const typename pcl::PointCloud<T2>::Ptr & out, const yarp::os::Searchable & options)

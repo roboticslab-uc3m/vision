@@ -133,12 +133,14 @@ namespace
         case "MeshSubdivisionVTK"_hash:
             doMeshSubdivisionVTK(prev.getMesh(), curr.setMesh(), options);
             break;
+#if PCL_VERSION_COMPARE(>=, 1, 9, 0)
         case "MovingLeastSquares"_hash:
             if (options.check("computeNormals"), yarp::os::Value(false).asBool())
                 doMovingLeastSquares<any_xyz_t, normal_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<normal_t>(), options);
             else
                 doMovingLeastSquares<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
             break;
+#endif
         case "NormalEstimation"_hash:
             pcl::copyPointCloud(*prev.getCloud<any_xyz_t>(), *curr.setCloud<normal_t>());
             doNormalEstimation<any_xyz_t, normal_t>(prev.getCloud<any_xyz_t>(), curr.useCloud<normal_t>(), options);

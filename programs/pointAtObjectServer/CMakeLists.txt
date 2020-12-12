@@ -7,9 +7,14 @@ cmake_dependent_option(ENABLE_pointAtObjectServer "Enable/disable pointAtObjectS
 
 if(ENABLE_pointAtObjectServer)
 
-    include_directories(${PCL_INCLUDE_DIRS})
+    if(PCL_VERSION VERSION_LESS 1.9)
+        include_directories(${PCL_INCLUDE_DIRS})
+        link_directories(${PCL_LIBRARY_DIRS})
 
-    link_directories(${PCL_LIBRARY_DIRS})
+        # workaround for PCL 1.8 (Ubuntu 18.04), exclude empty/blank strings as compile defs
+        list(FILTER PCL_DEFINITIONS EXCLUDE REGEX "^ +$")
+        add_definitions(${PCL_DEFINITIONS})
+    endif()
 
     add_executable(pointAtObjectServer main.cpp
                                        PointAtObjectServer.hpp
@@ -20,10 +25,6 @@ if(ENABLE_pointAtObjectServer)
                                        SharedArea.cpp
                                        vtkTimerCallback.hpp
                                        vtkTimerCallback.cpp)
-
-    # workaround for PCL 1.8 (Ubuntu 18.04), exclude empty/blank strings as compile defs
-    list(FILTER PCL_DEFINITIONS EXCLUDE REGEX "^ +$")
-    target_compile_definitions(pointAtObjectServer PUBLIC ${PCL_DEFINITIONS})
 
     target_link_libraries(pointAtObjectServer YARP::YARP_os
                                               YARP::YARP_init
