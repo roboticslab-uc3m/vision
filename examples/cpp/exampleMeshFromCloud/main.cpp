@@ -14,12 +14,12 @@ int main(int argc, char * argv[])
     if (options.check("help"))
     {
         yInfo() << argv[0] << "commands:";
-        yInfo() << "\t--cloud" << "\tpath to file with .ply extension to export the point cloud to";
-        yInfo() << "\t--mesh " << "\tpath to file with .ply extension to export the surface mesh to";
+        yInfo() << "\t--cloud " << "\tpath to file with .ply extension to import the point cloud from";
+        yInfo() << "\t--mesh  " << "\tpath to file with .ply extension to export the surface mesh to";
         yInfo() << "\t--steps " << "\tsection collection defining the meshing pipeline, defaults to:" << DEFAULT_COLLECTION;
         yInfo() << "\t--binary" << "\texport data in binary format, defaults to: true";
         yInfo() << "\t--height" << "\tnumber of rows (for organized clouds)";
-        yInfo() << "\t--width" << "\tnumber of columns (for organized clouds)";
+        yInfo() << "\t--width " << "\tnumber of columns (for organized clouds)";
         return 0;
     }
 

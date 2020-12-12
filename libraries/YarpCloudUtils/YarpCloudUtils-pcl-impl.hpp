@@ -250,6 +250,7 @@ void doGridMinimum(const typename pcl::PointCloud<T>::ConstPtr & in, const typen
 {
     auto resolution = options.check("resolution", yarp::os::Value(0.0f)).asFloat32();
     pcl::GridMinimum<T> grid(resolution);
+    grid.setInputCloud(in);
     grid.filter(*out);
     checkOutput<T>(out, "GridMinimum");
 }
@@ -284,6 +285,7 @@ void doLocalMaximum(const typename pcl::PointCloud<T>::ConstPtr & in, const type
     auto radius = options.check("radius", yarp::os::Value(1.0f)).asFloat32();
 
     pcl::LocalMaximum<T> local;
+    local.setInputCloud(in);
     local.setNegative(negative);
     local.setRadius(radius);
     local.filter(*out);
@@ -350,6 +352,7 @@ void doMedianFilter(const typename pcl::PointCloud<T>::ConstPtr & in, const type
     auto windowSize = options.check("windowSize", yarp::os::Value(5)).asInt32();
 
     pcl::MedianFilter<T> median;
+    median.setInputCloud(in);
     median.setMaxAllowedMovement(maxAllowedMovement);
     median.setWindowSize(windowSize);
     median.filter(*out);
@@ -647,6 +650,7 @@ void doPassThrough(const typename pcl::PointCloud<T>::ConstPtr & in, const typen
     pcl::PassThrough<T> pass;
     pass.setFilterFieldName(filterFieldName);
     pass.setFilterLimits(filterLimitMin, filterLimitMax);
+    pass.setInputCloud(in);
     pass.setNegative(negative);
     pass.filter(*out);
 
@@ -704,6 +708,7 @@ void doRadiusOutlierRemoval(const typename pcl::PointCloud<T>::ConstPtr & in, co
     auto radiusSearch = options.check("radiusSearch", yarp::os::Value(0.0)).asFloat64();
 
     pcl::RadiusOutlierRemoval<T> remover;
+    remover.setInputCloud(in);
     remover.setMinNeighborsInRadius(minNeighborsInRadius);
     remover.setNegative(negative);
     remover.setRadiusSearch(radiusSearch);
@@ -720,6 +725,7 @@ void doRandomSample(const typename pcl::PointCloud<T>::ConstPtr & in, const type
     auto seed = options.check("seed", yarp::os::Value(static_cast<int>(std::time(nullptr)))).asInt64(); // note the shortening conversion
 
     pcl::RandomSample<T> random;
+    random.setInputCloud(in);
     random.setNegative(negative);
     random.setSample(sample);
     random.setSeed(seed);
@@ -755,6 +761,7 @@ void doShadowPoints(const typename pcl::PointCloud<T>::ConstPtr & in, const type
     typename pcl::PointCloud<T>::Ptr temp = boost::const_pointer_cast<pcl::PointCloud<T>>(in); // cast away constness
 
     pcl::ShadowPoints<T, T> shadow;
+    shadow.setInputCloud(in);
     shadow.setKeepOrganized(keepOrganized);
     shadow.setNegative(negative);
     shadow.setNormals(temp); // assumes normals are contained in the input cloud
@@ -779,6 +786,7 @@ void doStatisticalOutlierRemoval(const typename pcl::PointCloud<T>::ConstPtr & i
     auto stddevMulThresh = options.check("stddevMulThresh", yarp::os::Value(0.0)).asFloat64();
 
     pcl::StatisticalOutlierRemoval<T> remover;
+    remover.setInputCloud(in);
     remover.setMeanK(meanK);
     remover.setNegative(negative);
     remover.setStddevMulThresh(stddevMulThresh);
