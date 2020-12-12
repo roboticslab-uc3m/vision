@@ -189,7 +189,9 @@ namespace
 
     template <typename T, std::enable_if_t<is_unsupported_type<T>, bool> = true>
     void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr &, pcl::PolygonMesh::ConstPtr &, const yarp::sig::VectorOf<yarp::os::Property> &)
-    {}
+    {
+        throw std::invalid_argument("unsupported point type"); // don't remove this
+    }
 
     template <typename T, std::enable_if_t<!is_unsupported_type<T>, bool> = true>
     void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr & cloud, pcl::PolygonMesh::ConstPtr & mesh, const yarp::sig::VectorOf<yarp::os::Property> & options)
@@ -209,7 +211,9 @@ namespace
 
     template <typename T1, typename T2, std::enable_if_t<is_unsupported_type<T1> || is_unsupported_type<T2>, bool> = true>
     void processCloudPCL(const typename pcl::PointCloud<T1>::Ptr &, typename pcl::PointCloud<T2>::ConstPtr &, const yarp::sig::VectorOf<yarp::os::Property> &)
-    {}
+    {
+        throw std::invalid_argument("unsupported point type"); // don't remove this
+    }
 
     template <typename T1, typename T2, std::enable_if_t<!is_unsupported_type<T1> && !is_unsupported_type<T2>, bool> = true>
     void processCloudPCL(const typename pcl::PointCloud<T1>::Ptr & in, typename pcl::PointCloud<T2>::ConstPtr & out, const yarp::sig::VectorOf<yarp::os::Property> & options)
@@ -281,17 +285,19 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
     using pcl_input_type = typename pcl_type_from_yarp<T1>::type;
     using pcl_output_type = typename pcl_type_from_yarp<T2>::type;
 
-    // Force the compiler/linker to instantiate this signature of meshFromCloud for unsupported
-    // point types. The following if clauses would make GCC strip several symbols from the .so.
-    typename pcl::PointCloud<pcl_input_type>::Ptr pclCloud(new pcl::PointCloud<pcl_input_type>());
+    // This variable and its following checks aim to override compiler optimizations, thus forcing
+    // the compiler/linker to instantiate this signature of meshFromCloud for unsupported point types.
+    // Otherwise, plain is_unsupported_type checks would make GCC strip several symbols from the .so.
 
-    if (is_unsupported_type<pcl_input_type>)
+    volatile auto dummy = true;
+
+    if (is_unsupported_type<pcl_input_type> && dummy)
     {
         yError() << "unsupported input point type" << pcl_descriptor<pcl_input_type>::name;
         return false;
     }
 
-    if (is_unsupported_type<pcl_output_type>)
+    if (is_unsupported_type<pcl_output_type> && dummy)
     {
         yError() << "unsupported output point type" << pcl_descriptor<pcl_output_type>::name;
         return false;
@@ -302,6 +308,8 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
         yError() << "empty configuration";
         return false;
     }
+
+    typename pcl::PointCloud<pcl_input_type>::Ptr pclCloud(new pcl::PointCloud<pcl_input_type>());
 
     // Convert YARP cloud to PCL cloud.
     yarp::pcl::toPCL(cloud, *pclCloud);
@@ -354,15 +362,15 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
     using pcl_output_type = typename pcl_type_from_yarp<T2>::type;
 
     // See analogous comment in meshFromCloud.
-    typename pcl::PointCloud<pcl_input_type>::Ptr pclCloudIn(new pcl::PointCloud<pcl_input_type>());
+    volatile auto dummy = true;
 
-    if (is_unsupported_type<pcl_input_type>)
+    if (is_unsupported_type<pcl_input_type> && dummy)
     {
         yError() << "unsupported input point type" << pcl_descriptor<pcl_input_type>::name;
         return false;
     }
 
-    if (is_unsupported_type<pcl_output_type>)
+    if (is_unsupported_type<pcl_output_type> && dummy)
     {
         yError() << "unsupported output point type" << pcl_descriptor<pcl_output_type>::name;
         return false;
@@ -373,6 +381,8 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
         yError() << "empty configuration";
         return false;
     }
+
+    typename pcl::PointCloud<pcl_input_type>::Ptr pclCloudIn(new pcl::PointCloud<pcl_input_type>());
 
     // Convert YARP cloud to PCL cloud.
     yarp::pcl::toPCL(in, *pclCloudIn);
