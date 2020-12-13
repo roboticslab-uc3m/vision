@@ -270,15 +270,12 @@ namespace
 
         if (file.parse_header(ifs))
         {
-            std::shared_ptr<tinyply::PlyData> i, faces;
-            std::size_t size_i;
+            std::shared_ptr<tinyply::PlyData> faces;
 
             auto x = file.request_properties_from_element("vertex", {"x"});
             auto y = file.request_properties_from_element("vertex", {"y"});
             auto z = file.request_properties_from_element("vertex", {"z"});
-
-            try { i = file.request_properties_from_element("vertex", {"intensity"}); }
-            catch (...) {}
+            auto i = file.request_properties_from_element("vertex", {"intensity"});
 
             try { faces = file.request_properties_from_element("face", {"vertex_indices"}, 3); }
             catch (...) {}
@@ -289,22 +286,14 @@ namespace
             std::size_t size_x = x->buffer.size_bytes() / x->count;
             std::size_t size_y = y->buffer.size_bytes() / y->count;
             std::size_t size_z = z->buffer.size_bytes() / z->count;
-
-            if (i)
-            {
-                size_i = i->buffer.size_bytes() / i->count;
-            }
+            std::size_t size_i = i->buffer.size_bytes() / i->count;
 
             for (auto n = 0; n < cloud.size(); n++)
             {
                 std::memcpy(&cloud(n).x, x->buffer.get_const() + n * size_x, size_x);
                 std::memcpy(&cloud(n).y, y->buffer.get_const() + n * size_y, size_y);
                 std::memcpy(&cloud(n).z, z->buffer.get_const() + n * size_z, size_z);
-
-                if (i)
-                {
-                    std::memcpy(&cloud(n).intensity, i->buffer.get_const() + n * size_i, size_i);
-                }
+                std::memcpy(&cloud(n).intensity, i->buffer.get_const() + n * size_i, size_i);
             }
 
             if (faces)
@@ -325,15 +314,12 @@ namespace
 
         if (file.parse_header(ifs))
         {
-            std::shared_ptr<tinyply::PlyData> s, faces;
-            std::size_t size_s;
+            std::shared_ptr<tinyply::PlyData> faces;
 
             auto x = file.request_properties_from_element("vertex", {"x"});
             auto y = file.request_properties_from_element("vertex", {"y"});
             auto z = file.request_properties_from_element("vertex", {"z"});
-
-            try { s = file.request_properties_from_element("vertex", {"strength"}); }
-            catch (...) {}
+            auto s = file.request_properties_from_element("vertex", {"strength"});
 
             try { faces = file.request_properties_from_element("face", {"vertex_indices"}, 3); }
             catch (...) {}
@@ -344,22 +330,14 @@ namespace
             std::size_t size_x = x->buffer.size_bytes() / x->count;
             std::size_t size_y = y->buffer.size_bytes() / y->count;
             std::size_t size_z = z->buffer.size_bytes() / z->count;
-
-            if (s)
-            {
-                size_s = s->buffer.size_bytes() / s->count;
-            }
+            std::size_t size_s = s->buffer.size_bytes() / s->count;
 
             for (auto n = 0; n < cloud.size(); n++)
             {
                 std::memcpy(&cloud(n).x, x->buffer.get_const() + n * size_x, size_x);
                 std::memcpy(&cloud(n).y, y->buffer.get_const() + n * size_y, size_y);
                 std::memcpy(&cloud(n).z, z->buffer.get_const() + n * size_z, size_z);
-
-                if (s)
-                {
-                    std::memcpy(&cloud(n).strength, s->buffer.get_const() + n * size_s, size_s);
-                }
+                std::memcpy(&cloud(n).strength, s->buffer.get_const() + n * size_s, size_s);
             }
 
             if (faces)
