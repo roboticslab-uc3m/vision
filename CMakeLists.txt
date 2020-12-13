@@ -39,29 +39,19 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake
 # Hard dependencies.
 find_package(YCM 0.11 REQUIRED)
 find_package(YARP 3.3 REQUIRED COMPONENTS os dev sig
-                               OPTIONAL_COMPONENTS cv)
+                               OPTIONAL_COMPONENTS cv pcl)
 find_package(COLOR_DEBUG REQUIRED)
 
 # Soft dependencies.
 
 find_package(OpenCV QUIET)
-if(CREATE_BINDINGS_PYTHON_VERSION VERSION_GREATER_EQUAL 3)
-  message(AUTHOR_WARNING "Skipping find_package(PCL 1.6 QUIET) so we can compile Python 3 bindings")
-else()
-  find_package(PCL 1.6 QUIET)
-endif()
+find_package(PCL 1.8 QUIET)
 find_package(TensorflowCC 1.12 QUIET)
 find_package(GTestSources 1.6.0 QUIET)
 find_package(SWIG QUIET)
 find_package(Doxygen QUIET)
 
-# Xenial + PCL 1.7 bug
-# https://github.com/PointCloudLibrary/pcl/issues/2406
-if(DEFINED PCL_LIBRARIES)
-    list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
-endif()
-
-# Focal + PCL 1.10 + OpenNI workaround (idea: use CMake components to find_package(PCL)?)
+# Focal + PCL 1.10 + OpenNI workaround (idea: use CMake components to find_package(PCL)?).
 if(PCL_VERSION VERSION_EQUAL 1.10)
     include_directories(/usr/include/ni)
     link_libraries(/usr/lib/libOpenNI.so)
