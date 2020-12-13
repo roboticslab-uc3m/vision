@@ -17,7 +17,7 @@ namespace roboticslab
 {
 
 /**
- * @ingroup vision-tests
+ * @ingroup vision_tests
  * @brief Tests \ref ColorRegionDetector
  */
 class HaarDetectorTest : public testing::Test

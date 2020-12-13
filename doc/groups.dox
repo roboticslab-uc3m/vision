@@ -1,6 +1,5 @@
-
 /**
-@brief The main, catch-all namespace for Robotics Lab UC3M.
+ *@brief The main, catch-all namespace for Robotics Lab UC3M.
  */
 namespace roboticslab {}
 
@@ -19,13 +18,9 @@ namespace roboticslab {}
  * \defgroup YarpPlugins YarpPlugins
  * @brief Contains vision libraries that implement YARP device interfaces
  * and therefore can be invoked as YARP plugins.
- * @section YarpPlugins_install Installation
- *
- * Compiled when ENABLE_YarpPlugins is activated.
  */
 
 /**
- * 
  * \defgroup vision_programs vision Programs
  * @brief vision programs.
  */
@@ -35,3 +30,7 @@ namespace roboticslab {}
  * @brief vision examples.
  */
 
+/**
+ * \defgroup vision_tests vision Tests
+ * @brief vision tests.
+ */

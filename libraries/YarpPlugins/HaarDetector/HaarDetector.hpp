@@ -14,6 +14,11 @@
 namespace roboticslab
 {
 
+/**
+ * @ingroup YarpPlugins
+ * @defgroup HaarDetector
+ * @brief Contains roboticslab::HaarDetector.
+ */
 class HaarDetector : public yarp::dev::DeviceDriver, public IDetector
 {
 public:

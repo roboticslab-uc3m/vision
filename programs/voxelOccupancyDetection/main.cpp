@@ -6,7 +6,7 @@
  *
  * \defgroup voxelOccupancyDetection voxelOccupancyDetection
  *
- * @brief Creates an instance ---- of roboticslab::VoxelOccupancyDetection.
+ * @brief Creates an instance of roboticslab::VoxelOccupancyDetection.
  *
  * @section voxelOccupancyDetection_options VoxelOccupancyDetection options:
  *
