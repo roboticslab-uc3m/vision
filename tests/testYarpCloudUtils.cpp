@@ -76,7 +76,7 @@ bool testEquality(const yarp::sig::PointCloud<T> & cloud1, const yarp::sig::Poin
 }
 
 /**
- * @ingroup vision-tests
+ * @ingroup vision_tests
  * @brief Tests @ref YarpCloudUtils.
  */
 class YarpCloudUtilsTest : public testing::Test

@@ -1,3 +1,9 @@
+/**
+ * @ingroup vision_examples
+ * @defgroup exampleMeshFromLiveRGBD exampleMeshFromLiveRGBD
+ * @brief Transform RGBD frame to cloud/mesh.
+ */
+
 #include <yarp/conf/version.h>
 
 #include <yarp/os/LogStream.h>

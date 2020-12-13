@@ -1,3 +1,9 @@
+/**
+ * @ingroup vision_examples
+ * @defgroup exampleSceneReconstructionClient exampleSceneReconstructionClient
+ * @brief Sample usage of @ref sceneReconstruction.
+ */
+
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Property.h>

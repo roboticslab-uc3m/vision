@@ -1,3 +1,9 @@
+/**
+ * @ingroup vision_examples
+ * @defgroup exampleProcessCloud exampleProcessCloud
+ * @brief Sample usage of roboticslab::YarpCloudUtils::processCloud.
+ */
+
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/SystemClock.h>
