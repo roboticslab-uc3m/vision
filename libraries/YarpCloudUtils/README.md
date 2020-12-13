@@ -1,4 +1,4 @@
-# YarpCloudUtils: cloud utilities for YARP {#yarpcloudutils}
+# YarpCloudUtils: point cloud utilities for YARP {#yarpcloudutils}
 
 This library contains a collection of free functions that aim to provide support
 for the family of `yarp::sig::PointCloud<T>` template specializations. For the time
@@ -100,7 +100,7 @@ The most straightforward way to configure a pipeline is using the `VectorOf<Prop
 overload. Each element of the vector is one step of the pipeline, order is preserved:
 
 ```cxx
-yarp::os::Property options {
+yarp::sig::VectorOf<yarp::os::Property> options {
     {
         {"algorithm", yarp::os::Value("VoxelGrid")},
         {"leafSize", yarp::os::Value(0.02f)}
