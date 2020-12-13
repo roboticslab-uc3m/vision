@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
 /**
- * @ingroup vision_examples_cpp
+ * @ingroup vision_examples
  * @defgroup exampleColorRegion exampleColorRegion
  * @brief exampleColorRegion
  */

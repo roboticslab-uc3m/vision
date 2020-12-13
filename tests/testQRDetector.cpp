@@ -32,7 +32,7 @@ struct PropertyComparer
 };
 
 /**
- * @ingroup vision-tests
+ * @ingroup vision_tests
  * @brief Tests @ref QRDetector
  */
 class QRDetectorTest : public testing::Test

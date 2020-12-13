@@ -2,6 +2,12 @@
 
 #include "PointAtObjectServer.hpp"
 
+/**
+ * @ingroup vision_programs
+ * @defgroup pointAtObjectServer
+ * @brief Creates an instance of roboticslab::PointAtObjectServer.
+ */
+
 int main(int argc, char *argv[])
 {
     printf("Run \"pointAtObjectServer --help\" for options.\n");

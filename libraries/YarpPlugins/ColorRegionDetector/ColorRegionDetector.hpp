@@ -12,6 +12,11 @@
 namespace roboticslab
 {
 
+/**
+ * @ingroup YarpPlugins
+ * @defgroup ColorRegionDetector
+ * @brief Contains roboticslab::ColorRegionDetector.
+ */
 class ColorRegionDetector :  public yarp::dev::DeviceDriver, public IDetector
 {
 public:

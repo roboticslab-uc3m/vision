@@ -1,9 +1,9 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
 /**
- * @ingroup yarp_devices_examples_cpp
- * @defgroup exampleRemoteJr3 exampleRemoteJr3
- * @brief This example connects to a remote @ref Jr3 device.
+ * @ingroup vision_examples
+ * @defgroup exampleRemoteRGBDSensor exampleRemoteRGBDSensor
+ * @brief This example connects to a remote IRGBDSensor device.
  */
 
 #include <cstdio>

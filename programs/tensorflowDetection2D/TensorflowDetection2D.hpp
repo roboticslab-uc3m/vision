@@ -22,6 +22,10 @@
 namespace roboticslab
 {
 
+/**
+ * @ingroup tensorflowDetection2D
+ * @brief A wrapper around tensorflow.
+ */
 class TensorflowDetection2D : public yarp::os::RFModule
 {
 private:

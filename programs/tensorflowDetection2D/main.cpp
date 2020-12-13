@@ -21,6 +21,11 @@
   *
   */
 
+/**
+ * @ingroup vision_programs
+ * @defgroup tensorflowDetection2D
+ * @brief Creates an instance of roboticslab::TensorflowDetection2D.
+ */
 
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>

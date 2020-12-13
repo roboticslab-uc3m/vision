@@ -11,6 +11,10 @@
 namespace roboticslab
 {
 
+/**
+ * @ingroup YarpPlugins
+ * @brief Interface for object detection.
+ */
 class IDetector
 {
 public:
