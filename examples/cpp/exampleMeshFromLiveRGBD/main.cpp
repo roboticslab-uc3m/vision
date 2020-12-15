@@ -9,6 +9,7 @@
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
+#include <yarp/os/ResourceFinder.h>
 #include <yarp/os/SystemClock.h>
 #include <yarp/os/Value.h>
 
@@ -36,8 +37,18 @@ int main(int argc, char * argv[])
         return 1;
     }
 
-    yarp::os::Property options;
-    options.fromCommand(argc, argv);
+    yarp::os::ResourceFinder rf;
+    rf.configure(argc, argv);
+
+    yarp::os::Property options(rf.toString().c_str());
+
+#ifdef SAMPLE_CONFIG
+    // set sensible defaults, most suitable for organized clouds
+    std::string sampleConfigFile = SAMPLE_CONFIG;
+    options.fromConfigFile(sampleConfigFile, false);
+#endif
+
+    yDebug() << "config:" << options.toString();
 
     if (options.check("help"))
     {
@@ -143,12 +154,6 @@ int main(int argc, char * argv[])
 
     if (!fileMesh.empty())
     {
-#ifdef SAMPLE_CONFIG
-        // set sensible defaults, most suitable for organized clouds
-        std::string sampleConfigFile = SAMPLE_CONFIG;
-        options.fromConfigFile(sampleConfigFile, false);
-#endif
-
         yarp::sig::PointCloudXYZRGBA meshPoints;
         yarp::sig::VectorOf<int> meshIndices;
 

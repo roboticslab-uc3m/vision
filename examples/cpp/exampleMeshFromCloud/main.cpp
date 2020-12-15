@@ -5,7 +5,7 @@
  */
 
 #include <yarp/os/LogStream.h>
-#include <yarp/os/Property.h>
+#include <yarp/os/ResourceFinder.h>
 #include <yarp/os/SystemClock.h>
 
 #include <YarpCloudUtils.hpp>
@@ -14,8 +14,10 @@ constexpr const char * DEFAULT_COLLECTION = "meshPipeline";
 
 int main(int argc, char * argv[])
 {
-    yarp::os::Property options;
-    options.fromCommand(argc, argv);
+    yarp::os::ResourceFinder options;
+    options.configure(argc, argv);
+
+    yDebug() << "config:" << options.toString();
 
     if (options.check("help"))
     {
