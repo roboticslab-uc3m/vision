@@ -157,12 +157,12 @@ template <typename T>
 void doCropBox(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
     auto keepOrganized = options.check("keepOrganized", yarp::os::Value(false)).asBool();
-    auto maxX = options.check("maxX", yarp::os::Value(0.0f)).asFloat32();
-    auto maxY = options.check("maxY", yarp::os::Value(0.0f)).asFloat32();
-    auto maxZ = options.check("maxZ", yarp::os::Value(0.0f)).asFloat32();
-    auto minX = options.check("minX", yarp::os::Value(0.0f)).asFloat32();
-    auto minY = options.check("minY", yarp::os::Value(0.0f)).asFloat32();
-    auto minZ = options.check("minZ", yarp::os::Value(0.0f)).asFloat32();
+    auto maxX = options.check("maxX", yarp::os::Value(1.0f)).asFloat32();
+    auto maxY = options.check("maxY", yarp::os::Value(1.0f)).asFloat32();
+    auto maxZ = options.check("maxZ", yarp::os::Value(1.0f)).asFloat32();
+    auto minX = options.check("minX", yarp::os::Value(-1.0f)).asFloat32();
+    auto minY = options.check("minY", yarp::os::Value(-1.0f)).asFloat32();
+    auto minZ = options.check("minZ", yarp::os::Value(-1.0f)).asFloat32();
     auto negative = options.check("negative", yarp::os::Value(false)).asBool();
     auto rotationX = options.check("rotationX", yarp::os::Value(0.0f)).asFloat32();
     auto rotationY = options.check("rotationY", yarp::os::Value(0.0f)).asFloat32();
