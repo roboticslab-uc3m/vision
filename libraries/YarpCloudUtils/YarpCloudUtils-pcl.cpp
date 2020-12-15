@@ -76,6 +76,12 @@ namespace
 
         switch (makeHash(algorithm))
         {
+        case "transformPointCloud"_hash:
+            doTransformPointCloud<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
+            break;
+        case "transformPointCloudWithNormals"_hash:
+            doTransformPointCloudWithNormals<normal_t>(prev.getCloud<normal_t>(), curr.setCloud<normal_t>(), options);
+            break;
         case "ApproximateVoxelGrid"_hash:
             doApproximateVoxelGrid<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
             break;

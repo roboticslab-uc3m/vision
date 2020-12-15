@@ -56,6 +56,42 @@
 namespace
 {
 
+auto getTransformation(const yarp::os::Searchable & options)
+{
+    auto transformation = Eigen::Transform<double, 3, Eigen::Affine>::Identity();
+
+    const auto & translation = options.find("translation");
+
+    if (!translation.isNull())
+    {
+        if (!translation.isList() || translation.asList()->size() != 3)
+        {
+            throw std::runtime_error("translation is not a list or size not equal to 3");
+        }
+
+        const auto * b = translation.asList();
+        Eigen::Vector3d vector(b->get(0).asFloat64(), b->get(1).asFloat64(), b->get(2).asFloat64());
+        transformation.translate(vector);
+    }
+
+    const auto & rotation = options.find("rotation");
+
+    if (!rotation.isNull())
+    {
+        if (!rotation.isList() || rotation.asList()->size() != 3)
+        {
+            throw std::runtime_error("rotation is not a list or size not equal to 3");
+        }
+
+        const auto * b = rotation.asList();
+        Eigen::Vector3d axis(b->get(0).asFloat64(), b->get(1).asFloat64(), b->get(2).asFloat64());
+        Eigen::AngleAxisd rot(axis.norm(), axis.normalized());
+        transformation.rotate(rot);
+    }
+
+    return transformation;
+}
+
 template <typename T>
 void checkOutput(const typename pcl::PointCloud<T>::ConstPtr & cloud, const std::string & caller)
 {
@@ -71,6 +107,22 @@ inline void checkOutput(const pcl::PolygonMesh::ConstPtr & mesh, const std::stri
     {
         throw std::runtime_error(caller + " returned an empty or incomplete mesh");
     }
+}
+
+template <typename T>
+void doTransformPointCloud(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
+{
+    auto transformation = getTransformation(options);
+    pcl::transformPointCloud(*in, *out, transformation);
+    checkOutput<T>(out, "transformPointCloud");
+}
+
+template <typename T>
+void doTransformPointCloudWithNormals(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
+{
+    auto transformation = getTransformation(options);
+    pcl::transformPointCloudWithNormals(*in, *out, transformation);
+    checkOutput<T>(out, "transformPointCloudWithNormals");
 }
 
 template <typename T>
