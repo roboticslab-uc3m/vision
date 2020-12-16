@@ -12,10 +12,10 @@
 #include <string>
 
 #include <pcl/pcl_config.h>
-#include <pcl/conversions.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/PolygonMesh.h>
+#include <pcl/common/transforms.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/features/normal_3d_omp.h>
 #include <pcl/filters/approximate_voxel_grid.h>
