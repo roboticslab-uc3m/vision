@@ -89,6 +89,9 @@ before_script:
   - mkdir -p "$TRAVIS_BUILD_DIR/build/exampleProcessCloud" && cd "$_"
   - cmake "$TRAVIS_BUILD_DIR/examples/cpp/exampleProcessCloud" && make
 
+  - mkdir -p "$TRAVIS_BUILD_DIR/build/exampleRemoteGrabber" && cd "$_"
+  - cmake "$TRAVIS_BUILD_DIR/examples/cpp/exampleRemoteGrabber" && make
+
   - mkdir -p "$TRAVIS_BUILD_DIR/build/exampleRemoteRGBDSensor" && cd "$_"
   - cmake "$TRAVIS_BUILD_DIR/examples/cpp/exampleRemoteRGBDSensor" && make
 
