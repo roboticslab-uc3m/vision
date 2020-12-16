@@ -51,6 +51,13 @@ int main(int argc, char *argv[])
     // The following delay should avoid bad status
     yarp::os::Time::delay(1);
 
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> image;
+    if(!iFrameGrabberImage->getImage(image))
+    {
+        std::printf("[error] Problems getting image\n");
+        return 1;
+    }
+
     std::printf("Width: %d\n", iFrameGrabberImage->width());
     std::printf("Height: %d\n", iFrameGrabberImage->height());
 
