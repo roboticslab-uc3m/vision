@@ -10,8 +10,3 @@ target_link_libraries(exampleRemoteRGBDSensor YARP::YARP_os
                                               YARP::YARP_init
                                               YARP::YARP_dev
                                               YARP::YARP_sig)
-
-include(GNUInstallDirs)
-
-install(TARGETS exampleRemoteRGBDSensor
-        DESTINATION ${CMAKE_INSTALL_BINDIR})

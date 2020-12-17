@@ -10,8 +10,3 @@ target_link_libraries(exampleRemoteGrabber YARP::YARP_os
                                            YARP::YARP_init
                                            YARP::YARP_dev
                                            YARP::YARP_sig)
-
-include(GNUInstallDirs)
-
-install(TARGETS exampleRemoteGrabber
-        DESTINATION ${CMAKE_INSTALL_BINDIR})

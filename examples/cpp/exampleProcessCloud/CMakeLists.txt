@@ -3,7 +3,10 @@ cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 project(exampleProcessCloud LANGUAGES CXX)
 
 find_package(YARP 3.3 REQUIRED os)
-find_package(ROBOTICSLAB_VISION REQUIRED)
+
+if(NOT TARGET ROBOTICSLAB::YarpCloudUtils)
+    find_package(ROBOTICSLAB_VISION REQUIRED)
+endif()
 
 add_executable(exampleProcessCloud main.cpp)
 

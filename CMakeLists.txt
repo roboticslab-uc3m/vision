@@ -91,6 +91,7 @@ add_subdirectory(tests)
 add_subdirectory(share)
 add_subdirectory(bindings)
 add_subdirectory(doc)
+add_subdirectory(examples/cpp)
 
 # Retrieve global properties.
 get_property(_exported_targets GLOBAL PROPERTY _exported_targets)
