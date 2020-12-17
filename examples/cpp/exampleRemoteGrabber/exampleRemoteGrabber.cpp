@@ -39,14 +39,35 @@ int main(int argc, char *argv[])
     }
 
     yarp::dev::IFrameGrabberImage *iFrameGrabberImage;
+    yarp::dev::IFrameGrabberControls *iFrameGrabberControls;
 
     if (!dd.view(iFrameGrabberImage))
     {
-        std::printf("[error] Problems acquiring interface\n");
+        std::printf("[error] Problems acquiring image interface\n");
+        return 1;
+    }
+    if (!dd.view(iFrameGrabberControls))
+    {
+        std::printf("[error] Problems acquiring controls interface\n");
         return 1;
     }
 
-    std::printf("[success] acquired interface\n");
+    std::printf("[success] acquired interfaces\n");
+
+    bool has;
+    if(iFrameGrabberControls->hasFeature(YARP_FEATURE_ZOOM, &has))
+    {
+        if(has)
+        {
+            double val;
+            iFrameGrabberControls->getFeature(YARP_FEATURE_ZOOM, &val);
+            printf("Zoom feature: %f\n", val);
+        }
+        else
+            printf("Zoom feature: not supported\n");
+    }
+    else
+        printf("Fail: iFrameGrabberControls->hasFeature\n");
 
     // The following delay should avoid bad status
     yarp::os::Time::delay(1);
