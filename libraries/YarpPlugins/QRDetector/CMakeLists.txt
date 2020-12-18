@@ -26,7 +26,7 @@ if(NOT SKIP_QRDetector)
                                      YARP::YARP_dev
                                      YARP::YARP_cv
                                      ${OpenCV_LIBS}
-                                     VisionInterfaces)
+                                     ROBOTICSLAB::VisionInterfaces)
 
     target_compile_features(QRDetector PUBLIC cxx_std_11)
 

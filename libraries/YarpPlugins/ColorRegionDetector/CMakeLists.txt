@@ -22,8 +22,8 @@ if(NOT SKIP_ColorRegionDetector)
                                               YARP::YARP_dev
                                               YARP::YARP_cv
                                               ROBOTICSLAB::ColorDebug
-                                              VisionInterfaces
-                                              TravisLib)
+                                              ROBOTICSLAB::VisionInterfaces
+                                              ROBOTICSLAB::TravisLib)
 
     target_compile_features(ColorRegionDetector PUBLIC cxx_std_11)
 

@@ -13,7 +13,7 @@ if(ENABLE_rgbDetection)
                                        YARP::YARP_dev
                                        YARP::YARP_sig
                                        ROBOTICSLAB::ColorDebug
-                                       VisionInterfaces)
+                                       ROBOTICSLAB::VisionInterfaces)
 
     install(TARGETS rgbDetection
             DESTINATION ${CMAKE_INSTALL_BINDIR})

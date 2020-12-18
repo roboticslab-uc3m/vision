@@ -12,7 +12,7 @@ if(ENABLE_rgbdDetection)
                                         YARP::YARP_init
                                         YARP::YARP_dev
                                         YARP::YARP_sig
-                                        VisionInterfaces)
+                                        ROBOTICSLAB::VisionInterfaces)
 
     install(TARGETS rgbdDetection
             DESTINATION ${CMAKE_INSTALL_BINDIR})

@@ -15,14 +15,14 @@ if(ENABLE_tests)
 
     # testColorRegionDetector
 
-    if(TARGET ColorRegionDetector)
+    if(ENABLE_ColorRegionDetector)
         add_executable(testColorRegionDetector testColorRegionDetector.cpp)
 
         target_link_libraries(testColorRegionDetector YARP::YARP_os
                                                       YARP::YARP_dev
                                                       YARP::YARP_sig
                                                       ROBOTICSLAB::ColorDebug
-                                                      VisionInterfaces
+                                                      ROBOTICSLAB::VisionInterfaces
                                                       gtest_main)
 
         target_compile_features(testColorRegionDetector PUBLIC cxx_std_11)
@@ -30,14 +30,14 @@ if(ENABLE_tests)
         gtest_discover_tests(testColorRegionDetector)
     endif()
 
-    if(TARGET HaarDetector)
+    if(ENABLE_HaarDetector)
         add_executable(testHaarDetector testHaarDetector.cpp)
 
         target_link_libraries(testHaarDetector YARP::YARP_os
                                                YARP::YARP_dev
                                                YARP::YARP_sig
                                                ROBOTICSLAB::ColorDebug
-                                               VisionInterfaces
+                                               ROBOTICSLAB::VisionInterfaces
                                                gtest_main)
 
         target_compile_features(testHaarDetector PUBLIC cxx_std_11)
@@ -45,14 +45,14 @@ if(ENABLE_tests)
         gtest_discover_tests(testHaarDetector)
     endif()
 
-    if(TARGET QRDetector)
+    if(ENABLE_QRDetector)
         add_executable(testQRDetector testQRDetector.cpp)
 
         target_link_libraries(testQRDetector YARP::YARP_os
                                              YARP::YARP_dev
                                              YARP::YARP_sig
                                              ROBOTICSLAB::ColorDebug
-                                             VisionInterfaces
+                                             ROBOTICSLAB::VisionInterfaces
                                              gtest_main)
 
         target_compile_features(testQRDetector PUBLIC cxx_std_11)
@@ -63,7 +63,7 @@ if(ENABLE_tests)
     if(TARGET YarpCloudUtils)
         add_executable(testYarpCloudUtils testYarpCloudUtils.cpp)
 
-        target_link_libraries(testYarpCloudUtils YarpCloudUtils
+        target_link_libraries(testYarpCloudUtils ROBOTICSLAB::YarpCloudUtils
                                                  gtest_main)
 
         target_compile_features(testYarpCloudUtils PUBLIC cxx_std_14)
