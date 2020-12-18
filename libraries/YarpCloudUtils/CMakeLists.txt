@@ -51,6 +51,8 @@ if(ENABLE_YarpCloudUtils)
                                                      ${PCL_LIBRARIES})
     endif()
 
+    add_library(ROBOTICSLAB::YarpCloudUtils ALIAS YarpCloudUtils)
+
 else()
 
     set(ENABLE_YarpCloudUtils OFF CACHE BOOL "Enable/disable YarpCloudUtils" FORCE)

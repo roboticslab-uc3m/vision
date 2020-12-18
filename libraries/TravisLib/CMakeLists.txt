@@ -28,6 +28,8 @@ if(ENABLE_TravisLib)
     set_property(GLOBAL APPEND PROPERTY _exported_targets TravisLib)
     set_property(GLOBAL APPEND PROPERTY _exported_dependencies OpenCV)
 
+    add_library(ROBOTICSLAB::TravisLib ALIAS TravisLib)
+
 else()
 
     set(ENABLE_TravisLib OFF CACHE BOOL "Enable/disable TravisLib" FORCE)

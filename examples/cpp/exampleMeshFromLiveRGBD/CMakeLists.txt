@@ -2,8 +2,13 @@ cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 project(exampleMeshFromLiveRGBD LANGUAGES CXX)
 
-find_package(YARP 3.3 REQUIRED os dev sig)
-find_package(ROBOTICSLAB_VISION REQUIRED)
+if(NOT YARP_FOUND)
+    find_package(YARP 3.3 REQUIRED COMPONENTS os dev sig)
+endif()
+
+if(NOT TARGET ROBOTICSLAB::YarpCloudUtils)
+    find_package(ROBOTICSLAB_VISION REQUIRED)
+endif()
 
 add_executable(exampleMeshFromLiveRGBD main.cpp)
 
