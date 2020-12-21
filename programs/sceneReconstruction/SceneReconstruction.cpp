@@ -2,11 +2,10 @@
 
 #include "SceneReconstruction.hpp"
 
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/Value.h>
 #include <yarp/os/Vocab.h>
-
-#include <ColorDebug.h>
 
 constexpr auto VOCAB_OK = yarp::os::createVocab('o','k');
 constexpr auto VOCAB_FAIL = yarp::os::createVocab('f','a','i','l');
@@ -42,7 +41,7 @@ namespace
 
 bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 {
-    CD_DEBUG("config: %s\n", rf.toString().c_str());
+    yDebug() << "Config:" << rf.toString();
 
     period = rf.check("period", yarp::os::Value(DEFAULT_PERIOD * 1000), "update period (ms)").asInt32() * 0.001;
 
@@ -52,7 +51,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     if (rf.check("remote", "remote RGBD camera port"))
     {
         std::string remote = rf.find("remote").asString();
-        CD_INFO("Using remote camera at port prefix %s.\n", remote.c_str());
+        yInfo() << "Using remote camera at port prefix" << remote;
 
         cameraOptions = {
             {"device", yarp::os::Value("RGBDSensorClient")},
@@ -71,7 +70,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     }
     else
     {
-        CD_INFO("Using local camera.\n");
+        yInfo() << "Using local camera";
         cameraOptions.fromString(rf.toString());
 
         if (cameraOptions.check("subdevice"))
@@ -83,13 +82,13 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 
     if (!cameraDriver.open(cameraOptions))
     {
-        CD_ERROR("Unable to open camera device.\n");
+        yError() << "Unable to open camera device";
         return false;
     }
 
     if (!cameraDriver.view(iRGBDSensor))
     {
-        CD_ERROR("Unable to acquire RGBD sensor interface handle.\n");
+        yError() << "Unable to acquire RGBD sensor interface handle";
         return false;
     }
 
@@ -98,7 +97,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 
     if (!iRGBDSensor->getDepthIntrinsicParam(depthParams))
     {
-        CD_ERROR("Unable to retrieve depth intrinsic parameters.\n");
+        yError() << "Unable to retrieve depth intrinsic parameters";
         return false;
     }
 
@@ -122,25 +121,25 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 #endif
     else
     {
-        CD_ERROR("Unsupported or unrecognized algorithm: %s (available: kinfu, dynafu).\n", algorithm.c_str());
+        yError() << "Unsupported or unrecognized algorithm:" << algorithm << "(available: kinfu, dynafu)";
         return false;
     }
 
     if (!kinfu)
     {
-        CD_ERROR("Algorithm handle could not successfully initialize.\n");
+        yError() << "Algorithm handle could not successfully initialize";
         return false;
     }
 
     if (!rpcServer.open(prefix + "/rpc:s"))
     {
-        CD_ERROR("Unable to open RPC server port %s.\n", rpcServer.getName().c_str());
+        yError() << "Unable to open RPC server port" << rpcServer.getName();
         return false;
     }
 
     if (!renderPort.open(prefix + "/render:o"))
     {
-        CD_ERROR("Unable to open render port %s.\n", renderPort.getName().c_str());
+        yError() << "Unable to open render port" << renderPort.getName();
         return false;
     }
 
@@ -156,7 +155,7 @@ bool SceneReconstruction::updateModule()
 
         if (!iRGBDSensor->getDepthImage(depthFrame))
         {
-            CD_ERROR("Unable to retrieve depth frame.\n");
+            yWarning() << "Unable to retrieve depth frame";
             return true;
         }
 
@@ -164,7 +163,7 @@ bool SceneReconstruction::updateModule()
 
         if (!kinfu->update(depthFrame))
         {
-            CD_WARNING("reset\n");
+            yWarning() << "Kinect Fusion reset";
             kinfu->reset();
         }
 
@@ -203,12 +202,12 @@ bool SceneReconstruction::read(yarp::os::ConnectionReader & connection)
 
     if (command.size() == 0)
     {
-        CD_WARNING("Got empty bottle.\n");
+        yWarning() << "Got empty bottle";
         yarp::os::Bottle reply {yarp::os::Value(VOCAB_FAIL, true)};
         return reply.write(*writer);
     }
 
-    CD_DEBUG("command: %s\n", command.toString().c_str());
+    yDebug() << "command:" << command.toString();
 
     switch (command.get(0).asVocab())
     {

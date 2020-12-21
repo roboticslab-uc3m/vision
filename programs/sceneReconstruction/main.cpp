@@ -6,7 +6,7 @@
  * @defgroup sceneReconstruction sceneReconstruction
  *
  * @brief Creates an instance of roboticslab::SceneReconstruction.
- * 
+ *
  * @section sceneReconstructionOptions Configuration parameters
  *
  * | PROPERTY     | DESCRIPTION                          | DEFAULT                 |
@@ -49,43 +49,33 @@
  * | volumePoseTransl      | volume pose (translation vector) in meters   | (-1.5 -1.5 0.5)                       |
  * | volumeType            | type of voxel volume ("tsdf", "hashtsdf")    | tsdf                                  |
  * | voxelSize             | size of voxel in meters                      | 0.00585938                            |
- * 
+ *
  *  @section sceneReconstructionLicense License
- * 
+ *
  * @see LICENSE_KinectFusion.md
  */
 
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
-
-#include <ColorDebug.h>
 
 #include "SceneReconstruction.hpp"
 
 int main(int argc, char * argv[])
 {
+    yarp::os::Network yarp;
+
+    if (!yarp::os::Network::checkNetwork())
+    {
+        yError() << argv[0] << "found no yarp network (try running \"yarpserver &\"), bye!";
+        return 1;
+    }
+
     yarp::os::ResourceFinder rf;
-    rf.setVerbose(true);
     rf.setDefaultContext("sceneReconstruction");
     rf.setDefaultConfigFile("sceneReconstruction.ini");
     rf.configure(argc, argv);
 
     roboticslab::SceneReconstruction mod;
-
-    CD_INFO("%s checking for yarp network... ", argv[0]);
-
-    yarp::os::Network yarp;
-
-    if (!yarp::os::Network::checkNetwork())
-    {
-        CD_ERROR_NO_HEADER("[fail]\n");
-        CD_INFO("%s found no yarp network (try running \"yarpserver &\"), bye!\n", argv[0]);
-        return 1;
-    }
-    else
-    {
-        CD_SUCCESS_NO_HEADER("[ok]\n");
-    }
-
     return mod.runModule(rf);
 }

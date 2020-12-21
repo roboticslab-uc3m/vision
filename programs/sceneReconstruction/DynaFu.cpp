@@ -2,9 +2,9 @@
 
 #include "KinectFusionImpl.hpp"
 
-#include <opencv2/rgbd/dynafu.hpp>
+#include <yarp/os/LogStream.h>
 
-#include <ColorDebug.h>
+#include <opencv2/rgbd/dynafu.hpp>
 
 namespace roboticslab
 {
@@ -15,10 +15,10 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
 
     auto params = Params::defaultParams();
 
-    CD_INFO("algorithm: DynaFu\n");
+    yInfo() << "algorithm: DynaFu";
 
     params->frameSize = cv::Size(width, height);
-    CD_INFO("dimensions: width = %d, height = %d\n", width, height);
+    yInfo() << "dimensions: width =" << width << "x height =" << height;
 
     float fx = intrinsic.focalLengthX;
     float fy = intrinsic.focalLengthY;
@@ -29,7 +29,7 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
                                 0, fy, cy,
                                 0,  0,  1);
 
-    CD_INFO("intrinsic params: fx = %f, fy = %f, cx = %f, cy = %f\n", fx, fy, cx, cy);
+    yInfo() << "intrinsic params: fx =" << fx << "fy =" << fy << "cx =" << cx << "cy =" << cy;
 
     updateParam(*params, &Params::depthFactor, config, "depthFactor", "pre-scale per 1 meter for input values");
     updateParam(*params, &Params::voxelSize, config, "voxelSize", "size of voxel in meters");
@@ -41,17 +41,17 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
 
         if (volumeDims == nullptr || volumeDims->size() != 3)
         {
-            CD_ERROR("Parameter volumeDims must be a list of 3 integers.\n");
+            yError() << "Parameter volumeDims must be a list of 3 integers";
             return nullptr;
         }
 
         params->volumeDims = cv::Vec3i(volumeDims->get(0).asInt32(), volumeDims->get(1).asInt32(), volumeDims->get(2).asInt32());
-        CD_INFO("volumeDims: (%s)\n", volumeDims->toString().c_str());
+        yInfo() << "volumeDims =" << volumeDims->toString();
     }
     else
     {
         const auto & cvDims = params->volumeDims;
-        CD_INFO("volumeDims (DEFAULT): (%d %d %d)\n", cvDims[0], cvDims[1], cvDims[2]);
+        yInfo() << "volumeDims (DEFAULT) =" << cvDims[0] << cvDims[1] << cvDims[2];
     }
 
     if (config.check("lightPose", "light pose for rendering in meters"))
@@ -60,17 +60,17 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
 
         if (lightPose == nullptr || lightPose->size() != 3)
         {
-            CD_ERROR("Parameter lightPose must be a list of 3 floats.\n");
+            yError() << "Parameter lightPose must be a list of 3 floats";
             return nullptr;
         }
 
         params->lightPose = cv::Vec3f(lightPose->get(0).asFloat32(), lightPose->get(1).asFloat32(), lightPose->get(2).asFloat32());
-        CD_INFO("lightPose: (%s)\n", lightPose->toString().c_str());
+        yInfo() << "lightPose =" << lightPose->toString();
     }
     else
     {
         const auto & cvLight = params->lightPose;
-        CD_INFO("lightPose (DEFAULT): (%f %f %f)\n", cvLight[0], cvLight[1], cvLight[2]);
+        yInfo() << "lightPose (DEFAULT) =" << cvLight[0] << cvLight[1] << cvLight[2];
     }
 
     if (config.check("volumePoseTransl", "volume pose (translation vector) in meters"))
@@ -79,18 +79,18 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
 
         if (volumePoseTransl == nullptr || volumePoseTransl->size() != 3)
         {
-            CD_ERROR("Parameter volumePoseTransl must be a list of 3 floats.\n");
+            yError() << "Parameter volumePoseTransl must be a list of 3 floats";
             return nullptr;
         }
 
         auto transl = cv::Vec3f(volumePoseTransl->get(0).asFloat32(), volumePoseTransl->get(1).asFloat32(), volumePoseTransl->get(2).asFloat32());
         params->volumePose.translation(transl);
-        CD_INFO("volumePoseTransl: (%s)\n", volumePoseTransl->toString().c_str());
+        yInfo() << "volumePoseTransl =" << volumePoseTransl->toString();
     }
     else
     {
         const auto & transl = params->volumePose.translation();
-        CD_INFO("volumePoseTransl (DEFAULT): (%f %f %f)\n", transl[0], transl[1], transl[2]);
+        yInfo() << "volumePoseTransl (DEFAULT) =" << transl[0] << transl[1] << transl[2];
     }
 
     if (config.check("volumePoseRot", "volume pose (rotation matrix) in radians"))
@@ -99,7 +99,7 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
 
         if (volumePoseRot == nullptr || volumePoseRot->size() != 9)
         {
-            CD_ERROR("Parameter volumePoseRot must be a list of 9 floats (3x3 matrix).\n");
+            yError() << "Parameter volumePoseRot must be a list of 9 floats (3x3 matrix)";
             return nullptr;
         }
 
@@ -108,12 +108,12 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
                                volumePoseRot->get(6).asFloat32(), volumePoseRot->get(7).asFloat32(), volumePoseRot->get(8).asFloat32());
 
         params->volumePose.rotation(rot);
-        CD_INFO("volumePoseRot: (%s)\n", volumePoseRot->toString().c_str());
+        yInfo() << "volumePoseRot =" << volumePoseRot->toString();
     }
     else
     {
         const auto & rot = params->volumePose.rotation();
-        CD_INFO("volumePoseRot (DEFAULT): (%f %f %f %f %f %f %f %f %f)\n", rot(0,0), rot(0,1), rot(0,2), rot(1,0), rot(1,1), rot(1,2), rot(2,0), rot(2,1), rot(2,2));
+        yInfo() << "volumePoseRot (DEFAULT) =" << rot(0,0) << rot(0,1) << rot(0,2) << rot(1,0) << rot(1,1) << rot(1,2) << rot(2,0) << rot(2,1) << rot(2,2);
     }
 
     updateParam(*params, &Params::truncateThreshold, config, "truncateThreshold", "threshold for depth truncation in meters");
@@ -132,7 +132,7 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
 
         if (icpIterations == nullptr)
         {
-            CD_ERROR("Parameter icpIterations must be a list.\n");
+            yError() << "Parameter icpIterations must be a list";
             return nullptr;
         }
 
@@ -143,11 +143,11 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
             params->icpIterations[i] = icpIterations->get(i).asInt32();
         }
 
-        CD_INFO("icpIterations: (%s)\n", icpIterations->toString().c_str());
+        yInfo() << "icpIterations =" << icpIterations->toString();
     }
     else
     {
-        CD_INFO("icpIterations (DEFAULT): (%s)\n", vectorToString(params->icpIterations).c_str());
+        yInfo() << "icpIterations (DEFAULT) =" << params->icpIterations;
     }
 
     updateParam(*params, &Params::tsdf_max_weight, config, "tsdfMaxWeight", "max number of frames per voxel");

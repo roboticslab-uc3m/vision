@@ -24,8 +24,7 @@ if(ENABLE_sceneReconstruction)
                                               YARP::YARP_dev
                                               YARP::YARP_sig
                                               YARP::YARP_cv
-                                              opencv_rgbd
-                                              ROBOTICSLAB::ColorDebug)
+                                              opencv_rgbd)
 
     if(OpenCV_VERSION VERSION_GREATER_EQUAL 4.2)
         target_sources(sceneReconstruction PRIVATE DynaFu.cpp)

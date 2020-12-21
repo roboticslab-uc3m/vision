@@ -5,14 +5,10 @@
 
 #include "KinectFusion.hpp"
 
-#include <algorithm>
-#include <iterator>
-#include <sstream>
 #include <type_traits>
 
+#include <yarp/os/LogStream.h>
 #include <yarp/cv/Cv.h>
-
-#include <ColorDebug.h>
 
 namespace roboticslab
 {
@@ -112,31 +108,19 @@ template <typename TParams, typename TRet>
 void updateParam(TParams & params, TRet TParams::* param, const yarp::os::Searchable & config,
     const std::string & name, const std::string & description)
 {
-    std::stringstream ss;
-    ss << name;
+    auto && log = yInfo();
+    log << name;
 
     if (config.check(name, description))
     {
         params.*param = getValue<TRet>(config.find(name));
-        ss << ": ";
     }
     else
     {
-        ss << " (DEFAULT): ";
+        log << "(DEFAULT)";
     }
 
-    ss << params.*param << "\n";
-    CD_INFO(ss.str().c_str());
-}
-
-template <typename T>
-inline std::string vectorToString(const std::vector<T> & vec, const std::string & delimiter = " ")
-{
-    // https://stackoverflow.com/a/8581865
-    std::ostringstream oss;
-    std::copy(vec.begin(), vec.end() - 1, std::ostream_iterator<T>(oss, delimiter.c_str()));
-    oss << vec.back();
-    return oss.str();
+    log << "=" << params.*param;
 }
 
 } // namespace roboticslab
