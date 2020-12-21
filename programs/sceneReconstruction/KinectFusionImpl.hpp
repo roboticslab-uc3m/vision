@@ -92,14 +92,16 @@ private:
     cv::Ptr<T> handle;
 };
 
-template <typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
-inline T getValue(const yarp::os::Value & v)
+template <typename T>
+inline std::enable_if_t<std::is_integral<T>::value, T>
+getValue(const yarp::os::Value & v)
 {
     return v.asInt32();
 }
 
-template <typename T, std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
-inline T getValue(const yarp::os::Value & v)
+template <typename T>
+inline std::enable_if_t<std::is_floating_point<T>::value, T>
+getValue(const yarp::os::Value & v)
 {
     return v.asFloat32();
 }
