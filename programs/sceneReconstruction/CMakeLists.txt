@@ -31,6 +31,11 @@ if(ENABLE_sceneReconstruction)
         target_compile_definitions(sceneReconstruction PRIVATE HAVE_DYNAFU)
     endif()
 
+    if(OpenCV_VERSION VERSION_GREATER_EQUAL 4.5.1)
+        target_sources(sceneReconstruction PRIVATE KinFuLargeScale.cpp)
+        target_compile_definitions(sceneReconstruction PRIVATE HAVE_KINFU_LS)
+    endif()
+
     install(TARGETS sceneReconstruction
             DESTINATION ${CMAKE_INSTALL_BINDIR})
 

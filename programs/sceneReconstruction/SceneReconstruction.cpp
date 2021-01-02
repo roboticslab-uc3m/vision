@@ -119,9 +119,15 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         kinfu = makeDynaFu(params, depthIntrinsic, width, height);
     }
 #endif
+#ifdef HAVE_KINFU_LS
+    else if (algorithm == "kinfu_ls")
+    {
+        kinfu = makeKinFuLargeScale(params, depthIntrinsic, width, height);
+    }
+#endif
     else
     {
-        yError() << "Unsupported or unrecognized algorithm:" << algorithm << "(available: kinfu, dynafu)";
+        yError() << "Unsupported or unrecognized algorithm:" << algorithm << "(available: kinfu, dynafu, kinfu_ls)";
         return false;
     }
 
