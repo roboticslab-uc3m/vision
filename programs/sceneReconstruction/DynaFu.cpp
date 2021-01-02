@@ -2,9 +2,22 @@
 
 #include "KinectFusionImpl.hpp"
 
+#include <map>
+
 #include <yarp/os/LogStream.h>
 
+#include <opencv2/core/version.hpp>
 #include <opencv2/rgbd/dynafu.hpp>
+
+#if CV_VERSION_MINOR >= 5 && CV_VERSION_REVISION >= 1
+namespace
+{
+    std::map<std::string, cv::kinfu::VolumeType> stringToCvVolume {
+        {"tsdf", cv::kinfu::VolumeType::TSDF},
+        {"hashtsdf", cv::kinfu::VolumeType::HASHTSDF}
+    };
+}
+#endif
 
 namespace roboticslab
 {
@@ -152,6 +165,27 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
         const auto & transl = params->volumePose.translation();
         yInfo() << "volumePoseTransl (DEFAULT):" << transl[0] << transl[1] << transl[2];
     }
+
+#if CV_VERSION_MINOR >= 5 && CV_VERSION_REVISION >= 1
+    if (config.check("volumeType", "type of voxel volume (tsdf, hashtsdf)"))
+    {
+        std::string volumeType = config.find("volumeType").asString();
+
+        if (stringToCvVolume.find(volumeType) == stringToCvVolume.end())
+        {
+            yError() << "Unsupported volume type" << volumeType;
+            return nullptr;
+        }
+
+        params->volumeType = stringToCvVolume[volumeType];
+        yInfo() << "volumeType:" << volumeType;
+    }
+    else
+    {
+        auto res = std::find_if(stringToCvVolume.begin(), stringToCvVolume.end(), [&params](const auto & el) { return el.second == params->volumeType; });
+        yInfo() << "volumeType (DEFAULT):" << res->first;
+    }
+#endif
 
     updateParam(*params, &Params::voxelSize, config, "voxelSize", "size of voxel in meters");
 
