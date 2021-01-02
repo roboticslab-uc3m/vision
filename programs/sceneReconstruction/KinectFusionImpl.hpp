@@ -111,7 +111,7 @@ void updateParam(TParams & params, TRet TParams::* param, const yarp::os::Search
     const std::string & name, const std::string & description)
 {
     auto && log = yInfo();
-    log << name;
+    log << name + ":";
 
     if (config.check(name, description))
     {
@@ -119,10 +119,10 @@ void updateParam(TParams & params, TRet TParams::* param, const yarp::os::Search
     }
     else
     {
-        log << "(DEFAULT)";
+        log << "(DEFAULT):";
     }
 
-    log << "=" << params.*param;
+    log << params.*param;
 }
 
 } // namespace roboticslab
