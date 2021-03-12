@@ -162,6 +162,8 @@ void SegmentorThread::postprocess(cv::Mat& frame, const std::vector<cv::Mat>& ou
     yarp::os::Bottle output;
     output.clear();
 
+    yInfo()<<outLayerType;
+
     if (outLayerType == "DetectionOutput")
     {
         // Network produces output blob with a shape 1x1xNx7 where N is a number of
@@ -214,14 +216,17 @@ void SegmentorThread::postprocess(cv::Mat& frame, const std::vector<cv::Mat>& ou
             // detected objects and C is a number of classes + 4 where the first 4
             // numbers are [center_x, center_y, width, height]
             float* data = (float*)outs[i].data;
+            yInfo("%d",i);
             for (int j = 0; j < outs[i].rows; ++j, data += outs[i].cols)
             {
                 cv::Mat scores = outs[i].row(j).colRange(5, outs[i].cols);
                 cv::Point classIdPoint;
                 double confidence;
                 cv::minMaxLoc(scores, 0, &confidence, 0, &classIdPoint);
+
                 if (confidence > confThreshold)
                 {
+                    yInfo("Confidence: %f",confidence);
                     int centerX = (int)(data[0] * frame.cols);
                     int centerY = (int)(data[1] * frame.rows);
                     int width = (int)(data[2] * frame.cols);
@@ -260,6 +265,7 @@ void SegmentorThread::postprocess(cv::Mat& frame, const std::vector<cv::Mat>& ou
         drawPred(classIds[idx], confidences[idx], box.x, box.y,
                  box.x + box.width, box.y + box.height, frame);
     }
+    
     if (output.size() > 0)
     {
         pOutPort->write(output);
@@ -271,7 +277,7 @@ void SegmentorThread::drawPred(int classId, float conf, int left, int top, int r
 {
     cv::rectangle(frame, cv::Point(left, top), cv::Point(right, bottom), cv::Scalar(0, 255, 0));
 
-    std::string label = cv::format("%.2f", conf);
+    std::string label = cv::format("%.3f", conf);
     if (!classes.empty())
     {
         CV_Assert(classId < (int)classes.size());
@@ -318,7 +324,6 @@ void SegmentorThread::run()
     //Mat inCvMat(inIplImage);
     cv::Mat frame = cv::cvarrToMat(inIplImage);
 
-////    //cv::Mat colorMat = yarp::cv::toCvMat(imageFrame);
 //    cv::imshow("InCvMat",frame);
 //    cv::waitKey(0);
 
@@ -331,6 +336,13 @@ void SegmentorThread::run()
 
 //    cv::imshow("test", frame);
 //    cv::waitKey(0);
+//    cv::imwrite("test.jpg", frame); // A JPG FILE IS BEING SAVED
+
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
+    cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
+    outYarpImg.setExternal(frame.data, frame.size[1], frame.size[0]);
+    pOutImg->prepare() = outYarpImg;
+    pOutImg->write();
 //    std::vector<yarp::os::Property> detectedObjects;
 //    if (!iDetector->detect(colorFrame, detectedObjects))
 //    {

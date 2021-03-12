@@ -76,7 +76,7 @@ bool OpencvDnnObjectDetection2D::configure(yarp::os::ResourceFinder &rf) {
         yError("Bad outImg.open\n");
         return false;
     }
-    if(!outPort.open(portPrefix + "/state:o"))
+    if(!outPort.open(portPrefix + "/detections:o"))
     {
         yError("Bad outPort.open\n");
         return false;
