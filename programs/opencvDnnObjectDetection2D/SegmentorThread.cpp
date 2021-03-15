@@ -58,40 +58,25 @@ bool SegmentorThread::init(yarp::os::ResourceFinder &rf)
     swapRB = DEFAULT_RGB;
     inpWidth = DEFAULT_WIDTH;
     inpHeight = DEFAULT_HEIGHT;
-    modelPath = DEFAULT_MODEL_NAME;
-    configDNNPath = DEFAULT_DNN_CONFIG_FILE;
+    modelFile = DEFAULT_MODEL_NAME;
+    configDNNFile = DEFAULT_DNN_CONFIG_FILE;
     framework = DEFAULT_FRAMEWORK;
     classesFile = DEFAULT_CLASSES;
 
-    // Open file with classes names.
-    std::ifstream ifs(classesFile.c_str());
-    if (!ifs.is_open())
-        yError("File %s not found",classesFile.c_str());
-    std::string line;
-    while (std::getline(ifs, line))
-    {
-        classes.push_back(line);
-    }
 
 
     yInfo("SegmentorThread options:\n");
     yInfo("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
     yInfo("\t--rateMs (default: \"%d\")\n",rateMs);
     yInfo("\t--framework (default: \"%s\")\n", framework.c_str());
-    yInfo("\t--configDNNPath (default: \"%s\")\n", configDNNPath.c_str());
-    yInfo("\t--modelPath (default: \"%s\")\n", modelPath.c_str());
+    yInfo("\t--configDNNFile (default: \"%s\")\n", configDNNFile.c_str());
+    yInfo("\t--modelFile (default: \"%s\")\n", modelFile.c_str());
     yInfo("\t--inpWidth (default: \"%d\")\n",inpWidth);
     yInfo("\t--inpHeight (default: \"%d\")\n",inpHeight);
     yInfo("\t--mean (default: \"%d\")\n",mean[0]);
     yInfo("\t--scale (default: \"%f\")\n",scale);
     yInfo("\t--confThreshold (default: \"%f\")\n",confThreshold);
     yInfo("\t--nmsThreshold (default: \"%f\")\n",nmsThreshold);
-
-    // Load a model.
-     net = readNet(modelPath, configDNNPath, framework);
-     net.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
-     net.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
-     outNames = net.getUnconnectedOutLayersNames();
 
 
 
@@ -101,6 +86,63 @@ bool SegmentorThread::init(yarp::os::ResourceFinder &rf)
     {
         rateMs = rf.find("rateMs").asInt32();
     }
+
+    if(rf.check("framework")){
+        framework = rf.find("framework").asString();
+        yInfo("Selected framework from resource finder %s",framework.c_str());
+    }
+
+    if(rf.check("configDNNModel")){
+        configDNNFile = rf.find("configDNNModel").asString();
+        yInfo("Selected configDNNModel from resource finder %s",configDNNFile.c_str());
+    }
+
+
+    if(rf.check("trainedModel")){
+        modelFile = rf.find("trainedModel").asString();
+        yInfo("Selected trainedModel from resource finder %s",modelFile.c_str());
+    }
+
+    if(rf.check("classesTrainedModel")){
+        classesFile = rf.find("classesTrainedModel").asString();
+        yInfo("Selected classesTrainedModel from resource finder %s",classesFile.c_str());
+    }
+
+
+
+    // TODO!! Set model and config path from the resource finder
+    std::string modelPath = rf.findFileByName(modelFile);
+    std::string configDNNPath = rf.findFileByName(configDNNFile);
+    std::string classesPath = rf.findFileByName(classesFile);
+
+    if (configDNNPath.empty())
+    {
+        yError("No config dnn file!\n");
+        std::exit(1);
+    }
+
+    if (modelPath.empty())
+    {
+        yError("No model file!\n");
+        std::exit(1);
+    }
+
+
+    // Open file with classes names.
+    std::ifstream ifs(classesPath.c_str());
+    if (!ifs.is_open())
+        yError("File %s not found",classesPath.c_str());
+    std::string line;
+    while (std::getline(ifs, line))
+    {
+        classes.push_back(line);
+    }
+
+    // Load a model.
+    net = readNet(modelPath, configDNNPath, framework);
+    net.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
+    net.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
+    outNames = net.getUnconnectedOutLayersNames();
 
     if(cropSelector != 0)
     {

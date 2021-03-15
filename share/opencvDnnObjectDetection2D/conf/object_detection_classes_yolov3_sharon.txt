@@ -1,0 +1,4 @@
+rice
+milk-bottle
+cup
+glass

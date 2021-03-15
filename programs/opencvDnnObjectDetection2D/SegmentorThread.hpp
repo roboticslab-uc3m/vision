@@ -42,9 +42,9 @@
 #define DEFAULT_RATE_MS 20
 #define DEFAULT_ALIAS "yolo" // An alias name of model to extract preprocessing parameters from models.yml file.
 #define DEFAULT_ZOO_FILE "models.yml" // An optional path to file with preprocessing parameters models.yml
-#define DEFAULT_CLASSES "/home/elisabeth/repos/vision/share/opencvDnnObjectDetection2D/object_detection_classes_yolov4_sharon.txt" // Optional path to a text file with names of classes to label detected objects.
-#define DEFAULT_DNN_CONFIG_FILE "/home/elisabeth/repos/vision/share/opencvDnnObjectDetection2D/yolov3-tiny-custom.cfg"
-#define DEFAULT_MODEL_NAME "/home/elisabeth/Desktop/yolov3-tiny-custom_5000.weights"
+#define DEFAULT_CLASSES "object_detection_classes_yolov3.txt" // Optional path to a text file with names of classes to label detected objects.
+#define DEFAULT_DNN_CONFIG_FILE "yolov3.cfg"
+#define DEFAULT_MODEL_NAME "yolov3.weights"
 #define DEFAULT_MEAN "0 0 0"
 #define DEFAULT_SCALE 0.00392
 #define DEFAULT_WIDTH 640
@@ -169,8 +169,8 @@ private:
     bool swapRB;
     int inpWidth;
     int inpHeight;
-    std::string modelPath;
-    std::string configDNNPath;
+    std::string modelFile;
+    std::string configDNNFile;
     std::string framework;
     std::string classesFile;
     Net net;
