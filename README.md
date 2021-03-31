@@ -2,11 +2,11 @@
 
 Vision processing.
 
-Link to Doxygen generated documentation: http://robots.uc3m.es/dox-vision
+Link to Doxygen generated documentation: https://roboticslab-uc3m.github.io/vision
 
 ## Installation
 
-Installation instructions for installing from source can be found [here]( doc/vision-install.md ).
+Installation instructions for installing from source can be found [here](doc/vision-install.md).
 
 ## Contributing
 
