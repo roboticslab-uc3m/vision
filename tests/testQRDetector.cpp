@@ -2,13 +2,12 @@
 
 #include <unordered_set>
 
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/dev/PolyDriver.h>
 #include <yarp/sig/Image.h>
 #include <yarp/sig/ImageFile.h>
-
-#include <ColorDebug.h>
 
 #include "IDetector.hpp"
 
@@ -44,13 +43,13 @@ public:
 
         if (!detectorDevice.open(deviceOptions))
         {
-            CD_ERROR("Failed to open QRDetector device\n");
+            yError() << "Failed to open QRDetector device";
             return;
         }
 
         if (!detectorDevice.view(iDetector))
         {
-            CD_ERROR("Problems acquiring detector interface\n");
+            yError() << "Problems acquiring detector interface";
             return;
         }
     }

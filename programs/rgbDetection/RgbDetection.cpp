@@ -2,10 +2,9 @@
 
 #include <string>
 
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/Time.h>
-
-#include <ColorDebug.h>
 
 #include "RgbDetection.hpp"
 
@@ -38,7 +37,7 @@ bool roboticslab::RgbDetection::configure(yarp::os::ResourceFinder &rf)
         cropSelector = rf.find("cropSelector").asInt32();
     }
 
-    CD_INFO("Using cropSelector: %d.\n", cropSelector);
+    yInfo() << "Using cropSelector:" << cropSelector;
 
     if (rf.check("cameraDevice"))
     {
@@ -62,9 +61,9 @@ bool roboticslab::RgbDetection::configure(yarp::os::ResourceFinder &rf)
 
     strCameraLocal ="/rgbDetection";
 
-    CD_INFO("Using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s.\n",
+    yInfo("Using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s",
         strCameraDevice.c_str(), strCameraLocal.c_str(), strCameraRemote.c_str());
-    CD_INFO("Using watchdog: %f.\n", watchdog);
+    yInfo() << "Using watchdog:" << watchdog;
 
 
     yarp::os::Property options;
@@ -75,24 +74,24 @@ bool roboticslab::RgbDetection::configure(yarp::os::ResourceFinder &rf)
 
     if(!cameraDevice.open(options))
     {
-        CD_WARNING("Bad camera open.\n");
+        yWarning() << "Bad camera open";
         return false;
     }
-    CD_SUCCESS("Camera device open (connection not assured, read YARP output above).\n");
+    yInfo() << "Camera device open (connection not assured, read YARP output above)";
 
     if(!cameraDevice.isValid())
     {
-        CD_WARNING("Camera not valid\n");
+        yWarning() << "Camera not valid";
         return false;
     }
-    CD_SUCCESS("Camera device valid.\n");
+    yInfo() << "Camera device valid";
 
     if (!cameraDevice.view(camera))
     {
-        CD_ERROR("Camera device bad view.\n");
+        yError() << "Camera device bad view";
         return false;
     }
-    CD_SUCCESS("Camera device ok view.\n");
+    yInfo() << "Camera device ok view";
 
     detectorThread.setIFrameGrabberImageDriver(camera);
     detectorThread.setOutImg(&outImg);
@@ -133,7 +132,7 @@ double roboticslab::RgbDetection::getPeriod()
 
 bool roboticslab::RgbDetection::updateModule()
 {
-    CD_INFO("Alive...\n");
+    yInfo() << "RgbDetection alive...";
     return true;
 }
 
@@ -159,8 +158,6 @@ bool roboticslab::RgbDetection::interruptModule()
 
 bool roboticslab::RgbDetection::close()
 {
-    CD_INFO("Closing...\n");
-
     if (detectorThread.isRunning())
     {
         detectorThread.stop();

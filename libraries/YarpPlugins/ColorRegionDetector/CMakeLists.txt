@@ -21,7 +21,6 @@ if(NOT SKIP_ColorRegionDetector)
     target_link_libraries(ColorRegionDetector YARP::YARP_os
                                               YARP::YARP_dev
                                               YARP::YARP_cv
-                                              ROBOTICSLAB::ColorDebug
                                               ROBOTICSLAB::VisionInterfaces
                                               ROBOTICSLAB::TravisLib)
 

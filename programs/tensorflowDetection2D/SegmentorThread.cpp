@@ -7,11 +7,11 @@
 #include <string>
 #include <vector>
 #include <yarp/os/Bottle.h>
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/sig/ImageDraw.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <ColorDebug.h>
 #include <fstream>
 #include <utility>
 #include <vector>
@@ -112,13 +112,13 @@ void SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     if (model.empty())
     {
-        CD_ERROR("No trained model!\n");
+        yError() << "No trained model!";
         std::exit(1);
     }
 
     if (labels.empty())
     {
-        CD_ERROR("No trained model labels!\n");
+        yError() << "No trained model labels!";
         std::exit(1);
     }
     if (cropSelector != 0)

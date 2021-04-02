@@ -12,7 +12,6 @@ if(ENABLE_rgbDetection)
                                        YARP::YARP_init
                                        YARP::YARP_dev
                                        YARP::YARP_sig
-                                       ROBOTICSLAB::ColorDebug
                                        ROBOTICSLAB::VisionInterfaces)
 
     install(TARGETS rgbDetection

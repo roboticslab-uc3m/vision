@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
 
 #include <yarp/dev/Drivers.h>
@@ -7,8 +8,6 @@
 
 #include <yarp/sig/Image.h>
 #include <yarp/sig/ImageDraw.h>
-
-#include <ColorDebug.h>
 
 #include "IDetector.hpp"
 
@@ -31,13 +30,13 @@ class ColorRegionDetectorTest : public testing::Test
 
             if(!detectorDevice.open(deviceOptions))
             {
-                CD_ERROR("Failed to open ColorRegionDetector device\n");
+                yError() << "Failed to open ColorRegionDetector device";
                 return;
             }
 
             if (!detectorDevice.view(iDetector))
             {
-                CD_ERROR("Problems acquiring detector interface\n");
+                yError() << "Problems acquiring detector interface";
                 return;
             }
         }

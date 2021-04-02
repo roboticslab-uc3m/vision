@@ -6,6 +6,7 @@
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
+#include <yarp/os/LogStream.h>
 #include <yarp/os/PeriodicThread.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/os/Time.h>
@@ -14,8 +15,6 @@
 #include <yarp/dev/PolyDriver.h>
 
 #include <yarp/sig/Image.h>
-
-#include <ColorDebug.h>
 
 #include "IDetector.hpp"
 
@@ -38,7 +37,7 @@ private:
         b.read(connection);
 
         // process data in b
-        CD_DEBUG("Got %s\n", b.toString().c_str());
+        yDebug() << "Got" << b.toString();
 
         if (waitForFirst)
         {

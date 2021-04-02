@@ -6,9 +6,9 @@
 
 #include <cstdio>
 #include <string>
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/Time.h>
-#include <ColorDebug.h>
 
 using namespace roboticslab;
 
@@ -39,7 +39,7 @@ bool TensorflowDetection2D::configure(yarp::os::ResourceFinder &rf)
         cropSelector = rf.find("cropSelector").asInt();
     }
 
-    CD_INFO("Using cropSelector: %d.\n", cropSelector);
+    yInfo() << "Using cropSelector:" << cropSelector;
 
     if (rf.check("cameraDevice"))
     {
@@ -61,10 +61,10 @@ bool TensorflowDetection2D::configure(yarp::os::ResourceFinder &rf)
         watchdog = rf.find("watchdog").asDouble();
     }
 
-    CD_INFO("Using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s.\n",
+    yInfo("Using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s",
         strCameraDevice.c_str(), strCameraLocal.c_str(), strCameraRemote.c_str());
 
-    CD_INFO("Using watchdog: %f.\n", watchdog);
+    yInfo() << "Using watchdog:" << watchdog;
 
     if (!rf.check("help"))
     {
@@ -76,28 +76,28 @@ bool TensorflowDetection2D::configure(yarp::os::ResourceFinder &rf)
 
         while (!dd.open(options))
         {
-            CD_INFO("Waiting for camera device \"%s\"...\n", strCameraDevice.c_str());
+            yInfo("Waiting for camera device \"%s\"...", strCameraDevice.c_str());
             yarp::os::Time::delay(1);
         }
 
-        CD_SUCCESS("Camera device available.\n");
+        yInfo() << "Camera device available";
 
         if (!dd.view(camera))
         {
-            CD_WARNING("Bad view of camera from device.\n");
+            yWarning() << "Bad view of camera from device";
         }
         else
         {
-            CD_SUCCESS("Ok view of camera from device.\n");
+            yInfo() << "Ok view of camera from device";
         }
 
     /*    if (!dd.view(iRgbVisualParams))
         {
-            CD_WARNING("Bad view of iRgbVisualParams from device.\n");
+            yWarning() << "Bad view of iRgbVisualParams from device";
         }
         else
         {
-            CD_SUCCESS("Ok view of iRgbVisualParams from device.\n");
+            yInfo() << "Ok view of iRgbVisualParams from device";
         }
 
         segmentorThread.setH(iRgbVisualParams->getRgbHeight());
@@ -142,7 +142,7 @@ double TensorflowDetection2D::getPeriod()
 
 bool TensorflowDetection2D::updateModule()
 {
-    CD_INFO("Alive...\n");
+    yInfo() << "TensorflowDetection2D alive...";
     return true;
 }
 
@@ -166,8 +166,6 @@ bool TensorflowDetection2D::interruptModule()
 
 bool TensorflowDetection2D::close()
 {
-    CD_INFO("Closing...\n");
-
     segmentorThread.stop();
 
     dd.close();
