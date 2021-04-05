@@ -171,7 +171,9 @@ bool SegmentorThread::init(yarp::os::ResourceFinder &rf)
     return true;
 }
 
+
 /************************************************************************/
+/* Function adapted from https://docs.opencv.org/4.3.0/d4/db9/samples_2dnn_2object_detection_8cpp-example.html */
 inline void SegmentorThread::preprocess(const cv::Mat& frame, Net& net, cv::Size inpSize, float scale,
                        const cv::Scalar& mean, bool swapRB)
 {
@@ -191,7 +193,7 @@ inline void SegmentorThread::preprocess(const cv::Mat& frame, Net& net, cv::Size
     }
 }
 /************************************************************************/
-
+/* Function adapted from https://docs.opencv.org/4.3.0/d4/db9/samples_2dnn_2object_detection_8cpp-example.html */
 void SegmentorThread::postprocess(cv::Mat& frame, const std::vector<cv::Mat>& outs, Net& net)
 {
     static std::vector<int> outLayers = net.getUnconnectedOutLayers();
@@ -258,7 +260,6 @@ void SegmentorThread::postprocess(cv::Mat& frame, const std::vector<cv::Mat>& ou
             // detected objects and C is a number of classes + 4 where the first 4
             // numbers are [center_x, center_y, width, height]
             float* data = (float*)outs[i].data;
-            yInfo("%d",i);
             for (int j = 0; j < outs[i].rows; ++j, data += outs[i].cols)
             {
                 cv::Mat scores = outs[i].row(j).colRange(5, outs[i].cols);
@@ -268,7 +269,6 @@ void SegmentorThread::postprocess(cv::Mat& frame, const std::vector<cv::Mat>& ou
 
                 if (confidence > confThreshold)
                 {
-                    yInfo("Confidence: %f",confidence);
                     int centerX = (int)(data[0] * frame.cols);
                     int centerY = (int)(data[1] * frame.rows);
                     int width = (int)(data[2] * frame.cols);
@@ -288,8 +288,7 @@ void SegmentorThread::postprocess(cv::Mat& frame, const std::vector<cv::Mat>& ou
                     detectedObject.put("bry", top+height);
                     detectedObject.put("category",classes[classIdPoint.x]);
                     detectedObject.put("confidence", confidence);
-                    yInfo("%s",classes[classIdPoint.x].c_str());
-
+                    yInfo("Detected %s with %f confidence",classes[classIdPoint.x].c_str(), confidence);
                     output.addDict()=detectedObject;
                 }
             }
@@ -338,36 +337,16 @@ void SegmentorThread::drawPred(int classId, float conf, int left, int top, int r
 /************************************************************************/
 void SegmentorThread::run()
 {
-    //yInfo("run()\n");
-
-    /*ImageOf<PixelRgb> *inYarpImg = pInImg->read(false);
-    ImageOf<PixelFloat> *depth = pInDepth->read(false);
-    if (inYarpImg==NULL) {
-        //printf("No img yet...\n");
-        return;
-    };
-    if (depth==NULL) {
-        //printf("No depth yet...\n");
-        return;
-    };*/
-    printf("Get images");
-
     yarp::sig::FlexImage colorFrame;
 
     if (!iRGBDSensor->getRgbImage(colorFrame,NULL))
     {
         return;
     }
+    yarp::sig::ImageOf<yarp::sig::PixelBgr> colorFrameBgr;
+    colorFrameBgr.copy(colorFrame);
+    cv::Mat frame=yarp::cv::toCvMat(colorFrameBgr);
 
-    IplImage *inIplImage = cvCreateImage(cvSize(colorFrame.width(), colorFrame.height()),
-                                            IPL_DEPTH_8U, 3 );
-
-    cvCvtColor((IplImage*)colorFrame.getIplImage(), inIplImage, cv::COLOR_RGB2BGR);
-    //Mat inCvMat(inIplImage);
-    cv::Mat frame = cv::cvarrToMat(inIplImage);
-
-//    cv::imshow("InCvMat",frame);
-//    cv::waitKey(0);
 
     preprocess(frame, net, cv::Size(inpWidth, inpHeight), scale, mean, swapRB);
 
@@ -376,102 +355,13 @@ void SegmentorThread::run()
 
     postprocess(frame, outs, net);
 
-//    cv::imshow("test", frame);
-//    cv::waitKey(0);
-//    cv::imwrite("test.jpg", frame); // A JPG FILE IS BEING SAVED
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
     cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
     outYarpImg.setExternal(frame.data, frame.size[1], frame.size[0]);
     pOutImg->prepare() = outYarpImg;
     pOutImg->write();
-//    std::vector<yarp::os::Property> detectedObjects;
-//    if (!iDetector->detect(colorFrame, detectedObjects))
-//    {
-//        yWarning("Detector failed!\n");
-//        return;
-//    }
 
-//    yarp::sig::ImageOf<yarp::sig::PixelRgb> outYarpImg;
-//    outYarpImg.copy(colorFrame);
-//    yarp::sig::PixelRgb red(255,0,0);
-//    yarp::sig::PixelRgb green(0,255,0);
-//    yarp::os::Bottle output;
-
-//    double minZ = 999999;
-//    int closestFace = 999999;
-//    for( int i = 0; i < detectedObjects.size(); i++ )
-//    {
-//        int pxX = (detectedObjects[i].find("tlx").asInt32() + detectedObjects[i].find("brx").asInt32()) / 2;
-//        int pxY = (detectedObjects[i].find("tly").asInt32() + detectedObjects[i].find("bry").asInt32()) / 2;
-//        double depthX, depthY;
-//        scaleXY(colorFrame, depthFrame, pxX, pxY, &depthX, &depthY);
-//        double mmZ_tmp = depthFrame.pixel(int(depthX), int(depthY));
-
-//        if (mmZ_tmp < 0.001)
-//        {
-//            yWarning("mmZ_tmp[%d] < 0.001.\n",i);
-//            return;
-//        }
-
-//        if (mmZ_tmp < minZ) {
-//            minZ = mmZ_tmp;
-//            closestFace = i;
-//        }
-//    }
-
-//    for( int i = 0; i < detectedObjects.size(); i++ )
-//    {
-
-//        int pxX = (detectedObjects[i].find("tlx").asInt32() + detectedObjects[i].find("brx").asInt32()) / 2;
-//        int pxY = (detectedObjects[i].find("tly").asInt32() + detectedObjects[i].find("bry").asInt32()) / 2;
-//        int width = detectedObjects[i].find("brx").asInt32() - detectedObjects[i].find("tlx").asInt32();
-//        int height = detectedObjects[i].find("bry").asInt32() - detectedObjects[i].find("tly").asInt32();
-//        double mmZ_tmp = depthFrame.pixel(pxX,pxY);
-
-//        if (mmZ_tmp < 0.001)
-//        {
-//            yWarning("mmZ_tmp[%d] < 0.001.\n",i);
-//            return;
-//        }
-
-//        double mmX_tmp = 1000.0 * ( (pxX - cx_d) * mmZ_tmp/1000.0 ) / fx_d;
-//        double mmY_tmp = 1000.0 * ( (pxY - cy_d) * mmZ_tmp/1000.0 ) / fy_d;
-
-//        if( i == closestFace )
-//        {
-//            yarp::sig::draw::addRectangleOutline(outYarpImg,
-//                                                 green,
-//                                                 pxX,
-//                                                 pxY,
-//                                                 width / 2,
-//                                                 height / 2);
-
-//            yarp::os::Property closestObjectDict;
-//            closestObjectDict.put("mmX", - mmX_tmp );  // Points right thanks to change sign so (x ^ y = z). Expects --noMirror.
-//            closestObjectDict.put("mmY", mmY_tmp );    // Points down.
-//            closestObjectDict.put("mmZ", mmZ_tmp );    // Points forward.
-//            output.addDict() = closestObjectDict;
-//        }
-//        else
-//        {
-//            yarp::sig::draw::addRectangleOutline(outYarpImg,
-//                                                 red,
-//                                                 pxX,
-//                                                 pxY,
-//                                                 width / 2,
-//                                                 height / 2);
-//        }
-//        //output.addDict() = detectedObjects[i];
-//    }
-
-//    pOutImg->prepare() = outYarpImg;
-//    pOutImg->write();
-
-//    if (output.size() > 0)
-//    {
-//        pOutPort->write(output);
-//    }
 }
 
 }  // namespace roboticslab

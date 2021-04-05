@@ -39,7 +39,7 @@
 
 #include <fstream>
 
-#define DEFAULT_RATE_MS 20
+#define DEFAULT_RATE_MS 30
 #define DEFAULT_ALIAS "yolo" // An alias name of model to extract preprocessing parameters from models.yml file.
 #define DEFAULT_ZOO_FILE "models.yml" // An optional path to file with preprocessing parameters models.yml
 #define DEFAULT_CLASSES "object_detection_classes_yolov3.txt" // Optional path to a text file with names of classes to label detected objects.
