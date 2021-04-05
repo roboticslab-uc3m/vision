@@ -62,7 +62,7 @@ bool SegmentorThread::init(yarp::os::ResourceFinder &rf)
     configDNNFile = DEFAULT_DNN_CONFIG_FILE;
     framework = DEFAULT_FRAMEWORK;
     classesFile = DEFAULT_CLASSES;
-
+    backend = DEFAULT_BACKEND;
 
 
     yInfo("SegmentorThread options:\n");
@@ -85,6 +85,16 @@ bool SegmentorThread::init(yarp::os::ResourceFinder &rf)
     if (rf.check("rateMs"))
     {
         rateMs = rf.find("rateMs").asInt32();
+    }
+
+    if(rf.check("backend"))
+    {
+        backend = rf.find("backend").asInt32();
+    }
+
+    if(rf.check("target"))
+    {
+        target = rf.find("target").asInt32();
     }
 
     if(rf.check("framework")){
@@ -140,8 +150,8 @@ bool SegmentorThread::init(yarp::os::ResourceFinder &rf)
 
     // Load a model.
     net = readNet(modelPath, configDNNPath, framework);
-    net.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
-    net.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
+    net.setPreferableBackend(backend);
+    net.setPreferableTarget(target);
     outNames = net.getUnconnectedOutLayersNames();
 
     if(cropSelector != 0)

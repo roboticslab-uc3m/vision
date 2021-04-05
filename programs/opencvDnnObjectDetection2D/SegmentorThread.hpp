@@ -173,8 +173,11 @@ private:
     std::string configDNNFile;
     std::string framework;
     std::string classesFile;
+    uint backend;
+    uint target;
     Net net;
     std::vector<std::string> outNames;
+
 };
 
 }  // namespace roboticslab
