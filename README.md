@@ -38,6 +38,7 @@ Installation instructions for installing from source can be found [here](doc/vis
 - [TVM](https://tvm.ai) ([dmlc/tvm](https://github.com/dmlc/tvm)): Open Deep Learning Compiler Stack
 - [PCL](http://pointclouds.org) ([PointCloudLibrary/pcl](https://github.com/PointCloudLibrary/pcl)): 2D/3D image and point cloud processing
 - [CloudCompare/CloudCompare](https://github.com/CloudCompare/CloudCompare): A 3D point cloud (and triangular mesh) processing software
+- [pmp-library/pmp-library](https://github.com/pmp-library/pmp-library): Interactive cloud visualization and processing tools
 - [MIT-SPARK/Kimera-VIO](https://github.com/MIT-SPARK/Kimera-VIO): Visual Inertial Odometry with SLAM capabilities and 3D Mesh generation
 - YARP
     - [robotology/segmentation](https://github.com/robotology/segmentation) ([doxygen](http://robotology.github.io/segmentation/doxygen/doc/html/modules.html))
