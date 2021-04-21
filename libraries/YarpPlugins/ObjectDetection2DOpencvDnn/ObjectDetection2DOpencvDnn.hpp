@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __COLOR_REGION_DETECTOR_HPP__
-#define __COLOR_REGION_DETECTOR_HPP__
+#ifndef __OBJECT_DETECTION_2D_OPENCV_DNN__
+#define __OBJECT_DETECTION_2D_OPENCV_DNN__
 
 #include <yarp/os/Searchable.h>
 
@@ -62,6 +62,7 @@ private:
     static const double      DEFAULT_CONF_THR;
     static const double      DEFAULT_NMS_THR;
 
+
     inline void preprocess(const cv::Mat& frame, Net& net, cv::Size inpSize, float scale, const cv::Scalar& mean, bool swapRB);
 
 
@@ -69,4 +70,4 @@ private:
 
 }  // namespace roboticslab
 
-#endif  // __COLOR_REGION_DETECTOR_HPP__ __OBJECT_DETECTION_2D_OPENCV_DNN__
+#endif  // __OBJECT_DETECTION_2D_OPENCV_DNN__

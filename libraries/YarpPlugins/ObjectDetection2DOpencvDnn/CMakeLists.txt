@@ -29,6 +29,7 @@ if(NOT SKIP_ObjectDetection2DOpencvDnn)
                                      ROBOTICSLAB::VisionInterfaces
                                      ROBOTICSLAB::TravisLib)
 
+                                     
     target_compile_features(ObjectDetection2DOpencvDnn PUBLIC cxx_std_11)
 
     yarp_install(TARGETS ObjectDetection2DOpencvDnn

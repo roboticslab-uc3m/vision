@@ -237,45 +237,7 @@ namespace roboticslab
                 }
             }
         }
-        // else
-        //     CV_Error(cv::Error::StsNotImplemented, "Unknown output layer type: " + outLayerType);
-        /**
-    // Because Travis stuff goes with [openCv Mat Bgr] for now
-    Travis travis(false,true);    // ::Travis(quiet=true, overwrite=true);
-    travis.setCvMat(inCvMat);
-    if (algorithm=="hue")
-        travis.binarize("hue", threshold-5,threshold+5);
-    else if(algorithm=="canny")
-        travis.binarize("canny");
-    else
-        travis.binarize(algorithm.c_str(), threshold);
-    travis.morphClosing(inYarpImg.width() * morphClosing / 100.0 );
-    int numBlobs = travis.blobize(maxNumBlobs);
-    if( 0 == numBlobs )
-    {
-        travis.release();
-        return false;
-    }
-    std::vector<cv::Rect> blobsRect;
-    if( ! travis.getBlobsRect(blobsRect) )
-    {
-        travis.release();
-        return false;
-    }
 
-    for(size_t i; i<blobsRect.size(); i++)
-    {
-        cv::Point tl = blobsRect[i].tl();
-        cv::Point br = blobsRect[i].br();
-
-        yarp::os::Property detectedObject;
-        detectedObject.put("tlx", tl.x);
-        detectedObject.put("tly", tl.y);
-        detectedObject.put("brx", br.x);
-        detectedObject.put("bry", br.y);
-        detectedObjects.push_back(detectedObject);
-    }
-    **/
 
         return true;
     }
