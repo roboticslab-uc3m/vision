@@ -26,7 +26,9 @@ set_property(GLOBAL APPEND PROPERTY _exported_dependencies YARP_sig)
 # Create alias target.
 add_library(ROBOTICSLAB::VisionInterfaces ALIAS VisionInterfaces)
 
+
 # YARP devices.
 add_subdirectory(ColorRegionDetector)
 add_subdirectory(HaarDetector)
+add_subdirectory(OpencvDnnDetector)
 add_subdirectory(QRDetector)
