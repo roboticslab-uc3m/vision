@@ -8,7 +8,6 @@
 - [Install YCM 0.11+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-ycm.md/)
 - [Install YARP 3.3+ and depthCamera](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-yarp.md#install-additional-yarp-device-depthcamera-ubuntu)
 - [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-opencv.md/)
-- [Install tensorflow_cc](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-tensorflow_cc.md)
 
 ### Install the Software on Ubuntu (working on all tested versions)
 

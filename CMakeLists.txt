@@ -45,7 +45,6 @@ find_package(YARP 3.3 REQUIRED COMPONENTS os dev sig
 
 find_package(OpenCV QUIET)
 find_package(PCL 1.8 QUIET)
-find_package(TensorflowCC 1.12 QUIET)
 find_package(GTestSources 1.6.0 QUIET)
 find_package(SWIG QUIET)
 find_package(Doxygen QUIET)
