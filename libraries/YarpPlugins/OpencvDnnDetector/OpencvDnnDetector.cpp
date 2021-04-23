@@ -8,30 +8,30 @@
 
 #include <ColorDebug.h>
 
-#include "ObjectDetection2DOpencvDnn.hpp"
+#include "OpencvDnnDetector.hpp"
 #include "TravisLib.hpp"
 namespace roboticslab
 {
 
     /*****************************************************************/
 
-    const std::string ObjectDetection2DOpencvDnn::DEFAULT_MODEL_FILE = "yolov3-tiny-custom_5000.weights";
-    const std::string ObjectDetection2DOpencvDnn::DEFAULT_CONFIG_DNN_FILE = "yolov3-tiny-custom.cfg";
-    const std::string ObjectDetection2DOpencvDnn::DEFAULT_FRAMEWORK = "darknet";
-    const std::string ObjectDetection2DOpencvDnn::DEFAULT_CLASSES_FILE = "object_detection_classes_yolov3_sharon.txt";
-    const uint ObjectDetection2DOpencvDnn::DEFAULT_BACKEND = DNN_BACKEND_CUDA;
-    const uint ObjectDetection2DOpencvDnn::DEFAULT_TARGET = DNN_TARGET_CUDA;
-    const double ObjectDetection2DOpencvDnn::DEFAULT_SCALE = 0.00392;
-    const uint ObjectDetection2DOpencvDnn::DEFAULT_WIDTH = 640;
-    const uint ObjectDetection2DOpencvDnn::DEFAULT_HEIGHT = 480;
-    const bool ObjectDetection2DOpencvDnn::DEFAULT_RGB = true;
-    const double ObjectDetection2DOpencvDnn::DEFAULT_MEAN = 0;
-    const double ObjectDetection2DOpencvDnn::DEFAULT_CONF_THR = 0.1;
-    const double ObjectDetection2DOpencvDnn::DEFAULT_NMS_THR = 0.4;
+    const std::string OpencvDnnDetector::DEFAULT_MODEL_FILE = "yolov3-tiny-custom_5000.weights";
+    const std::string OpencvDnnDetector::DEFAULT_CONFIG_DNN_FILE = "yolov3-tiny-custom.cfg";
+    const std::string OpencvDnnDetector::DEFAULT_FRAMEWORK = "darknet";
+    const std::string OpencvDnnDetector::DEFAULT_CLASSES_FILE = "object_detection_classes_yolov3_sharon.txt";
+    const uint OpencvDnnDetector::DEFAULT_BACKEND = DNN_BACKEND_CUDA;
+    const uint OpencvDnnDetector::DEFAULT_TARGET = DNN_TARGET_CUDA;
+    const double OpencvDnnDetector::DEFAULT_SCALE = 0.00392;
+    const uint OpencvDnnDetector::DEFAULT_WIDTH = 640;
+    const uint OpencvDnnDetector::DEFAULT_HEIGHT = 480;
+    const bool OpencvDnnDetector::DEFAULT_RGB = true;
+    const double OpencvDnnDetector::DEFAULT_MEAN = 0;
+    const double OpencvDnnDetector::DEFAULT_CONF_THR = 0.1;
+    const double OpencvDnnDetector::DEFAULT_NMS_THR = 0.4;
 
     /*****************************************************************/
 
-    bool ObjectDetection2DOpencvDnn::open(yarp::os::Searchable &config)
+    bool OpencvDnnDetector::open(yarp::os::Searchable &config)
     {
         modelFile = DEFAULT_MODEL_FILE;
         if (config.check("trainedModel"))
@@ -87,7 +87,7 @@ namespace roboticslab
 
         yarp::os::ResourceFinder rf;
         rf.setVerbose(false);
-        rf.setDefaultContext("ObjectDetection2DOpencvDnn"); //rf.setDefaultContext(context);
+        rf.setDefaultContext("OpencvDnnDetector"); //rf.setDefaultContext(context);
 
         // TODO!! Set model and config path from the resource finder
         std::string modelPath = rf.findFileByName(modelFile);
@@ -135,8 +135,7 @@ namespace roboticslab
 
     /*****************************************************************/
 
-    bool ObjectDetection2DOpencvDnn::detect(const yarp::sig::Image &inYarpImg,
-                                            std::vector<yarp::os::Property> &detectedObjects)
+    bool OpencvDnnDetector::detect(const yarp::sig::Image &inYarpImg, std::vector<yarp::os::Property> &detectedObjects)
     {
         yInfo("Detect");
         yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
@@ -243,8 +242,8 @@ namespace roboticslab
     }
     /************************************************************************/
     /* Function adapted from https://docs.opencv.org/4.3.0/d4/db9/samples_2dnn_2object_detection_8cpp-example.html */
-    inline void ObjectDetection2DOpencvDnn::preprocess(const cv::Mat &frame, Net &net, cv::Size inpSize, float scale,
-                                                       const cv::Scalar &mean, bool swapRB)
+    inline void OpencvDnnDetector::preprocess(const cv::Mat &frame, Net &net, cv::Size inpSize, float scale,
+                                              const cv::Scalar &mean, bool swapRB)
     {
         static cv::Mat blob;
         // Create a 4D blob from a frame.

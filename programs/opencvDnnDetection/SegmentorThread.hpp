@@ -64,9 +64,9 @@ namespace roboticslab
 {
 
 /**
- * @ingroup opencvDnnObjectDetection2D
+ * @ingroup opencvDnnDetection
  *
- * @brief Implements opencvDnnObjectDetection2D callback on Bottle.
+ * @brief Implements OpencvDnnDetection callback on Bottle.
  */
 class DataProcessor : public yarp::os::PortReader
 {
@@ -120,9 +120,9 @@ public:
 };
 
 /**
- * @ingroup opencvDnnObjectDetection2D
+ * @ingroup opencvDnnDetection
  *
- * @brief Implements opencvDnnObjectDetection2D PeriodicThread.
+ * @brief Implements OpencvDnnDetection PeriodicThread.
  */
 class SegmentorThread : public yarp::os::PeriodicThread
 {

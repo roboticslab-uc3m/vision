@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __OBJECT_DETECTION_2D_OPENCV_DNN__
-#define __OBJECT_DETECTION_2D_OPENCV_DNN__
+#ifndef __OPENCV_DNN_DETECTOR_HPP__
+#define __OPENCV_DNN_DETECTOR_HPP__
 
 #include <yarp/os/Searchable.h>
 
@@ -18,10 +18,10 @@ namespace roboticslab
 
 /**
  * @ingroup YarpPlugins
- * @defgroup ObjectDetection2DOpencvDnn
- * @brief Contains roboticslab::ObjectDetection2DOpencvDnn.
+ * @defgroup OpencvDnnDetector
+ * @brief Contains roboticslab::OpencvDnnDetector.
  */
-class ObjectDetection2DOpencvDnn :  public yarp::dev::DeviceDriver, public IDetector
+class OpencvDnnDetector :  public yarp::dev::DeviceDriver, public IDetector
 {
 public:
     bool open(yarp::os::Searchable& config) override;
@@ -32,12 +32,12 @@ public:
 private:
     float confThreshold; // Confidence threshold
     float nmsThreshold; // Non-max supression threshold
-    std::string modelFile; 
+    std::string modelFile;
     std::string configDNNFile;
     std::string framework;
     std::string classesFile;
     uint backend;
-    uint target; 
+    uint target;
     Net net;
     std::vector<std::string> classes;
     std::vector<std::string> outNames;
@@ -70,4 +70,4 @@ private:
 
 }  // namespace roboticslab
 
-#endif  // __OBJECT_DETECTION_2D_OPENCV_DNN__
+#endif  // __OPENCV_DNN_DETECTOR_HPP__

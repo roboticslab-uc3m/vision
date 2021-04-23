@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __OPENCV_DNN_OBJECT_DETECTION_2D_HPP__
-#define __OPENCV_DNN_OBJECT_DETECTION_2D_HPP__
+#ifndef __OPENCV_DNN_DETECTION_HPP__
+#define __OPENCV_DNN_DETECTION_HPP__
 
 #include "SegmentorThread.hpp"
 
@@ -16,11 +16,11 @@ namespace roboticslab
 {
 
 /**
- * @ingroup opencvDnnObjectDetection2D
+ * @ingroup opencvDnnDetection
  *
  * @brief Computer Vision.
  */
-class OpencvDnnObjectDetection2D : public yarp::os::RFModule {
+class OpencvDnnDetection : public yarp::os::RFModule {
   private:
     SegmentorThread segmentorThread;
     //
@@ -45,5 +45,4 @@ class OpencvDnnObjectDetection2D : public yarp::os::RFModule {
 
 }  // namespace roboticslab
 
-#endif  // __OPENCV_DNN_OBJECT_DETECTION_2D_HPP__
-
+#endif  // __OPENCV_DNN_DETECTION_HPP__

@@ -2,8 +2,8 @@
 # Author: Elisabeth Menendez
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
-yarp_install(FILES conf/opencvDnnObjectDetection2D.ini
-             DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/opencvDnnObjectDetection2D)
+yarp_install(FILES conf/OpencvDnnDetector.ini
+             DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/OpencvDnnDetector)
 
 #yarp_install(FILES scripts/example_colorRegionDetection.xml
 #                   scripts/example_colorRegionDetection_local.xml

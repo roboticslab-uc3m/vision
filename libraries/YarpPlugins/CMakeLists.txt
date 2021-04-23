@@ -30,5 +30,5 @@ add_library(ROBOTICSLAB::VisionInterfaces ALIAS VisionInterfaces)
 # YARP devices.
 add_subdirectory(ColorRegionDetector)
 add_subdirectory(HaarDetector)
+add_subdirectory(OpencvDnnDetector)
 add_subdirectory(QRDetector)
-add_subdirectory(ObjectDetection2DOpencvDnn)

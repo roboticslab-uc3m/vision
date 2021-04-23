@@ -1,12 +1,12 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "OpencvDnnObjectDetection2D.hpp"
+#include "OpencvDnnDetection.hpp"
 
 namespace roboticslab
 {
 
 /************************************************************************/
-bool OpencvDnnObjectDetection2D::configure(yarp::os::ResourceFinder &rf) {
+bool OpencvDnnDetection::configure(yarp::os::ResourceFinder &rf) {
 
     cropSelector = DEFAULT_CROP_SELECTOR;
     std::string strRGBDDevice = DEFAULT_RGBD_DEVICE;
@@ -14,7 +14,7 @@ bool OpencvDnnObjectDetection2D::configure(yarp::os::ResourceFinder &rf) {
     std::string strRGBDRemote = DEFAULT_RGBD_REMOTE;
     watchdog = DEFAULT_WATCHDOG;  // double
 
-    printf("OpencvDnnObjectDetection2D options:\n");
+    printf("OpencvDnnDetection options:\n");
     printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
     printf("\t--cropSelector (default: \"%d\")\n",cropSelector);
     printf("\t--RGBDDevice (device we create, default: \"%s\")\n",strRGBDDevice.c_str());
@@ -29,9 +29,9 @@ bool OpencvDnnObjectDetection2D::configure(yarp::os::ResourceFinder &rf) {
     if(rf.check("RGBDRemote")) strRGBDRemote = rf.find("RGBDRemote").asString();
     if(rf.check("watchdog")) watchdog = rf.find("watchdog").asFloat64();
 
-    printf("OpencvDnnObjectDetection2D using RGBDDevice: %s, RGBDLocal: %s, RGBDRemote: %s.\n",
+    printf("OpencvDnnDetection using RGBDDevice: %s, RGBDLocal: %s, RGBDRemote: %s.\n",
         strRGBDDevice.c_str(), strRGBDLocal.c_str(), strRGBDRemote.c_str());
-    printf("OpencvDnnObjectDetection2D using watchdog: %f.\n",watchdog);
+    printf("OpencvDnnDetection using watchdog: %f.\n",watchdog);
 
     yarp::os::Property options;
     options.fromString( rf.toString() );  //-- Should get noMirror, noRGBMirror, noDepthMirror, video modes...
@@ -69,7 +69,7 @@ bool OpencvDnnObjectDetection2D::configure(yarp::os::ResourceFinder &rf) {
     }
 
     //-----------------OPEN LOCAL PORTS------------//
-    std::string portPrefix("/opencvDnnObjectDetection2D");
+    std::string portPrefix("/opencvDnnDetection");
     portPrefix += strRGBDRemote;
     if(!outImg.open(portPrefix + "/img:o"))
     {
@@ -98,21 +98,21 @@ bool OpencvDnnObjectDetection2D::configure(yarp::os::ResourceFinder &rf) {
 }
 
 /*****************************************************************/
-double OpencvDnnObjectDetection2D::getPeriod() {
+double OpencvDnnDetection::getPeriod() {
     return watchdog;  // [s]
 }
 
 /************************************************************************/
 
-bool OpencvDnnObjectDetection2D::updateModule() {
-    printf("OpencvDnnObjectDetection2D alive...\n");
+bool OpencvDnnDetection::updateModule() {
+    printf("OpencvDnnDetection alive...\n");
     return true;
 }
 
 /************************************************************************/
 
-bool OpencvDnnObjectDetection2D::interruptModule() {
-    printf("OpencvDnnObjectDetection2D closing...\n");
+bool OpencvDnnDetection::interruptModule() {
+    printf("OpencvDnnDetection closing...\n");
     segmentorThread.stop();
     outImg.interrupt();
     outPort.interrupt();

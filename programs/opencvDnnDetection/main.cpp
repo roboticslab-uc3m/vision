@@ -1,12 +1,22 @@
+// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
+
+/**
+ * @ingroup vision_programs
+ *
+ * @defgroup opencvDnnDetection opencvDnnDetection
+ *
+ * @brief Creates an instance of roboticslab::OpencvDnnDetection.
+ */
+
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
 
 #include <ColorDebug.h>
 
-#include "OpencvDnnObjectDetection2D.hpp"
+#include "OpencvDnnDetection.hpp"
 
-#define DEFAULT_CONTEXT    "opencvDnnObjectDetection2D"
-#define DEFAULT_CONFIG_FILE    "opencvDnnObjectDetection2D.ini"
+#define DEFAULT_CONTEXT    "opencvDnnDetection"
+#define DEFAULT_CONFIG_FILE    "opencvDnnDetection.ini"
 
 int main(int argc, char** argv)
 {
@@ -16,7 +26,7 @@ int main(int argc, char** argv)
     rf.setDefaultConfigFile(DEFAULT_CONFIG_FILE);
     rf.configure(argc, argv);
 
-    roboticslab::OpencvDnnObjectDetection2D mod;
+    roboticslab::OpencvDnnDetection mod;
 
     if (rf.check("help"))
     {
