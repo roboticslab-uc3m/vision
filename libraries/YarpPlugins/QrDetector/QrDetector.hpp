@@ -14,10 +14,10 @@ namespace roboticslab
 
 /**
  * @ingroup YarpPlugins
- * @defgroup QRDetector
- * @brief Contains roboticslab::QRDetector.
+ * @defgroup QrDetector
+ * @brief Contains roboticslab::QrDetector.
  */
-class QRDetector : public yarp::dev::DeviceDriver,
+class QrDetector : public yarp::dev::DeviceDriver,
                    public IDetector
 {
 public:

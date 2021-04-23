@@ -43,18 +43,18 @@ if(ENABLE_tests)
         gtest_discover_tests(testHaarDetector)
     endif()
 
-    if(ENABLE_QRDetector)
-        add_executable(testQRDetector testQRDetector.cpp)
+    if(ENABLE_QrDetector)
+        add_executable(testQrDetector testQrDetector.cpp)
 
-        target_link_libraries(testQRDetector YARP::YARP_os
+        target_link_libraries(testQrDetector YARP::YARP_os
                                              YARP::YARP_dev
                                              YARP::YARP_sig
                                              ROBOTICSLAB::VisionInterfaces
                                              gtest_main)
 
-        target_compile_features(testQRDetector PUBLIC cxx_std_11)
+        target_compile_features(testQrDetector PUBLIC cxx_std_11)
 
-        gtest_discover_tests(testQRDetector)
+        gtest_discover_tests(testQrDetector)
     endif()
 
     if(TARGET YarpCloudUtils)

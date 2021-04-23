@@ -32,18 +32,18 @@ struct PropertyComparer
 
 /**
  * @ingroup vision_tests
- * @brief Tests @ref QRDetector
+ * @brief Tests @ref QrDetector
  */
-class QRDetectorTest : public testing::Test
+class QrDetectorTest : public testing::Test
 {
 public:
     virtual void SetUp() override
     {
-        yarp::os::Property deviceOptions {{"device", yarp::os::Value("QRDetector")}};
+        yarp::os::Property deviceOptions {{"device", yarp::os::Value("QrDetector")}};
 
         if (!detectorDevice.open(deviceOptions))
         {
-            yError() << "Failed to open QRDetector device";
+            yError() << "Failed to open QrDetector device";
             return;
         }
 
@@ -64,7 +64,7 @@ protected:
     static std::unordered_set<yarp::os::Property, PropertyHasher, PropertyComparer> expectedValues;
 };
 
-decltype(QRDetectorTest::expectedValues) QRDetectorTest::expectedValues = {
+decltype(QrDetectorTest::expectedValues) QrDetectorTest::expectedValues = {
     {
         {"tlx", yarp::os::Value(7)},
         {"tly", yarp::os::Value(7)},
@@ -100,7 +100,7 @@ decltype(QRDetectorTest::expectedValues) QRDetectorTest::expectedValues = {
     }
 };
 
-TEST_F(QRDetectorTest, QRDetector1)
+TEST_F(QrDetectorTest, QrDetector1)
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
     yarpImgRgb.resize(300, 200);
@@ -110,11 +110,11 @@ TEST_F(QRDetectorTest, QRDetector1)
     ASSERT_EQ(detectedObjects.size(), 0);
 }
 
-TEST_F(QRDetectorTest, QRDetector2)
+TEST_F(QrDetectorTest, QrDetector2)
 {
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
-    rf.setDefaultContext("QRDetector");
+    rf.setDefaultContext("QrDetector");
     std::string qrFullName = rf.findFileByName("tests/rdqr.png");
     ASSERT_FALSE(qrFullName.empty());
 

@@ -1,2 +1,0 @@
-yarp_install(FILES tests/rdqr.png
-             DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/QRDetector/tests)

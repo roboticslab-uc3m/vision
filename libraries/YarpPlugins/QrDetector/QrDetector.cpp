@@ -1,6 +1,6 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "QRDetector.hpp"
+#include "QrDetector.hpp"
 
 #include <utility>
 #include <vector>
@@ -13,7 +13,7 @@
 
 using namespace roboticslab;
 
-bool QRDetector::open(yarp::os::Searchable& config)
+bool QrDetector::open(yarp::os::Searchable& config)
 {
     if (config.check("epsX", "eps used during horizontal scan of QR code stop marker detection"))
     {
@@ -30,7 +30,7 @@ bool QRDetector::open(yarp::os::Searchable& config)
     return true;
 }
 
-bool QRDetector::detect(const yarp::sig::Image& inYarpImg,
+bool QrDetector::detect(const yarp::sig::Image& inYarpImg,
                         std::vector<yarp::os::Property>& detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
