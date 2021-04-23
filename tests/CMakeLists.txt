@@ -21,7 +21,6 @@ if(ENABLE_tests)
         target_link_libraries(testColorRegionDetector YARP::YARP_os
                                                       YARP::YARP_dev
                                                       YARP::YARP_sig
-                                                      ROBOTICSLAB::ColorDebug
                                                       ROBOTICSLAB::VisionInterfaces
                                                       gtest_main)
 
@@ -36,7 +35,6 @@ if(ENABLE_tests)
         target_link_libraries(testHaarDetector YARP::YARP_os
                                                YARP::YARP_dev
                                                YARP::YARP_sig
-                                               ROBOTICSLAB::ColorDebug
                                                ROBOTICSLAB::VisionInterfaces
                                                gtest_main)
 
@@ -51,7 +49,6 @@ if(ENABLE_tests)
         target_link_libraries(testQRDetector YARP::YARP_os
                                              YARP::YARP_dev
                                              YARP::YARP_sig
-                                             ROBOTICSLAB::ColorDebug
                                              ROBOTICSLAB::VisionInterfaces
                                              gtest_main)
 

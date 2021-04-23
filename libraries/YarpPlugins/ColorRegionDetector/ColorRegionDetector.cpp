@@ -1,11 +1,10 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Value.h>
 #include <yarp/cv/Cv.h>
 
 #include "TravisLib.hpp"
-
-#include <ColorDebug.h>
 
 #include "ColorRegionDetector.hpp"
 
@@ -27,34 +26,34 @@ bool ColorRegionDetector::open(yarp::os::Searchable& config)
     algorithm = DEFAULT_ALGORITHM;
     if(config.check("algorithm"))
     {
-        CD_INFO("\"algorithm\" parameter found\n");
+        yDebug() << "algorithm parameter found";
         algorithm = config.find("algorithm").asString();
     }
-    CD_DEBUG("Using \"algorithm\": %s.\n", algorithm.c_str());
+    yDebug() << "Using algorithm:" << algorithm;
 
     morphClosing = DEFAULT_MORPH_CLOSING;
     if(config.check("morphClosing"))
     {
-        CD_INFO("\"morphClosing\" parameter found\n");
+        yDebug() << "morphClosing parameter found";
         morphClosing = config.find("morphClosing").asFloat64();
     }
-    CD_DEBUG("Using \"morphClosing\": %f.\n", morphClosing);
+    yDebug() << "Using morphClosing:" << morphClosing;
 
     threshold = DEFAULT_THRESHOLD;
     if(config.check("threshold"))
     {
-        CD_INFO("\"threshold\" parameter found\n");
+        yDebug() << "threshold parameter found";
         threshold = config.find("threshold").asInt32();
     }
-    CD_DEBUG("Using \"threshold\": %d.\n", threshold);
+    yDebug() << "Using threshold:" << threshold;
 
     maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
     if(config.check("maxNumBlobs"))
     {
-        CD_INFO("\"maxNumBlobs\" parameter found\n");
+        yDebug() << "maxNumBlobs parameter found";
         maxNumBlobs = config.find("maxNumBlobs").asInt32();
     }
-    CD_DEBUG("Using \"maxNumBlobs\": %d.\n", maxNumBlobs);
+    yDebug() << "Using maxNumBlobs:" << maxNumBlobs;
 
     return true;
 }

@@ -39,10 +39,9 @@
  * | detector   | detector device | HaarDetector |
  */
 
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
-
-#include <ColorDebug.h>
 
 #include "RgbDetection.hpp"
 
@@ -64,8 +63,8 @@ int main(int argc, char** argv)
         return mod.runModule(rf);
     }
 
-    CD_INFO("Run \"%s --help\" for options.\n", argv[0]);
-    CD_INFO("%s checking for yarp network... ", argv[0]);
+    yInfo() << "Run \"%s --help\" for options" << argv[0];
+    yInfo() << argv[0] << "checking for yarp network...";
 
     std::fflush(stdout);
 
@@ -73,13 +72,8 @@ int main(int argc, char** argv)
 
     if (!yarp::os::Network::checkNetwork())
     {
-        CD_ERROR_NO_HEADER("[fail]\n");
-        CD_INFO("%s found no yarp network (try running \"yarpserver &\"), bye!\n", argv[0]);
+        yError() << argv[0] << "found no yarp network (try running \"yarpserver &\"), bye!";
         return 1;
-    }
-    else
-    {
-        CD_SUCCESS_NO_HEADER("[ok]\n");
     }
 
     return mod.runModule(rf);

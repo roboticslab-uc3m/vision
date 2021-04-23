@@ -2,10 +2,9 @@
 
 #include "HaarDetector.hpp"
 
+#include <yarp/os/LogStream.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/cv/Cv.h>
-
-#include <ColorDebug.h>
 
 namespace roboticslab
 {
@@ -22,9 +21,9 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
     if(parameters.check("xmlCascade"))
     {
         xmlCascade = parameters.find("xmlCascade").asString();
-        CD_DEBUG("\"xmlCascade\" parameter found: \"%s\"\n", xmlCascade.c_str());
+        yDebug() << "xmlCascade parameter found:" << xmlCascade;
     }
-    CD_DEBUG("Using \"xmlCascade\": %s\n", xmlCascade.c_str());
+    yDebug() << "Using xmlCascade:" << xmlCascade;
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
@@ -32,17 +31,16 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
     std::string xmlCascadeFullName = rf.findFileByName(xmlCascade);
     if(xmlCascadeFullName.empty())
     {
-        CD_ERROR("xmlCascadeFullName NOT found\n");
+        yError() << "xmlCascadeFullName NOT found";
         return false;
     }
-    CD_DEBUG("xmlCascadeFullName \"%s\" found\n", xmlCascadeFullName.c_str());
+    yDebug() << "xmlCascadeFullName found:" << xmlCascadeFullName;
 
     if (!object_cascade.load(xmlCascadeFullName))
     {
-        CD_ERROR("Cannot load xmlCascadeFullName!\n");
+        yError() << "Cannot load xmlCascadeFullName!";
         return false;
     }
-    CD_SUCCESS("\n");
 
     return true;
 }

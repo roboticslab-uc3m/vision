@@ -6,6 +6,7 @@
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ConnectionReader.h>
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/PortReader.h>
 #include <yarp/os/RateThread.h>
@@ -62,7 +63,7 @@ private:
         b.read(connection);
 
         // process data in b
-        CD_DEBUG("Got %s\n", b.toString().c_str());
+        yDebug() << "Got" << b.toString();
 
         if (waitForFirst)
         {

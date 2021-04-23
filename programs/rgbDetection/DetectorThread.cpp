@@ -1,8 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*
 
+#include <yarp/os/LogStream.h>
 #include <yarp/sig/ImageDraw.h>
-
-#include <ColorDebug.h>
 
 #include "DetectorThread.hpp"
 
@@ -52,17 +51,15 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
 
     if(!detectorDevice.open(deviceOptions))
     {
-        CD_ERROR("Failed to open device: %s\n", rf.find("device").toString().c_str());
+        yError() << "Failed to open device:" << rf.find("device").toString();
         return false;
     }
 
     if (!detectorDevice.view(iDetector))
     {
-        CD_ERROR("Problems acquiring detector interface\n");
+        yError() << "Problems acquiring detector interface";
         return false;
     }
-
-    CD_SUCCESS("Acquired detector interface\n");
 
     if (cropSelector != 0)
     {
@@ -70,15 +67,15 @@ bool roboticslab::DetectorThread::init(yarp::os::ResourceFinder &rf)
         inCropSelectorPort->setReader(cropSelectorProcessor);
     }
 
-    if(!setPeriod(rateMs * 0.001))
+    if (!setPeriod(rateMs * 0.001))
     {
-        CD_ERROR("\n");
+        yError() << "Unable to set period";
         return false;
     }
 
-    if(!start())
+    if (!start())
     {
-        CD_ERROR("\n");
+        yError() << "Thread could not start";
         return false;
     }
 
@@ -100,7 +97,7 @@ void roboticslab::DetectorThread::run()
 
     if (!iDetector->detect(inYarpImgRgb, detectedObjects))
     {
-        CD_WARNING("Detector failed!\n");
+        yWarning() << "Detector failed!";
         return;
     }
 

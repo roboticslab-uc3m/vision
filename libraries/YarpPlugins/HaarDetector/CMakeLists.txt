@@ -26,7 +26,6 @@ if(NOT SKIP_HaarDetector)
                                        YARP::YARP_dev
                                        YARP::YARP_cv
                                        ${OpenCV_LIBS}
-                                       ROBOTICSLAB::ColorDebug
                                        ROBOTICSLAB::VisionInterfaces)
 
     target_compile_features(HaarDetector PUBLIC cxx_std_11)
