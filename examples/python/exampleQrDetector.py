@@ -4,7 +4,7 @@ import yarp
 import roboticslab_vision
 
 detectorOptions = yarp.Property()
-detectorOptions.put("device", "QRDetector")
+detectorOptions.put("device", "QrDetector")
 detectorDevice = yarp.PolyDriver(detectorOptions)
 
 iDetector = roboticslab_vision.viewIDetector(detectorDevice)
@@ -12,7 +12,7 @@ iDetector = roboticslab_vision.viewIDetector(detectorDevice)
 yarpImgRgb = yarp.ImageRgb()
 
 rf = yarp.ResourceFinder()
-rf.setDefaultContext("QRDetector")
+rf.setDefaultContext("QrDetector")
 qrFullName = rf.findFileByName("tests/rdqr.png")
 yarp.read(yarpImgRgb, qrFullName, yarp.FORMAT_PNG)
 
