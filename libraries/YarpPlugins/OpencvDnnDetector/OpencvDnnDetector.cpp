@@ -18,12 +18,10 @@ namespace
     const int DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_CUDA;
     const int DEFAULT_TARGET = cv::dnn::DNN_TARGET_CUDA;
     const double DEFAULT_SCALE = 0.00392;
-    const unsigned int DEFAULT_WIDTH = 640;
-    const unsigned int DEFAULT_HEIGHT = 480;
     const bool DEFAULT_RGB = true;
     const double DEFAULT_MEAN = 0;
     const double DEFAULT_CONF_THR = 0.1;
-    const double DEFAULT_NMS_THR = 0.4;
+    const double DEFAULT_NMS_THR = 0.4; // FIXME: unused, see cv::dnn::NMSBoxes
 }
 
 using namespace roboticslab;
@@ -31,27 +29,21 @@ using namespace roboticslab;
 bool OpencvDnnDetector::open(yarp::os::Searchable &config)
 {
     modelFile = config.check("trainedModel", yarp::os::Value(DEFAULT_MODEL_FILE)).asString();
-
     yDebug() << "Using --trainedModel" << modelFile;
 
     configDNNFile = config.check("configDNNModel", yarp::os::Value(DEFAULT_CONFIG_DNN_FILE)).asString();
-
     yDebug() << "Using --configDNNModel" << configDNNFile;
 
     framework = config.check("framework", yarp::os::Value(DEFAULT_FRAMEWORK)).asString();
-
     yDebug() << "Using --framework" << framework;
 
     classesFile = config.check("classesTrainedModel", yarp::os::Value(DEFAULT_CLASSES_FILE)).asString();
-
     yDebug() << "Using --classesTrainedModel" << classesFile;
 
     backend = config.check("backend", yarp::os::Value(DEFAULT_BACKEND)).asInt32();
-
     yDebug() << "Using --backend" << backend;
 
     target = config.check("target", yarp::os::Value(DEFAULT_TARGET)).asInt32();
-
     yDebug() << "Using --target" << target;
 
     yarp::os::ResourceFinder rf;
@@ -97,13 +89,20 @@ bool OpencvDnnDetector::open(yarp::os::Searchable &config)
     net.setPreferableTarget(target);
     outNames = net.getUnconnectedOutLayersNames();
 
-    scale = DEFAULT_SCALE;
-    mean = {DEFAULT_MEAN, DEFAULT_MEAN, DEFAULT_MEAN};
-    inpWidth = DEFAULT_WIDTH;
-    inpHeight = DEFAULT_HEIGHT;
-    swapRB = DEFAULT_RGB;
-    confThreshold = DEFAULT_CONF_THR;
-    nmsThreshold = DEFAULT_NMS_THR;
+    scale = config.check("scale", yarp::os::Value(DEFAULT_SCALE)).asFloat32();
+    yDebug() << "Using --scale" << scale;
+
+    auto _mean = config.check("mean", yarp::os::Value(DEFAULT_MEAN)).asFloat64();
+    mean = {_mean, _mean, _mean};
+    yDebug() << "Using --mean" << _mean;
+
+    swapRB = config.check("swapRB", yarp::os::Value(DEFAULT_RGB)).asBool();
+    yDebug() << "Using --swapRB" << swapRB;
+
+    confThreshold = config.check("confThreshold", yarp::os::Value(DEFAULT_CONF_THR)).asFloat32();
+    yDebug() << "Using --confThreshold" << confThreshold;
+
+    nmsThreshold = DEFAULT_NMS_THR; // FIXME: unused
 
     return true;
 }
@@ -116,7 +115,7 @@ bool OpencvDnnDetector::detect(const yarp::sig::Image &inYarpImg, std::vector<ya
     inYarpImgBgr.copy(inYarpImg);
     cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImgBgr);
 
-    preprocess(inCvMat, net, cv::Size(inpWidth, inpHeight), scale, mean, swapRB);
+    preprocess(inCvMat, net, inCvMat.size(), scale, mean, swapRB);
 
     std::vector<cv::Mat> outs;
     net.forward(outs, outNames);
