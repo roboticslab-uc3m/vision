@@ -3,16 +3,12 @@
 #ifndef __OPENCV_DNN_DETECTOR_HPP__
 #define __OPENCV_DNN_DETECTOR_HPP__
 
-#include <yarp/os/Searchable.h>
-
 #include <yarp/dev/DeviceDriver.h>
 
 #include <opencv2/dnn.hpp>
 
-
 #include "IDetector.hpp"
 
-using namespace cv::dnn;
 namespace roboticslab
 {
 
@@ -21,13 +17,13 @@ namespace roboticslab
  * @defgroup OpencvDnnDetector
  * @brief Contains roboticslab::OpencvDnnDetector.
  */
-class OpencvDnnDetector :  public yarp::dev::DeviceDriver, public IDetector
+class OpencvDnnDetector : public yarp::dev::DeviceDriver,
+                          public IDetector
 {
 public:
     bool open(yarp::os::Searchable& config) override;
 
-    bool detect(const yarp::sig::Image& inYarpImg,
-                std::vector<yarp::os::Property>& detectedObjects) override;
+    bool detect(const yarp::sig::Image& inYarpImg, std::vector<yarp::os::Property>& detectedObjects) override;
 
 private:
     float confThreshold; // Confidence threshold
@@ -36,9 +32,9 @@ private:
     std::string configDNNFile;
     std::string framework;
     std::string classesFile;
-    uint backend;
-    uint target;
-    Net net;
+    int backend;
+    int target;
+    cv::dnn::Net net;
     std::vector<std::string> classes;
     std::vector<std::string> outNames;
 
@@ -48,26 +44,9 @@ private:
     int inpWidth;
     int inpHeight;
 
-    static const std::string DEFAULT_MODEL_FILE;
-    static const std::string DEFAULT_CONFIG_DNN_FILE;
-    static const std::string DEFAULT_FRAMEWORK;
-    static const std::string DEFAULT_CLASSES_FILE;
-    static const uint        DEFAULT_BACKEND;
-    static const uint        DEFAULT_TARGET;
-    static const double      DEFAULT_SCALE;
-    static const uint        DEFAULT_WIDTH;
-    static const uint        DEFAULT_HEIGHT;
-    static const bool        DEFAULT_RGB;
-    static const double      DEFAULT_MEAN;
-    static const double      DEFAULT_CONF_THR;
-    static const double      DEFAULT_NMS_THR;
-
-
-    inline void preprocess(const cv::Mat& frame, Net& net, cv::Size inpSize, float scale, const cv::Scalar& mean, bool swapRB);
-
-
+    void preprocess(const cv::Mat& frame, cv::dnn::Net& net, cv::Size inpSize, float scale, const cv::Scalar& mean, bool swapRB);
 };
 
-}  // namespace roboticslab
+} // namespace roboticslab
 
-#endif  // __OPENCV_DNN_DETECTOR_HPP__
+#endif // __OPENCV_DNN_DETECTOR_HPP__

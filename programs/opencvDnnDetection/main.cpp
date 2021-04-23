@@ -11,8 +11,6 @@
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
 
-#include <ColorDebug.h>
-
 #include "OpencvDnnDetection.hpp"
 
 #define DEFAULT_CONTEXT    "opencvDnnDetection"
@@ -33,8 +31,8 @@ int main(int argc, char** argv)
         return mod.runModule(rf);
     }
 
-    CD_INFO("Run \"%s --help\" for options.\n", argv[0]);
-    CD_INFO("%s checking for yarp network... ", argv[0]);
+    yInfo("Run \"%s --help\" for options", argv[0]);
+    yInfo("%s checking for yarp network...", argv[0]);
 
     std::fflush(stdout);
 
@@ -42,13 +40,8 @@ int main(int argc, char** argv)
 
     if (!yarp::os::Network::checkNetwork())
     {
-        CD_ERROR_NO_HEADER("[fail]\n");
-        CD_INFO("%s found no yarp network (try running \"yarpserver &\"), bye!\n", argv[0]);
+        yError("%s found no yarp network (try running \"yarpserver &\"), bye!", argv[0]);
         return 1;
-    }
-    else
-    {
-        CD_SUCCESS_NO_HEADER("[ok]\n");
     }
 
     return mod.runModule(rf);

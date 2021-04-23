@@ -3,6 +3,8 @@
 # CopyPolicy: Released under the terms of the GNU GPL v2.0.
 
 yarp_install(FILES conf/OpencvDnnDetector.ini
+                   conf/object_detection_classes_yolov3.txt
+                   conf/object_detection_classes_yolov3_sharon.txt
              DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/OpencvDnnDetector)
 
 #yarp_install(FILES scripts/example_colorRegionDetection.xml

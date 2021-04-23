@@ -1,6 +1,6 @@
 if(NOT DEFINED ENABLE_OpencvDnnDetector OR ENABLE_OpencvDnnDetector)
-    if(NOT OpenCV_FOUND OR NOT OpenCV_VERSION_MAJOR EQUAL 4)
-        message(WARNING "OpenCV 4.x package not found, disabling OpencvDnnDetector device")
+    if(NOT TARGET opencv_dnn OR NOT OpenCV_VERSION_MAJOR EQUAL 4)
+        message(WARNING "OpenCV 4.0+/dnn module not found, disabling OpencvDnnDetector device")
     elseif(NOT YARP_cv_FOUND)
         message(WARNING "YARP_cv package not found, disabling OpencvDnnDetector device")
     endif()
@@ -11,7 +11,7 @@ yarp_prepare_plugin(OpencvDnnDetector
                     TYPE roboticslab::OpencvDnnDetector
                     INCLUDE OpencvDnnDetector.hpp
                     DEFAULT ON
-                    DEPENDS "OpenCV_VERSION_MAJOR EQUAL 4;YARP_cv_FOUND")
+                    DEPENDS "TARGET opencv_dnn;OpenCV_VERSION VERSION_GREATER_EQUAL 4.0;YARP_cv_FOUND")
 
 if(NOT SKIP_OpencvDnnDetector)
 
@@ -25,9 +25,8 @@ if(NOT SKIP_OpencvDnnDetector)
     target_link_libraries(OpencvDnnDetector YARP::YARP_os
                                             YARP::YARP_dev
                                             YARP::YARP_cv
-                                            ${OpenCV_LIBRARIES}
-                                            ROBOTICSLAB::VisionInterfaces
-                                            ROBOTICSLAB::TravisLib)
+                                            opencv_dnn
+                                            ROBOTICSLAB::VisionInterfaces)
 
     target_compile_features(OpencvDnnDetector PUBLIC cxx_std_11)
 
