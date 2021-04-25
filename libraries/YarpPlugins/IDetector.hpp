@@ -4,9 +4,7 @@
 #define __DETECTOR_HPP__
 
 #include <vector>
-
 #include <yarp/sig/Image.h>
-#include <yarp/sig/Vector.h>
 
 namespace roboticslab
 {
@@ -19,10 +17,9 @@ class IDetector
 {
 public:
     virtual ~IDetector() {}
-    virtual bool detect(const yarp::sig::Image& inYarpImg,
-                        std::vector<yarp::os::Property>& detectedObjects) = 0;
+    virtual bool detect(const yarp::sig::Image& inYarpImg, std::vector<yarp::os::Property>& detectedObjects) = 0;
 };
 
-}  // namespace roboticslab
+} // namespace roboticslab
 
 #endif // __DETECTOR_HPP__
