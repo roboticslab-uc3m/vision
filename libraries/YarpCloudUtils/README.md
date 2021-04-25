@@ -116,7 +116,7 @@ yarp::sig::VectorOf<yarp::os::Property> options {
     }
 };
 
-bool ret = roboticsab::YarpCloudUtils::meshFromCloud(cloud, vertices, indices, options);
+bool ret = roboticslab::YarpCloudUtils::meshFromCloud(cloud, vertices, indices, options);
 ```
 
 The above pipeline will first downsample the input cloud using the `pcl::VoxelGrid` algorithm
