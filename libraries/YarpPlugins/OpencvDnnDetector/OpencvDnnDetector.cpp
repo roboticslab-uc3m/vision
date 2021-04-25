@@ -20,7 +20,7 @@ namespace
     const double DEFAULT_SCALE = 0.00392;
     const double DEFAULT_MEAN = 0;
     const double DEFAULT_CONF_THR = 0.1;
-    const double DEFAULT_NMS_THR = 0.4; // FIXME: unused, see cv::dnn::NMSBoxes
+    const double DEFAULT_NMS_THR = 0.4;
 }
 
 using namespace roboticslab;
@@ -98,7 +98,8 @@ bool OpencvDnnDetector::open(yarp::os::Searchable &config)
     confThreshold = config.check("confThreshold", yarp::os::Value(DEFAULT_CONF_THR)).asFloat32();
     yDebug() << "Using --confThreshold" << confThreshold;
 
-    nmsThreshold = DEFAULT_NMS_THR; // FIXME: unused
+    nmsThreshold = config.check("nmsThreshold", yarp::os::Value(DEFAULT_NMS_THR)).asFloat32();
+    yDebug() << "Using --nmsThreshold" << nmsThreshold;
 
     return true;
 }
@@ -149,6 +150,10 @@ void OpencvDnnDetector::postprocess(const cv::Size& size, const std::vector<cv::
     std::vector<int> outLayers = net.getUnconnectedOutLayers();
     std::string outLayerType = net.getLayer(outLayers[0])->type;
 
+    std::vector<int> classIds;
+    std::vector<float> confidences;
+    std::vector<cv::Rect> boxes;
+
     if (outLayerType == "DetectionOutput")
     {
         // Network produces output blob with a shape 1x1xNx7 where N is a number of
@@ -182,19 +187,9 @@ void OpencvDnnDetector::postprocess(const cv::Size& size, const std::vector<cv::
                         height = bottom - top + 1;
                     }
 
-                    auto className = classes[(int)(data[i + 1]) - 1];
-
-                    yarp::os::Property detectedObject {
-                        {"category", yarp::os::Value(className)},
-                        {"confidence", yarp::os::Value(confidence)},
-                        {"tlx", yarp::os::Value(left)},
-                        {"tly", yarp::os::Value(top)},
-                        {"brx", yarp::os::Value(right)},
-                        {"bry", yarp::os::Value(bottom)}
-                    };
-
-                    yInfo() << "Detected" << className << "with" << confidence << "confidence";
-                    detectedObjects.push_back(std::move(detectedObject));
+                    classIds.push_back((int)(data[i + 1]) - 1); // Skip 0th background class id.
+                    boxes.push_back(cv::Rect(left, top, width, height));
+                    confidences.push_back(confidence);
                 }
             }
         }
@@ -225,20 +220,39 @@ void OpencvDnnDetector::postprocess(const cv::Size& size, const std::vector<cv::
                     int left = centerX - width / 2;
                     int top = centerY - height / 2;
 
-                    yarp::os::Property detectedObject {
-                        {"category", yarp::os::Value(classes[classIdPoint.x])},
-                        {"confidence", yarp::os::Value(confidence)},
-                        {"tlx", yarp::os::Value(left)},
-                        {"tly", yarp::os::Value(top)},
-                        {"brx", yarp::os::Value(left + width)},
-                        {"bry", yarp::os::Value(top + height)}
-                    };
-
-                    yInfo() << "Detected" << classes[classIdPoint.x] << "with" << confidence << "confidence";
-                    detectedObjects.push_back(std::move(detectedObject));
+                    classIds.push_back(classIdPoint.x);
+                    confidences.push_back((float)confidence);
+                    boxes.push_back(cv::Rect(left, top, width, height));
                 }
             }
         }
+    }
+    else
+    {
+        yWarning() << "Unknown layer type:" << outLayerType;
+        return;
+    }
+
+    std::vector<int> indices;
+    cv::dnn::NMSBoxes(boxes, confidences, confThreshold, nmsThreshold, indices);
+
+    for (auto idx : indices)
+    {
+        const cv::Rect & box = boxes[idx];
+        float confidence = confidences[idx];
+        const std::string className = classes[classIds[idx]];
+
+        yarp::os::Property detectedObject {
+            {"category", yarp::os::Value(className)},
+            {"confidence", yarp::os::Value(confidence)},
+            {"tlx", yarp::os::Value(box.x)},
+            {"tly", yarp::os::Value(box.y)},
+            {"brx", yarp::os::Value(box.x + box.width)},
+            {"bry", yarp::os::Value(box.y + box.height)}
+        };
+
+        detectedObjects.push_back(std::move(detectedObject));
+        yInfo() << "Detected" << className << "with" << confidence << "confidence";
     }
 }
 
