@@ -18,7 +18,6 @@ namespace
     const int DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_CUDA;
     const int DEFAULT_TARGET = cv::dnn::DNN_TARGET_CUDA;
     const double DEFAULT_SCALE = 0.00392;
-    const bool DEFAULT_RGB = true;
     const double DEFAULT_MEAN = 0;
     const double DEFAULT_CONF_THR = 0.1;
     const double DEFAULT_NMS_THR = 0.4; // FIXME: unused, see cv::dnn::NMSBoxes
@@ -28,22 +27,22 @@ using namespace roboticslab;
 
 bool OpencvDnnDetector::open(yarp::os::Searchable &config)
 {
-    modelFile = config.check("trainedModel", yarp::os::Value(DEFAULT_MODEL_FILE)).asString();
+    auto modelFile = config.check("trainedModel", yarp::os::Value(DEFAULT_MODEL_FILE)).asString();
     yDebug() << "Using --trainedModel" << modelFile;
 
-    configDNNFile = config.check("configDNNModel", yarp::os::Value(DEFAULT_CONFIG_DNN_FILE)).asString();
+    auto configDNNFile = config.check("configDNNModel", yarp::os::Value(DEFAULT_CONFIG_DNN_FILE)).asString();
     yDebug() << "Using --configDNNModel" << configDNNFile;
 
-    framework = config.check("framework", yarp::os::Value(DEFAULT_FRAMEWORK)).asString();
+    auto framework = config.check("framework", yarp::os::Value(DEFAULT_FRAMEWORK)).asString();
     yDebug() << "Using --framework" << framework;
 
-    classesFile = config.check("classesTrainedModel", yarp::os::Value(DEFAULT_CLASSES_FILE)).asString();
+    auto classesFile = config.check("classesTrainedModel", yarp::os::Value(DEFAULT_CLASSES_FILE)).asString();
     yDebug() << "Using --classesTrainedModel" << classesFile;
 
-    backend = config.check("backend", yarp::os::Value(DEFAULT_BACKEND)).asInt32();
+    auto backend = config.check("backend", yarp::os::Value(DEFAULT_BACKEND)).asInt32();
     yDebug() << "Using --backend" << backend;
 
-    target = config.check("target", yarp::os::Value(DEFAULT_TARGET)).asInt32();
+    auto target = config.check("target", yarp::os::Value(DEFAULT_TARGET)).asInt32();
     yDebug() << "Using --target" << target;
 
     yarp::os::ResourceFinder rf;
@@ -96,9 +95,6 @@ bool OpencvDnnDetector::open(yarp::os::Searchable &config)
     mean = {_mean, _mean, _mean};
     yDebug() << "Using --mean" << _mean;
 
-    swapRB = config.check("swapRB", yarp::os::Value(DEFAULT_RGB)).asBool();
-    yDebug() << "Using --swapRB" << swapRB;
-
     confThreshold = config.check("confThreshold", yarp::os::Value(DEFAULT_CONF_THR)).asFloat32();
     yDebug() << "Using --confThreshold" << confThreshold;
 
@@ -115,11 +111,41 @@ bool OpencvDnnDetector::detect(const yarp::sig::Image &inYarpImg, std::vector<ya
     inYarpImgBgr.copy(inYarpImg);
     cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImgBgr);
 
-    preprocess(inCvMat, net, inCvMat.size(), scale, mean, swapRB);
+    // adapted from https://docs.opencv.org/4.3.0/d4/db9/samples_2dnn_2object_detection_8cpp-example.html
+
+    preprocess(inCvMat);
 
     std::vector<cv::Mat> outs;
     net.forward(outs, outNames);
 
+    postprocess(inCvMat.size(), outs, detectedObjects);
+
+    return true;
+}
+
+/************************************************************************/
+
+void OpencvDnnDetector::preprocess(const cv::Mat &frame)
+{
+    cv::Mat blob;
+
+    // Create a 4D blob from a frame.
+    cv::dnn::blobFromImage(frame, blob, 1.0, frame.size(), cv::Scalar(), true, false, CV_8U);
+
+    // Run a model.
+    net.setInput(blob, "", scale, mean);
+
+    if (net.getLayer(0)->outputNameToIndex("im_info") != -1) // Faster-RCNN or R-FCN
+    {
+        cv::Mat imInfo = (cv::Mat_<float>(1, 3) << frame.rows, frame.cols, 1.6f);
+        net.setInput(imInfo, "im_info");
+    }
+}
+
+/************************************************************************/
+
+void OpencvDnnDetector::postprocess(const cv::Size& size, const std::vector<cv::Mat>& outs, std::vector<yarp::os::Property> &detectedObjects)
+{
     std::vector<int> outLayers = net.getUnconnectedOutLayers();
     std::string outLayerType = net.getLayer(outLayers[0])->type;
 
@@ -148,10 +174,10 @@ bool OpencvDnnDetector::detect(const yarp::sig::Image &inYarpImg, std::vector<ya
 
                     if (width <= 2 || height <= 2)
                     {
-                        left = (int)(data[i + 3] * inCvMat.cols);
-                        top = (int)(data[i + 4] * inCvMat.rows);
-                        right = (int)(data[i + 5] * inCvMat.cols);
-                        bottom = (int)(data[i + 6] * inCvMat.rows);
+                        left = (int)(data[i + 3] * size.width);
+                        top = (int)(data[i + 4] * size.height);
+                        right = (int)(data[i + 5] * size.width);
+                        bottom = (int)(data[i + 6] * size.height);
                         width = right - left + 1;
                         height = bottom - top + 1;
                     }
@@ -192,10 +218,10 @@ bool OpencvDnnDetector::detect(const yarp::sig::Image &inYarpImg, std::vector<ya
 
                 if (confidence > confThreshold)
                 {
-                    int centerX = (int)(data[0] * inCvMat.cols);
-                    int centerY = (int)(data[1] * inCvMat.rows);
-                    int width = (int)(data[2] * inCvMat.cols);
-                    int height = (int)(data[3] * inCvMat.rows);
+                    int centerX = (int)(data[0] * size.width);
+                    int centerY = (int)(data[1] * size.height);
+                    int width = (int)(data[2] * size.width);
+                    int height = (int)(data[3] * size.height);
                     int left = centerX - width / 2;
                     int top = centerY - height / 2;
 
@@ -213,40 +239,6 @@ bool OpencvDnnDetector::detect(const yarp::sig::Image &inYarpImg, std::vector<ya
                 }
             }
         }
-    }
-
-    return true;
-}
-
-/************************************************************************/
-
-/* Function adapted from https://docs.opencv.org/4.3.0/d4/db9/samples_2dnn_2object_detection_8cpp-example.html */
-void OpencvDnnDetector::preprocess(const cv::Mat &frame, cv::dnn::Net &net, cv::Size inpSize, float scale,
-                                   const cv::Scalar &mean, bool swapRB)
-{
-    cv::Mat blob;
-
-    // Create a 4D blob from a frame.
-    if (inpSize.width <= 0)
-    {
-        inpSize.width = frame.cols;
-    }
-
-    if (inpSize.height <= 0)
-    {
-        inpSize.height = frame.rows;
-    }
-
-    cv::dnn::blobFromImage(frame, blob, 1.0, inpSize, cv::Scalar(), swapRB, false, CV_8U);
-
-    // Run a model.
-    net.setInput(blob, "", scale, mean);
-
-    if (net.getLayer(0)->outputNameToIndex("im_info") != -1) // Faster-RCNN or R-FCN
-    {
-        cv::resize(frame, frame, inpSize);
-        cv::Mat imInfo = (cv::Mat_<float>(1, 3) << inpSize.height, inpSize.width, 1.6f);
-        net.setInput(imInfo, "im_info");
     }
 }
 

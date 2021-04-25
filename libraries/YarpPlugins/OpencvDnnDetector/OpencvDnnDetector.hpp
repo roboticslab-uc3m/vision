@@ -26,25 +26,17 @@ public:
     bool detect(const yarp::sig::Image& inYarpImg, std::vector<yarp::os::Property>& detectedObjects) override;
 
 private:
-    float confThreshold; // Confidence threshold
-    float nmsThreshold; // Non-max supression threshold
-    std::string modelFile;
-    std::string configDNNFile;
-    std::string framework;
-    std::string classesFile;
-    int backend;
-    int target;
     cv::dnn::Net net;
     std::vector<std::string> classes;
     std::vector<std::string> outNames;
 
+    float confThreshold; // Confidence threshold
+    float nmsThreshold; // Non-max supression threshold
     float scale;
     cv::Scalar mean;
-    bool swapRB;
-    int inpWidth;
-    int inpHeight;
 
-    void preprocess(const cv::Mat& frame, cv::dnn::Net& net, cv::Size inpSize, float scale, const cv::Scalar& mean, bool swapRB);
+    void preprocess(const cv::Mat& frame);
+    void postprocess(const cv::Size& size, const std::vector<cv::Mat>& outs, std::vector<yarp::os::Property> &detectedObjects);
 };
 
 } // namespace roboticslab
