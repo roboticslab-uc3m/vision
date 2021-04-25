@@ -2,41 +2,27 @@
 
 /**
  * @ingroup vision_programs
- *
  * @defgroup rgbDetection rgbDetection
- *
  * @brief Creates an instance of roboticslab::RgbDetection.
  *
- * @section rgbDetectionOptions rgbDetection options:
+ * @section rgbDetectionOptions Options
  *
- * | PROPERTY     | DESCRIPTION                          | DEFAULT               |
- * |--------------|--------------------------------------|-----------------------|
- * | help         |                                      |                       |
+ * | PROPERTY     | DESCRIPTION                          | DEFAULT          |
+ * |--------------|--------------------------------------|------------------|
  * | from         | file.ini                             | rgbDetection.ini |
  * | context      | context name                         | rgbDetection     |
- * | cropSelector |                                      | 0                     |
- * | cameraDevice | device we create                     | remote_grabber        |
- * | cameraLocal  | if accesing remote, local port name  | /rgbDetection    |
- * | cameraRemote | if accesing remote, remote port name | /grabber              |
- * | watchdog     |                                      | 2.000000              |
+ * | sensorDevice | sensor device name                   | remote_grabber   |
+ * | sensorRemote | if accesing remote, remote port name | /grabber         |
+ * | localPrefx   | local port name prefix               | /rgbDetection    |
+ * | period       | update period (seconds)              | 0.02             |
+ * | detector     | detector device name                 |                  |
  *
+ * @section rgbDetectionPorts Output ports
  *
- * @section  rgbDetectionPorts Detector output ports:
- *
- * | OUTPUT PORT                | CONTENT                                                 |
- * |----------------------------|---------------------------------------------------------|
- * | /rgbDetection/img:o   | output camera image with object detection using squares |
- * | /rgbDetection/state:o | detected objects                                        |
- *
- * @section detectorThread Detector thread options:
- *
- * | PROPERTY   | DESCRIPTION     | DEFAULT      |
- * |------------|-----------------|--------------|
- * | help       |                 |              |
- * | from       | file.ini        |              |
- * | context    | context name    |              |
- * | rateMs     |                 | 20           |
- * | detector   | detector device | HaarDetector |
+ * | PORT                  | CONTENT                                                 |
+ * |-----------------------|---------------------------------------------------------|
+ * | <localPrefix>/img:o   | output camera image with object detection using squares |
+ * | <localPrefix>/state:o | detected objects                                        |
  */
 
 #include <yarp/os/LogStream.h>
@@ -45,28 +31,23 @@
 
 #include "RgbDetection.hpp"
 
-#define DEFAULT_CONTEXT    "rgbDetection"
-#define DEFAULT_CONFIG_FILE    "rgbDetection.ini"
-
-int main(int argc, char** argv)
+int main(int argc, char * argv[])
 {
     yarp::os::ResourceFinder rf;
-    rf.setVerbose(true);;
-    rf.setDefaultContext(DEFAULT_CONTEXT);
-    rf.setDefaultConfigFile(DEFAULT_CONFIG_FILE);
+    rf.setDefaultContext("rgbDetection");
+    rf.setDefaultConfigFile("rgbDetection.ini");
     rf.configure(argc, argv);
 
     roboticslab::RgbDetection mod;
 
     if (rf.check("help"))
     {
-        return mod.runModule(rf);
+        mod.configure(rf);
+        return 1;
     }
 
     yInfo() << "Run \"%s --help\" for options" << argv[0];
-    yInfo() << argv[0] << "checking for yarp network...";
-
-    std::fflush(stdout);
+    yInfo() << argv[0] << "Checking for yarp network...";
 
     yarp::os::Network yarp;
 

@@ -2,134 +2,225 @@
 
 #include "RgbdDetection.hpp"
 
-namespace roboticslab
+#include <cstdio>
+#include <tuple>
+#include <vector>
+
+#include <yarp/conf/version.h>
+#include <yarp/os/LogStream.h>
+#include <yarp/os/Property.h>
+#include <yarp/sig/ImageDraw.h>
+
+#define DEFAULT_SENSOR_DEVICE "RGBDSensorClient"
+#define DEFAULT_SENSOR_REMOTE "/rgbd"
+#define DEFAULT_LOCAL_PREFIX "/rgbdDetection"
+#define DEFAULT_PERIOD 0.02 // [s]
+
+using namespace roboticslab;
+
+namespace
 {
-
-/************************************************************************/
-bool RgbdDetection::configure(yarp::os::ResourceFinder &rf) {
-
-    cropSelector = DEFAULT_CROP_SELECTOR;
-    std::string strRGBDDevice = DEFAULT_RGBD_DEVICE;
-    std::string strRGBDLocal = DEFAULT_RGBD_LOCAL;
-    std::string strRGBDRemote = DEFAULT_RGBD_REMOTE;
-    watchdog = DEFAULT_WATCHDOG;  // double
-
-    printf("RgbdDetection options:\n");
-    printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-    printf("\t--cropSelector (default: \"%d\")\n",cropSelector);
-    printf("\t--RGBDDevice (device we create, default: \"%s\")\n",strRGBDDevice.c_str());
-    printf("\t--RGBDLocal (if accesing remote, local port name, default: \"%s\")\n",strRGBDLocal.c_str());
-    printf("\t--RGBDRemote (if accesing remote, remote port name, default: \"%s\")\n",strRGBDRemote.c_str());
-    printf("\t--watchdog ([s] default: \"%f\")\n",watchdog);
-
-    if(rf.check("cropSelector")) cropSelector = rf.find("cropSelector").asInt32();
-    printf("RgbdDetection using cropSelector: %d.\n",cropSelector);
-    if(rf.check("RGBDDevice")) strRGBDDevice = rf.find("RGBDDevice").asString();
-    if(rf.check("RGBDLocal")) strRGBDLocal = rf.find("RGBDLocal").asString();
-    if(rf.check("RGBDRemote")) strRGBDRemote = rf.find("RGBDRemote").asString();
-    if(rf.check("watchdog")) watchdog = rf.find("watchdog").asFloat64();
-
-    printf("RgbdDetection using RGBDDevice: %s, RGBDLocal: %s, RGBDRemote: %s.\n",
-        strRGBDDevice.c_str(), strRGBDLocal.c_str(), strRGBDRemote.c_str());
-    printf("RgbdDetection using watchdog: %f.\n",watchdog);
-
-    yarp::os::Property options;
-    options.fromString( rf.toString() );  //-- Should get noMirror, noRGBMirror, noDepthMirror, video modes...
-    options.put("device",strRGBDDevice);  //-- Important to override in case there is a "device" in the future
-    options.put("localImagePort",strRGBDLocal+"/rgbImage:i");
-    options.put("localDepthPort",strRGBDLocal+"/depthImage:i");
-    options.put("localRpcPort",strRGBDLocal+"/rpc:o");
-    options.put("remoteImagePort",strRGBDRemote+"/rgbImage:o");
-    options.put("remoteDepthPort",strRGBDRemote+"/depthImage:o");
-    options.put("remoteRpcPort",strRGBDRemote+"/rpc:i");
-    //if(rf.check("noMirror")) options.put("noMirror",1);  //-- Replaced by options.fromString( rf.toString() );
-
-    if(!dd.open(options))
+    void scaleXY(const yarp::sig::Image & frame1, const yarp::sig::Image & frame2, int px1, int py1, int * px2, int * py2)
     {
-        yError("Bad RGBDDevice \"%s\"...\n",strRGBDDevice.c_str());
-        return false;
+        if (frame1.width() != frame2.width() || frame1.height() != frame2.height())
+        {
+            *px2 = px1 * ((double)frame2.width() / (double)frame1.width());
+            *py2 = py1 * ((double)frame2.height() / (double)frame1.height());
+        }
+        else
+        {
+            *px2 = px1;
+            *py2 = py1;
+        }
     }
-    yInfo("RGBDDevice available.\n");
+}
 
-    if (! dd.view(iRGBDSensor) )
+bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
+{
+    if (rf.check("help"))
     {
-        yError("RGBDDevice bad view.\n");
-        return false;
-    }
-    yInfo("RGBDDevice ok view.\n");
-
-    segmentorThread.setIRGBDSensor(iRGBDSensor);
-    segmentorThread.setOutImg(&outImg);
-    segmentorThread.setOutPort(&outPort);
-
-    segmentorThread.setCropSelector(cropSelector);
-    if(cropSelector != 0) {
-        segmentorThread.setOutCropSelectorImg(&outCropSelectorImg);
-        segmentorThread.setInCropSelectorPort(&inCropSelectorPort);
-    }
-
-    //-----------------OPEN LOCAL PORTS------------//
-    std::string portPrefix("/rgbdDetection");
-    portPrefix += strRGBDRemote;
-    if(!outImg.open(portPrefix + "/img:o"))
-    {
-        yError("Bad outImg.open\n");
-        return false;
-    }
-    if(!outPort.open(portPrefix + "/state:o"))
-    {
-        yError("Bad outPort.open\n");
+        std::printf("RgbDetection options:\n");
+        std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
+        std::printf("\t--sensorDevice (device we create, default: \"%s\")\n", DEFAULT_SENSOR_DEVICE);
+        std::printf("\t--sensorRemote (if accesing remote, remote port name, default: \"%s\")\n", DEFAULT_SENSOR_REMOTE);
+        std::printf("\t--localPrefix (local port name prefix, default: \"%s\")\n", DEFAULT_LOCAL_PREFIX);
+        std::printf("\t--period ([s] default: \"%f\")\n", DEFAULT_PERIOD);
+        std::printf("\t--detector (detector device)\n");
         return false;
     }
 
-    if(cropSelector != 0)
-    {
-        outCropSelectorImg.open(strRGBDLocal + "/cropSelector/img:o");
-        inCropSelectorPort.open(strRGBDLocal + "/cropSelector/state:i");
-    }
+    yDebug() << "RgbdDetection config:" << rf.toString();
 
-    if(!segmentorThread.init(rf))
+    auto strSensorDevice = rf.check("sensorDevice", yarp::os::Value(DEFAULT_SENSOR_DEVICE)).asString();
+    auto strSensorRemote = rf.check("sensorRemote", yarp::os::Value(DEFAULT_SENSOR_REMOTE)).asString();
+    auto strLocalPrefix = rf.check("localPrefix", yarp::os::Value(DEFAULT_LOCAL_PREFIX)).asString();
+    auto strDetector = rf.check("detector", yarp::os::Value("")).asString();
+
+    period = rf.check("period", yarp::os::Value(DEFAULT_PERIOD)).asFloat64();
+
+    yInfo() << "Using --sensorDevice" << strSensorDevice;
+    yInfo() << "Using --sensorRemote" << strSensorRemote;
+    yInfo() << "Using --localPrefix" << strLocalPrefix;
+    yInfo() << "Using --period" << period;
+    yInfo() << "Using --detector" << strDetector;
+
+    yarp::os::Property sensorOptions;
+    sensorOptions.fromString(rf.toString());
+    sensorOptions.put("device", strSensorDevice);
+    sensorOptions.put("localImagePort", strLocalPrefix + "/rgbImage:i");
+    sensorOptions.put("localDepthPort", strLocalPrefix + "/depthImage:i");
+    sensorOptions.put("localRpcPort", strLocalPrefix + "/rpc:o");
+    sensorOptions.put("remoteImagePort", strSensorRemote + "/rgbImage:o");
+    sensorOptions.put("remoteDepthPort", strSensorRemote + "/depthImage:o");
+    sensorOptions.put("remoteRpcPort", strSensorRemote + "/rpc:i");
+
+    if (!sensorDevice.open(sensorOptions) || !sensorDevice.view(iRGBDSensor))
     {
-        yError("Bad segmentorThread.init\n");
+        yError() << "Unable to initiate camera device";
         return false;
     }
-    yInfo("--- end: configure\n");
+
+    yarp::os::Property depthParams;
+
+    if (!iRGBDSensor->getDepthIntrinsicParam(depthParams))
+    {
+        yError() << "Unable to retrieve depth intrinsic parameters";
+        return false;
+    }
+
+    depthIntrinsicParams.fromProperty(depthParams);
+
+#if YARP_VERSION_MINOR < 5
+    // Wait for the first few frames to arrive. We kept receiving invalid pixel codes
+    // from the depthCamera device if started straight away.
+    // https://github.com/roboticslab-uc3m/vision/issues/88
+    yarp::os::Time::delay(1.0);
+#endif
+
+    yarp::os::Property detectorOptions;
+    detectorOptions.fromString(rf.toString());
+    detectorOptions.put("device", strDetector);
+
+    if (!detectorDevice.open(detectorOptions) || !detectorDevice.view(iDetector))
+    {
+        yError() << "Unable to initiate detector device";
+        return false;
+    }
+
+    if (!statePort.open(strLocalPrefix + "/state:o"))
+    {
+        yError() << "Unable to open output state port" << statePort.getName();
+        return false;
+    }
+
+    if (!imagePort.open(strLocalPrefix + "/img:o"))
+    {
+        yError() << "Unable to open output image port" << imagePort.getName();
+        return false;
+    }
+
+    statePort.setWriteOnly();
+    imagePort.setWriteOnly();
+
     return true;
 }
 
-/*****************************************************************/
-double RgbdDetection::getPeriod() {
-    return watchdog;  // [s]
+double RgbdDetection::getPeriod()
+{
+    return period;
 }
 
-/************************************************************************/
+bool RgbdDetection::updateModule()
+{
+    yarp::sig::FlexImage colorFrame;
+    yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
 
-bool RgbdDetection::updateModule() {
-    printf("RgbdDetection alive...\n");
+    if (!iRGBDSensor->getImages(colorFrame, depthFrame))
+    {
+        yWarning() << "Frame acquisition failure";
+        return true;
+    }
+
+    std::vector<yarp::os::Property> detectedObjects;
+
+    if (!iDetector->detect(colorFrame, detectedObjects))
+    {
+        yWarning() << "Detector failure";
+    }
+
+    auto & rgbImage = imagePort.prepare();
+    rgbImage.copy(colorFrame);
+
+    if (!detectedObjects.empty())
+    {
+        static const yarp::sig::PixelRgb red(255, 0, 0);
+        static const yarp::sig::PixelRgb green(0, 255, 0);
+
+        std::vector<std::tuple<float, int, int, int, int, int, int>> records;
+        decltype(records)::value_type * closest = nullptr;
+
+        for (const auto & detectedObject : detectedObjects)
+        {
+            auto tlx = detectedObject.find("tlx").asInt32();
+            auto tly = detectedObject.find("tly").asInt32();
+            auto brx = detectedObject.find("brx").asInt32();
+            auto bry = detectedObject.find("bry").asInt32();
+
+            int pxColor = (tlx + brx) / 2;
+            int pyColor = (tly + bry) / 2;
+
+            int pxDepth, pyDepth;
+            scaleXY(colorFrame, depthFrame, pxColor, pyColor, &pxDepth, &pyDepth);
+            float depth = depthFrame.pixel(pxDepth, pyDepth);
+
+            if (depth > 0.0f)
+            {
+                records.emplace_back(std::forward_as_tuple(depth, pxDepth, pyDepth,
+                                                           pxColor, pyColor, (brx - tlx) / 2, (bry - tly) / 2));
+
+                if (!closest || depth < std::get<0>(*closest))
+                {
+                    closest = &records.back();
+                }
+            }
+        }
+
+        for (const auto & r : records)
+        {
+            if (&r == closest)
+            {
+                yarp::sig::draw::addRectangleOutline(rgbImage, green, std::get<3>(r), std::get<4>(r), std::get<5>(r), std::get<6>(r));
+
+                float z = std::get<0>(r);
+                float x = ((std::get<1>(r) - depthIntrinsicParams.principalPointX) * z) / depthIntrinsicParams.focalLengthX;
+                float y = ((std::get<2>(r) - depthIntrinsicParams.principalPointY) * z) / depthIntrinsicParams.focalLengthY;
+
+                statePort.prepare() = {yarp::os::Value(x), yarp::os::Value(y), yarp::os::Value(z)};
+                statePort.write();
+            }
+            else
+            {
+                yarp::sig::draw::addRectangleOutline(rgbImage, red, std::get<3>(r), std::get<4>(r), std::get<5>(r), std::get<6>(r));
+            }
+        }
+    }
+
+    imagePort.write();
     return true;
 }
 
-/************************************************************************/
-
-bool RgbdDetection::interruptModule() {
-    printf("RgbdDetection closing...\n");
-    segmentorThread.stop();
-    outImg.interrupt();
-    outPort.interrupt();
-    if(cropSelector != 0) {
-        outCropSelectorImg.interrupt();
-        inCropSelectorPort.interrupt();
-    }
-    dd.close();
-    outImg.close();
-    outPort.close();
-    if(cropSelector != 0) {
-        outCropSelectorImg.close();
-        inCropSelectorPort.close();
-    }
+bool RgbdDetection::interruptModule()
+{
+    statePort.interrupt();
+    imagePort.interrupt();
     return true;
 }
 
-/************************************************************************/
-
-}  // namespace roboticslab
+bool RgbdDetection::close()
+{
+    sensorDevice.close();
+    detectorDevice.close();
+    statePort.close();
+    imagePort.close();
+    return true;
+}

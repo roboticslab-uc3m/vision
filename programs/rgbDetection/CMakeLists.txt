@@ -4,9 +4,7 @@ if(ENABLE_rgbDetection)
 
     add_executable(rgbDetection main.cpp
                                 RgbDetection.hpp
-                                RgbDetection.cpp
-                                DetectorThread.hpp
-                                DetectorThread.cpp)
+                                RgbDetection.cpp)
 
     target_link_libraries(rgbDetection YARP::YARP_os
                                        YARP::YARP_init
