@@ -8,91 +8,75 @@
 
 #include "ColorRegionDetector.hpp"
 
-namespace roboticslab
+using namespace roboticslab;
+
+namespace
 {
-
-/*****************************************************************/
-
-const std::string ColorRegionDetector::DEFAULT_ALGORITHM = "blueMinusRed";
-const double ColorRegionDetector::DEFAULT_MORPH_CLOSING = 2;
-const double ColorRegionDetector::DEFAULT_THRESHOLD = 55;
-
-const double ColorRegionDetector::DEFAULT_MAX_NUM_BLOBS = 1;
-
-/*****************************************************************/
+    const std::string DEFAULT_ALGORITHM = "blueMinusRed";
+    const double DEFAULT_MORPH_CLOSING = 2;
+    const int DEFAULT_THRESHOLD = 55;
+    const int DEFAULT_MAX_NUM_BLOBS = 1;
+}
 
 bool ColorRegionDetector::open(yarp::os::Searchable& config)
 {
-    algorithm = DEFAULT_ALGORITHM;
-    if(config.check("algorithm"))
-    {
-        yDebug() << "algorithm parameter found";
-        algorithm = config.find("algorithm").asString();
-    }
+    algorithm = config.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM)).asString();
     yDebug() << "Using algorithm:" << algorithm;
 
-    morphClosing = DEFAULT_MORPH_CLOSING;
-    if(config.check("morphClosing"))
-    {
-        yDebug() << "morphClosing parameter found";
-        morphClosing = config.find("morphClosing").asFloat64();
-    }
+    morphClosing = config.check("morphClosing", yarp::os::Value(DEFAULT_MORPH_CLOSING)).asFloat64();
     yDebug() << "Using morphClosing:" << morphClosing;
 
-    threshold = DEFAULT_THRESHOLD;
-    if(config.check("threshold"))
-    {
-        yDebug() << "threshold parameter found";
-        threshold = config.find("threshold").asInt32();
-    }
+    threshold = config.check("threshold", yarp::os::Value(DEFAULT_THRESHOLD)).asInt32();
     yDebug() << "Using threshold:" << threshold;
 
-    maxNumBlobs = DEFAULT_MAX_NUM_BLOBS;
-    if(config.check("maxNumBlobs"))
-    {
-        yDebug() << "maxNumBlobs parameter found";
-        maxNumBlobs = config.find("maxNumBlobs").asInt32();
-    }
+    maxNumBlobs = config.check("maxNumBlobs", yarp::os::Value(DEFAULT_MAX_NUM_BLOBS)).asInt32();
     yDebug() << "Using maxNumBlobs:" << maxNumBlobs;
 
     return true;
 }
 
-/*****************************************************************/
-
 bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
-    cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImgBgr);
 
-    // Because Travis stuff goes with [openCv Mat Bgr] for now
-    Travis travis(false,true);    // ::Travis(quiet=true, overwrite=true);
-    travis.setCvMat(inCvMat);
-    if (algorithm=="hue")
-        travis.binarize("hue", threshold-5,threshold+5);
-    else if(algorithm=="canny")
+    Travis travis(false, true);
+    travis.setCvMat(yarp::cv::toCvMat(inYarpImgBgr));
+
+    if (algorithm == "hue")
+    {
+        travis.binarize("hue", threshold - 5, threshold + 5);
+    }
+    else if (algorithm == "canny")
+    {
         travis.binarize("canny");
-    else
-        travis.binarize(algorithm.c_str(), threshold);
-    travis.morphClosing(inYarpImg.width() * morphClosing / 100.0 );
-    int numBlobs = travis.blobize(maxNumBlobs);
-    if( 0 == numBlobs )
-    {
-        travis.release();
-        return false;
     }
-    std::vector<cv::Rect> blobsRect;
-    if( ! travis.getBlobsRect(blobsRect) )
+    else
+    {
+        travis.binarize(algorithm.c_str(), threshold);
+    }
+
+    travis.morphClosing(inYarpImg.width() * morphClosing / 100.0);
+    int numBlobs = travis.blobize(maxNumBlobs);
+
+    if (numBlobs == 0)
     {
         travis.release();
         return false;
     }
 
-    for(size_t i; i<blobsRect.size(); i++)
+    std::vector<cv::Rect> blobsRect;
+
+    if (!travis.getBlobsRect(blobsRect))
     {
-        cv::Point tl = blobsRect[i].tl();
-        cv::Point br = blobsRect[i].br();
+        travis.release();
+        return false;
+    }
+
+    for (const auto & blob : blobsRect)
+    {
+        const auto & tl = blob.tl();
+        const auto & br = blob.br();
 
         detectedObjects.addDict() = {
             {"tlx", yarp::os::Value(tl.x)},
@@ -106,7 +90,3 @@ bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bo
 
     return true;
 }
-
-/************************************************************************/
-
-}  // namespace roboticslab

@@ -6,34 +6,29 @@
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/cv/Cv.h>
 
-namespace roboticslab
+using namespace roboticslab;
+
+namespace
 {
-
-/*****************************************************************/
-
-const std::string HaarDetector::DEFAULT_XMLCASCADE = "haarcascade_frontalface_alt.xml";
-
-/*****************************************************************/
+    const std::string DEFAULT_XMLCASCADE = "haarcascade_frontalface_alt.xml";
+}
 
 bool HaarDetector::open(yarp::os::Searchable& parameters)
 {
-    std::string xmlCascade = DEFAULT_XMLCASCADE;
-    if(parameters.check("xmlCascade"))
-    {
-        xmlCascade = parameters.find("xmlCascade").asString();
-        yDebug() << "xmlCascade parameter found:" << xmlCascade;
-    }
+    auto xmlCascade = parameters.check("xmlCascade", yarp::os::Value(DEFAULT_XMLCASCADE)).asString();
     yDebug() << "Using xmlCascade:" << xmlCascade;
 
     yarp::os::ResourceFinder rf;
-    rf.setVerbose(false);
-    rf.setDefaultContext("HaarDetector"); //rf.setDefaultContext(context);
+    rf.setDefaultContext("HaarDetector");
+
     std::string xmlCascadeFullName = rf.findFileByName(xmlCascade);
-    if(xmlCascadeFullName.empty())
+
+    if (xmlCascadeFullName.empty())
     {
         yError() << "xmlCascadeFullName NOT found";
         return false;
     }
+
     yDebug() << "xmlCascadeFullName found:" << xmlCascadeFullName;
 
     if (!object_cascade.load(xmlCascadeFullName))
@@ -45,8 +40,6 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
     return true;
 }
 
-/*****************************************************************/
-
 bool HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
@@ -56,19 +49,15 @@ bool HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle &
     std::vector<cv::Rect> objects;
     object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
 
-    for(size_t i; i<objects.size(); i++)
+    for (const auto & object : objects)
     {
         detectedObjects.addDict() = {
-            {"tlx", yarp::os::Value(objects[i].x)},
-            {"tly", yarp::os::Value(objects[i].y)},
-            {"brx", yarp::os::Value(objects[i].x + objects[i].width)},
-            {"bry", yarp::os::Value(objects[i].y + objects[i].height)}
+            {"tlx", yarp::os::Value(object.x)},
+            {"tly", yarp::os::Value(object.y)},
+            {"brx", yarp::os::Value(object.x + object.width)},
+            {"bry", yarp::os::Value(object.y + object.height)}
         };
     }
 
     return true;
 }
-
-/************************************************************************/
-
-}  // namespace roboticslab
