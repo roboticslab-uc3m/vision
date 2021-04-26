@@ -22,9 +22,7 @@ class QrDetector : public yarp::dev::DeviceDriver,
 {
 public:
     bool open(yarp::os::Searchable& config) override;
-
-    bool detect(const yarp::sig::Image& inYarpImg,
-                std::vector<yarp::os::Property>& detectedObjects) override;
+    bool detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects) override;
 
 private:
     cv::QRCodeDetector qrcode;

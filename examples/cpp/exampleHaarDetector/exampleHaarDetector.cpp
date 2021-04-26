@@ -7,8 +7,8 @@
  */
 
 #include <cstdio>
-#include <vector>
 
+#include <yarp/os/LogStream.h>
 //#include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/ResourceFinder.h>
@@ -39,9 +39,9 @@ int main(int argc, char *argv[])
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
 
-    if(!yarp::sig::file::read(yarpImgRgb, faceFullName, yarp::sig::file::FORMAT_PGM))
+    if (!yarp::sig::file::read(yarpImgRgb, faceFullName, yarp::sig::file::FORMAT_PGM))
     {
-        std::printf("Image file not available.\n");
+        yError() << "Image file not available";
         return 1;
     }
 
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 
     if (!detectorDevice.isValid())
     {
-        std::printf("Device not available.\n");
+        yError() << "Device not available";
         return 1;
     }
 
@@ -57,20 +57,21 @@ int main(int argc, char *argv[])
 
     if (!detectorDevice.view(iDetector))
     {
-        std::printf("[error] Problems acquiring interface\n");
+        yError() << "Unable to acquire interface";
         return 1;
     }
-    std::printf("[success] acquired interface\n");
 
-    std::printf("detect()\n");
+    yInfo() << "detect()";
 
-    std::vector<yarp::os::Property> detectedObjects;
-    iDetector->detect(yarpImgRgb,detectedObjects);
+    yarp::os::Bottle detectedObjects;
+    iDetector->detect(yarpImgRgb, detectedObjects);
 
-    std::printf("%d\n", detectedObjects[0].find("tlx").asInt32()); // 90
-    std::printf("%d\n", detectedObjects[0].find("brx").asInt32()); // 168
-    std::printf("%d\n", detectedObjects[0].find("tly").asInt32()); // 68
-    std::printf("%d\n", detectedObjects[0].find("bry").asInt32()); // 14
+    const auto * detectedObject = detectedObjects.get(0).asDict();
+
+    yInfo() << detectedObject->find("tlx").asInt32(); // 90
+    yInfo() << detectedObject->find("brx").asInt32(); // 168
+    yInfo() << detectedObject->find("tly").asInt32(); // 68
+    yInfo() << detectedObject->find("bry").asInt32(); // 14
 
     detectorDevice.close();
 

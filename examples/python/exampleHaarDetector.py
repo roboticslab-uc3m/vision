@@ -22,11 +22,15 @@ faceFullName = rf.findFileByName("tests/face-nc.pgm")
 yarp.read(yarpImgRgb, faceFullName, yarp.FORMAT_PGM)
 
 print("detect()")
-detectedObjects = iDetector.detect(yarpImgRgb)
+detectedObjects = yarp.Bottle()
 
-print(detectedObjects[0].find("tlx").asInt32()) # 90
-print(detectedObjects[0].find("brx").asInt32()) # 168
-print(detectedObjects[0].find("tly").asInt32()) # 68
-print(detectedObjects[0].find("bry").asInt32()) # 146
+if not iDetector.detect(yarpImgRgb, detectedObjects):
+    print("Detector failed")
+    raise SystemExit
+
+print(detectedObjects.get(0).asDict().find("tlx").asInt32()) # 90
+print(detectedObjects.get(0).asDict().find("brx").asInt32()) # 168
+print(detectedObjects.get(0).asDict().find("tly").asInt32()) # 68
+print(detectedObjects.get(0).asDict().find("bry").asInt32()) # 146
 
 detectorDevice.close()

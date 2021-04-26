@@ -105,7 +105,7 @@ TEST_F(QrDetectorTest, QrDetector1)
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
     yarpImgRgb.resize(300, 200);
 
-    std::vector<yarp::os::Property> detectedObjects;
+    yarp::os::Bottle detectedObjects;
     ASSERT_TRUE(iDetector->detect(yarpImgRgb, detectedObjects));
     ASSERT_EQ(detectedObjects.size(), 0);
 }
@@ -121,15 +121,16 @@ TEST_F(QrDetectorTest, QrDetector2)
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
     ASSERT_TRUE(yarp::sig::file::read(yarpImgRgb, qrFullName, yarp::sig::file::FORMAT_PNG));
 
-    std::vector<yarp::os::Property> detectedObjects;
+    yarp::os::Bottle detectedObjects;
     ASSERT_TRUE(iDetector->detect(yarpImgRgb, detectedObjects));
 
     ASSERT_GE(detectedObjects.size(), 1);
     ASSERT_LE(detectedObjects.size(), 3);
 
-    for (const auto & detectedObject : detectedObjects)
+    for (auto i = 0; i < detectedObjects.size(); i++)
     {
-        ASSERT_TRUE(expectedValues.find(detectedObject) != expectedValues.end());
+        const auto * detectedObject = detectedObjects.get(i).asDict();
+        ASSERT_TRUE(expectedValues.find(*detectedObject) != expectedValues.end());
     }
 }
 

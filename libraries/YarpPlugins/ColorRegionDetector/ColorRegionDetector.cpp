@@ -60,8 +60,7 @@ bool ColorRegionDetector::open(yarp::os::Searchable& config)
 
 /*****************************************************************/
 
-bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg,
-                                 std::vector<yarp::os::Property>& detectedObjects)
+bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -95,12 +94,12 @@ bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg,
         cv::Point tl = blobsRect[i].tl();
         cv::Point br = blobsRect[i].br();
 
-        yarp::os::Property detectedObject;
-        detectedObject.put("tlx", tl.x);
-        detectedObject.put("tly", tl.y);
-        detectedObject.put("brx", br.x);
-        detectedObject.put("bry", br.y);
-        detectedObjects.push_back(detectedObject);
+        detectedObjects.addDict() = {
+            {"tlx", yarp::os::Value(tl.x)},
+            {"tly", yarp::os::Value(tl.y)},
+            {"brx", yarp::os::Value(br.x)},
+            {"bry", yarp::os::Value(br.y)}
+        };
     }
 
     travis.release();

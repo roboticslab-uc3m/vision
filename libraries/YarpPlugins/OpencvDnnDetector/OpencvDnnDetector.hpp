@@ -21,9 +21,8 @@ class OpencvDnnDetector : public yarp::dev::DeviceDriver,
                           public IDetector
 {
 public:
-    bool open(yarp::os::Searchable& config) override;
-
-    bool detect(const yarp::sig::Image& inYarpImg, std::vector<yarp::os::Property>& detectedObjects) override;
+    bool open(yarp::os::Searchable & config) override;
+    bool detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects) override;
 
 private:
     cv::dnn::Net net;
@@ -35,8 +34,8 @@ private:
     float scale;
     cv::Scalar mean;
 
-    void preprocess(const cv::Mat& frame);
-    void postprocess(const cv::Size& size, const std::vector<cv::Mat>& outs, std::vector<yarp::os::Property> &detectedObjects);
+    void preprocess(const cv::Mat & frame);
+    void postprocess(const cv::Size & size, const std::vector<cv::Mat> & outs, yarp::os::Bottle & detectedObjects);
 };
 
 } // namespace roboticslab

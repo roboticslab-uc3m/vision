@@ -99,37 +99,32 @@ bool RgbDetection::updateModule()
         return true;
     }
 
-    std::vector<yarp::os::Property> detectedObjects;
+    yarp::os::Bottle detectedObjects;
 
     if (!iDetector->detect(frame, detectedObjects))
     {
         yWarning() << "Detector failure";
     }
 
-    if (!detectedObjects.empty())
+    if (detectedObjects.size() != 0)
     {
-        static const yarp::sig::PixelRgb red(255, 0, 0);
-
-        auto & stateOutput = statePort.prepare();
-        stateOutput.clear();
-
-        for (const auto & detectedObject : detectedObjects)
+        for (auto i = 0; i < detectedObjects.size(); i++)
         {
-            auto tlx = detectedObject.find("tlx").asInt32();
-            auto tly = detectedObject.find("tly").asInt32();
-            auto brx = detectedObject.find("brx").asInt32();
-            auto bry = detectedObject.find("bry").asInt32();
+            const auto * detectedObject = detectedObjects.get(i).asDict();
+            auto tlx = detectedObject->find("tlx").asInt32();
+            auto tly = detectedObject->find("tly").asInt32();
+            auto brx = detectedObject->find("brx").asInt32();
+            auto bry = detectedObject->find("bry").asInt32();
 
             yarp::sig::draw::addRectangleOutline(frame,
-                                                 red,
+                                                 {255, 0, 0},
                                                  (tlx + brx) / 2,
                                                  (tly + bry) / 2,
                                                  (brx - tlx) / 2,
                                                  (bry - tly) / 2);
-
-            stateOutput.addDict() = detectedObject;
         }
 
+        statePort.prepare() = detectedObjects;
         statePort.write();
     }
 

@@ -2,7 +2,6 @@
 
 #include "QrDetector.hpp"
 
-#include <utility>
 #include <vector>
 
 #include <yarp/os/Value.h>
@@ -30,8 +29,7 @@ bool QrDetector::open(yarp::os::Searchable& config)
     return true;
 }
 
-bool QrDetector::detect(const yarp::sig::Image& inYarpImg,
-                        std::vector<yarp::os::Property>& detectedObjects)
+bool QrDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -54,7 +52,7 @@ bool QrDetector::detect(const yarp::sig::Image& inYarpImg,
         const auto & br = corners[4 * i + 2];
         const auto & bl = corners[4 * i + 3];
 
-        yarp::os::Property detectedObject {
+        detectedObjects.addDict() = {
             {"tlx", yarp::os::Value(tl.x)},
             {"tly", yarp::os::Value(tl.y)},
             {"trx", yarp::os::Value(tr.x)},
@@ -65,8 +63,6 @@ bool QrDetector::detect(const yarp::sig::Image& inYarpImg,
             {"bly", yarp::os::Value(bl.y)},
             {"text", yarp::os::Value(texts[i])}
         };
-
-        detectedObjects.push_back(std::move(detectedObject));
     }
 
     return true;

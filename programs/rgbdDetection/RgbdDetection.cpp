@@ -141,7 +141,7 @@ bool RgbdDetection::updateModule()
         return true;
     }
 
-    std::vector<yarp::os::Property> detectedObjects;
+    yarp::os::Bottle detectedObjects;
 
     if (!iDetector->detect(colorFrame, detectedObjects))
     {
@@ -151,7 +151,7 @@ bool RgbdDetection::updateModule()
     auto & rgbImage = imagePort.prepare();
     rgbImage.copy(colorFrame);
 
-    if (!detectedObjects.empty())
+    if (detectedObjects.size() != 0)
     {
         static const yarp::sig::PixelRgb red(255, 0, 0);
         static const yarp::sig::PixelRgb green(0, 255, 0);
@@ -159,12 +159,13 @@ bool RgbdDetection::updateModule()
         std::vector<std::tuple<float, int, int, int, int, int, int>> records;
         decltype(records)::value_type * closest = nullptr;
 
-        for (const auto & detectedObject : detectedObjects)
+        for (auto i = 0; i < detectedObjects.size(); i++)
         {
-            auto tlx = detectedObject.find("tlx").asInt32();
-            auto tly = detectedObject.find("tly").asInt32();
-            auto brx = detectedObject.find("brx").asInt32();
-            auto bry = detectedObject.find("bry").asInt32();
+            const auto * detectedObject = detectedObjects.get(i).asDict();
+            auto tlx = detectedObject->find("tlx").asInt32();
+            auto tly = detectedObject->find("tly").asInt32();
+            auto brx = detectedObject->find("brx").asInt32();
+            auto bry = detectedObject->find("bry").asInt32();
 
             int pxColor = (tlx + brx) / 2;
             int pyColor = (tly + bry) / 2;

@@ -9,7 +9,7 @@ import roboticslab_vision
 #    quit()
 
 detectorOptions = yarp.Property()
-detectorOptions.put("device","ColorRegionDetector")
+detectorOptions.put("device", "ColorRegionDetector")
 detectorDevice = yarp.PolyDriver(detectorOptions)
 
 iDetector = roboticslab_vision.viewIDetector(detectorDevice)
@@ -18,6 +18,10 @@ yarpImgRgb = yarp.ImageRgb()
 yarpImgRgb.zero()
 
 print("detect()")
-detectedObjects = iDetector.detect(yarpImgRgb)
+detectedObjects = yarp.Bottle()
+
+if not iDetector.detect(yarpImgRgb, detectedObjects):
+    print('Detector failed')
+    raise SystemExit
 
 detectorDevice.close()

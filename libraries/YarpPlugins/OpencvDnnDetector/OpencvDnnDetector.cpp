@@ -1,7 +1,6 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
 #include <fstream>
-#include <utility>
 
 #include <yarp/os/LogStream.h>
 #include <yarp/os/ResourceFinder.h>
@@ -106,7 +105,7 @@ bool OpencvDnnDetector::open(yarp::os::Searchable &config)
 
 /*****************************************************************/
 
-bool OpencvDnnDetector::detect(const yarp::sig::Image &inYarpImg, std::vector<yarp::os::Property> &detectedObjects)
+bool OpencvDnnDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -126,7 +125,7 @@ bool OpencvDnnDetector::detect(const yarp::sig::Image &inYarpImg, std::vector<ya
 
 /************************************************************************/
 
-void OpencvDnnDetector::preprocess(const cv::Mat &frame)
+void OpencvDnnDetector::preprocess(const cv::Mat & frame)
 {
     cv::Mat blob;
 
@@ -145,7 +144,7 @@ void OpencvDnnDetector::preprocess(const cv::Mat &frame)
 
 /************************************************************************/
 
-void OpencvDnnDetector::postprocess(const cv::Size& size, const std::vector<cv::Mat>& outs, std::vector<yarp::os::Property> &detectedObjects)
+void OpencvDnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> & outs, yarp::os::Bottle & detectedObjects)
 {
     std::vector<int> outLayers = net.getUnconnectedOutLayers();
     std::string outLayerType = net.getLayer(outLayers[0])->type;
@@ -242,7 +241,7 @@ void OpencvDnnDetector::postprocess(const cv::Size& size, const std::vector<cv::
         float confidence = confidences[idx];
         const std::string className = classes[classIds[idx]];
 
-        yarp::os::Property detectedObject {
+        detectedObjects.addDict() = {
             {"category", yarp::os::Value(className)},
             {"confidence", yarp::os::Value(confidence)},
             {"tlx", yarp::os::Value(box.x)},
@@ -251,7 +250,6 @@ void OpencvDnnDetector::postprocess(const cv::Size& size, const std::vector<cv::
             {"bry", yarp::os::Value(box.y + box.height)}
         };
 
-        detectedObjects.push_back(std::move(detectedObject));
         yInfo() << "Detected" << className << "with" << confidence << "confidence";
     }
 }

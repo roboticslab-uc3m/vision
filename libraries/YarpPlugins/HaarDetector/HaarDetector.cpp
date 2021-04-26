@@ -47,8 +47,7 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
 
 /*****************************************************************/
 
-bool HaarDetector::detect(const yarp::sig::Image &inYarpImg,
-                          std::vector<yarp::os::Property> &detectedObjects)
+bool HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -59,12 +58,12 @@ bool HaarDetector::detect(const yarp::sig::Image &inYarpImg,
 
     for(size_t i; i<objects.size(); i++)
     {
-        yarp::os::Property detectedObject;
-        detectedObject.put("tlx", objects[i].x);
-        detectedObject.put("tly", objects[i].y);
-        detectedObject.put("brx", objects[i].x + objects[i].width);
-        detectedObject.put("bry", objects[i].y + objects[i].height);
-        detectedObjects.push_back(detectedObject);
+        detectedObjects.addDict() = {
+            {"tlx", yarp::os::Value(objects[i].x)},
+            {"tly", yarp::os::Value(objects[i].y)},
+            {"brx", yarp::os::Value(objects[i].x + objects[i].width)},
+            {"bry", yarp::os::Value(objects[i].y + objects[i].height)}
+        };
     }
 
     return true;
