@@ -3,10 +3,16 @@
 #include "RgbDetection.hpp"
 
 #include <cstdio>
+#include <string>
 
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
-#include <yarp/sig/ImageDraw.h>
+
+#ifdef HAVE_IMGPROC
+# include <opencv2/imgproc/imgproc.hpp>
+#else
+# include <yarp/sig/ImageDraw.h>
+#endif
 
 #define DEFAULT_SENSOR_DEVICE "remote_grabber"
 #define DEFAULT_SENSOR_REMOTE "/grabber"
@@ -14,6 +20,28 @@
 #define DEFAULT_PERIOD 0.02 // [s]
 
 using namespace roboticslab;
+
+#ifdef HAVE_IMGPROC
+namespace
+{
+    std::string findLabel(const yarp::os::Searchable & data)
+    {
+        if (data.check("category") && data.check("confidence"))
+        {
+            auto confidence = data.find("confidence").asFloat64();
+            return data.find("category").asString() + " " + std::to_string(confidence);
+        }
+        else if (data.check("text"))
+        {
+            return data.find("text").asString();
+        }
+        else
+        {
+            return {};
+        }
+    }
+}
+#endif
 
 bool RgbDetection::configure(yarp::os::ResourceFinder & rf)
 {
@@ -116,12 +144,27 @@ bool RgbDetection::updateModule()
             auto brx = detectedObject->find("brx").asInt32();
             auto bry = detectedObject->find("bry").asInt32();
 
+#ifdef HAVE_IMGPROC
+            cv::Mat cvFrame(frame.height(), frame.width(), CV_8UC3, frame.getRawImage(), frame.getRowSize());
+            cv::rectangle(cvFrame, {tlx, tly}, {brx, bry}, {255, 0, 0});
+            std::string label = findLabel(*detectedObject);
+
+            if (!label.empty())
+            {
+                int base;
+                cv::Size size = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &base);
+                int top = cv::max(tly, size.height);
+                cv::rectangle(cvFrame, {tlx, top - size.height}, {tlx + size.width, top + base}, cv::Scalar::all(255), cv::FILLED);
+                cv::putText(cvFrame, label, {tlx, top}, cv::FONT_HERSHEY_SIMPLEX, 0.5, {});
+            }
+#else
             yarp::sig::draw::addRectangleOutline(frame,
                                                  {255, 0, 0},
                                                  (tlx + brx) / 2,
                                                  (tly + bry) / 2,
                                                  (brx - tlx) / 2,
                                                  (bry - tly) / 2);
+#endif
         }
 
         statePort.prepare() = detectedObjects;
