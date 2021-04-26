@@ -136,6 +136,10 @@ bool RgbDetection::updateModule()
 
     if (detectedObjects.size() != 0)
     {
+#ifdef HAVE_IMGPROC
+        cv::Mat cvFrame(frame.height(), frame.width(), CV_8UC3, frame.getRawImage(), frame.getRowSize());
+#endif
+
         for (auto i = 0; i < detectedObjects.size(); i++)
         {
             const auto * detectedObject = detectedObjects.get(i).asDict();
@@ -145,7 +149,6 @@ bool RgbDetection::updateModule()
             auto bry = detectedObject->find("bry").asInt32();
 
 #ifdef HAVE_IMGPROC
-            cv::Mat cvFrame(frame.height(), frame.width(), CV_8UC3, frame.getRawImage(), frame.getRowSize());
             cv::rectangle(cvFrame, {tlx, tly}, {brx, bry}, {255, 0, 0});
             std::string label = findLabel(*detectedObject);
 
@@ -158,12 +161,7 @@ bool RgbDetection::updateModule()
                 cv::putText(cvFrame, label, {tlx, top}, cv::FONT_HERSHEY_SIMPLEX, 0.5, {});
             }
 #else
-            yarp::sig::draw::addRectangleOutline(frame,
-                                                 {255, 0, 0},
-                                                 (tlx + brx) / 2,
-                                                 (tly + bry) / 2,
-                                                 (brx - tlx) / 2,
-                                                 (bry - tly) / 2);
+            yarp::sig::draw::addRectangleOutline(frame, {255, 0, 0}, (tlx + brx) / 2, (tly + bry) / 2, (brx - tlx) / 2, (bry - tly) / 2);
 #endif
         }
 
