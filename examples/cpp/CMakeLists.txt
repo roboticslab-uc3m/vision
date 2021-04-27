@@ -4,6 +4,7 @@ if(ENABLE_examples)
     if(TARGET ROBOTICSLAB::VisionInterfaces)
         add_subdirectory(exampleColorRegionDetector)
         add_subdirectory(exampleHaarDetector)
+        add_subdirectory(exampleQrDetector)
     endif()
 
     if(TARGET ROBOTICSLAB::YarpCloudUtils)
