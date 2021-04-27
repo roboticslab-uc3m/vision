@@ -6,7 +6,7 @@
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/cv/Cv.h>
 
-#include "OpencvDnnDetector.hpp"
+#include "DnnDetector.hpp"
 
 namespace
 {
@@ -24,7 +24,7 @@ namespace
 
 using namespace roboticslab;
 
-bool OpencvDnnDetector::open(yarp::os::Searchable &config)
+bool DnnDetector::open(yarp::os::Searchable &config)
 {
     auto modelFile = config.check("trainedModel", yarp::os::Value(DEFAULT_MODEL_FILE)).asString();
     yDebug() << "Using --trainedModel" << modelFile;
@@ -46,7 +46,7 @@ bool OpencvDnnDetector::open(yarp::os::Searchable &config)
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
-    rf.setDefaultContext("OpencvDnnDetector");
+    rf.setDefaultContext("DnnDetector");
 
     // Set model and config path from the resource finder.
     std::string modelPath = rf.findFileByName(modelFile);
@@ -105,7 +105,7 @@ bool OpencvDnnDetector::open(yarp::os::Searchable &config)
 
 /*****************************************************************/
 
-bool OpencvDnnDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
+bool DnnDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -125,7 +125,7 @@ bool OpencvDnnDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bot
 
 /************************************************************************/
 
-void OpencvDnnDetector::preprocess(const cv::Mat & frame)
+void DnnDetector::preprocess(const cv::Mat & frame)
 {
     cv::Mat blob;
 
@@ -144,7 +144,7 @@ void OpencvDnnDetector::preprocess(const cv::Mat & frame)
 
 /************************************************************************/
 
-void OpencvDnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> & outs, yarp::os::Bottle & detectedObjects)
+void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> & outs, yarp::os::Bottle & detectedObjects)
 {
     std::vector<int> outLayers = net.getUnconnectedOutLayers();
     std::string outLayerType = net.getLayer(outLayers[0])->type;

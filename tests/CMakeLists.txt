@@ -23,6 +23,18 @@ if(ENABLE_tests)
         gtest_discover_tests(testColorRegionDetector)
     endif()
 
+    if(ENABLE_DnnDetector AND DOWNLOAD_MODELS)
+        add_executable(testDnnDetector testDnnDetector.cpp)
+
+        target_link_libraries(testDnnDetector YARP::YARP_os
+                                              YARP::YARP_dev
+                                              YARP::YARP_sig
+                                              ROBOTICSLAB::VisionInterfaces
+                                              gtest_main)
+
+        gtest_discover_tests(testDnnDetector)
+    endif()
+
     if(ENABLE_HaarDetector)
         add_executable(testHaarDetector testHaarDetector.cpp)
 
@@ -33,18 +45,6 @@ if(ENABLE_tests)
                                                gtest_main)
 
         gtest_discover_tests(testHaarDetector)
-    endif()
-
-    if(ENABLE_OpencvDnnDetector AND DOWNLOAD_MODELS)
-        add_executable(testOpencvDnnDetector testOpencvDnnDetector.cpp)
-
-        target_link_libraries(testOpencvDnnDetector YARP::YARP_os
-                                                    YARP::YARP_dev
-                                                    YARP::YARP_sig
-                                                    ROBOTICSLAB::VisionInterfaces
-                                                    gtest_main)
-
-        gtest_discover_tests(testOpencvDnnDetector)
     endif()
 
     if(ENABLE_QrDetector)

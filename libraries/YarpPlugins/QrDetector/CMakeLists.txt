@@ -28,8 +28,6 @@ if(NOT SKIP_QrDetector)
                                      ${OpenCV_LIBS}
                                      ROBOTICSLAB::VisionInterfaces)
 
-    target_compile_features(QrDetector PUBLIC cxx_std_11)
-
     yarp_install(TARGETS QrDetector
                  LIBRARY DESTINATION ${ROBOTICSLAB-VISION_DYNAMIC_PLUGINS_INSTALL_DIR}
                  ARCHIVE DESTINATION ${ROBOTICSLAB-VISION_STATIC_PLUGINS_INSTALL_DIR}

@@ -2,8 +2,8 @@
 
 /**
  * @ingroup vision_examples
- * @defgroup exampleOpencvDnnDetector exampleOpencvDnnDetector
- * @brief exampleOpencvDnnDetector
+ * @defgroup exampleDnnDetector exampleDnnDetector
+ * @brief exampleDnnDetector
  */
 
 #include <yarp/os/LogStream.h>
@@ -20,7 +20,7 @@
 int main(int argc, char * argv[])
 {
     yarp::os::Property detectorOptions {
-        {"device", yarp::os::Value("OpencvDnnDetector")},
+        {"device", yarp::os::Value("DnnDetector")},
         {"trainedModel", yarp::os::Value("yolov3-tiny.weights")},
         {"configDNNModel", yarp::os::Value("yolov3-tiny.cfg")},
         {"classesTrainedModel", yarp::os::Value("coco-object-categories.txt")}
@@ -36,7 +36,7 @@ int main(int argc, char * argv[])
     }
 
     yarp::os::ResourceFinder rf;
-    rf.setDefaultContext("OpencvDnnDetector");
+    rf.setDefaultContext("DnnDetector");
     std::string qrFullName = rf.findFileByName("tests/teddy-bear.png");
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;

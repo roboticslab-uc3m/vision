@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#ifndef __OPENCV_DNN_DETECTOR_HPP__
-#define __OPENCV_DNN_DETECTOR_HPP__
+#ifndef __DNN_DETECTOR_HPP__
+#define __DNN_DETECTOR_HPP__
 
 #include <yarp/dev/DeviceDriver.h>
 
@@ -14,11 +14,11 @@ namespace roboticslab
 
 /**
  * @ingroup YarpPlugins
- * @defgroup OpencvDnnDetector
- * @brief Contains roboticslab::OpencvDnnDetector.
+ * @defgroup DnnDetector
+ * @brief Contains roboticslab::DnnDetector.
  */
-class OpencvDnnDetector : public yarp::dev::DeviceDriver,
-                          public IDetector
+class DnnDetector : public yarp::dev::DeviceDriver,
+                    public IDetector
 {
 public:
     bool open(yarp::os::Searchable & config) override;
@@ -40,4 +40,4 @@ private:
 
 } // namespace roboticslab
 
-#endif // __OPENCV_DNN_DETECTOR_HPP__
+#endif // __DNN_DETECTOR_HPP__

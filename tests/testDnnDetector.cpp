@@ -16,15 +16,15 @@ namespace roboticslab
 
 /**
  * @ingroup vision_tests
- * @brief Tests @ref OpencvDnnDetector
+ * @brief Tests @ref DnnDetector
  */
-class OpencvDnnDetectorTest : public testing::Test
+class DnnDetectorTest : public testing::Test
 {
 public:
     virtual void SetUp() override
     {
         yarp::os::Property deviceOptions {
-            {"device", yarp::os::Value("OpencvDnnDetector")},
+            {"device", yarp::os::Value("DnnDetector")},
             {"trainedModel", yarp::os::Value("yolov3-tiny.weights")},
             {"configDNNModel", yarp::os::Value("yolov3-tiny.cfg")},
             {"classesTrainedModel", yarp::os::Value("coco-object-categories.txt")}
@@ -32,7 +32,7 @@ public:
 
         if (!detectorDevice.open(deviceOptions))
         {
-            yError() << "Failed to open OpencvDnnDetector device";
+            yError() << "Failed to open DnnDetector device";
             return;
         }
 
@@ -52,7 +52,7 @@ protected:
     yarp::dev::PolyDriver detectorDevice;
 };
 
-TEST_F(OpencvDnnDetectorTest, OpencvDnnDetector1)
+TEST_F(DnnDetectorTest, DnnDetector1)
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
     yarpImgRgb.resize(352, 288);
@@ -62,10 +62,10 @@ TEST_F(OpencvDnnDetectorTest, OpencvDnnDetector1)
     ASSERT_EQ(detectedObjects.size(), 0);
 }
 
-TEST_F(OpencvDnnDetectorTest, OpencvDnnDetector2)
+TEST_F(DnnDetectorTest, DnnDetector2)
 {
     yarp::os::ResourceFinder rf;
-    rf.setDefaultContext("OpencvDnnDetector");
+    rf.setDefaultContext("DnnDetector");
     std::string qrFullName = rf.findFileByName("tests/teddy-bear.png");
     ASSERT_FALSE(qrFullName.empty());
 

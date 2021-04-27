@@ -4,7 +4,7 @@ import yarp
 import roboticslab_vision
 
 detectorOptions = yarp.Property()
-detectorOptions.put("device", "OpencvDnnDetector")
+detectorOptions.put("device", "DnnDetector")
 detectorOptions.put("trainedModel", "yolov3-tiny.weights")
 detectorOptions.put("configDNNModel", "yolov3-tiny.cfg")
 detectorOptions.put("classesTrainedModel", "coco-object-categories.txt")
@@ -18,7 +18,7 @@ if not detectorDevice.isValid():
 iDetector = roboticslab_vision.viewIDetector(detectorDevice)
 
 rf = yarp.ResourceFinder()
-rf.setDefaultContext("OpencvDnnDetector")
+rf.setDefaultContext("DnnDetector")
 sampleFullName = rf.findFileByName("tests/teddy-bear.png")
 yarpImgRgb = yarp.ImageRgb()
 

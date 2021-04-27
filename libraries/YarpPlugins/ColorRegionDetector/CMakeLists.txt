@@ -24,8 +24,6 @@ if(NOT SKIP_ColorRegionDetector)
                                               ROBOTICSLAB::VisionInterfaces
                                               ROBOTICSLAB::TravisLib)
 
-    target_compile_features(ColorRegionDetector PUBLIC cxx_std_11)
-
     yarp_install(TARGETS ColorRegionDetector
                  LIBRARY DESTINATION ${ROBOTICSLAB-VISION_DYNAMIC_PLUGINS_INSTALL_DIR}
                  ARCHIVE DESTINATION ${ROBOTICSLAB-VISION_STATIC_PLUGINS_INSTALL_DIR}
