@@ -20,7 +20,7 @@ print("detect()")
 detectedObjects = yarp.Bottle()
 
 if not iDetector.detect(yarpImgRgb, detectedObjects):
-    print("Detection failed")
+    print("Detector failed")
     raise SystemExit
 
 for i in range(detectedObjects.size()):
