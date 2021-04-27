@@ -2,8 +2,8 @@
 
 /**
  * @ingroup vision_examples
- * @defgroup exampleHaarDetector exampleHaarDetector
- * @brief exampleHaarDetector
+ * @defgroup exampleDnnDetector exampleDnnDetector
+ * @brief exampleDnnDetector
  */
 
 #include <yarp/os/LogStream.h>
@@ -19,7 +19,13 @@
 
 int main(int argc, char * argv[])
 {
-    yarp::os::Property detectorOptions {{"device", yarp::os::Value("HaarDetector")}};
+    yarp::os::Property detectorOptions {
+        {"device", yarp::os::Value("DnnDetector")},
+        {"trainedModel", yarp::os::Value("yolov3-tiny.weights")},
+        {"configDNNModel", yarp::os::Value("yolov3-tiny.cfg")},
+        {"classesTrainedModel", yarp::os::Value("coco-object-categories.txt")}
+    };
+
     yarp::dev::PolyDriver detectorDevice(detectorOptions);
     roboticslab::IDetector * iDetector;
 
@@ -30,12 +36,12 @@ int main(int argc, char * argv[])
     }
 
     yarp::os::ResourceFinder rf;
-    rf.setDefaultContext("HaarDetector");
-    std::string faceFullName = rf.findFileByName("tests/face-nc.pgm");
+    rf.setDefaultContext("DnnDetector");
+    std::string qrFullName = rf.findFileByName("tests/teddy-bear.png");
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
 
-    if (!yarp::sig::file::read(yarpImgRgb, faceFullName, yarp::sig::file::FORMAT_PGM))
+    if (!yarp::sig::file::read(yarpImgRgb, qrFullName, yarp::sig::file::FORMAT_PNG))
     {
         yError() << "Image file not available";
         return 1;
@@ -53,10 +59,13 @@ int main(int argc, char * argv[])
 
     const auto * detectedObject = detectedObjects.get(0).asDict();
 
-    yInfo() << detectedObject->find("tlx").asInt32(); // 90
-    yInfo() << detectedObject->find("brx").asInt32(); // 168
-    yInfo() << detectedObject->find("tly").asInt32(); // 68
-    yInfo() << detectedObject->find("bry").asInt32(); // 14
+    yInfo() << "tlx:" << detectedObject->find("tlx").asInt32(); // 102
+    yInfo() << "tly:" << detectedObject->find("brx").asInt32(); // 264
+    yInfo() << "brx:" << detectedObject->find("tly").asInt32(); // 21
+    yInfo() << "bry:" << detectedObject->find("bry").asInt32(); // 250
+
+    yInfo() << "confidence:" << detectedObject->find("confidence").asFloat64(); // 0.250131
+    yInfo() << "category:" << detectedObject->find("category").asString(); // teddy bear <3
 
     return 0;
 }

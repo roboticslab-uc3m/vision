@@ -1,9 +1,9 @@
-// Copyright: 
-// Author: 
-// CopyPolicy: 
+// Copyright:
+// Author:
+// CopyPolicy:
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 // This is a configuration file to explain VISION to SWIG
 //
 // SWIG, for the most part, understands VISION auto-magically.
@@ -14,13 +14,9 @@
 
 %module roboticslab_vision
 
-%include <typemaps.i>
-%include <std_vector.i>
 %{
 #include "yarp/os/Property.h"
 %}
-
-%template(PropertyVector) std::vector<yarp::os::Property>;
 
 %{
 /* Includes the header in the wrapper code */
@@ -40,11 +36,3 @@ roboticslab::IDetector *viewIDetector(yarp::dev::PolyDriver& d)
 }
 %}
 extern roboticslab::IDetector *viewIDetector(yarp::dev::PolyDriver& d);
-
-%extend roboticslab::IDetector {
-    std::vector<yarp::os::Property> detect(const yarp::sig::Image& inYarpImg) {
-        std::vector<yarp::os::Property> detectedObjects;
-        bool ok = self->detect(inYarpImg, detectedObjects);
-        return detectedObjects;
-    }
-}

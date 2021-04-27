@@ -1,179 +1,192 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
+#include "RgbDetection.hpp"
+
+#include <cstdio>
 #include <string>
 
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
-#include <yarp/os/Time.h>
 
-#include "RgbDetection.hpp"
+#ifdef HAVE_IMGPROC
+# include <opencv2/imgproc/imgproc.hpp>
+#else
+# include <yarp/sig/ImageDraw.h>
+#endif
 
-#define DEFAULT_CROP_SELECTOR 0  // 1=true
-#define DEFAULT_CAMERA_DEVICE "remote_grabber"
-#define DEFAULT_CAMERA_LOCAL "/rgbDetection"
-#define DEFAULT_CAMERA_REMOTE "/grabber"
-#define DEFAULT_WATCHDOG    2       // [s]
+#define DEFAULT_SENSOR_DEVICE "remote_grabber"
+#define DEFAULT_SENSOR_REMOTE "/grabber"
+#define DEFAULT_LOCAL_PREFIX "/rgbDetection"
+#define DEFAULT_PERIOD 0.02 // [s]
 
-/************************************************************************/
+using namespace roboticslab;
 
-bool roboticslab::RgbDetection::configure(yarp::os::ResourceFinder &rf)
+#ifdef HAVE_IMGPROC
+namespace
 {
-    cropSelector = DEFAULT_CROP_SELECTOR;
-    std::string strCameraDevice = DEFAULT_CAMERA_DEVICE;
-    std::string strCameraLocal = DEFAULT_CAMERA_LOCAL;
-    std::string strCameraRemote = DEFAULT_CAMERA_REMOTE;
-    watchdog = DEFAULT_WATCHDOG;  // double
-
-    std::printf("RgbDetection options:\n");
-    std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
-    std::printf("\t--cropSelector (default: \"%d\")\n", cropSelector);
-    std::printf("\t--cameraDevice (device we create, default: \"%s\")\n", strCameraDevice.c_str());
-    std::printf("\t--cameraLocal (if accesing remote, local port name, default: \"%s\")\n", strCameraLocal.c_str());
-    std::printf("\t--cameraRemote (if accesing remote, remote port name, default: \"%s\")\n", strCameraRemote.c_str());
-    std::printf("\t--watchdog ([s] default: \"%f\")\n", watchdog);
-
-    if (rf.check("cropSelector"))
+    std::string findLabel(const yarp::os::Searchable & data)
     {
-        cropSelector = rf.find("cropSelector").asInt32();
+        if (data.check("category") && data.check("confidence"))
+        {
+            auto confidence = data.find("confidence").asFloat64();
+            return data.find("category").asString() + " " + std::to_string(confidence);
+        }
+        else if (data.check("text"))
+        {
+            return data.find("text").asString();
+        }
+        else
+        {
+            return {};
+        }
     }
+}
+#endif
 
-    yInfo() << "Using cropSelector:" << cropSelector;
-
-    if (rf.check("cameraDevice"))
+bool RgbDetection::configure(yarp::os::ResourceFinder & rf)
+{
+    if (rf.check("help"))
     {
-        strCameraDevice = rf.find("cameraDevice").asString();
-    }
-
-    if (rf.check("cameraLocal"))
-    {
-        strCameraLocal = rf.find("cameraLocal").asString();
-    }
-
-    if (rf.check("cameraRemote"))
-    {
-        strCameraRemote = rf.find("cameraRemote").asString();
-    }
-
-    if (rf.check("watchdog"))
-    {
-        watchdog = rf.find("watchdog").asFloat64();
-    }
-
-    strCameraLocal ="/rgbDetection";
-
-    yInfo("Using cameraDevice: %s, cameraLocal: %s, cameraRemote: %s",
-        strCameraDevice.c_str(), strCameraLocal.c_str(), strCameraRemote.c_str());
-    yInfo() << "Using watchdog:" << watchdog;
-
-
-    yarp::os::Property options;
-    options.fromString(rf.toString());
-    options.put("device", strCameraDevice);
-    options.put("local", strCameraLocal);
-    options.put("remote", strCameraRemote);
-
-    if(!cameraDevice.open(options))
-    {
-        yWarning() << "Bad camera open";
+        std::printf("RgbDetection options:\n");
+        std::printf("\t--help (this help)\t--from [file.ini]\t--context [path]\n");
+        std::printf("\t--sensorDevice (device we create, default: \"%s\")\n", DEFAULT_SENSOR_DEVICE);
+        std::printf("\t--sensorRemote (if accesing remote, remote port name, default: \"%s\")\n", DEFAULT_SENSOR_REMOTE);
+        std::printf("\t--localPrefix (local port name prefix, default: \"%s\")\n", DEFAULT_LOCAL_PREFIX);
+        std::printf("\t--period ([s] default: \"%f\")\n", DEFAULT_PERIOD);
+        std::printf("\t--detector (detector device)\n");
         return false;
     }
-    yInfo() << "Camera device open (connection not assured, read YARP output above)";
 
-    if(!cameraDevice.isValid())
+    yDebug() << "RgbDetection config:" << rf.toString();
+
+    auto strSensorDevice = rf.check("sensorDevice", yarp::os::Value(DEFAULT_SENSOR_DEVICE)).asString();
+    auto strSensorRemote = rf.check("sensorRemote", yarp::os::Value(DEFAULT_SENSOR_REMOTE)).asString();
+    auto strLocalPrefix = rf.check("localPrefix", yarp::os::Value(DEFAULT_LOCAL_PREFIX)).asString();
+    auto strDetector = rf.check("detector", yarp::os::Value("")).asString();
+
+    period = rf.check("period", yarp::os::Value(DEFAULT_PERIOD)).asFloat64();
+
+    yInfo() << "Using --sensorDevice" << strSensorDevice;
+    yInfo() << "Using --sensorRemote" << strSensorRemote;
+    yInfo() << "Using --localPrefix" << strLocalPrefix;
+    yInfo() << "Using --period" << period;
+    yInfo() << "Using --detector" << strDetector;
+
+    yarp::os::Property sensorOptions;
+    sensorOptions.fromString(rf.toString());
+    sensorOptions.put("device", strSensorDevice);
+    sensorOptions.put("local", strLocalPrefix);
+    sensorOptions.put("remote", strSensorRemote);
+
+    if (!sensorDevice.open(sensorOptions) || !sensorDevice.view(frameGrabber))
     {
-        yWarning() << "Camera not valid";
+        yError() << "Unable to initiate camera device";
         return false;
     }
-    yInfo() << "Camera device valid";
 
-    if (!cameraDevice.view(camera))
+    yarp::os::Property detectorOptions;
+    detectorOptions.fromString(rf.toString());
+    detectorOptions.put("device", strDetector);
+
+    if (!detectorDevice.open(detectorOptions) || !detectorDevice.view(iDetector))
     {
-        yError() << "Camera device bad view";
+        yError() << "Unable to initiate detector device";
         return false;
     }
-    yInfo() << "Camera device ok view";
 
-    detectorThread.setIFrameGrabberImageDriver(camera);
-    detectorThread.setOutImg(&outImg);
-    detectorThread.setOutPort(&outPort);
-    detectorThread.setCropSelector(cropSelector);
-
-    if (cropSelector != 0)
+    if (!statePort.open(strLocalPrefix + "/state:o"))
     {
-        detectorThread.setOutCropSelectorImg(&outCropSelectorImg);
-        detectorThread.setInCropSelectorPort(&inCropSelectorPort);
+        yError() << "Unable to open output state port" << statePort.getName();
+        return false;
     }
 
-    //-----------------OPEN LOCAL PORTS------------//
-
-    std::string portPrefix("/rgbDetection");
-    portPrefix += strCameraRemote;
-    outImg.open(portPrefix + "/img:o");
-    outPort.open(portPrefix + "/state:o");
-
-
-    if (cropSelector != 0)
+    if (!imagePort.open(strLocalPrefix + "/img:o"))
     {
-        outCropSelectorImg.open(strCameraLocal + "/cropSelector/img:o");
-        inCropSelectorPort.open(strCameraLocal + "/cropSelector/state:i");
+        yError() << "Unable to open output image port" << imagePort.getName();
+        return false;
     }
 
-    return detectorThread.init(rf);
-}
-
-/*****************************************************************/
-
-double roboticslab::RgbDetection::getPeriod()
-{
-    return watchdog;  // [s]
-}
-
-/************************************************************************/
-
-bool roboticslab::RgbDetection::updateModule()
-{
-    yInfo() << "RgbDetection alive...";
-    return true;
-}
-
-/************************************************************************/
-
-bool roboticslab::RgbDetection::interruptModule()
-{
-    detectorThread.askToStop();
-
-    outImg.interrupt();
-    outPort.interrupt();
-
-    if (cropSelector != 0)
-    {
-        outCropSelectorImg.interrupt();
-        inCropSelectorPort.interrupt();
-    }
+    statePort.setWriteOnly();
+    imagePort.setWriteOnly();
 
     return true;
 }
 
-/************************************************************************/
-
-bool roboticslab::RgbDetection::close()
+double RgbDetection::getPeriod()
 {
-    if (detectorThread.isRunning())
+    return period;
+}
+
+bool RgbDetection::updateModule()
+{
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> frame;
+
+    if (!frameGrabber->getImage(frame))
     {
-        detectorThread.stop();
+        yWarning() << "Frame acquisition failure";
+        return true;
     }
 
-    cameraDevice.close();
-    outImg.close();
-    outPort.close();
+    yarp::os::Bottle detectedObjects;
 
-    if (cropSelector != 0)
+    if (!iDetector->detect(frame, detectedObjects))
     {
-        outCropSelectorImg.close();
-        inCropSelectorPort.close();
+        yWarning() << "Detector failure";
     }
+
+    if (detectedObjects.size() != 0)
+    {
+#ifdef HAVE_IMGPROC
+        cv::Mat cvFrame(frame.height(), frame.width(), CV_8UC3, frame.getRawImage(), frame.getRowSize());
+#endif
+
+        for (auto i = 0; i < detectedObjects.size(); i++)
+        {
+            const auto * detectedObject = detectedObjects.get(i).asDict();
+            auto tlx = detectedObject->find("tlx").asInt32();
+            auto tly = detectedObject->find("tly").asInt32();
+            auto brx = detectedObject->find("brx").asInt32();
+            auto bry = detectedObject->find("bry").asInt32();
+
+#ifdef HAVE_IMGPROC
+            cv::rectangle(cvFrame, {tlx, tly}, {brx, bry}, {255, 0, 0});
+            std::string label = findLabel(*detectedObject);
+
+            if (!label.empty())
+            {
+                int base;
+                cv::Size size = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &base);
+                int top = cv::max(tly, size.height);
+                cv::rectangle(cvFrame, {tlx, top - size.height}, {tlx + size.width, top + base}, cv::Scalar::all(255), cv::FILLED);
+                cv::putText(cvFrame, label, {tlx, top}, cv::FONT_HERSHEY_SIMPLEX, 0.5, {});
+            }
+#else
+            yarp::sig::draw::addRectangleOutline(frame, {255, 0, 0}, (tlx + brx) / 2, (tly + bry) / 2, (brx - tlx) / 2, (bry - tly) / 2);
+#endif
+        }
+
+        statePort.prepare() = detectedObjects;
+        statePort.write();
+    }
+
+    imagePort.prepare() = frame;
+    imagePort.write();
 
     return true;
 }
 
-/************************************************************************/
+bool RgbDetection::interruptModule()
+{
+    statePort.interrupt();
+    imagePort.interrupt();
+    return true;
+}
+
+bool RgbDetection::close()
+{
+    sensorDevice.close();
+    detectorDevice.close();
+    statePort.close();
+    imagePort.close();
+    return true;
+}

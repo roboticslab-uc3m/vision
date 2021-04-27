@@ -15,14 +15,15 @@
         <parameters>--name /rgbDetection/yarpview/img:i</parameters>
         <node>localhost</node>
     </module>
+
     <connection>
-        <from>/rgbDetection/grabber/img:o</from>
+        <from>/rgbDetection/img:o</from>
         <to>/rgbDetection/yarpview/img:i</to>
     </connection>
 
     <module>
         <name>gnome-terminal</name>
-        <parameters>-e "yarp read ... /rgbDetection/grabber/state:o"</parameters>
+        <parameters>-e "yarp read ... /rgbDetection/state:o"</parameters>
         <node>localhost</node>
     </module>
 </application>

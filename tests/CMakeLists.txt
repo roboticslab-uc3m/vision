@@ -8,12 +8,8 @@ cmake_dependent_option(ENABLE_tests "Enable/disable unit tests" ON
 if(ENABLE_tests)
 
     enable_testing()
-
     add_subdirectory(${GTestSources_SOURCE_DIR} ${CMAKE_BINARY_DIR}/gtest)
-
     include_directories(${GTestSources_INCLUDE_DIR})
-
-    # testColorRegionDetector
 
     if(ENABLE_ColorRegionDetector)
         add_executable(testColorRegionDetector testColorRegionDetector.cpp)
@@ -24,9 +20,19 @@ if(ENABLE_tests)
                                                       ROBOTICSLAB::VisionInterfaces
                                                       gtest_main)
 
-        target_compile_features(testColorRegionDetector PUBLIC cxx_std_11)
-
         gtest_discover_tests(testColorRegionDetector)
+    endif()
+
+    if(ENABLE_DnnDetector AND DOWNLOAD_MODELS)
+        add_executable(testDnnDetector testDnnDetector.cpp)
+
+        target_link_libraries(testDnnDetector YARP::YARP_os
+                                              YARP::YARP_dev
+                                              YARP::YARP_sig
+                                              ROBOTICSLAB::VisionInterfaces
+                                              gtest_main)
+
+        gtest_discover_tests(testDnnDetector)
     endif()
 
     if(ENABLE_HaarDetector)
@@ -37,8 +43,6 @@ if(ENABLE_tests)
                                                YARP::YARP_sig
                                                ROBOTICSLAB::VisionInterfaces
                                                gtest_main)
-
-        target_compile_features(testHaarDetector PUBLIC cxx_std_11)
 
         gtest_discover_tests(testHaarDetector)
     endif()
@@ -52,8 +56,6 @@ if(ENABLE_tests)
                                              ROBOTICSLAB::VisionInterfaces
                                              gtest_main)
 
-        target_compile_features(testQrDetector PUBLIC cxx_std_11)
-
         gtest_discover_tests(testQrDetector)
     endif()
 
@@ -63,7 +65,6 @@ if(ENABLE_tests)
         target_link_libraries(testYarpCloudUtils ROBOTICSLAB::YarpCloudUtils
                                                  gtest_main)
 
-        target_compile_features(testYarpCloudUtils PUBLIC cxx_std_14)
         target_compile_definitions(testYarpCloudUtils PRIVATE PLY_PATH="${CMAKE_CURRENT_BINARY_DIR}/")
 
         gtest_discover_tests(testYarpCloudUtils)

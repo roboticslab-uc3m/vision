@@ -19,8 +19,15 @@
 
 int main(int argc, char * argv[])
 {
-    yarp::os::Property detectorOptions;
-    detectorOptions.put("device", "QrDetector");
+    yarp::os::Property detectorOptions {{"device", yarp::os::Value("QrDetector")}};
+    yarp::dev::PolyDriver detectorDevice(detectorOptions);
+    roboticslab::IDetector * iDetector;
+
+    if (!detectorDevice.isValid() || !detectorDevice.view(iDetector))
+    {
+        yError() << "Device not available";
+        return 1;
+    }
 
     yarp::os::ResourceFinder rf;
     rf.setDefaultContext("QrDetector");
@@ -34,25 +41,9 @@ int main(int argc, char * argv[])
         return 1;
     }
 
-    yarp::dev::PolyDriver detectorDevice(detectorOptions);
-
-    if (!detectorDevice.isValid())
-    {
-        yError() << "Device not available";
-        return 1;
-    }
-
-    roboticslab::IDetector * iDetector;
-
-    if (!detectorDevice.view(iDetector))
-    {
-        yError() << "Unable to acquire interfaces";
-        return 1;
-    }
-
     yInfo() << "detect()";
 
-    std::vector<yarp::os::Property> detectedObjects;
+    yarp::os::Bottle detectedObjects;
 
     if (!iDetector->detect(yarpImgRgb, detectedObjects))
     {
@@ -62,17 +53,17 @@ int main(int argc, char * argv[])
 
     for (auto i = 0; i < detectedObjects.size(); i++)
     {
-        const auto & detectedObject = detectedObjects[i];
+        const auto * detectedObject = detectedObjects.get(i).asDict();
 
-        auto tlX = detectedObject.find("tlx").asInt32();
-        auto tlY = detectedObject.find("tly").asInt32();
-        auto trX = detectedObject.find("trx").asInt32();
-        auto trY = detectedObject.find("try").asInt32();
-        auto blX = detectedObject.find("blx").asInt32();
-        auto blY = detectedObject.find("bly").asInt32();
-        auto brX = detectedObject.find("brx").asInt32();
-        auto brY = detectedObject.find("bry").asInt32();
-        auto text = detectedObject.find("text").asString();
+        auto tlX = detectedObject->find("tlx").asInt32();
+        auto tlY = detectedObject->find("tly").asInt32();
+        auto trX = detectedObject->find("trx").asInt32();
+        auto trY = detectedObject->find("try").asInt32();
+        auto blX = detectedObject->find("blx").asInt32();
+        auto blY = detectedObject->find("bly").asInt32();
+        auto brX = detectedObject->find("brx").asInt32();
+        auto brY = detectedObject->find("bry").asInt32();
+        auto text = detectedObject->find("text").asString();
 
         yInfo("qr%d [[%d,%d],[%d,%d],[%d,%d],[%d,%d]]: \"%s\"", i, tlX, tlY, trX, trY, brX, brY, blX, blY, text.c_str());
     }

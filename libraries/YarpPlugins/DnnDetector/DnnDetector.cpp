@@ -1,54 +1,52 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
 #include <fstream>
-#include <utility>
 
 #include <yarp/os/LogStream.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/cv/Cv.h>
 
-#include "OpencvDnnDetector.hpp"
+#include "DnnDetector.hpp"
 
 namespace
 {
-    const std::string DEFAULT_MODEL_FILE = "yolov3-tiny-custom_5000.weights";
-    const std::string DEFAULT_CONFIG_DNN_FILE = "yolov3-tiny-custom.cfg";
+    const std::string DEFAULT_MODEL_FILE = "yolov3-tiny/yolov3-tiny.weights";
+    const std::string DEFAULT_CONFIG_DNN_FILE = "yolov3-tiny/yolov3-tiny.cfg";
     const std::string DEFAULT_FRAMEWORK = "darknet";
-    const std::string DEFAULT_CLASSES_FILE = "object_detection_classes_yolov3_sharon.txt";
+    const std::string DEFAULT_CLASSES_FILE = "coco-object-categories.txt";
     const int DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_CUDA;
     const int DEFAULT_TARGET = cv::dnn::DNN_TARGET_CUDA;
     const double DEFAULT_SCALE = 0.00392;
-    const bool DEFAULT_RGB = true;
     const double DEFAULT_MEAN = 0;
     const double DEFAULT_CONF_THR = 0.1;
-    const double DEFAULT_NMS_THR = 0.4; // FIXME: unused, see cv::dnn::NMSBoxes
+    const double DEFAULT_NMS_THR = 0.4;
 }
 
 using namespace roboticslab;
 
-bool OpencvDnnDetector::open(yarp::os::Searchable &config)
+bool DnnDetector::open(yarp::os::Searchable &config)
 {
-    modelFile = config.check("trainedModel", yarp::os::Value(DEFAULT_MODEL_FILE)).asString();
+    auto modelFile = config.check("trainedModel", yarp::os::Value(DEFAULT_MODEL_FILE)).asString();
     yDebug() << "Using --trainedModel" << modelFile;
 
-    configDNNFile = config.check("configDNNModel", yarp::os::Value(DEFAULT_CONFIG_DNN_FILE)).asString();
+    auto configDNNFile = config.check("configDNNModel", yarp::os::Value(DEFAULT_CONFIG_DNN_FILE)).asString();
     yDebug() << "Using --configDNNModel" << configDNNFile;
 
-    framework = config.check("framework", yarp::os::Value(DEFAULT_FRAMEWORK)).asString();
+    auto framework = config.check("framework", yarp::os::Value(DEFAULT_FRAMEWORK)).asString();
     yDebug() << "Using --framework" << framework;
 
-    classesFile = config.check("classesTrainedModel", yarp::os::Value(DEFAULT_CLASSES_FILE)).asString();
+    auto classesFile = config.check("classesTrainedModel", yarp::os::Value(DEFAULT_CLASSES_FILE)).asString();
     yDebug() << "Using --classesTrainedModel" << classesFile;
 
-    backend = config.check("backend", yarp::os::Value(DEFAULT_BACKEND)).asInt32();
+    auto backend = config.check("backend", yarp::os::Value(DEFAULT_BACKEND)).asInt32();
     yDebug() << "Using --backend" << backend;
 
-    target = config.check("target", yarp::os::Value(DEFAULT_TARGET)).asInt32();
+    auto target = config.check("target", yarp::os::Value(DEFAULT_TARGET)).asInt32();
     yDebug() << "Using --target" << target;
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
-    rf.setDefaultContext("OpencvDnnDetector");
+    rf.setDefaultContext("DnnDetector");
 
     // Set model and config path from the resource finder.
     std::string modelPath = rf.findFileByName(modelFile);
@@ -96,32 +94,64 @@ bool OpencvDnnDetector::open(yarp::os::Searchable &config)
     mean = {_mean, _mean, _mean};
     yDebug() << "Using --mean" << _mean;
 
-    swapRB = config.check("swapRB", yarp::os::Value(DEFAULT_RGB)).asBool();
-    yDebug() << "Using --swapRB" << swapRB;
-
     confThreshold = config.check("confThreshold", yarp::os::Value(DEFAULT_CONF_THR)).asFloat32();
     yDebug() << "Using --confThreshold" << confThreshold;
 
-    nmsThreshold = DEFAULT_NMS_THR; // FIXME: unused
+    nmsThreshold = config.check("nmsThreshold", yarp::os::Value(DEFAULT_NMS_THR)).asFloat32();
+    yDebug() << "Using --nmsThreshold" << nmsThreshold;
 
     return true;
 }
 
 /*****************************************************************/
 
-bool OpencvDnnDetector::detect(const yarp::sig::Image &inYarpImg, std::vector<yarp::os::Property> &detectedObjects)
+bool DnnDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
     cv::Mat inCvMat = yarp::cv::toCvMat(inYarpImgBgr);
 
-    preprocess(inCvMat, net, inCvMat.size(), scale, mean, swapRB);
+    // adapted from https://docs.opencv.org/4.3.0/d4/db9/samples_2dnn_2object_detection_8cpp-example.html
+
+    preprocess(inCvMat);
 
     std::vector<cv::Mat> outs;
     net.forward(outs, outNames);
 
+    postprocess(inCvMat.size(), outs, detectedObjects);
+
+    return true;
+}
+
+/************************************************************************/
+
+void DnnDetector::preprocess(const cv::Mat & frame)
+{
+    cv::Mat blob;
+
+    // Create a 4D blob from a frame.
+    cv::dnn::blobFromImage(frame, blob, 1.0, frame.size(), cv::Scalar(), true, false, CV_8U);
+
+    // Run a model.
+    net.setInput(blob, "", scale, mean);
+
+    if (net.getLayer(0)->outputNameToIndex("im_info") != -1) // Faster-RCNN or R-FCN
+    {
+        cv::Mat imInfo = (cv::Mat_<float>(1, 3) << frame.rows, frame.cols, 1.6f);
+        net.setInput(imInfo, "im_info");
+    }
+}
+
+/************************************************************************/
+
+void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> & outs, yarp::os::Bottle & detectedObjects)
+{
     std::vector<int> outLayers = net.getUnconnectedOutLayers();
     std::string outLayerType = net.getLayer(outLayers[0])->type;
+
+    std::vector<int> classIds;
+    std::vector<float> confidences;
+    std::vector<cv::Rect> boxes;
 
     if (outLayerType == "DetectionOutput")
     {
@@ -148,27 +178,17 @@ bool OpencvDnnDetector::detect(const yarp::sig::Image &inYarpImg, std::vector<ya
 
                     if (width <= 2 || height <= 2)
                     {
-                        left = (int)(data[i + 3] * inCvMat.cols);
-                        top = (int)(data[i + 4] * inCvMat.rows);
-                        right = (int)(data[i + 5] * inCvMat.cols);
-                        bottom = (int)(data[i + 6] * inCvMat.rows);
+                        left = (int)(data[i + 3] * size.width);
+                        top = (int)(data[i + 4] * size.height);
+                        right = (int)(data[i + 5] * size.width);
+                        bottom = (int)(data[i + 6] * size.height);
                         width = right - left + 1;
                         height = bottom - top + 1;
                     }
 
-                    auto className = classes[(int)(data[i + 1]) - 1];
-
-                    yarp::os::Property detectedObject {
-                        {"category", yarp::os::Value(className)},
-                        {"confidence", yarp::os::Value(confidence)},
-                        {"tlx", yarp::os::Value(left)},
-                        {"tly", yarp::os::Value(top)},
-                        {"brx", yarp::os::Value(right)},
-                        {"bry", yarp::os::Value(bottom)}
-                    };
-
-                    yInfo() << "Detected" << className << "with" << confidence << "confidence";
-                    detectedObjects.push_back(std::move(detectedObject));
+                    classIds.push_back((int)(data[i + 1]) - 1); // Skip 0th background class id.
+                    boxes.push_back(cv::Rect(left, top, width, height));
+                    confidences.push_back(confidence);
                 }
             }
         }
@@ -192,61 +212,45 @@ bool OpencvDnnDetector::detect(const yarp::sig::Image &inYarpImg, std::vector<ya
 
                 if (confidence > confThreshold)
                 {
-                    int centerX = (int)(data[0] * inCvMat.cols);
-                    int centerY = (int)(data[1] * inCvMat.rows);
-                    int width = (int)(data[2] * inCvMat.cols);
-                    int height = (int)(data[3] * inCvMat.rows);
+                    int centerX = (int)(data[0] * size.width);
+                    int centerY = (int)(data[1] * size.height);
+                    int width = (int)(data[2] * size.width);
+                    int height = (int)(data[3] * size.height);
                     int left = centerX - width / 2;
                     int top = centerY - height / 2;
 
-                    yarp::os::Property detectedObject {
-                        {"category", yarp::os::Value(classes[classIdPoint.x])},
-                        {"confidence", yarp::os::Value(confidence)},
-                        {"tlx", yarp::os::Value(left)},
-                        {"tly", yarp::os::Value(top)},
-                        {"brx", yarp::os::Value(left + width)},
-                        {"bry", yarp::os::Value(top + height)}
-                    };
-
-                    yInfo() << "Detected" << classes[classIdPoint.x] << "with" << confidence << "confidence";
-                    detectedObjects.push_back(std::move(detectedObject));
+                    classIds.push_back(classIdPoint.x);
+                    confidences.push_back((float)confidence);
+                    boxes.push_back(cv::Rect(left, top, width, height));
                 }
             }
         }
     }
-
-    return true;
-}
-
-/************************************************************************/
-
-/* Function adapted from https://docs.opencv.org/4.3.0/d4/db9/samples_2dnn_2object_detection_8cpp-example.html */
-void OpencvDnnDetector::preprocess(const cv::Mat &frame, cv::dnn::Net &net, cv::Size inpSize, float scale,
-                                   const cv::Scalar &mean, bool swapRB)
-{
-    cv::Mat blob;
-
-    // Create a 4D blob from a frame.
-    if (inpSize.width <= 0)
+    else
     {
-        inpSize.width = frame.cols;
+        yWarning() << "Unknown layer type:" << outLayerType;
+        return;
     }
 
-    if (inpSize.height <= 0)
+    std::vector<int> indices;
+    cv::dnn::NMSBoxes(boxes, confidences, confThreshold, nmsThreshold, indices);
+
+    for (auto idx : indices)
     {
-        inpSize.height = frame.rows;
-    }
+        const cv::Rect & box = boxes[idx];
+        float confidence = confidences[idx];
+        const std::string className = classes[classIds[idx]];
 
-    cv::dnn::blobFromImage(frame, blob, 1.0, inpSize, cv::Scalar(), swapRB, false, CV_8U);
+        detectedObjects.addDict() = {
+            {"category", yarp::os::Value(className)},
+            {"confidence", yarp::os::Value(confidence)},
+            {"tlx", yarp::os::Value(box.x)},
+            {"tly", yarp::os::Value(box.y)},
+            {"brx", yarp::os::Value(box.x + box.width)},
+            {"bry", yarp::os::Value(box.y + box.height)}
+        };
 
-    // Run a model.
-    net.setInput(blob, "", scale, mean);
-
-    if (net.getLayer(0)->outputNameToIndex("im_info") != -1) // Faster-RCNN or R-FCN
-    {
-        cv::resize(frame, frame, inpSize);
-        cv::Mat imInfo = (cv::Mat_<float>(1, 3) << inpSize.height, inpSize.width, 1.6f);
-        net.setInput(imInfo, "im_info");
+        yInfo() << "Detected" << className << "with" << confidence << "confidence";
     }
 }
 

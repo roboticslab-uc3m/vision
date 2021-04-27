@@ -45,7 +45,6 @@ class ColorRegionDetectorTest : public testing::Test
         {
         }
 
-
     protected:
         roboticslab::IDetector *iDetector;
         yarp::dev::PolyDriver detectorDevice;
@@ -54,11 +53,11 @@ class ColorRegionDetectorTest : public testing::Test
 TEST_F( ColorRegionDetectorTest, ColorRegionDetector1)
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
-    yarpImgRgb.resize(300,200);
+    yarpImgRgb.resize(300, 200);
     yarpImgRgb.zero();
 
-    std::vector<yarp::os::Property> detectedObjects;
-    iDetector->detect(yarpImgRgb,detectedObjects);
+    yarp::os::Bottle detectedObjects;
+    iDetector->detect(yarpImgRgb, detectedObjects);
 
     ASSERT_EQ(detectedObjects.size(), 0);
 }
@@ -68,25 +67,27 @@ TEST_F( ColorRegionDetectorTest, ColorRegionDetector2)
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
     yarpImgRgb.resize(300,200);
     yarpImgRgb.zero();
-    yarp::sig::draw::addCircle(yarpImgRgb,yarp::sig::PixelRgb(255,0,0),
-                               yarpImgRgb.width()/2,yarpImgRgb.height()/2,
-                               yarpImgRgb.height()/4); // x, y, radius
+    yarp::sig::draw::addCircle(yarpImgRgb, yarp::sig::PixelRgb(255, 0, 0),
+                               yarpImgRgb.width() / 2,yarpImgRgb.height() / 2,
+                               yarpImgRgb.height() / 4); // x, y, radius
 
-    std::vector<yarp::os::Property> detectedObjects;
-    iDetector->detect(yarpImgRgb,detectedObjects);
+    yarp::os::Bottle detectedObjects;
+    iDetector->detect(yarpImgRgb, detectedObjects);
 
     ASSERT_EQ(detectedObjects.size(), 1);
 
-    ASSERT_TRUE(detectedObjects[0].check("tlx"));
-    ASSERT_TRUE(detectedObjects[0].check("brx"));
-    ASSERT_TRUE(detectedObjects[0].check("tly"));
-    ASSERT_TRUE(detectedObjects[0].check("bry"));
+    const auto * detectedObject = detectedObjects.get(0).asDict();
 
-    int cx = (detectedObjects[0].find("tlx").asInt32() + detectedObjects[0].find("brx").asInt32()) / 2;
-    int cy = (detectedObjects[0].find("tly").asInt32() + detectedObjects[0].find("bry").asInt32()) / 2;
+    ASSERT_TRUE(detectedObject->check("tlx"));
+    ASSERT_TRUE(detectedObject->check("brx"));
+    ASSERT_TRUE(detectedObject->check("tly"));
+    ASSERT_TRUE(detectedObject->check("bry"));
 
-    ASSERT_NEAR(cx, yarpImgRgb.width()/2, 2);
-    ASSERT_NEAR(cy, yarpImgRgb.height()/2, 2);
+    int cx = (detectedObject->find("tlx").asInt32() + detectedObject->find("brx").asInt32()) / 2;
+    int cy = (detectedObject->find("tly").asInt32() + detectedObject->find("bry").asInt32()) / 2;
+
+    ASSERT_NEAR(cx, yarpImgRgb.width() / 2, 2);
+    ASSERT_NEAR(cy, yarpImgRgb.height() / 2, 2);
 }
 
 }  // namespace roboticslab

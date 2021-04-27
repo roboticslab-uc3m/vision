@@ -3,47 +3,51 @@
 #ifndef __RGBD_DETECTION_HPP__
 #define __RGBD_DETECTION_HPP__
 
-#include "SegmentorThread.hpp"
+#include <yarp/os/Bottle.h>
+#include <yarp/os/BufferedPort.h>
+#include <yarp/os/RFModule.h>
 
-#define DEFAULT_CROP_SELECTOR 0  // 1=true
-#define DEFAULT_RGBD_DEVICE "RGBDSensorClient"
-#define DEFAULT_RGBD_LOCAL "/rgbdDetection"
-#define DEFAULT_RGBD_REMOTE "/rgbd"
-#define DEFAULT_WATCHDOG    2       // [s]
+#include <yarp/dev/PolyDriver.h>
+#include <yarp/dev/IRGBDSensor.h>
 
+#include <yarp/sig/Image.h>
+#include <yarp/sig/IntrinsicParams.h>
+
+#include "IDetector.hpp"
 
 namespace roboticslab
 {
 
 /**
  * @ingroup rgbdDetection
- *
- * @brief Computer Vision.
+ * @brief 2.5D detection.
  */
-class RgbdDetection : public yarp::os::RFModule {
-  private:
-    SegmentorThread segmentorThread;
-    //
-    yarp::dev::PolyDriver dd;
-    yarp::dev::IRGBDSensor *iRGBDSensor;
+class RgbdDetection : public yarp::os::RFModule
+{
+public:
+    ~RgbdDetection()
+    { close(); }
 
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outImg;
-    yarp::os::Port outPort;
+    bool configure(yarp::os::ResourceFinder &rf) override;
+    double getPeriod() override;
+    bool updateModule() override;
+    bool interruptModule() override;
+    bool close() override;
 
-    int cropSelector;
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outCropSelectorImg;
-    yarp::os::Port inCropSelectorPort;
+private:
+    yarp::dev::PolyDriver sensorDevice;
+    yarp::dev::IRGBDSensor * iRGBDSensor;
+    yarp::sig::IntrinsicParams depthIntrinsicParams;
 
-    bool interruptModule();
-    double getPeriod();
-    bool updateModule();
-    double watchdog;
+    yarp::dev::PolyDriver detectorDevice;
+    IDetector * iDetector;
 
-  public:
-    bool configure(yarp::os::ResourceFinder &rf);
+    yarp::os::BufferedPort<yarp::os::Bottle> statePort;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> imagePort;
+
+    double period;
 };
 
-}  // namespace roboticslab
+} // namespace roboticslab
 
-#endif  // __RGBD_DETECTION_HPP__
-
+#endif // __RGBD_DETECTION_HPP__

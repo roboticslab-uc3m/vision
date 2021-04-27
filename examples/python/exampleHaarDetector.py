@@ -1,32 +1,37 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import yarp
 import roboticslab_vision
 
-#yarp.Network.init()
-#if not yarp.Network.checkNetwork():
-#    print("[error] Please try running yarp server")
-#    quit()
-
 detectorOptions = yarp.Property()
-detectorOptions.put("device","HaarDetector")
+detectorOptions.put("device", "HaarDetector")
 detectorDevice = yarp.PolyDriver(detectorOptions)
 
-iDetector = roboticslab_vision.viewIDetector(detectorDevice)
+if not detectorDevice.isValid():
+    print("Device not available")
+    raise SystemExit
 
-yarpImgRgb = yarp.ImageRgb()
+iDetector = roboticslab_vision.viewIDetector(detectorDevice)
 
 rf = yarp.ResourceFinder()
 rf.setDefaultContext("HaarDetector")
 faceFullName = rf.findFileByName("tests/face-nc.pgm")
-yarp.read(yarpImgRgb, faceFullName, yarp.FORMAT_PGM)
+yarpImgRgb = yarp.ImageRgb()
+
+if not yarp.read(yarpImgRgb, faceFullName, yarp.FORMAT_PGM):
+    print("Image file not available")
+    raise SystemExit
 
 print("detect()")
-detectedObjects = iDetector.detect(yarpImgRgb)
+detectedObjects = yarp.Bottle()
 
-print(detectedObjects[0].find("tlx").asInt32()) # 90
-print(detectedObjects[0].find("brx").asInt32()) # 168
-print(detectedObjects[0].find("tly").asInt32()) # 68
-print(detectedObjects[0].find("bry").asInt32()) # 146
+if not iDetector.detect(yarpImgRgb, detectedObjects) or detectedObjects.size() == 0:
+    print("Detector failed")
+    raise SystemExit
 
-detectorDevice.close()
+detectedObject = detectedObjects.get(0).asDict()
+
+print("tlx: %d" % detectedObject.find("tlx").asInt32()) # 90
+print("tly: %d" % detectedObject.find("brx").asInt32()) # 168
+print("brx: %d" % detectedObject.find("tly").asInt32()) # 68
+print("bry: %d" % detectedObject.find("bry").asInt32()) # 146

@@ -4,15 +4,18 @@ if(ENABLE_rgbDetection)
 
     add_executable(rgbDetection main.cpp
                                 RgbDetection.hpp
-                                RgbDetection.cpp
-                                DetectorThread.hpp
-                                DetectorThread.cpp)
+                                RgbDetection.cpp)
 
     target_link_libraries(rgbDetection YARP::YARP_os
                                        YARP::YARP_init
                                        YARP::YARP_dev
                                        YARP::YARP_sig
                                        ROBOTICSLAB::VisionInterfaces)
+
+    if(TARGET opencv_imgproc)
+        target_compile_definitions(rgbDetection PRIVATE HAVE_IMGPROC)
+        target_link_libraries(rgbDetection opencv_imgproc)
+    endif()
 
     install(TARGETS rgbDetection
             DESTINATION ${CMAKE_INSTALL_BINDIR})

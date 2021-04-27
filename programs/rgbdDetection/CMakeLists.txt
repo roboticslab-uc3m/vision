@@ -4,9 +4,7 @@ if(ENABLE_rgbdDetection)
 
     add_executable(rgbdDetection main.cpp
                                  RgbdDetection.hpp
-                                 RgbdDetection.cpp
-                                 SegmentorThread.hpp
-                                 SegmentorThread.cpp)
+                                 RgbdDetection.cpp)
 
     target_link_libraries(rgbdDetection YARP::YARP_os
                                         YARP::YARP_init
