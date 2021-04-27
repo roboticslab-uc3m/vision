@@ -86,8 +86,8 @@ TEST_F( ColorRegionDetectorTest, ColorRegionDetector2)
     int cx = (detectedObject->find("tlx").asInt32() + detectedObject->find("brx").asInt32()) / 2;
     int cy = (detectedObject->find("tly").asInt32() + detectedObject->find("bry").asInt32()) / 2;
 
-    ASSERT_NEAR(cx, yarpImgRgb.width()/2, 2);
-    ASSERT_NEAR(cy, yarpImgRgb.height()/2, 2);
+    ASSERT_NEAR(cx, yarpImgRgb.width() / 2, 2);
+    ASSERT_NEAR(cy, yarpImgRgb.height() / 2, 2);
 }
 
 }  // namespace roboticslab

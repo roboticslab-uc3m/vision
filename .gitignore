@@ -49,3 +49,6 @@ CMakeLists.txt.user*
 *.swp
 *.orig
 tags
+
+# project-specific
+/models/**/
