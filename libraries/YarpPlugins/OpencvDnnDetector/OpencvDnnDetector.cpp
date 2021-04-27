@@ -10,10 +10,10 @@
 
 namespace
 {
-    const std::string DEFAULT_MODEL_FILE = "yolov3-tiny-custom_5000.weights";
-    const std::string DEFAULT_CONFIG_DNN_FILE = "yolov3-tiny-custom.cfg";
+    const std::string DEFAULT_MODEL_FILE = "yolov3-tiny/yolov3-tiny.weights";
+    const std::string DEFAULT_CONFIG_DNN_FILE = "yolov3-tiny/yolov3-tiny.cfg";
     const std::string DEFAULT_FRAMEWORK = "darknet";
-    const std::string DEFAULT_CLASSES_FILE = "object_detection_classes_yolov3_sharon.txt";
+    const std::string DEFAULT_CLASSES_FILE = "coco-object-categories.txt";
     const int DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_CUDA;
     const int DEFAULT_TARGET = cv::dnn::DNN_TARGET_CUDA;
     const double DEFAULT_SCALE = 0.00392;
