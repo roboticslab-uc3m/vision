@@ -19,8 +19,15 @@
 
 int main(int argc, char * argv[])
 {
-    yarp::os::Property detectorOptions;
-    detectorOptions.put("device", "QrDetector");
+    yarp::os::Property detectorOptions {{"device", yarp::os::Value("QrDetector")}};
+    yarp::dev::PolyDriver detectorDevice(detectorOptions);
+    roboticslab::IDetector * iDetector;
+
+    if (!detectorDevice.isValid() || !detectorDevice.view(iDetector))
+    {
+        yError() << "Device not available";
+        return 1;
+    }
 
     yarp::os::ResourceFinder rf;
     rf.setDefaultContext("QrDetector");
@@ -31,22 +38,6 @@ int main(int argc, char * argv[])
     if (!yarp::sig::file::read(yarpImgRgb, qrFullName, yarp::sig::file::FORMAT_PNG))
     {
         yError() << "Image file not available";
-        return 1;
-    }
-
-    yarp::dev::PolyDriver detectorDevice(detectorOptions);
-
-    if (!detectorDevice.isValid())
-    {
-        yError() << "Device not available";
-        return 1;
-    }
-
-    roboticslab::IDetector * iDetector;
-
-    if (!detectorDevice.view(iDetector))
-    {
-        yError() << "Unable to acquire interfaces";
         return 1;
     }
 

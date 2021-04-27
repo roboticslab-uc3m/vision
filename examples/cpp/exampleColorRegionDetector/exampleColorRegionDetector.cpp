@@ -16,25 +16,19 @@
 
 #include <IDetector.hpp>
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
-    yarp::os::Property detectorOptions;
-    detectorOptions.put("device","ColorRegionDetector");
-    detectorOptions.put("algorithm", "redMinusGreen");
+    yarp::os::Property detectorOptions {
+        {"device", yarp::os::Value("ColorRegionDetector")},
+        {"algorithm", yarp::os::Value("redMinusGreen")}
+    };
 
     yarp::dev::PolyDriver detectorDevice(detectorOptions);
-
-    if (!detectorDevice.isValid())
-    {
-        yError() << "Device not available";
-        return 1;
-    }
-
     roboticslab::IDetector * iDetector;
 
-    if (!detectorDevice.view(iDetector))
+    if (!detectorDevice.isValid() || !detectorDevice.view(iDetector))
     {
-        yError() << "Unable to acquire interface";
+        yError() << "Device not available";
         return 1;
     }
 
@@ -49,7 +43,7 @@ int main(int argc, char *argv[])
 
     yarp::os::Bottle detectedObjects;
 
-    if (!iDetector->detect(yarpImgRgb, detectedObjects))
+    if (!iDetector->detect(yarpImgRgb, detectedObjects) || detectedObjects.size() == 0)
     {
         yError() << "Detector failed";
         return 1;
@@ -57,10 +51,10 @@ int main(int argc, char *argv[])
 
     const auto * detectedObject = detectedObjects.get(0).asDict();
 
-    yInfo() << detectedObject->find("tlx").asInt32(); // 100
-    yInfo() << detectedObject->find("brx").asInt32(); // 201
-    yInfo() << detectedObject->find("tly").asInt32(); // 50
-    yInfo() << detectedObject->find("bry").asInt32(); // 151
+    yInfo() << "tlx:" << detectedObject->find("tlx").asInt32(); // 100
+    yInfo() << "tly:" << detectedObject->find("brx").asInt32(); // 201
+    yInfo() << "brx:" << detectedObject->find("tly").asInt32(); // 50
+    yInfo() << "bry:" << detectedObject->find("bry").asInt32(); // 151
 
     return 0;
 }

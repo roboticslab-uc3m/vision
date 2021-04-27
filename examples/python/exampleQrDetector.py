@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import yarp
 import roboticslab_vision
@@ -7,14 +7,20 @@ detectorOptions = yarp.Property()
 detectorOptions.put("device", "QrDetector")
 detectorDevice = yarp.PolyDriver(detectorOptions)
 
-iDetector = roboticslab_vision.viewIDetector(detectorDevice)
+if not detectorDevice.isValid():
+    print("Device not available")
+    raise SystemExit
 
-yarpImgRgb = yarp.ImageRgb()
+iDetector = roboticslab_vision.viewIDetector(detectorDevice)
 
 rf = yarp.ResourceFinder()
 rf.setDefaultContext("QrDetector")
 qrFullName = rf.findFileByName("tests/rdqr.png")
-yarp.read(yarpImgRgb, qrFullName, yarp.FORMAT_PNG)
+yarpImgRgb = yarp.ImageRgb()
+
+if not yarp.read(yarpImgRgb, qrFullName, yarp.FORMAT_PNG):
+    print("Image file not available")
+    raise SystemExit
 
 print("detect()")
 detectedObjects = yarp.Bottle()
@@ -35,5 +41,3 @@ for i in range(detectedObjects.size()):
     text = detectedObjects.get(i).asDict().find("text").asString()
 
     print("qr%d [[%d,%d],[%d,%d],[%d,%d],[%d,%d]]: \"%s\"" % (i, tlX, tlY, trX, trY, brX, brY, blX, blY, text))
-
-detectorDevice.close()
