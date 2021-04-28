@@ -27,18 +27,18 @@ int main(int argc, char * argv[])
 
     if (!yarp::os::Network::checkNetwork())
     {
-        yError() << "no YARP server available";
+        yError() << "No YARP server available";
         return 1;
     }
 
     yarp::os::ResourceFinder options;
     options.configure(argc, argv);
 
-    yDebug() << "config:" << options.toString();
+    yDebug() << "Config:" << options.toString();
 
     if (options.check("help"))
     {
-        yInfo() << argv[0] << "commands:";
+        yInfo() << argv[0] << "Commands:";
         yInfo() << "\t--remote" << "\tremote port to connect to, defaults to:" << DEFAULT_REMOTE;
         yInfo() << "\t--prefix" << "\tlocal port prefix, defaults to:" << DEFAULT_PREFIX;
         yInfo() << "\t--cloud " << "\tpath to file with .ply extension to export the point cloud to";
@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
 
     if (!rpc.open(prefix + "/rpc:c") || !yarp::os::Network::connect(rpc.getName(), remote + "/rpc:s"))
     {
-        yError() << "unable to establish connection to remote server";
+        yError() << "Unable to establish connection to remote server";
         return 1;
     }
 
@@ -68,21 +68,21 @@ int main(int argc, char * argv[])
 
     if (!rpc.write(cmd, cloud))
     {
-        yError() << "unable to send remote command";
+        yError() << "Unable to send remote command";
         return 1;
     }
 
-    yInfo() << "got cloud of" << cloud.size() << "points";
+    yInfo() << "Got cloud of" << cloud.size() << "points";
 
     if (!fileCloud.empty())
     {
         if (!roboticslab::YarpCloudUtils::savePLY(fileCloud, cloud, binary))
         {
-            yWarning() << "unable to export cloud to" << fileCloud;
+            yWarning() << "Unable to export cloud to" << fileCloud;
         }
         else
         {
-            yInfo() << "cloud exported to" << fileCloud;
+            yInfo() << "Cloud exported to" << fileCloud;
         }
     }
 
@@ -95,23 +95,23 @@ int main(int argc, char * argv[])
 
         if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, options, collection))
         {
-            yWarning() << "unable to reconstruct surface from cloud";
+            yWarning() << "Unable to reconstruct surface from cloud";
         }
         else
         {
             auto end = yarp::os::SystemClock::nowSystem();
             auto elapsed = static_cast<int>((end - start) * 1000);
 
-            yInfo() << "surface reconstructed in" << elapsed << "ms, got mesh of" << meshPoints.size() << "points and"
+            yInfo() << "Surface reconstructed in" << elapsed << "ms, got mesh of" << meshPoints.size() << "points and"
                     << meshIndices.size() / 3 << "faces";
 
             if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices, binary))
             {
-                yWarning() << "unable to export mesh to" << fileMesh;
+                yWarning() << "Unable to export mesh to" << fileMesh;
             }
             else
             {
-                yInfo() << "mesh exported to" << fileMesh;
+                yInfo() << "Mesh exported to" << fileMesh;
             }
         }
     }

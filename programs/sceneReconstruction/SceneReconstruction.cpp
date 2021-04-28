@@ -7,6 +7,10 @@
 #include <yarp/os/Value.h>
 #include <yarp/os/Vocab.h>
 
+constexpr auto DEFAULT_PREFIX = "/sceneReconstruction";
+constexpr auto DEFAULT_PERIOD = 0.02; // [s]
+constexpr auto DEFAULT_ALGORITHM = "kinfu";
+
 constexpr auto VOCAB_OK = yarp::os::createVocab('o','k');
 constexpr auto VOCAB_FAIL = yarp::os::createVocab('f','a','i','l');
 constexpr auto VOCAB_HELP = yarp::os::createVocab('h','e','l','p');
@@ -45,12 +49,12 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 
     period = rf.check("period", yarp::os::Value(DEFAULT_PERIOD * 1000), "update period (ms)").asInt32() * 0.001;
 
-    std::string prefix = rf.check("prefix", yarp::os::Value(DEFAULT_PREFIX), "port prefix").asString();
+    auto prefix = rf.check("prefix", yarp::os::Value(DEFAULT_PREFIX), "port prefix").asString();
     yarp::os::Property cameraOptions;
 
     if (rf.check("remote", "remote RGBD camera port"))
     {
-        std::string remote = rf.find("remote").asString();
+        auto remote = rf.find("remote").asString();
         yInfo() << "Using remote camera at port prefix" << remote;
 
         cameraOptions = {
@@ -107,7 +111,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     int height = iRGBDSensor->getDepthHeight();
 
     const auto & params = rf.findGroup("KINECT_FUSION");
-    std::string algorithm = params.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM), "algorithm identifier").asString();
+    auto algorithm = params.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM), "algorithm identifier").asString();
 
     if (algorithm == "kinfu")
     {
@@ -150,6 +154,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     }
 
     rpcServer.setReader(*this);
+    renderPort.setWriteOnly();
     return true;
 }
 

@@ -33,7 +33,7 @@ int main(int argc, char * argv[])
 
     if (!yarp::os::Network::checkNetwork())
     {
-        yError() << "no YARP server available";
+        yError() << "No YARP server available";
         return 1;
     }
 
@@ -48,11 +48,11 @@ int main(int argc, char * argv[])
     options.fromConfigFile(sampleConfigFile, false);
 #endif
 
-    yDebug() << "config:" << options.toString();
+    yDebug() << "Config:" << options.toString();
 
     if (options.check("help"))
     {
-        yInfo() << argv[0] << "commands:";
+        yInfo() << argv[0] << "Commands:";
         yInfo() << "\t--remote" << "\tremote port prefix to connect to, defaults to:" << DEFAULT_REMOTE;
         yInfo() << "\t--prefix" << "\tlocal port prefix, defaults to:" << DEFAULT_PREFIX;
         yInfo() << "\t--cloud " << "\tpath to file with .ply extension to export the point cloud to";
@@ -88,7 +88,7 @@ int main(int argc, char * argv[])
 
         if (!sensorDevice.open(sensorOptions))
         {
-            yError() << "unable to establish connection with remote RGBD sensor";
+            yError() << "Unable to establish connection with remote RGBD sensor";
             return 1;
         }
 
@@ -96,7 +96,7 @@ int main(int argc, char * argv[])
 
         if (!sensorDevice.view(iRGBDSensor))
         {
-            yError() << "unable to view IRGBDSensor interface";
+            yError() << "Unable to view IRGBDSensor interface";
             return 1;
         }
 
@@ -111,7 +111,7 @@ int main(int argc, char * argv[])
 
         if (!iRGBDSensor->getRgbIntrinsicParam(intrinsic))
         {
-            yError() << "unable to retrieve RGB intrinsic parameters";
+            yError() << "Unable to retrieve RGB intrinsic parameters";
             return 1;
         }
 
@@ -127,7 +127,7 @@ int main(int argc, char * argv[])
             }
             else if (n == 10)
             {
-                yError() << "unable to acquire RGBD frames";
+                yError() << "Unable to acquire RGBD frames";
                 return 1;
             }
 
@@ -138,17 +138,17 @@ int main(int argc, char * argv[])
     yarp::sig::ImageOf<yarp::sig::PixelRgb> temp;
     temp.copy(colorImage);
     auto cloud = yarp::sig::utils::depthRgbToPC<yarp::sig::DataXYZRGBA>(depthImage, temp, colorParams);
-    yInfo() << "got cloud of" << cloud.size() << "points, organized as" << cloud.width() << "x" << cloud.height();
+    yInfo() << "Got cloud of" << cloud.size() << "points, organized as" << cloud.width() << "x" << cloud.height();
 
     if (!fileCloud.empty())
     {
         if (!roboticslab::YarpCloudUtils::savePLY(fileCloud, cloud, binary))
         {
-            yWarning() << "unable to export cloud to" << fileCloud;
+            yWarning() << "Unable to export cloud to" << fileCloud;
         }
         else
         {
-            yInfo() << "cloud exported to" << fileCloud;
+            yInfo() << "Cloud exported to" << fileCloud;
         }
     }
 
@@ -161,23 +161,23 @@ int main(int argc, char * argv[])
 
         if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, options, collection))
         {
-            yWarning() << "unable to reconstruct surface from cloud";
+            yWarning() << "Unable to reconstruct surface from cloud";
         }
         else
         {
             auto end = yarp::os::SystemClock::nowSystem();
             auto elapsed = static_cast<int>((end - start) * 1000);
 
-            yInfo() << "surface reconstructed in" << elapsed << "ms, got mesh of" << meshPoints.size() << "points and"
+            yInfo() << "Surface reconstructed in" << elapsed << "ms, got mesh of" << meshPoints.size() << "points and"
                     << meshIndices.size() / 3 << "faces";
 
             if (!roboticslab::YarpCloudUtils::savePLY(fileMesh, meshPoints, meshIndices, binary))
             {
-                yWarning() << "unable to export mesh to" << fileMesh;
+                yWarning() << "Unable to export mesh to" << fileMesh;
             }
             else
             {
-                yInfo() << "mesh exported to" << fileMesh;
+                yInfo() << "Mesh exported to" << fileMesh;
             }
         }
     }

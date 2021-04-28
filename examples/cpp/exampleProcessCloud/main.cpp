@@ -17,11 +17,11 @@ int main(int argc, char * argv[])
     yarp::os::ResourceFinder options;
     options.configure(argc, argv);
 
-    yDebug() << "config:" << options.toString();
+    yDebug() << "Config:" << options.toString();
 
     if (options.check("help"))
     {
-        yInfo() << argv[0] << "commands:";
+        yInfo() << argv[0] << "Commands:";
         yInfo() << "\t--in    " << "\tpath to file with .ply extension to import the point cloud from";
         yInfo() << "\t--out   " << "\tpath to file with .ply extension to export the point cloud to";
         yInfo() << "\t--steps " << "\tsection collection defining the processing pipeline, defaults to:" << DEFAULT_COLLECTION;
@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
 
     if (fileIn.empty() || fileOut.empty())
     {
-        yError() << "either of the --in and --out parameters are missing or empty";
+        yError() << "Either of the --in and --out parameters are missing or empty";
         return 1;
     }
 
@@ -46,11 +46,11 @@ int main(int argc, char * argv[])
 
     if (!roboticslab::YarpCloudUtils::loadPLY(fileIn, cloudIn))
     {
-        yError() << "unable to import cloud from" << fileIn;
+        yError() << "Unable to import cloud from" << fileIn;
         return 1;
     }
 
-    yInfo() << "got cloud of" << cloudIn.size() << "points";
+    yInfo() << "Got cloud of" << cloudIn.size() << "points";
 
     if (options.check("height") && options.check("width"))
     {
@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
 
         if (height * width != cloudIn.size())
         {
-            yWarning() << "organized cloud dimensions do not match number of points:" << height << "*" << width << "=" << height * width;
+            yWarning() << "Organized cloud dimensions do not match number of points:" << height << "*" << width << "=" << height * width;
         }
 
         cloudIn.resize(width, height);
@@ -71,22 +71,22 @@ int main(int argc, char * argv[])
 
     if (!roboticslab::YarpCloudUtils::processCloud(cloudIn, cloudOut, options, collection))
     {
-        yError() << "unable to process cloud";
+        yError() << "Unable to process cloud";
         return 1;
     }
 
     auto end = yarp::os::SystemClock::nowSystem();
     auto elapsed = static_cast<int>((end - start) * 1000);
 
-    yInfo() << "cloud processed in" << elapsed << "ms, got new cloud of" << cloudOut.size() << "points";
+    yInfo() << "Cloud processed in" << elapsed << "ms, got new cloud of" << cloudOut.size() << "points";
 
     if (!roboticslab::YarpCloudUtils::savePLY(fileOut, cloudOut, binary))
     {
-        yError() << "unable to export mesh to" << fileOut;
+        yError() << "Unable to export mesh to" << fileOut;
         return 1;
     }
 
-    yInfo() << "cloud exported to" << fileOut;
+    yInfo() << "Cloud exported to" << fileOut;
 
     return 0;
 }

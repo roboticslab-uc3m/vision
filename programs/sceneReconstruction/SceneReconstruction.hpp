@@ -9,15 +9,13 @@
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/RpcServer.h>
 #include <yarp/os/RFModule.h>
+
 #include <yarp/dev/IRGBDSensor.h>
 #include <yarp/dev/PolyDriver.h>
+
 #include <yarp/sig/Image.h>
 
 #include "KinectFusion.hpp"
-
-#define DEFAULT_PREFIX "/sceneReconstruction"
-#define DEFAULT_PERIOD 0.02 // [s]
-#define DEFAULT_ALGORITHM "kinfu"
 
 namespace roboticslab
 {
@@ -31,13 +29,6 @@ class SceneReconstruction : public yarp::os::RFModule,
                             private yarp::os::PortReader
 {
 public:
-    SceneReconstruction()
-        : period(DEFAULT_PERIOD),
-          isRunning(false),
-          kinfu(nullptr),
-          iRGBDSensor(nullptr)
-    {}
-
     ~SceneReconstruction() override
     { close(); }
 
@@ -56,11 +47,11 @@ public:
 
 private:
     double period;
-    std::atomic_bool isRunning;
+    std::atomic_bool isRunning {false};
     std::mutex kinfuMutex;
-    std::unique_ptr<KinectFusion> kinfu;
+    std::unique_ptr<KinectFusion> kinfu {nullptr};
     yarp::dev::PolyDriver cameraDriver;
-    yarp::dev::IRGBDSensor * iRGBDSensor;
+    yarp::dev::IRGBDSensor * iRGBDSensor {nullptr};
     yarp::os::RpcServer rpcServer;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono>> renderPort;
 };
