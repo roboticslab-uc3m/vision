@@ -6,6 +6,8 @@
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/cv/Cv.h>
 
+#include <opencv2/core/version.hpp>
+
 #include "DnnDetector.hpp"
 
 namespace
@@ -14,8 +16,13 @@ namespace
     const std::string DEFAULT_CONFIG_DNN_FILE = "yolov3-tiny/yolov3-tiny.cfg";
     const std::string DEFAULT_FRAMEWORK = "darknet";
     const std::string DEFAULT_CLASSES_FILE = "coco-object-categories.txt";
+#if CV_VERSION_MAJOR >= 4
     const int DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_CUDA;
     const int DEFAULT_TARGET = cv::dnn::DNN_TARGET_CUDA;
+#else
+    const int DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_DEFAULT;
+    const int DEFAULT_TARGET = cv::dnn::DNN_TARGET_CPU;
+#endif
     const double DEFAULT_SCALE = 0.00392;
     const double DEFAULT_MEAN = 0;
     const double DEFAULT_CONF_THR = 0.1;

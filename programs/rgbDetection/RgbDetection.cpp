@@ -9,7 +9,7 @@
 #include <yarp/os/Property.h>
 
 #ifdef HAVE_IMGPROC
-# include <opencv2/imgproc/imgproc.hpp>
+# include <opencv2/imgproc.hpp>
 #else
 # include <yarp/sig/ImageDraw.h>
 #endif

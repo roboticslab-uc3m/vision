@@ -5,7 +5,7 @@
 
 #include <yarp/dev/DeviceDriver.h>
 
-#include <opencv2/objdetect/objdetect.hpp>
+#include <opencv2/objdetect.hpp>
 
 #include "IDetector.hpp"
 

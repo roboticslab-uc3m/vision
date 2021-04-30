@@ -7,7 +7,6 @@
 #include <yarp/os/Value.h>
 #include <yarp/cv/Cv.h>
 
-#include <opencv2/core/types.hpp>
 #include <opencv2/core/version.hpp>
 
 using namespace roboticslab;

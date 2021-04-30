@@ -1,6 +1,6 @@
 if(NOT DEFINED ENABLE_DnnDetector OR ENABLE_DnnDetector)
-    if(NOT TARGET opencv_dnn OR NOT OpenCV_VERSION_MAJOR EQUAL 4)
-        message(WARNING "OpenCV 4.0+/dnn module not found, disabling DnnDetector device")
+    if(NOT TARGET opencv_dnn)
+        message(WARNING "OpenCV dnn module not found, disabling DnnDetector device")
     elseif(NOT YARP_cv_FOUND)
         message(WARNING "YARP_cv package not found, disabling DnnDetector device")
     endif()
@@ -11,7 +11,7 @@ yarp_prepare_plugin(DnnDetector
                     TYPE roboticslab::DnnDetector
                     INCLUDE DnnDetector.hpp
                     DEFAULT ON
-                    DEPENDS "TARGET opencv_dnn;OpenCV_VERSION VERSION_GREATER_EQUAL 4.0;YARP_cv_FOUND")
+                    DEPENDS "TARGET opencv_dnn;YARP_cv_FOUND")
 
 if(NOT SKIP_DnnDetector)
 

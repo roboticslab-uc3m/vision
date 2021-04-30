@@ -1,6 +1,6 @@
 if(NOT DEFINED ENABLE_HaarDetector OR ENABLE_HaarDetector)
-    if(NOT OpenCV_FOUND)
-        message(WARNING "OpenCV package not found, disabling HaarDetector device")
+    if(NOT TARGET opencv_objdetect)
+        message(WARNING "OpenCV objdetect module not found, disabling HaarDetector device")
     elseif(NOT YARP_cv_FOUND)
         message(WARNING "YARP_cv package not found, disabling HaarDetector device")
     endif()
@@ -11,7 +11,7 @@ yarp_prepare_plugin(HaarDetector
                     TYPE roboticslab::HaarDetector
                     INCLUDE HaarDetector.hpp
                     DEFAULT ON
-                    DEPENDS "OpenCV_FOUND;YARP_cv_FOUND")
+                    DEPENDS "TARGET opencv_objdetect;YARP_cv_FOUND")
 
 if(NOT SKIP_HaarDetector)
 
@@ -25,7 +25,7 @@ if(NOT SKIP_HaarDetector)
     target_link_libraries(HaarDetector YARP::YARP_os
                                        YARP::YARP_dev
                                        YARP::YARP_cv
-                                       ${OpenCV_LIBS}
+                                       opencv_objdetect
                                        ROBOTICSLAB::VisionInterfaces)
 
     yarp_install(TARGETS HaarDetector

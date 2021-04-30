@@ -42,18 +42,11 @@ find_package(YARP 3.3 REQUIRED COMPONENTS os dev sig
                                OPTIONAL_COMPONENTS cv pcl)
 
 # Soft dependencies.
-
 find_package(OpenCV QUIET)
-find_package(PCL 1.8 QUIET)
+find_package(PCL 1.8 QUIET COMPONENTS common features filters search surface)
 find_package(GTestSources 1.6.0 QUIET)
 find_package(SWIG QUIET)
 find_package(Doxygen QUIET)
-
-# Focal + PCL 1.10 + OpenNI workaround (idea: use CMake components to find_package(PCL)?).
-if(PCL_VERSION VERSION_EQUAL 1.10)
-    include_directories(/usr/include/ni)
-    link_libraries(/usr/lib/libOpenNI.so)
-endif()
 
 # Always build YARP devices as MODULE libraries.
 set(YARP_FORCE_DYNAMIC_PLUGINS TRUE CACHE INTERNAL "Force dynamic plugins")

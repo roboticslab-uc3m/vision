@@ -12,7 +12,8 @@ if(ENABLE_TravisLib)
 
     set_target_properties(TravisLib PROPERTIES PUBLIC_HEADER TravisLib.hpp)
 
-    target_link_libraries(TravisLib PUBLIC ${OpenCV_LIBS})
+    target_link_libraries(TravisLib PUBLIC opencv_core
+                                    PRIVATE opencv_imgproc)
 
     target_include_directories(TravisLib PUBLIC ${OpenCV_INCLUDE_DIRS}
                                                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

@@ -1,6 +1,6 @@
 if(NOT DEFINED ENABLE_QrDetector OR ENABLE_QrDetector)
-    if(NOT OpenCV_FOUND OR NOT OpenCV_VERSION_MAJOR EQUAL 4)
-        message(WARNING "OpenCV 4.x package not found, disabling QrDetector device")
+    if(NOT TARGET opencv_imgproc OR NOT OpenCV_VERSION_MAJOR EQUAL 4)
+        message(WARNING "OpenCV 4.x imgproc module not found, disabling QrDetector device")
     elseif(NOT YARP_cv_FOUND)
         message(WARNING "YARP_cv package not found, disabling QrDetector device")
     endif()
@@ -11,7 +11,7 @@ yarp_prepare_plugin(QrDetector
                     TYPE roboticslab::QrDetector
                     INCLUDE QrDetector.hpp
                     DEFAULT ON
-                    DEPENDS "OpenCV_VERSION_MAJOR EQUAL 4;YARP_cv_FOUND")
+                    DEPENDS "TARGET opencv_imgproc;OpenCV_VERSION_MAJOR EQUAL 4;YARP_cv_FOUND")
 
 if(NOT SKIP_QrDetector)
 
@@ -25,7 +25,7 @@ if(NOT SKIP_QrDetector)
     target_link_libraries(QrDetector YARP::YARP_os
                                      YARP::YARP_dev
                                      YARP::YARP_cv
-                                     ${OpenCV_LIBS}
+                                     opencv_imgproc
                                      ROBOTICSLAB::VisionInterfaces)
 
     yarp_install(TARGETS QrDetector
