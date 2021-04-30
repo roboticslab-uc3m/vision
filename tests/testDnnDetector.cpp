@@ -25,8 +25,8 @@ public:
     {
         yarp::os::Property deviceOptions {
             {"device", yarp::os::Value("DnnDetector")},
-            {"trainedModel", yarp::os::Value("yolov3-tiny.weights")},
-            {"configDNNModel", yarp::os::Value("yolov3-tiny.cfg")},
+            {"trainedModel", yarp::os::Value("yolov3-tiny/yolov3-tiny.weights")},
+            {"configDNNModel", yarp::os::Value("yolov3-tiny/yolov3-tiny.cfg")},
             {"classesTrainedModel", yarp::os::Value("coco-object-categories.txt")}
         };
 
