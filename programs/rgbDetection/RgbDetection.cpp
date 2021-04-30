@@ -14,10 +14,10 @@
 # include <yarp/sig/ImageDraw.h>
 #endif
 
-#define DEFAULT_SENSOR_DEVICE "remote_grabber"
-#define DEFAULT_SENSOR_REMOTE "/grabber"
-#define DEFAULT_LOCAL_PREFIX "/rgbDetection"
-#define DEFAULT_PERIOD 0.02 // [s]
+constexpr auto DEFAULT_SENSOR_DEVICE = "remote_grabber";
+constexpr auto DEFAULT_SENSOR_REMOTE = "/grabber";
+constexpr auto DEFAULT_LOCAL_PREFIX = "/rgbDetection";
+constexpr auto DEFAULT_PERIOD = 0.02; // [s]
 
 using namespace roboticslab;
 
@@ -106,8 +106,17 @@ bool RgbDetection::configure(yarp::os::ResourceFinder & rf)
         return false;
     }
 
+    if (!cropPort.open(strLocalPrefix + "/crop:i"))
+    {
+        yError() << "Unable to open input crop port" << cropPort.getName();
+        return false;
+    }
+
     statePort.setWriteOnly();
     imagePort.setWriteOnly();
+
+    cropPort.setReadOnly();
+    cropPort.useCallback(cropCallback);
 
     return true;
 }
@@ -119,12 +128,25 @@ double RgbDetection::getPeriod()
 
 bool RgbDetection::updateModule()
 {
+    auto vertices = cropCallback.getVertices();
+
     yarp::sig::ImageOf<yarp::sig::PixelRgb> frame;
 
-    if (!frameGrabber->getImage(frame))
+    if (vertices.size() == 0)
     {
-        yWarning() << "Frame acquisition failure";
-        return true;
+        if (!frameGrabber->getImage(frame))
+        {
+            yWarning() << "Frame acquisition failure";
+            return true;
+        }
+    }
+    else
+    {
+        if (!frameGrabber->getImageCrop(YARP_CROP_RECT, vertices, frame))
+        {
+            yWarning() << "Cropped frame acquisition failure";
+            return true;
+        }
     }
 
     yarp::os::Bottle detectedObjects;
@@ -179,6 +201,8 @@ bool RgbDetection::interruptModule()
 {
     statePort.interrupt();
     imagePort.interrupt();
+    cropPort.interrupt();
+    cropPort.disableCallback();
     return true;
 }
 
@@ -188,5 +212,6 @@ bool RgbDetection::close()
     detectorDevice.close();
     statePort.close();
     imagePort.close();
+    cropPort.close();
     return true;
 }

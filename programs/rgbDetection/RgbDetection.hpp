@@ -13,6 +13,7 @@
 #include <yarp/sig/Image.h>
 
 #include "IDetector.hpp"
+#include "YarpCropCallback.hpp"
 
 namespace roboticslab
 {
@@ -42,6 +43,9 @@ private:
 
     yarp::os::BufferedPort<yarp::os::Bottle> statePort;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> imagePort;
+
+    yarp::os::BufferedPort<yarp::os::Bottle> cropPort;
+    YarpCropCallback cropCallback;
 
     double period;
 };

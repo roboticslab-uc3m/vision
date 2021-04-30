@@ -3,4 +3,5 @@
 
 add_subdirectory(TravisLib)
 add_subdirectory(YarpCloudUtils)
+add_subdirectory(YarpCropCallback)
 add_subdirectory(YarpPlugins)

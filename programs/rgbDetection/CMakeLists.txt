@@ -10,7 +10,8 @@ if(ENABLE_rgbDetection)
                                        YARP::YARP_init
                                        YARP::YARP_dev
                                        YARP::YARP_sig
-                                       ROBOTICSLAB::VisionInterfaces)
+                                       ROBOTICSLAB::VisionInterfaces
+                                       ROBOTICSLAB::YarpCropCallback)
 
     if(TARGET opencv_imgproc)
         target_compile_definitions(rgbDetection PRIVATE HAVE_IMGPROC)

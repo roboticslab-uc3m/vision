@@ -11,10 +11,14 @@
 #include <yarp/os/Property.h>
 #include <yarp/sig/ImageDraw.h>
 
-#define DEFAULT_SENSOR_DEVICE "RGBDSensorClient"
-#define DEFAULT_SENSOR_REMOTE "/rgbd"
-#define DEFAULT_LOCAL_PREFIX "/rgbdDetection"
-#define DEFAULT_PERIOD 0.02 // [s]
+#if HAVE_CROP
+# include <yarp/sig/ImageUtils.h>
+#endif
+
+constexpr auto DEFAULT_SENSOR_DEVICE = "RGBDSensorClient";
+constexpr auto DEFAULT_SENSOR_REMOTE = "/rgbd";
+constexpr auto DEFAULT_LOCAL_PREFIX = "/rgbdDetection";
+constexpr auto DEFAULT_PERIOD = 0.02; // [s]
 
 using namespace roboticslab;
 
@@ -122,6 +126,17 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     statePort.setWriteOnly();
     imagePort.setWriteOnly();
 
+#if HAVE_CROP
+    if (!cropPort.open(strLocalPrefix + "/crop:i"))
+    {
+        yError() << "Unable to open input crop port" << cropPort.getName();
+        return false;
+    }
+
+    cropPort.setReadOnly();
+    cropPort.useCallback(cropCallback);
+#endif
+
     return true;
 }
 
@@ -141,15 +156,40 @@ bool RgbdDetection::updateModule()
         return true;
     }
 
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> rgbImage;
+    int offsetX = 0;
+    int offsetY = 0;
+
+#if HAVE_CROP
+    auto vertices = cropCallback.getVertices();
+
+    if (vertices.size() != 0)
+    {
+        if (!yarp::sig::utils::cropRect(colorFrame, vertices[0], vertices[1], rgbImage))
+        {
+            yWarning() << "Crop failed, using full color frame";
+            rgbImage.copy(colorFrame);
+        }
+        else
+        {
+            offsetX = vertices[0].first;
+            offsetY = vertices[0].second;
+        }
+    }
+    else
+    {
+        rgbImage.copy(colorFrame);
+    }
+#else
+    rgbImage.copy(colorFrame);
+#endif
+
     yarp::os::Bottle detectedObjects;
 
-    if (!iDetector->detect(colorFrame, detectedObjects))
+    if (!iDetector->detect(rgbImage, detectedObjects))
     {
         yWarning() << "Detector failure";
     }
-
-    auto & rgbImage = imagePort.prepare();
-    rgbImage.copy(colorFrame);
 
     if (detectedObjects.size() != 0)
     {
@@ -171,13 +211,13 @@ bool RgbdDetection::updateModule()
             int pyColor = (tly + bry) / 2;
 
             int pxDepth, pyDepth;
-            scaleXY(colorFrame, depthFrame, pxColor, pyColor, &pxDepth, &pyDepth);
+            scaleXY(colorFrame, depthFrame, pxColor + offsetX, pyColor + offsetY, &pxDepth, &pyDepth);
             float depth = depthFrame.pixel(pxDepth, pyDepth);
 
             if (depth > 0.0f)
             {
-                records.emplace_back(std::forward_as_tuple(depth, pxDepth, pyDepth,
-                                                           pxColor, pyColor, (brx - tlx) / 2, (bry - tly) / 2));
+                records.push_back(std::make_tuple(depth, pxDepth, pyDepth,
+                                                  pxColor, pyColor, (brx - tlx) / 2, (bry - tly) / 2));
 
                 if (!closest || depth < std::get<0>(*closest))
                 {
@@ -206,6 +246,7 @@ bool RgbdDetection::updateModule()
         }
     }
 
+    imagePort.prepare() = rgbImage;
     imagePort.write();
     return true;
 }
@@ -214,6 +255,10 @@ bool RgbdDetection::interruptModule()
 {
     statePort.interrupt();
     imagePort.interrupt();
+#if HAVE_CROP
+    cropPort.interrupt();
+    cropPort.disableCallback();
+#endif
     return true;
 }
 
@@ -223,5 +268,8 @@ bool RgbdDetection::close()
     detectorDevice.close();
     statePort.close();
     imagePort.close();
+#if HAVE_CROP
+    cropPort.close();
+#endif
     return true;
 }
