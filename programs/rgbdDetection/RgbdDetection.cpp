@@ -3,6 +3,7 @@
 #include "RgbdDetection.hpp"
 
 #include <cstdio>
+#include <algorithm> // std::max
 #include <tuple>
 #include <vector>
 
@@ -11,10 +12,14 @@
 #include <yarp/os/Property.h>
 #include <yarp/sig/ImageDraw.h>
 
-#define DEFAULT_SENSOR_DEVICE "RGBDSensorClient"
-#define DEFAULT_SENSOR_REMOTE "/rgbd"
-#define DEFAULT_LOCAL_PREFIX "/rgbdDetection"
-#define DEFAULT_PERIOD 0.02 // [s]
+#if YARP_VERSION_MINOR >= 5
+# include <yarp/sig/ImageUtils.h>
+#endif
+
+constexpr auto DEFAULT_SENSOR_DEVICE = "RGBDSensorClient";
+constexpr auto DEFAULT_SENSOR_REMOTE = "/rgbd";
+constexpr auto DEFAULT_LOCAL_PREFIX = "/rgbdDetection";
+constexpr auto DEFAULT_PERIOD = 0.02; // [s]
 
 using namespace roboticslab;
 
@@ -122,6 +127,17 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     statePort.setWriteOnly();
     imagePort.setWriteOnly();
 
+#if YARP_VERSION_MINOR >= 5
+    if (!cropPort.open(strLocalPrefix + "/crop:i"))
+    {
+        yError() << "Unable to open input crop port" << cropPort.getName();
+        return false;
+    }
+
+    cropPort.setReadOnly();
+    cropPort.useCallback(*this);
+#endif
+
     return true;
 }
 
@@ -141,15 +157,43 @@ bool RgbdDetection::updateModule()
         return true;
     }
 
+    yarp::sig::ImageOf<yarp::sig::PixelRgb> rgbImage;
+    int offsetX = 0;
+    int offsetY = 0;
+
+#if YARP_VERSION_MINOR >= 5
+    cropMutex.lock();
+    auto vertices = cropVertices;
+    cropMutex.unlock();
+
+    if (!vertices.empty())
+    {
+        if (!yarp::sig::utils::cropRect(colorFrame, vertices[0], vertices[1], rgbImage))
+        {
+            yWarning() << "Crop failed, using full color frame";
+            rgbImage.copy(colorFrame);
+        }
+        else
+        {
+            // this is why we need to normalize vertices even if cropRect can do it for us
+            offsetX = vertices[0].first;
+            offsetY = vertices[0].second;
+        }
+    }
+    else
+    {
+        rgbImage.copy(colorFrame);
+    }
+#else
+    rgbImage.copy(colorFrame);
+#endif
+
     yarp::os::Bottle detectedObjects;
 
-    if (!iDetector->detect(colorFrame, detectedObjects))
+    if (!iDetector->detect(rgbImage, detectedObjects))
     {
         yWarning() << "Detector failure";
     }
-
-    auto & rgbImage = imagePort.prepare();
-    rgbImage.copy(colorFrame);
 
     if (detectedObjects.size() != 0)
     {
@@ -171,7 +215,7 @@ bool RgbdDetection::updateModule()
             int pyColor = (tly + bry) / 2;
 
             int pxDepth, pyDepth;
-            scaleXY(colorFrame, depthFrame, pxColor, pyColor, &pxDepth, &pyDepth);
+            scaleXY(colorFrame, depthFrame, pxColor + offsetX, pyColor + offsetY, &pxDepth, &pyDepth);
             float depth = depthFrame.pixel(pxDepth, pyDepth);
 
             if (depth > 0.0f)
@@ -206,6 +250,7 @@ bool RgbdDetection::updateModule()
         }
     }
 
+    imagePort.prepare() = rgbImage;
     imagePort.write();
     return true;
 }
@@ -214,6 +259,10 @@ bool RgbdDetection::interruptModule()
 {
     statePort.interrupt();
     imagePort.interrupt();
+#if YARP_VERSION_MINOR >= 5
+    cropPort.interrupt();
+    cropPort.disableCallback();
+#endif
     return true;
 }
 
@@ -223,5 +272,46 @@ bool RgbdDetection::close()
     detectorDevice.close();
     statePort.close();
     imagePort.close();
+#if YARP_VERSION_MINOR >= 5
+    cropPort.close();
+#endif
     return true;
 }
+
+#if YARP_VERSION_MINOR >= 5
+void RgbdDetection::onRead(yarp::os::Bottle & bot)
+{
+    static bool isCropping = false;
+
+    if (bot.size() == 4)
+    {
+        auto x1 = bot.get(0).asInt32();
+        auto y1 = bot.get(1).asInt32();
+        auto x2 = bot.get(2).asInt32();
+        auto y2 = bot.get(3).asInt32();
+
+        cropMutex.lock();
+        cropVertices = {
+            {std::min(x1, x2), std::min(y1, y2)}, // left-top corner
+            {std::max(x1, x2), std::max(y1, y2)}  // right-bottom corner
+        };
+        cropMutex.unlock();
+
+        yInfo("Cropping input frames: (x1: %d, y1: %d) (x2: %d, y2: %d)",
+              cropVertices[0].first, cropVertices[0].second,
+              cropVertices[1].first, cropVertices[1].second);
+
+        isCropping = true;
+    }
+    else if (isCropping)
+    {
+        yInfo() << "Crop disabled";
+
+        cropMutex.lock();
+        cropVertices.clear();
+        cropMutex.unlock();
+
+        isCropping = false;
+    }
+}
+#endif

@@ -3,6 +3,14 @@
 #ifndef __RGBD_DETECTION_HPP__
 #define __RGBD_DETECTION_HPP__
 
+#include <yarp/conf/version.h>
+
+#if YARP_VERSION_MINOR >= 5
+# include <mutex>
+# include <vector>
+# include <yarp/os/TypedReaderCallback.h>
+#endif
+
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/RFModule.h>
@@ -22,7 +30,12 @@ namespace roboticslab
  * @ingroup rgbdDetection
  * @brief 2.5D detection.
  */
-class RgbdDetection : public yarp::os::RFModule
+class RgbdDetection
+ :
+#if YARP_VERSION_MINOR >= 5
+   public yarp::os::TypedReaderCallback<yarp::os::Bottle>,
+#endif
+   public yarp::os::RFModule
 {
 public:
     ~RgbdDetection()
@@ -33,6 +46,9 @@ public:
     bool updateModule() override;
     bool interruptModule() override;
     bool close() override;
+#if YARP_VERSION_MINOR >= 5
+    void onRead(yarp::os::Bottle & bot) override;
+#endif
 
 private:
     yarp::dev::PolyDriver sensorDevice;
@@ -44,6 +60,12 @@ private:
 
     yarp::os::BufferedPort<yarp::os::Bottle> statePort;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> imagePort;
+
+#if YARP_VERSION_MINOR >= 5
+    yarp::os::BufferedPort<yarp::os::Bottle> cropPort;
+    std::vector<std::pair<unsigned int, unsigned int>> cropVertices;
+    mutable std::mutex cropMutex;
+#endif
 
     double period;
 };

@@ -15,10 +15,10 @@
 # include <yarp/sig/ImageDraw.h>
 #endif
 
-#define DEFAULT_SENSOR_DEVICE "remote_grabber"
-#define DEFAULT_SENSOR_REMOTE "/grabber"
-#define DEFAULT_LOCAL_PREFIX "/rgbDetection"
-#define DEFAULT_PERIOD 0.02 // [s]
+constexpr auto DEFAULT_SENSOR_DEVICE = "remote_grabber";
+constexpr auto DEFAULT_SENSOR_REMOTE = "/grabber";
+constexpr auto DEFAULT_LOCAL_PREFIX = "/rgbDetection";
+constexpr auto DEFAULT_PERIOD = 0.02; // [s]
 
 using namespace roboticslab;
 
