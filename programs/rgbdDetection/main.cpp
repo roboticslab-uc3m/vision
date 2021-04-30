@@ -17,7 +17,13 @@
  * | period       | update period (seconds)              | 0.02              |
  * | detector     | detector device name                 |                   |
  *
- * @section rgbdDetectionPorts Output ports
+ * @section rgbDetectionInputPorts Input ports (requires YARP 3.5+)
+ *
+ * | PORT                 | CONTENT                                                               |
+ * |----------------------|-----------------------------------------------------------------------|
+ * | <localPrefix>/crop:i | 4-int bottle with (x1,y1,x2,y2) vertices of the rectangular crop area |
+ *
+ * @section rgbdDetectionOutputPorts Output ports
  *
  * | PORT                  | CONTENT                                                 |
  * |-----------------------|---------------------------------------------------------|

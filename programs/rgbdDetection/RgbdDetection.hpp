@@ -48,7 +48,7 @@ private:
     yarp::os::BufferedPort<yarp::os::Bottle> statePort;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> imagePort;
 
-#if HAVE_CROP
+#ifdef HAVE_CROP
     yarp::os::BufferedPort<yarp::os::Bottle> cropPort;
     YarpCropCallback cropCallback;
 #endif

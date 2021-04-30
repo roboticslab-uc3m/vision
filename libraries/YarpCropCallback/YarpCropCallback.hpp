@@ -14,6 +14,11 @@
 namespace roboticslab
 {
 
+/**
+ * @ingroup vision_libraries
+ * @defgroup YarpCropCallback
+ * @brief A typed callback reader for rectangular crop areas.
+ */
 class YarpCropCallback : public yarp::os::TypedReaderCallback<yarp::os::Bottle>
 {
 public:

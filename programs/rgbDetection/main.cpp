@@ -17,7 +17,13 @@
  * | period       | update period (seconds)              | 0.02             |
  * | detector     | detector device name                 |                  |
  *
- * @section rgbDetectionPorts Output ports
+ * @section rgbDetectionInputPorts Input ports
+ *
+ * | PORT                 | CONTENT                                                               |
+ * |----------------------|-----------------------------------------------------------------------|
+ * | <localPrefix>/crop:i | 4-int bottle with (x1,y1,x2,y2) vertices of the rectangular crop area |
+ *
+ * @section rgbDetectionOutputPorts Output ports
  *
  * | PORT                  | CONTENT                                                 |
  * |-----------------------|---------------------------------------------------------|

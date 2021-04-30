@@ -11,7 +11,7 @@
 #include <yarp/os/Property.h>
 #include <yarp/sig/ImageDraw.h>
 
-#if HAVE_CROP
+#ifdef HAVE_CROP
 # include <yarp/sig/ImageUtils.h>
 #endif
 
@@ -126,7 +126,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     statePort.setWriteOnly();
     imagePort.setWriteOnly();
 
-#if HAVE_CROP
+#ifdef HAVE_CROP
     if (!cropPort.open(strLocalPrefix + "/crop:i"))
     {
         yError() << "Unable to open input crop port" << cropPort.getName();
@@ -160,7 +160,7 @@ bool RgbdDetection::updateModule()
     int offsetX = 0;
     int offsetY = 0;
 
-#if HAVE_CROP
+#ifdef HAVE_CROP
     auto vertices = cropCallback.getVertices();
 
     if (vertices.size() != 0)
@@ -255,7 +255,7 @@ bool RgbdDetection::interruptModule()
 {
     statePort.interrupt();
     imagePort.interrupt();
-#if HAVE_CROP
+#ifdef HAVE_CROP
     cropPort.interrupt();
     cropPort.disableCallback();
 #endif
@@ -268,7 +268,7 @@ bool RgbdDetection::close()
     detectorDevice.close();
     statePort.close();
     imagePort.close();
-#if HAVE_CROP
+#ifdef HAVE_CROP
     cropPort.close();
 #endif
     return true;
