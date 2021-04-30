@@ -3,7 +3,6 @@
 #include "RgbdDetection.hpp"
 
 #include <cstdio>
-#include <algorithm> // std::max
 #include <tuple>
 #include <vector>
 
@@ -12,7 +11,7 @@
 #include <yarp/os/Property.h>
 #include <yarp/sig/ImageDraw.h>
 
-#if YARP_VERSION_MINOR >= 5
+#if HAVE_CROP
 # include <yarp/sig/ImageUtils.h>
 #endif
 
@@ -127,7 +126,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     statePort.setWriteOnly();
     imagePort.setWriteOnly();
 
-#if YARP_VERSION_MINOR >= 5
+#if HAVE_CROP
     if (!cropPort.open(strLocalPrefix + "/crop:i"))
     {
         yError() << "Unable to open input crop port" << cropPort.getName();
@@ -135,7 +134,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     }
 
     cropPort.setReadOnly();
-    cropPort.useCallback(*this);
+    cropPort.useCallback(cropCallback);
 #endif
 
     return true;
@@ -161,12 +160,10 @@ bool RgbdDetection::updateModule()
     int offsetX = 0;
     int offsetY = 0;
 
-#if YARP_VERSION_MINOR >= 5
-    cropMutex.lock();
-    auto vertices = cropVertices;
-    cropMutex.unlock();
+#if HAVE_CROP
+    auto vertices = cropCallback.getVertices();
 
-    if (!vertices.empty())
+    if (vertices.size() != 0)
     {
         if (!yarp::sig::utils::cropRect(colorFrame, vertices[0], vertices[1], rgbImage))
         {
@@ -175,7 +172,6 @@ bool RgbdDetection::updateModule()
         }
         else
         {
-            // this is why we need to normalize vertices even if cropRect can do it for us
             offsetX = vertices[0].first;
             offsetY = vertices[0].second;
         }
@@ -259,7 +255,7 @@ bool RgbdDetection::interruptModule()
 {
     statePort.interrupt();
     imagePort.interrupt();
-#if YARP_VERSION_MINOR >= 5
+#if HAVE_CROP
     cropPort.interrupt();
     cropPort.disableCallback();
 #endif
@@ -272,46 +268,8 @@ bool RgbdDetection::close()
     detectorDevice.close();
     statePort.close();
     imagePort.close();
-#if YARP_VERSION_MINOR >= 5
+#if HAVE_CROP
     cropPort.close();
 #endif
     return true;
 }
-
-#if YARP_VERSION_MINOR >= 5
-void RgbdDetection::onRead(yarp::os::Bottle & bot)
-{
-    static bool isCropping = false;
-
-    if (bot.size() == 4)
-    {
-        auto x1 = bot.get(0).asInt32();
-        auto y1 = bot.get(1).asInt32();
-        auto x2 = bot.get(2).asInt32();
-        auto y2 = bot.get(3).asInt32();
-
-        cropMutex.lock();
-        cropVertices = {
-            {std::min(x1, x2), std::min(y1, y2)}, // left-top corner
-            {std::max(x1, x2), std::max(y1, y2)}  // right-bottom corner
-        };
-        cropMutex.unlock();
-
-        yInfo("Cropping input frames: (x1: %d, y1: %d) (x2: %d, y2: %d)",
-              cropVertices[0].first, cropVertices[0].second,
-              cropVertices[1].first, cropVertices[1].second);
-
-        isCropping = true;
-    }
-    else if (isCropping)
-    {
-        yInfo() << "Crop disabled";
-
-        cropMutex.lock();
-        cropVertices.clear();
-        cropMutex.unlock();
-
-        isCropping = false;
-    }
-}
-#endif

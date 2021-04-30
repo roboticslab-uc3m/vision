@@ -3,20 +3,17 @@
 #ifndef __RGB_DETECTION_HPP__
 #define __RGB_DETECTION_HPP__
 
-#include <mutex>
-
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/RFModule.h>
-#include <yarp/os/TypedReaderCallback.h>
 
 #include <yarp/dev/PolyDriver.h>
 #include <yarp/dev/FrameGrabberInterfaces.h>
 
 #include <yarp/sig/Image.h>
-#include <yarp/sig/Vector.h>
 
 #include "IDetector.hpp"
+#include "YarpCropCallback.hpp"
 
 namespace roboticslab
 {
@@ -25,8 +22,7 @@ namespace roboticslab
  * @ingroup rgbDetection
  * @brief 2D detection.
  */
-class RgbDetection : public yarp::os::RFModule,
-                     public yarp::os::TypedReaderCallback<yarp::os::Bottle>
+class RgbDetection : public yarp::os::RFModule
 {
 public:
     ~RgbDetection()
@@ -37,7 +33,6 @@ public:
     bool updateModule() override;
     bool interruptModule() override;
     bool close() override;
-    void onRead(yarp::os::Bottle & bot) override;
 
 private:
     yarp::dev::PolyDriver sensorDevice;
@@ -50,8 +45,7 @@ private:
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> imagePort;
 
     yarp::os::BufferedPort<yarp::os::Bottle> cropPort;
-    yarp::sig::VectorOf<std::pair<int, int>> cropVertices;
-    mutable std::mutex cropMutex;
+    YarpCropCallback cropCallback;
 
     double period;
 };

@@ -3,7 +3,6 @@
 #include "RgbDetection.hpp"
 
 #include <cstdio>
-#include <algorithm> // std::max
 #include <string>
 
 #include <yarp/os/LogStream.h>
@@ -117,7 +116,7 @@ bool RgbDetection::configure(yarp::os::ResourceFinder & rf)
     imagePort.setWriteOnly();
 
     cropPort.setReadOnly();
-    cropPort.useCallback(*this);
+    cropPort.useCallback(cropCallback);
 
     return true;
 }
@@ -129,9 +128,7 @@ double RgbDetection::getPeriod()
 
 bool RgbDetection::updateModule()
 {
-    cropMutex.lock();
-    auto vertices = cropVertices;
-    cropMutex.unlock();
+    auto vertices = cropCallback.getVertices();
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> frame;
 
@@ -217,40 +214,4 @@ bool RgbDetection::close()
     imagePort.close();
     cropPort.close();
     return true;
-}
-
-void RgbDetection::onRead(yarp::os::Bottle & bot)
-{
-    static bool isCropping = false;
-
-    if (bot.size() == 4)
-    {
-        auto x1 = bot.get(0).asInt32();
-        auto y1 = bot.get(1).asInt32();
-        auto x2 = bot.get(2).asInt32();
-        auto y2 = bot.get(3).asInt32();
-
-        cropMutex.lock();
-        cropVertices = {
-            {std::min(x1, x2), std::min(y1, y2)}, // left-top corner
-            {std::max(x1, x2), std::max(y1, y2)}  // right-bottom corner
-        };
-        cropMutex.unlock();
-
-        yInfo("Cropping input frames: (x1: %d, y1: %d) (x2: %d, y2: %d)",
-              cropVertices[0].first, cropVertices[0].second,
-              cropVertices[1].first, cropVertices[1].second);
-
-        isCropping = true;
-    }
-    else if (isCropping)
-    {
-        yInfo() << "Crop disabled";
-
-        cropMutex.lock();
-        cropVertices.clear();
-        cropMutex.unlock();
-
-        isCropping = false;
-    }
 }

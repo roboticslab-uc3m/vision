@@ -12,6 +12,11 @@ if(ENABLE_rgbdDetection)
                                         YARP::YARP_sig
                                         ROBOTICSLAB::VisionInterfaces)
 
+    if(YARP_VERSION VERSION_GREATER_EQUAL 3.5)
+        target_compile_definitions(rgbdDetection PRIVATE HAVE_CROP)
+        target_link_libraries(rgbdDetection ROBOTICSLAB::YarpCropCallback)
+    endif()
+
     install(TARGETS rgbdDetection
             DESTINATION ${CMAKE_INSTALL_BINDIR})
 
