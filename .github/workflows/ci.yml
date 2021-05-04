@@ -1,0 +1,114 @@
+name: Continuous Integration
+
+on:
+  push:
+    paths-ignore:
+    - 'doc/**'
+    - '**.md'
+  pull_request:
+  schedule:
+  - cron: '0 0 * * SAT'
+  workflow_dispatch:
+
+env:
+  CMAKE_CCACHE_LAUNCHER: -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+
+jobs:
+  maybe_skip:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{steps.skip_check.outputs.should_skip}}
+    steps:
+    - uses: fkirc/skip-duplicate-actions@master
+      id: skip_check
+      with:
+        cancel_others: 'true'
+
+  build:
+    name: build (${{matrix.os}}, ${{matrix.robotology.yarp}}, ${{matrix.compiler.cc}})
+    runs-on: ${{matrix.os}}
+    needs: maybe_skip
+    if: ${{needs.maybe_skip.outputs.should_skip != 'true'}}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+        robotology:
+        - { yarp: yarp-3.3, ycm: ycm-0.12, cmake: 3.12.x }
+        - { yarp: yarp-3.4, ycm: ycm-0.12, cmake: 3.12.x }
+        - { yarp: master, ycm: master, cmake: 3.12.x }
+        compiler:
+        - { cc: gcc, cxx: g++ }
+        - { cc: clang, cxx: clang++ }
+        experimental:
+        - ${{github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'}}
+        exclude:
+        - { experimental: false, robotology: { yarp: master } }
+
+    steps:
+    - name: Check out main project
+      uses: actions/checkout@v2
+
+    - name: Check out YCM
+      uses: actions/checkout@v2
+      with:
+        repository: robotology/ycm
+        ref: ${{matrix.robotology.ycm}}
+        path: .deps/ycm
+
+    - name: Check out YARP
+      uses: actions/checkout@v2
+      with:
+        repository: robotology/yarp
+        ref: ${{matrix.robotology.yarp}}
+        path: .deps/yarp
+
+    - name: Install dependencies via apt
+      run: sudo apt-get update && sudo apt-get install -qq ccache libopencv-dev libpcl-dev swig googletest
+
+    - name: Set up CMake 3.12
+      uses: jwlawson/actions-setup-cmake@v1.7
+      with:
+        cmake-version: ${{matrix.robotology.cmake}}
+
+    - name: Set up Ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{matrix.os}}-${{matrix.robotology.yarp}}-${{matrix.compiler.cc}}
+
+    - name: Create build trees
+      run: cmake -E make_directory build .deps/ycm/build .deps/yarp/build
+
+    - name: Set environment variables
+      run: echo "CMAKE_COMPILER=-DCMAKE_C_COMPILER=${{matrix.compiler.cc}} -DCMAKE_CXX_COMPILER=${{matrix.compiler.cxx}}" >> $GITHUB_ENV
+
+    - name: Build YCM
+      working-directory: ${{github.workspace}}/.deps/ycm/build
+      run: |
+        cmake ..
+        cmake --build .
+        sudo cmake --build . --target install
+
+    - name: Build YARP
+      working-directory: ${{github.workspace}}/.deps/yarp/build
+      run: |
+        cmake .. $CMAKE_COMPILER $CMAKE_CCACHE_LAUNCHER -DSKIP_ACE=ON -DYARP_DISABLE_VERSION_SOURCE=ON
+        cmake --build . --parallel
+        sudo cmake --build . --target install
+
+    - name: Build main project
+      working-directory: ${{github.workspace}}/build
+      run: |
+        cmake .. $CMAKE_COMPILER $CMAKE_CCACHE_LAUNCHER -DCREATE_BINDINGS_PYTHON=ON -DENABLE_examples=ON
+        cmake --build .
+        sudo cmake --build . --target install
+        sudo ldconfig
+
+    - name: Test main project
+      working-directory: ${{github.workspace}}/build/tests
+      run: ctest -V
+
+    - name: Uninstall main project
+      working-directory: ${{github.workspace}}/build
+      run: sudo cmake --build . --target uninstall
