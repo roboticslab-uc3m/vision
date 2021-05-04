@@ -5,6 +5,7 @@
 #include <yarp/os/LogStream.h>
 #ifdef HAVE_PCL
 #include <yarp/pcl/Pcl.h>
+#include <yarp/conf/version.h>
 
 #include <cstdint>
 
@@ -205,12 +206,21 @@ namespace
         cloud_container data;
         data.setCloud<T>() = cloud;
 
+#if YARP_VERSION_MINOR >= 4
         for (const auto & step : options)
         {
             cloud_container temp;
             processStep<T>(data, temp, step);
             data = std::move(temp);
         }
+#else
+        for (auto i = 0; i < options.size(); i++)
+        {
+            cloud_container temp;
+            processStep<T>(data, temp, options[i]);
+            data = std::move(temp);
+        }
+#endif
 
         mesh = data.getMesh();
     }
@@ -227,12 +237,21 @@ namespace
         cloud_container data;
         data.setCloud<T1>() = in;
 
+#if YARP_VERSION_MINOR >= 4
         for (const auto & step : options)
         {
             cloud_container temp;
             processStep<T1>(data, temp, step);
             data = std::move(temp);
         }
+#else
+        for (auto i = 0; i < options.size(); i++)
+        {
+            cloud_container temp;
+            processStep<T1>(data, temp, options[i]);
+            data = std::move(temp);
+        }
+#endif
 
         out = data.getCloud<T2>();
     }
