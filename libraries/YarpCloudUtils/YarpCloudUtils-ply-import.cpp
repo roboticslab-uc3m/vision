@@ -556,14 +556,14 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yar
 
 // explicit instantiations
 
-template bool loadPLY(const std::string &, yarp::sig::PointCloudXY &);
-template bool loadPLY(const std::string &, yarp::sig::PointCloudXYZ &);
-template bool loadPLY(const std::string &, yarp::sig::PointCloudNormal &);
-template bool loadPLY(const std::string &, yarp::sig::PointCloudXYZRGBA &);
-template bool loadPLY(const std::string &, yarp::sig::PointCloudXYZI &);
-template bool loadPLY(const std::string &, yarp::sig::PointCloudInterestPointXYZ &);
-template bool loadPLY(const std::string &, yarp::sig::PointCloudXYZNormal &);
-template bool loadPLY(const std::string &, yarp::sig::PointCloudXYZNormalRGBA &);
+template bool loadPLY(const std::string &, yarp::sig::PointCloudXY &, yarp::sig::VectorOf<int> &);
+template bool loadPLY(const std::string &, yarp::sig::PointCloudXYZ &, yarp::sig::VectorOf<int> &);
+template bool loadPLY(const std::string &, yarp::sig::PointCloudNormal &, yarp::sig::VectorOf<int> &);
+template bool loadPLY(const std::string &, yarp::sig::PointCloudXYZRGBA &, yarp::sig::VectorOf<int> &);
+template bool loadPLY(const std::string &, yarp::sig::PointCloudXYZI &, yarp::sig::VectorOf<int> &);
+template bool loadPLY(const std::string &, yarp::sig::PointCloudInterestPointXYZ &, yarp::sig::VectorOf<int> &);
+template bool loadPLY(const std::string &, yarp::sig::PointCloudXYZNormal &, yarp::sig::VectorOf<int> &);
+template bool loadPLY(const std::string &, yarp::sig::PointCloudXYZNormalRGBA &, yarp::sig::VectorOf<int> &);
 
 } // namespace YarpCloudUtils
 
