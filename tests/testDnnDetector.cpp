@@ -66,11 +66,11 @@ TEST_F(DnnDetectorTest, DnnDetector2)
 {
     yarp::os::ResourceFinder rf;
     rf.setDefaultContext("DnnDetector");
-    std::string qrFullName = rf.findFileByName("tests/teddy-bear.png");
+    std::string qrFullName = rf.findFileByName("tests/teddy-bear.ppm");
     ASSERT_FALSE(qrFullName.empty());
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
-    ASSERT_TRUE(yarp::sig::file::read(yarpImgRgb, qrFullName, yarp::sig::file::FORMAT_PNG));
+    ASSERT_TRUE(yarp::sig::file::read(yarpImgRgb, qrFullName, yarp::sig::file::FORMAT_PPM));
 
     yarp::os::Bottle detectedObjects;
     ASSERT_TRUE(iDetector->detect(yarpImgRgb, detectedObjects));

@@ -12,5 +12,5 @@ if(DOWNLOAD_MODELS)
                  DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/DnnDetector)
 endif()
 
-yarp_install(FILES tests/teddy-bear.png
+yarp_install(FILES tests/teddy-bear.ppm
              DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/DnnDetector/tests)
