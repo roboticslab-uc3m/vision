@@ -5,8 +5,8 @@ import roboticslab_vision
 
 detectorOptions = yarp.Property()
 detectorOptions.put("device", "DnnDetector")
-detectorOptions.put("trainedModel", "yolov3-tiny.weights")
-detectorOptions.put("configDNNModel", "yolov3-tiny.cfg")
+detectorOptions.put("trainedModel", "yolov3-tiny/yolov3-tiny.weights")
+detectorOptions.put("configDNNModel", "yolov3-tiny/yolov3-tiny.cfg")
 detectorOptions.put("classesTrainedModel", "coco-object-categories.txt")
 
 detectorDevice = yarp.PolyDriver(detectorOptions)
@@ -19,10 +19,10 @@ iDetector = roboticslab_vision.viewIDetector(detectorDevice)
 
 rf = yarp.ResourceFinder()
 rf.setDefaultContext("DnnDetector")
-sampleFullName = rf.findFileByName("tests/teddy-bear.png")
+sampleFullName = rf.findFileByName("tests/teddy-bear.ppm")
 yarpImgRgb = yarp.ImageRgb()
 
-if not yarp.read(yarpImgRgb, sampleFullName, yarp.FORMAT_PNG):
+if not yarp.read(yarpImgRgb, sampleFullName, yarp.FORMAT_PPM):
     print("Image file not available")
     raise SystemExit
 

@@ -398,14 +398,14 @@ bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & clou
 
 // explicit instantiations
 
-template bool savePLY(const std::string &, const yarp::sig::PointCloudXY &, bool);
-template bool savePLY(const std::string &, const yarp::sig::PointCloudXYZ &, bool);
-template bool savePLY(const std::string &, const yarp::sig::PointCloudNormal &, bool);
-template bool savePLY(const std::string &, const yarp::sig::PointCloudXYZRGBA &, bool);
-template bool savePLY(const std::string &, const yarp::sig::PointCloudXYZI &, bool);
-template bool savePLY(const std::string &, const yarp::sig::PointCloudInterestPointXYZ &, bool);
-template bool savePLY(const std::string &, const yarp::sig::PointCloudXYZNormal &, bool);
-template bool savePLY(const std::string &, const yarp::sig::PointCloudXYZNormalRGBA &, bool);
+template bool savePLY(const std::string &, const yarp::sig::PointCloudXY &, const yarp::sig::VectorOf<int> &, bool);
+template bool savePLY(const std::string &, const yarp::sig::PointCloudXYZ &, const yarp::sig::VectorOf<int> &, bool);
+template bool savePLY(const std::string &, const yarp::sig::PointCloudNormal &, const yarp::sig::VectorOf<int> &, bool);
+template bool savePLY(const std::string &, const yarp::sig::PointCloudXYZRGBA &, const yarp::sig::VectorOf<int> &, bool);
+template bool savePLY(const std::string &, const yarp::sig::PointCloudXYZI &, const yarp::sig::VectorOf<int> &, bool);
+template bool savePLY(const std::string &, const yarp::sig::PointCloudInterestPointXYZ &, const yarp::sig::VectorOf<int> &, bool);
+template bool savePLY(const std::string &, const yarp::sig::PointCloudXYZNormal &, const yarp::sig::VectorOf<int> &, bool);
+template bool savePLY(const std::string &, const yarp::sig::PointCloudXYZNormalRGBA &, const yarp::sig::VectorOf<int> &, bool);
 
 } // namespace YarpCloudUtils
 

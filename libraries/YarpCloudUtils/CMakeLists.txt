@@ -40,8 +40,6 @@ if(ENABLE_YarpCloudUtils)
     set_property(GLOBAL APPEND PROPERTY _exported_dependencies YARP_os YARP_sig)
 
     if(PCL_FOUND AND YARP_pcl_FOUND)
-        set_property(SOURCE YarpCloudUtils-pcl.cpp PROPERTY COMPILE_DEFINITIONS HAVE_PCL)
-
         target_sources(YarpCloudUtils PRIVATE YarpCloudUtils-pcl.hpp
                                               YarpCloudUtils-pcl-traits.hpp
                                               YarpCloudUtils-pcl-impl.hpp
@@ -49,6 +47,8 @@ if(ENABLE_YarpCloudUtils)
 
         target_link_libraries(YarpCloudUtils PRIVATE YARP::YARP_pcl
                                                      ${PCL_LIBRARIES})
+
+        target_compile_definitions(YarpCloudUtils PUBLIC YCU_HAVE_PCL)
     endif()
 
     add_library(ROBOTICSLAB::YarpCloudUtils ALIAS YarpCloudUtils)

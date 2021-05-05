@@ -135,7 +135,11 @@ int main(int argc, char * argv[])
         }
     }
 
+#if YARP_VERSION_MINOR >= 4 // https://github.com/robotology/yarp/issues/1959
     yarp::sig::ImageOf<yarp::sig::PixelRgb> temp;
+#else
+    yarp::sig::ImageOf<yarp::sig::PixelRgba> temp;
+#endif
     temp.copy(colorImage);
     auto cloud = yarp::sig::utils::depthRgbToPC<yarp::sig::DataXYZRGBA>(depthImage, temp, colorParams);
     yInfo() << "Got cloud of" << cloud.size() << "points, organized as" << cloud.width() << "x" << cloud.height();

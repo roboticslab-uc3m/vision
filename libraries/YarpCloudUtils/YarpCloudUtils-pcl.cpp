@@ -3,8 +3,9 @@
 #include "YarpCloudUtils.hpp"
 
 #include <yarp/os/LogStream.h>
-#ifdef HAVE_PCL
+#ifdef YCU_HAVE_PCL
 #include <yarp/pcl/Pcl.h>
+#include <yarp/conf/version.h>
 
 #include <cstdint>
 
@@ -205,12 +206,21 @@ namespace
         cloud_container data;
         data.setCloud<T>() = cloud;
 
+#if YARP_VERSION_MINOR >= 4
         for (const auto & step : options)
         {
             cloud_container temp;
             processStep<T>(data, temp, step);
             data = std::move(temp);
         }
+#else
+        for (auto i = 0; i < options.size(); i++)
+        {
+            cloud_container temp;
+            processStep<T>(data, temp, options[i]);
+            data = std::move(temp);
+        }
+#endif
 
         mesh = data.getMesh();
     }
@@ -227,12 +237,21 @@ namespace
         cloud_container data;
         data.setCloud<T1>() = in;
 
+#if YARP_VERSION_MINOR >= 4
         for (const auto & step : options)
         {
             cloud_container temp;
             processStep<T1>(data, temp, step);
             data = std::move(temp);
         }
+#else
+        for (auto i = 0; i < options.size(); i++)
+        {
+            cloud_container temp;
+            processStep<T1>(data, temp, options[i]);
+            data = std::move(temp);
+        }
+#endif
 
         out = data.getCloud<T2>();
     }
@@ -287,7 +306,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
                    yarp::sig::VectorOf<int> & meshIndices,
                    const yarp::sig::VectorOf<yarp::os::Property> & options)
 {
-#ifdef HAVE_PCL
+#ifdef YCU_HAVE_PCL
     using pcl_input_type = typename pcl_type_from_yarp<T1>::type;
     using pcl_output_type = typename pcl_type_from_yarp<T2>::type;
 
@@ -363,7 +382,7 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
                   yarp::sig::PointCloud<T2> & out,
                   const yarp::sig::VectorOf<yarp::os::Property> & options)
 {
-#ifdef HAVE_PCL
+#ifdef YCU_HAVE_PCL
     using pcl_input_type = typename pcl_type_from_yarp<T1>::type;
     using pcl_output_type = typename pcl_type_from_yarp<T2>::type;
 
@@ -429,7 +448,5 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
 
 } // namespace roboticslab
 
-#ifdef HAVE_PCL
 // explicit instantiations
 #include "YarpCloudUtils-pcl-inst.hpp"
-#endif

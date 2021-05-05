@@ -37,11 +37,11 @@ int main(int argc, char * argv[])
 
     yarp::os::ResourceFinder rf;
     rf.setDefaultContext("DnnDetector");
-    std::string qrFullName = rf.findFileByName("tests/teddy-bear.png");
+    std::string qrFullName = rf.findFileByName("tests/teddy-bear.ppm");
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
 
-    if (!yarp::sig::file::read(yarpImgRgb, qrFullName, yarp::sig::file::FORMAT_PNG))
+    if (!yarp::sig::file::read(yarpImgRgb, qrFullName, yarp::sig::file::FORMAT_PPM))
     {
         yError() << "Image file not available";
         return 1;
