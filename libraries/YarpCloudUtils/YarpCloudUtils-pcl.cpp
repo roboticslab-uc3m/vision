@@ -3,7 +3,7 @@
 #include "YarpCloudUtils.hpp"
 
 #include <yarp/os/LogStream.h>
-#ifdef HAVE_PCL
+#ifdef YCU_HAVE_PCL
 #include <yarp/pcl/Pcl.h>
 #include <yarp/conf/version.h>
 
@@ -306,7 +306,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
                    yarp::sig::VectorOf<int> & meshIndices,
                    const yarp::sig::VectorOf<yarp::os::Property> & options)
 {
-#ifdef HAVE_PCL
+#ifdef YCU_HAVE_PCL
     using pcl_input_type = typename pcl_type_from_yarp<T1>::type;
     using pcl_output_type = typename pcl_type_from_yarp<T2>::type;
 
@@ -382,7 +382,7 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
                   yarp::sig::PointCloud<T2> & out,
                   const yarp::sig::VectorOf<yarp::os::Property> & options)
 {
-#ifdef HAVE_PCL
+#ifdef YCU_HAVE_PCL
     using pcl_input_type = typename pcl_type_from_yarp<T1>::type;
     using pcl_output_type = typename pcl_type_from_yarp<T2>::type;
 
