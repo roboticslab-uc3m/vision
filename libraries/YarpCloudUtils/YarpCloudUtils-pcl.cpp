@@ -448,7 +448,5 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
 
 } // namespace roboticslab
 
-#ifdef HAVE_PCL
 // explicit instantiations
 #include "YarpCloudUtils-pcl-inst.hpp"
-#endif
