@@ -44,7 +44,7 @@ bool QrDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& det
     texts.push_back(std::move(text));
 #endif
 
-    for (auto i = 0; i < texts.size(); i++)
+    for (auto i = 0; i < corners.size() / 4; i++)
     {
         const auto & tl = corners[4 * i];
         const auto & tr = corners[4 * i + 1];
