@@ -3,12 +3,19 @@
 #ifndef __RGB_DETECTION_HPP__
 #define __RGB_DETECTION_HPP__
 
+#include <yarp/conf/version.h>
+
 #include <yarp/os/Bottle.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/RFModule.h>
 
 #include <yarp/dev/PolyDriver.h>
-#include <yarp/dev/FrameGrabberInterfaces.h>
+
+#if YARP_VERSION_MINOR >= 5
+# include <yarp/dev/IFrameGrabberImage.h>
+#else
+# include <yarp/dev/FrameGrabberInterfaces.h>
+#endif
 
 #include <yarp/sig/Image.h>
 

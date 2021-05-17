@@ -6,13 +6,20 @@
  * @brief This example connects to a remote grabber (generally, RGB) device.
  */
 
-#include <cstdio>
+#include <yarp/conf/version.h>
 
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
 
 #include <yarp/dev/PolyDriver.h>
-#include <yarp/dev/FrameGrabberInterfaces.h>
+
+#if YARP_VERSION_MINOR >= 5
+# include <yarp/dev/IFrameGrabberImage.h>
+# include <yarp/dev/IFrameGrabberControls.h>
+#else
+# include <yarp/dev/FrameGrabberInterfaces.h>
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -20,21 +27,21 @@ int main(int argc, char *argv[])
 
     if (!yarp::os::Network::checkNetwork())
     {
-        std::printf("Please start a yarp name server first\n");
+        yError() << "Please start a yarp name server first";
         return 1;
     }
 
-    yarp::os::Property options;
-
-    options.put("device","remote_grabber");
-    options.put("local","/exampleRemoteGrabber");
-    options.put("remote","/grabber");
+    yarp::os::Property options {
+        {"device", yarp::os::Value("remote_grabber")},
+        {"local", yarp::os::Value("/exampleRemoteGrabber")},
+        {"remote", yarp::os::Value("/grabber")},
+    };
 
     yarp::dev::PolyDriver dd(options);
 
     if (!dd.isValid())
     {
-        std::printf("Device not available.\n");
+        yError() << "Device not available";
         return 1;
     }
 
@@ -43,44 +50,45 @@ int main(int argc, char *argv[])
 
     if (!dd.view(iFrameGrabberImage))
     {
-        std::printf("[error] Problems acquiring image interface\n");
+        yError() << "Problems acquiring image interface";
         return 1;
     }
+
     if (!dd.view(iFrameGrabberControls))
     {
-        std::printf("[error] Problems acquiring controls interface\n");
+        yError() << "Problems acquiring controls interface";
         return 1;
     }
 
-    std::printf("[success] acquired interfaces\n");
-
     bool has;
-    if(iFrameGrabberControls->hasFeature(YARP_FEATURE_ZOOM, &has))
+
+    if (iFrameGrabberControls->hasFeature(YARP_FEATURE_ZOOM, &has))
     {
-        if(has)
+        if (has)
         {
             double val;
             iFrameGrabberControls->getFeature(YARP_FEATURE_ZOOM, &val);
-            printf("Zoom feature: %f\n", val);
+            yInfo() << "Zoom feature:" << val;
         }
         else
-            printf("Zoom feature: not supported\n");
+            yInfo() << "Zoom feature: not supported";
     }
     else
-        printf("Fail: iFrameGrabberControls->hasFeature\n");
+        yWarning() << "iFrameGrabberControls->hasFeature() failed";
 
     // The following delay should avoid bad status
     yarp::os::Time::delay(1);
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> image;
-    if(!iFrameGrabberImage->getImage(image))
+
+    if (!iFrameGrabberImage->getImage(image))
     {
-        std::printf("[error] Problems getting image\n");
+        yError() << "Problems getting image";
         return 1;
     }
 
-    std::printf("Width: %d\n", iFrameGrabberImage->width());
-    std::printf("Height: %d\n", iFrameGrabberImage->height());
+    yInfo() << "Width:" << iFrameGrabberImage->width();
+    yInfo() << "Height:" << iFrameGrabberImage->height();
 
     dd.close();
 
