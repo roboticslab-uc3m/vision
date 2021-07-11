@@ -14,7 +14,10 @@ namespace
 {
     std::map<std::string, cv::kinfu::VolumeType> stringToCvVolume {
         {"tsdf", cv::kinfu::VolumeType::TSDF},
-        {"hashtsdf", cv::kinfu::VolumeType::HASHTSDF}
+        {"hashtsdf", cv::kinfu::VolumeType::HASHTSDF},
+#if HAVE_COLORED_KINFU
+        {"coloredtsdf", cv::kinfu::VolumeType::COLOREDTSDF}
+#endif
     };
 }
 #endif

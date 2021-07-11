@@ -107,26 +107,46 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 
     depthIntrinsic.fromProperty(depthParams);
 
-    int width = iRGBDSensor->getDepthWidth();
-    int height = iRGBDSensor->getDepthHeight();
+    int depthWidth = iRGBDSensor->getDepthWidth();
+    int depthHeight = iRGBDSensor->getDepthHeight();
 
     const auto & params = rf.findGroup("KINECT_FUSION");
     auto algorithm = params.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM), "algorithm identifier").asString();
 
     if (algorithm == "kinfu")
     {
-        kinfu = makeKinFu(params, depthIntrinsic, width, height);
+        kinfu = makeKinFu(params, depthIntrinsic, depthWidth, depthHeight);
     }
 #ifdef HAVE_DYNAFU
     else if (algorithm == "dynafu")
     {
-        kinfu = makeDynaFu(params, depthIntrinsic, width, height);
+        kinfu = makeDynaFu(params, depthIntrinsic, depthWidth, depthHeight);
     }
 #endif
 #ifdef HAVE_KINFU_LS
     else if (algorithm == "kinfu_ls")
     {
-        kinfu = makeKinFuLargeScale(params, depthIntrinsic, width, height);
+        kinfu = makeKinFuLargeScale(params, depthIntrinsic, depthWidth, depthHeight);
+    }
+#endif
+#ifdef HAVE_COLORED_KINFU
+    else if (algorithm == "colored_kinfu")
+    {
+        yarp::os::Property rgbParams;
+        yarp::sig::IntrinsicParams rgbIntrinsic;
+
+        if (!iRGBDSensor->getRgbIntrinsicParam(rgbParams))
+        {
+            yError() << "Unable to retrieve RGB intrinsic parameters";
+            return false;
+        }
+
+        rgbIntrinsic.fromProperty(rgbParams);
+
+        int rgbWidth = iRGBDSensor->getDepthWidth();
+        int rgbHeight = iRGBDSensor->getDepthHeight();
+
+        kinfu = makeColoredKinFu(params, depthIntrinsic, rgbIntrinsic, depthWidth, depthHeight, rgbWidth, rgbHeight);
     }
 #endif
     else
@@ -162,17 +182,18 @@ bool SceneReconstruction::updateModule()
 {
     if (isRunning)
     {
+        yarp::sig::FlexImage rgbFrame;
         yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
 
-        if (!iRGBDSensor->getDepthImage(depthFrame))
+        if (!iRGBDSensor->getImages(rgbFrame, depthFrame))
         {
-            yWarning() << "Unable to retrieve depth frame";
+            yWarning() << "Unable to retrieve sensor frames";
             return true;
         }
 
         kinfuMutex.lock();
 
-        if (!kinfu->update(depthFrame))
+        if (!kinfu->update(depthFrame, rgbFrame))
         {
             yWarning() << "Kinect Fusion reset";
             kinfu->reset();

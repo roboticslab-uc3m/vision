@@ -3,52 +3,84 @@
 #include "KinectFusionImpl.hpp"
 
 #include <map>
-
 #include <yarp/os/LogStream.h>
+#include <opencv2/rgbd/colored_kinfu.hpp>
 
-#include <opencv2/core/version.hpp>
-#include <opencv2/rgbd/dynafu.hpp>
+using namespace roboticslab;
 
-#if CV_VERSION_MINOR >= 5 && CV_VERSION_REVISION >= 1
+template <>
+bool KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame,
+                                                               const yarp::sig::FlexImage & rgbFrame)
+{
+    // Cast away constness so that toCvMat accepts the YARP image. This function
+    // does not alter the inner structure of PixelFloat images anyway.
+    auto & nonConstDepthFrame = const_cast<yarp::sig::ImageOf<yarp::sig::PixelFloat> &>(depthFrame);
+    cv::Mat depthMat = yarp::cv::toCvMat(nonConstDepthFrame);
+
+    yarp::sig::ImageOf<yarp::sig::PixelBgr> bgrFrame;
+    bgrFrame.copy(rgbFrame);
+    cv::Mat bgrMat = yarp::cv::toCvMat(bgrFrame);
+
+    cv::UMat depthUmat;
+    depthMat.convertTo(depthUmat, depthMat.type(), 1000.0); // OpenCV uses milimeters
+    return handle->update(depthUmat, bgrMat);
+}
+
 namespace
 {
     std::map<std::string, cv::kinfu::VolumeType> stringToCvVolume {
         {"tsdf", cv::kinfu::VolumeType::TSDF},
         {"hashtsdf", cv::kinfu::VolumeType::HASHTSDF},
-#if HAVE_COLORED_KINFU
         {"coloredtsdf", cv::kinfu::VolumeType::COLOREDTSDF}
-#endif
     };
 }
-#endif
 
 namespace roboticslab
 {
 
-std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height)
+std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & config,
+                                               const yarp::sig::IntrinsicParams & depthIntrinsic,
+                                               const yarp::sig::IntrinsicParams & rgbIntrinsic,
+                                               int depthWidth, int depthHeight,
+                                               int rgbWidth, int rgbHeight)
 {
-    using Params = cv::dynafu::Params;
+    using Params = cv::colored_kinfu::Params;
 
     auto params = Params::defaultParams();
 
-    yInfo() << "--- CAMERA PARAMETERS ---";
+    yInfo() << "--- CAMERA PARAMETERS (depth) ---";
 
-    params->frameSize = cv::Size(width, height);
-    yInfo() << "width:" << width;
-    yInfo() << "height:" << height;
+    params->frameSize = cv::Size(depthWidth, depthHeight);
+    yInfo() << "width:" << depthWidth;
+    yInfo() << "height:" << depthHeight;
 
-    params->intr = cv::Matx33f(intrinsic.focalLengthX,                      0, intrinsic.principalPointX,
-                                                    0, intrinsic.focalLengthY, intrinsic.principalPointY,
-                                                    0,                      0,                         1);
+    params->intr = cv::Matx33f(depthIntrinsic.focalLengthX,                           0, depthIntrinsic.principalPointX,
+                                                         0, depthIntrinsic.focalLengthY, depthIntrinsic.principalPointY,
+                                                         0,                           0,                              1);
 
-    yInfo() << "focal length (X):" << intrinsic.focalLengthX;
-    yInfo() << "focal length (Y):" << intrinsic.focalLengthY;
-    yInfo() << "principal point (X):" << intrinsic.principalPointX;
-    yInfo() << "principal point (Y):" << intrinsic.principalPointY;
+    yInfo() << "focal length (X):" << depthIntrinsic.focalLengthX;
+    yInfo() << "focal length (Y):" << depthIntrinsic.focalLengthY;
+    yInfo() << "principal point (X):" << depthIntrinsic.principalPointX;
+    yInfo() << "principal point (Y):" << depthIntrinsic.principalPointY;
+
+    yInfo() << "--- CAMERA PARAMETERS (RGB) ---";
+
+    params->rgb_frameSize = cv::Size(rgbWidth, rgbHeight);
+    yInfo() << "width:" << rgbWidth;
+    yInfo() << "height:" << rgbHeight;
+
+    params->rgb_intr = cv::Matx33f(rgbIntrinsic.focalLengthX,                         0, rgbIntrinsic.principalPointX,
+                                                           0, rgbIntrinsic.focalLengthY, rgbIntrinsic.principalPointY,
+                                                           0,                         0,                            1);
+
+    yInfo() << "focal length (X):" << rgbIntrinsic.focalLengthX;
+    yInfo() << "focal length (Y):" << rgbIntrinsic.focalLengthY;
+    yInfo() << "principal point (X):" << rgbIntrinsic.principalPointX;
+    yInfo() << "principal point (Y):" << rgbIntrinsic.principalPointY;
 
     yInfo() << "--- ALGORITHM PARAMETERS ---";
 
-    yInfo() << "algorithm: dynafu";
+    yInfo() << "algorithm: colored_kinfu";
 
     updateParam(*params, &Params::bilateral_kernel_size, config, "bilateralKernelSize", "kernel size in pixels for bilateral smooth");
     updateParam(*params, &Params::bilateral_sigma_depth, config, "bilateralSigmaDepth", "depth sigma in meters for bilateral smooth");
@@ -169,7 +201,6 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
         yInfo() << "volumePoseTransl (DEFAULT):" << transl[0] << transl[1] << transl[2];
     }
 
-#if CV_VERSION_MINOR >= 5 && CV_VERSION_REVISION >= 1
     if (config.check("volumeType", "type of voxel volume (tsdf, hashtsdf)"))
     {
         std::string volumeType = config.find("volumeType").asString();
@@ -188,11 +219,10 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
         auto res = std::find_if(stringToCvVolume.begin(), stringToCvVolume.end(), [&params](const auto & el) { return el.second == params->volumeType; });
         yInfo() << "volumeType (DEFAULT):" << res->first;
     }
-#endif
 
     updateParam(*params, &Params::voxelSize, config, "voxelSize", "size of voxel in meters");
 
-    return std::make_unique<KinectFusionImpl<cv::dynafu::DynaFu>>(cv::dynafu::DynaFu::create(params));
+    return std::make_unique<KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>>(cv::colored_kinfu::ColoredKinFu::create(params));
 }
 
 } // namespace roboticslab

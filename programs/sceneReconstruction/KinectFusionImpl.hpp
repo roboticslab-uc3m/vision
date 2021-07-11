@@ -63,7 +63,7 @@ public:
         }
     }
 
-    bool update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame) override
+    bool update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame, const yarp::sig::FlexImage & rgbFrame) override
     {
         // Cast away constness so that toCvMat accepts the YARP image. This function
         // does not alter the inner structure of PixelFloat images anyway.
@@ -79,7 +79,7 @@ public:
         handle->reset();
     }
 
-    void render(yarp::sig::ImageOf<yarp::sig::PixelMono> & image) const override
+    void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) const override
     {
         cv::UMat umat;
         handle->render(umat);

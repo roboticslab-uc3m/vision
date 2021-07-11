@@ -53,7 +53,7 @@ private:
     yarp::dev::PolyDriver cameraDriver;
     yarp::dev::IRGBDSensor * iRGBDSensor {nullptr};
     yarp::os::RpcServer rpcServer;
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono>> renderPort;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> renderPort;
 };
 
 } // namespace roboticslab
