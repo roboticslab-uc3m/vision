@@ -5,42 +5,26 @@
 set_source_files_properties(${SWIG_BINDINGS_SOURCE_FILE} PROPERTIES CPLUSPLUS ON)
 
 set(CMAKE_SWIG_FLAGS "-module;roboticslab_vision;-threads;${SWIG_COMMON_FLAGS}")
-set(CREATE_BINDINGS_PYTHON_VERSION "" CACHE STRING "Specify python version to use" )
-#mark_as_advanced(CREATE_BINDINGS_PYTHON_VERSION)
-find_package(PythonInterp ${CREATE_BINDINGS_PYTHON_VERSION} REQUIRED)
-set(CREATE_BINDINGS_PYTHON_VERSION_ARGS)
-if(NOT CREATE_BINDINGS_PYTHON_VERSION)
-  set (CREATE_BINDINGS_PYTHON_VERSION ${PYTHON_VERSION_STRING})
-endif()
-find_package(PythonLibs ${CREATE_BINDINGS_PYTHON_VERSION} EXACT)
 
-
-## in Windows it seems necessary to declare explictly the link_directory
-if(WIN32)
-  get_filename_component(PYTHON_DIR ${PYTHON_LIBRARY} DIRECTORY)
-  link_directories(${PYTHON_DIR})
-endif()
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 
 set(CMAKE_SWIG_OUTDIR "${CMAKE_BINARY_DIR}/lib/python")
+set(SWIG_OUTFILE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 swig_add_library(roboticslab_vision_python
                  LANGUAGE python
                  SOURCES ${SWIG_BINDINGS_SOURCE_FILE})
-swig_link_libraries(roboticslab_vision_python ${PYTHON_LIBRARY}
-                                              YARP::YARP_os
-                                              YARP::YARP_sig
-                                              VisionInterfaces)
-target_include_directories(${SWIG_MODULE_roboticslab_vision_python_REAL_NAME} SYSTEM PRIVATE ${PYTHON_INCLUDE_PATH})
+swig_link_libraries(roboticslab_vision_python Python3::Python ${SWIG_RL_LIBRARIES})
 
 set_target_properties(${SWIG_MODULE_roboticslab_vision_python_REAL_NAME} PROPERTIES OUTPUT_NAME "_roboticslab_vision"
-                                                                      LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/python")
+                                                                                    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/python")
 
 # installation path is determined reliably on most platforms using distutils
-execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(1,0,prefix=''))"
-                OUTPUT_VARIABLE PYTHON_INSTDIR
+execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(plat_specific=True,standard_lib=False,prefix=''))"
+                OUTPUT_VARIABLE Python_INSTDIR
                 OUTPUT_STRIP_TRAILING_WHITESPACE )
 
-set(_CMAKE_INSTALL_PYTHONDIR "${PYTHON_INSTDIR}")
+set(_CMAKE_INSTALL_PYTHONDIR "${Python_INSTDIR}")
 set(CMAKE_INSTALL_PYTHONDIR ${_CMAKE_INSTALL_PYTHONDIR} CACHE PATH "python bindings (${_CMAKE_INSTALL_PYTHONDIR})")
 mark_as_advanced(CMAKE_INSTALL_PYTHONDIR)
 if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_PYTHONDIR})
