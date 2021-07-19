@@ -2,15 +2,29 @@
 
 #include "SceneReconstruction.hpp"
 
+#include <yarp/conf/version.h>
+
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/Value.h>
 #include <yarp/os/Vocab.h>
 
+using namespace roboticslab;
+
 constexpr auto DEFAULT_PREFIX = "/sceneReconstruction";
 constexpr auto DEFAULT_PERIOD = 0.02; // [s]
 constexpr auto DEFAULT_ALGORITHM = "kinfu";
 
+#if YARP_VERSION_MINOR >= 5
+constexpr auto VOCAB_OK = yarp::os::createVocab32('o','k');
+constexpr auto VOCAB_FAIL = yarp::os::createVocab32('f','a','i','l');
+constexpr auto VOCAB_HELP = yarp::os::createVocab32('h','e','l','p');
+constexpr auto VOCAB_CMD_PAUSE = yarp::os::createVocab32('p','a','u','s');
+constexpr auto VOCAB_CMD_RESUME = yarp::os::createVocab32('r','s','m');
+constexpr auto VOCAB_GET_POSE = yarp::os::createVocab32('g','p','o','s');
+constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab32('g','p','c');
+constexpr auto VOCAB_GET_POINTS_AND_NORMALS = yarp::os::createVocab32('g','p','c','n');
+#else
 constexpr auto VOCAB_OK = yarp::os::createVocab('o','k');
 constexpr auto VOCAB_FAIL = yarp::os::createVocab('f','a','i','l');
 constexpr auto VOCAB_HELP = yarp::os::createVocab('h','e','l','p');
@@ -19,8 +33,7 @@ constexpr auto VOCAB_CMD_RESUME = yarp::os::createVocab('r','s','m');
 constexpr auto VOCAB_GET_POSE = yarp::os::createVocab('g','p','o','s');
 constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab('g','p','c');
 constexpr auto VOCAB_GET_POINTS_AND_NORMALS = yarp::os::createVocab('g','p','c','n');
-
-using namespace roboticslab;
+#endif
 
 namespace
 {
@@ -241,12 +254,20 @@ bool SceneReconstruction::read(yarp::os::ConnectionReader & connection)
 
     yDebug() << "command:" << command.toString();
 
+#if YARP_VERSION_MINOR >= 5
+    switch (command.get(0).asVocab32())
+#else
     switch (command.get(0).asVocab())
+#endif
     {
     case VOCAB_HELP:
     {
         static auto usage = makeUsage();
+#if YARP_VERSION_MINOR >= 5
+        yarp::os::Bottle reply {yarp::os::Value(yarp::os::createVocab32('m','a','n','y'), true)};
+#else
         yarp::os::Bottle reply {yarp::os::Value(yarp::os::createVocab('m','a','n','y'), true)};
+#endif
         reply.append(usage);
         return reply.write(*writer);
     }
