@@ -2,6 +2,7 @@
 
 #include <fstream>
 
+#include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/cv/Cv.h>
@@ -10,46 +11,48 @@
 
 #include "DnnDetector.hpp"
 
+using namespace roboticslab;
+
 namespace
 {
-    const std::string DEFAULT_MODEL_FILE = "yolov3-tiny/yolov3-tiny.weights";
-    const std::string DEFAULT_CONFIG_DNN_FILE = "yolov3-tiny/yolov3-tiny.cfg";
-    const std::string DEFAULT_FRAMEWORK = "darknet";
-    const std::string DEFAULT_CLASSES_FILE = "coco-object-categories.txt";
-#if CV_VERSION_MAJOR >= 4
-    const int DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_CUDA;
-    const int DEFAULT_TARGET = cv::dnn::DNN_TARGET_CUDA;
-#else
-    const int DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_DEFAULT;
-    const int DEFAULT_TARGET = cv::dnn::DNN_TARGET_CPU;
-#endif
-    const double DEFAULT_SCALE = 0.00392;
-    const double DEFAULT_MEAN = 0;
-    const double DEFAULT_CONF_THR = 0.1;
-    const double DEFAULT_NMS_THR = 0.4;
+    YARP_LOG_COMPONENT(DNN, "rl.DnnDetector")
 }
 
-using namespace roboticslab;
+constexpr auto DEFAULT_MODEL_FILE = "yolov3-tiny/yolov3-tiny.weights";
+constexpr auto DEFAULT_CONFIG_DNN_FILE = "yolov3-tiny/yolov3-tiny.cfg";
+constexpr auto DEFAULT_FRAMEWORK = "darknet";
+constexpr auto DEFAULT_CLASSES_FILE = "coco-object-categories.txt";
+#if CV_VERSION_MAJOR >= 4
+constexpr auto DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_CUDA;
+constexpr auto DEFAULT_TARGET = cv::dnn::DNN_TARGET_CUDA;
+#else
+constexpr auto DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_DEFAULT;
+constexpr auto DEFAULT_TARGET = cv::dnn::DNN_TARGET_CPU;
+#endif
+constexpr auto DEFAULT_SCALE = 0.00392;
+constexpr auto DEFAULT_MEAN = 0;
+constexpr auto DEFAULT_CONF_THR = 0.1;
+constexpr auto DEFAULT_NMS_THR = 0.4;
 
 bool DnnDetector::open(yarp::os::Searchable &config)
 {
     auto modelFile = config.check("trainedModel", yarp::os::Value(DEFAULT_MODEL_FILE)).asString();
-    yDebug() << "Using --trainedModel" << modelFile;
+    yCDebug(DNN) << "Using --trainedModel" << modelFile;
 
     auto configDNNFile = config.check("configDNNModel", yarp::os::Value(DEFAULT_CONFIG_DNN_FILE)).asString();
-    yDebug() << "Using --configDNNModel" << configDNNFile;
+    yCDebug(DNN) << "Using --configDNNModel" << configDNNFile;
 
     auto framework = config.check("framework", yarp::os::Value(DEFAULT_FRAMEWORK)).asString();
-    yDebug() << "Using --framework" << framework;
+    yCDebug(DNN) << "Using --framework" << framework;
 
     auto classesFile = config.check("classesTrainedModel", yarp::os::Value(DEFAULT_CLASSES_FILE)).asString();
-    yDebug() << "Using --classesTrainedModel" << classesFile;
+    yCDebug(DNN) << "Using --classesTrainedModel" << classesFile;
 
     auto backend = config.check("backend", yarp::os::Value(DEFAULT_BACKEND)).asInt32();
-    yDebug() << "Using --backend" << backend;
+    yCDebug(DNN) << "Using --backend" << backend;
 
     auto target = config.check("target", yarp::os::Value(DEFAULT_TARGET)).asInt32();
-    yDebug() << "Using --target" << target;
+    yCDebug(DNN) << "Using --target" << target;
 
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
@@ -62,13 +65,13 @@ bool DnnDetector::open(yarp::os::Searchable &config)
 
     if (configDNNPath.empty())
     {
-        yError() << "No config dnn file!";
+        yCError(DNN) << "No config dnn file!";
         return false;
     }
 
     if (modelPath.empty())
     {
-        yError() << "No model file!";
+        yCError(DNN) << "No model file!";
         return false;
     }
 
@@ -77,7 +80,7 @@ bool DnnDetector::open(yarp::os::Searchable &config)
 
     if (!ifs.is_open())
     {
-        yError() << "Classes file" << classesPath << "not found";
+        yCError(DNN) << "Classes file" << classesPath << "not found";
         return false;
     }
 
@@ -95,17 +98,17 @@ bool DnnDetector::open(yarp::os::Searchable &config)
     outNames = net.getUnconnectedOutLayersNames();
 
     scale = config.check("scale", yarp::os::Value(DEFAULT_SCALE)).asFloat32();
-    yDebug() << "Using --scale" << scale;
+    yCDebug(DNN) << "Using --scale" << scale;
 
     auto _mean = config.check("mean", yarp::os::Value(DEFAULT_MEAN)).asFloat64();
     mean = {_mean, _mean, _mean};
-    yDebug() << "Using --mean" << _mean;
+    yCDebug(DNN) << "Using --mean" << _mean;
 
     confThreshold = config.check("confThreshold", yarp::os::Value(DEFAULT_CONF_THR)).asFloat32();
-    yDebug() << "Using --confThreshold" << confThreshold;
+    yCDebug(DNN) << "Using --confThreshold" << confThreshold;
 
     nmsThreshold = config.check("nmsThreshold", yarp::os::Value(DEFAULT_NMS_THR)).asFloat32();
-    yDebug() << "Using --nmsThreshold" << nmsThreshold;
+    yCDebug(DNN) << "Using --nmsThreshold" << nmsThreshold;
 
     return true;
 }
@@ -235,7 +238,7 @@ void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> 
     }
     else
     {
-        yWarning() << "Unknown layer type:" << outLayerType;
+        yCWarning(DNN) << "Unknown layer type:" << outLayerType;
         return;
     }
 
@@ -257,7 +260,7 @@ void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> 
             {"bry", yarp::os::Value(box.y + box.height)}
         };
 
-        yInfo() << "Detected" << className << "with" << confidence << "confidence";
+        yCInfo(DNN) << "Detected" << className << "with" << confidence << "confidence";
     }
 }
 

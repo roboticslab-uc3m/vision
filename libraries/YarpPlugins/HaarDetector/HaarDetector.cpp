@@ -2,6 +2,7 @@
 
 #include "HaarDetector.hpp"
 
+#include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/cv/Cv.h>
@@ -10,13 +11,15 @@ using namespace roboticslab;
 
 namespace
 {
-    const std::string DEFAULT_XMLCASCADE = "haarcascade_frontalface_alt.xml";
+    YARP_LOG_COMPONENT(HAAR, "rl.HaarDetector")
 }
+
+constexpr auto DEFAULT_XMLCASCADE = "haarcascade_frontalface_alt.xml";
 
 bool HaarDetector::open(yarp::os::Searchable& parameters)
 {
     auto xmlCascade = parameters.check("xmlCascade", yarp::os::Value(DEFAULT_XMLCASCADE)).asString();
-    yDebug() << "Using xmlCascade:" << xmlCascade;
+    yCDebug(HAAR) << "Using xmlCascade:" << xmlCascade;
 
     yarp::os::ResourceFinder rf;
     rf.setDefaultContext("HaarDetector");
@@ -25,15 +28,15 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
 
     if (xmlCascadeFullName.empty())
     {
-        yError() << "xmlCascadeFullName NOT found";
+        yCError(HAAR) << "xmlCascadeFullName NOT found";
         return false;
     }
 
-    yDebug() << "xmlCascadeFullName found:" << xmlCascadeFullName;
+    yCDebug(HAAR) << "xmlCascadeFullName found:" << xmlCascadeFullName;
 
     if (!object_cascade.load(xmlCascadeFullName))
     {
-        yError() << "Cannot load xmlCascadeFullName!";
+        yCError(HAAR) << "Cannot load xmlCascadeFullName!";
         return false;
     }
 

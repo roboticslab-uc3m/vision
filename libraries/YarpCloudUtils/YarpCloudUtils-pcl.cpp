@@ -19,6 +19,7 @@
 #include <pcl/PolygonMesh.h>
 #include <pcl/common/io.h> // pcl::copyPointCloud
 
+#include "LogComponent.hpp"
 #include "YarpCloudUtils-pcl.hpp"
 #include "YarpCloudUtils-pcl-traits.hpp"
 #include "YarpCloudUtils-pcl-impl.hpp"
@@ -71,7 +72,7 @@ namespace
             throw std::invalid_argument("missing algorithm parameter");
         }
 
-        yDebug() << "step:" << options.toString();
+        yCDebug(YCU) << "Step:" << options.toString();
 
         auto algorithm = options.find("algorithm").asString();
 
@@ -206,21 +207,12 @@ namespace
         cloud_container data;
         data.setCloud<T>() = cloud;
 
-#if YARP_VERSION_MINOR >= 4
         for (const auto & step : options)
         {
             cloud_container temp;
             processStep<T>(data, temp, step);
             data = std::move(temp);
         }
-#else
-        for (auto i = 0; i < options.size(); i++)
-        {
-            cloud_container temp;
-            processStep<T>(data, temp, options[i]);
-            data = std::move(temp);
-        }
-#endif
 
         mesh = data.getMesh();
     }
@@ -237,21 +229,12 @@ namespace
         cloud_container data;
         data.setCloud<T1>() = in;
 
-#if YARP_VERSION_MINOR >= 4
         for (const auto & step : options)
         {
             cloud_container temp;
             processStep<T1>(data, temp, step);
             data = std::move(temp);
         }
-#else
-        for (auto i = 0; i < options.size(); i++)
-        {
-            cloud_container temp;
-            processStep<T1>(data, temp, options[i]);
-            data = std::move(temp);
-        }
-#endif
 
         out = data.getCloud<T2>();
     }
@@ -281,13 +264,13 @@ namespace
                 }
                 else
                 {
-                    yWarning() << "group not found:" << groupName;
+                    yCWarning(YCU) << "Group not found:" << groupName;
                 }
             }
         }
         else
         {
-            yWarning() << "collection not found:" << collection;
+            yCWarning(YCU) << "Collection not found:" << collection;
         }
 
         return options;
@@ -318,19 +301,19 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
 
     if (is_unsupported_type<pcl_input_type> && dummy)
     {
-        yError() << "unsupported input point type" << pcl_descriptor<pcl_input_type>::name;
+        yCError(YCU) << "Unsupported input point type" << pcl_descriptor<pcl_input_type>::name;
         return false;
     }
 
     if (is_unsupported_type<pcl_output_type> && dummy)
     {
-        yError() << "unsupported output point type" << pcl_descriptor<pcl_output_type>::name;
+        yCError(YCU) << "Unsupported output point type" << pcl_descriptor<pcl_output_type>::name;
         return false;
     }
 
     if (options.size() == 0)
     {
-        yError() << "empty configuration";
+        yCError(YCU) << "Empty configuration";
         return false;
     }
 
@@ -348,7 +331,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
     }
     catch (const std::exception & e)
     {
-        yError() << "meshFromCloudPCL:" << e.what();
+        yCError(YCU) << "meshFromCloudPCL:" << e.what();
         return false;
     }
 
@@ -362,7 +345,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
 
     return true;
 #else
-    yError() << "meshFromCloud compiled with no PCL support";
+    yCError(YCU) << "meshFromCloud compiled with no PCL support";
     return false;
 #endif
 }
@@ -391,19 +374,19 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
 
     if (is_unsupported_type<pcl_input_type> && dummy)
     {
-        yError() << "unsupported input point type" << pcl_descriptor<pcl_input_type>::name;
+        yCError(YCU) << "Unsupported input point type" << pcl_descriptor<pcl_input_type>::name;
         return false;
     }
 
     if (is_unsupported_type<pcl_output_type> && dummy)
     {
-        yError() << "unsupported output point type" << pcl_descriptor<pcl_output_type>::name;
+        yCError(YCU) << "Unsupported output point type" << pcl_descriptor<pcl_output_type>::name;
         return false;
     }
 
     if (options.size() == 0)
     {
-        yError() << "empty configuration";
+        yCError(YCU) << "Empty configuration";
         return false;
     }
 
@@ -421,7 +404,7 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
     }
     catch (const std::exception & e)
     {
-        yError() << "processCloud:" << e.what();
+        yCError(YCU) << "processCloud:" << e.what();
         return false;
     }
 
@@ -430,7 +413,7 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
 
     return true;
 #else
-    yError() << "processCloud compiled with no PCL support";
+    yCError(YCU) << "processCloud compiled with no PCL support";
     return false;
 #endif
 }

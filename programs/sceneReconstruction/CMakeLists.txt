@@ -22,7 +22,9 @@ if(ENABLE_sceneReconstruction)
                                        SceneReconstruction.cpp
                                        KinectFusion.hpp
                                        KinectFusionImpl.hpp
-                                       KinFu.cpp)
+                                       KinFu.cpp
+                                       LogComponent.hpp
+                                       LogComponent.cpp)
 
     target_link_libraries(sceneReconstruction YARP::YARP_os
                                               YARP::YARP_init

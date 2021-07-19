@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <string>
 
+#include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
 
@@ -20,6 +21,11 @@ constexpr auto DEFAULT_LOCAL_PREFIX = "/rgbDetection";
 constexpr auto DEFAULT_PERIOD = 0.02; // [s]
 
 using namespace roboticslab;
+
+namespace
+{
+    YARP_LOG_COMPONENT(RGB, "rl.RgbDetection")
+}
 
 #ifdef HAVE_IMGPROC
 namespace
@@ -57,7 +63,7 @@ bool RgbDetection::configure(yarp::os::ResourceFinder & rf)
         return false;
     }
 
-    yDebug() << "RgbDetection config:" << rf.toString();
+    yCDebug(RGB) << "Config:" << rf.toString();
 
     auto strSensorDevice = rf.check("sensorDevice", yarp::os::Value(DEFAULT_SENSOR_DEVICE)).asString();
     auto strSensorRemote = rf.check("sensorRemote", yarp::os::Value(DEFAULT_SENSOR_REMOTE)).asString();
@@ -66,11 +72,11 @@ bool RgbDetection::configure(yarp::os::ResourceFinder & rf)
 
     period = rf.check("period", yarp::os::Value(DEFAULT_PERIOD)).asFloat64();
 
-    yInfo() << "Using --sensorDevice" << strSensorDevice;
-    yInfo() << "Using --sensorRemote" << strSensorRemote;
-    yInfo() << "Using --localPrefix" << strLocalPrefix;
-    yInfo() << "Using --period" << period;
-    yInfo() << "Using --detector" << strDetector;
+    yCInfo(RGB) << "Using --sensorDevice" << strSensorDevice;
+    yCInfo(RGB) << "Using --sensorRemote" << strSensorRemote;
+    yCInfo(RGB) << "Using --localPrefix" << strLocalPrefix;
+    yCInfo(RGB) << "Using --period" << period;
+    yCInfo(RGB) << "Using --detector" << strDetector;
 
     yarp::os::Property sensorOptions;
     sensorOptions.fromString(rf.toString());
@@ -80,7 +86,7 @@ bool RgbDetection::configure(yarp::os::ResourceFinder & rf)
 
     if (!sensorDevice.open(sensorOptions) || !sensorDevice.view(frameGrabber))
     {
-        yError() << "Unable to initiate camera device";
+        yCError(RGB) << "Unable to initiate camera device";
         return false;
     }
 
@@ -90,25 +96,25 @@ bool RgbDetection::configure(yarp::os::ResourceFinder & rf)
 
     if (!detectorDevice.open(detectorOptions) || !detectorDevice.view(iDetector))
     {
-        yError() << "Unable to initiate detector device";
+        yCError(RGB) << "Unable to initiate detector device";
         return false;
     }
 
     if (!statePort.open(strLocalPrefix + "/state:o"))
     {
-        yError() << "Unable to open output state port" << statePort.getName();
+        yCError(RGB) << "Unable to open output state port" << statePort.getName();
         return false;
     }
 
     if (!imagePort.open(strLocalPrefix + "/img:o"))
     {
-        yError() << "Unable to open output image port" << imagePort.getName();
+        yCError(RGB) << "Unable to open output image port" << imagePort.getName();
         return false;
     }
 
     if (!cropPort.open(strLocalPrefix + "/crop:i"))
     {
-        yError() << "Unable to open input crop port" << cropPort.getName();
+        yCError(RGB) << "Unable to open input crop port" << cropPort.getName();
         return false;
     }
 
@@ -136,7 +142,7 @@ bool RgbDetection::updateModule()
     {
         if (!frameGrabber->getImage(frame))
         {
-            yWarning() << "Frame acquisition failure";
+            yCWarning(RGB) << "Frame acquisition failure";
             return true;
         }
     }
@@ -144,7 +150,7 @@ bool RgbDetection::updateModule()
     {
         if (!frameGrabber->getImageCrop(YARP_CROP_RECT, vertices, frame))
         {
-            yWarning() << "Cropped frame acquisition failure";
+            yCWarning(RGB) << "Cropped frame acquisition failure";
             return true;
         }
     }
@@ -153,7 +159,7 @@ bool RgbDetection::updateModule()
 
     if (!iDetector->detect(frame, detectedObjects))
     {
-        yWarning() << "Detector failure";
+        yCWarning(RGB) << "Detector failure";
     }
 
     if (detectedObjects.size() != 0)

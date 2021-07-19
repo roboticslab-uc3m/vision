@@ -10,6 +10,8 @@
 #include <yarp/os/LogStream.h>
 #include <yarp/cv/Cv.h>
 
+#include "LogComponent.hpp"
+
 namespace roboticslab
 {
 
@@ -110,7 +112,7 @@ template <typename TParams, typename TRet>
 void updateParam(TParams & params, TRet TParams::* param, const yarp::os::Searchable & config,
     const std::string & name, const std::string & description)
 {
-    auto && log = yInfo();
+    auto && log = yCInfo(KINFU);
     log << name + ":";
 
     if (config.check(name, description))

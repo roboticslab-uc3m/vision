@@ -10,6 +10,7 @@
 
 #include <yarp/os/LogStream.h>
 
+#include "LogComponent.hpp"
 #include "tinyply.h"
 
 namespace
@@ -380,7 +381,7 @@ bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & clou
 
     if (os.fail())
     {
-        yError() << "unable to open" << filename << "for write";
+        yCError(YCU) << "Unable to open" << filename << "for write";
         return false;
     }
 
@@ -391,7 +392,7 @@ bool savePLY(const std::string & filename, const yarp::sig::PointCloud<T> & clou
     }
     catch (const std::exception & e)
     {
-        yError() << e.what();
+        yCError(YCU) << e.what();
         return false;
     }
 }

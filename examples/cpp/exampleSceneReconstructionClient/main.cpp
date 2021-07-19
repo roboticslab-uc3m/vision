@@ -4,6 +4,8 @@
  * @brief Sample usage of @ref sceneReconstruction.
  */
 
+#include <yarp/conf/version.h>
+
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
@@ -15,11 +17,15 @@
 
 #include <YarpCloudUtils.hpp>
 
-constexpr const char * DEFAULT_REMOTE = "/sceneReconstruction";
-constexpr const char * DEFAULT_PREFIX = "/exampleSceneReconstructionClient";
-constexpr const char * DEFAULT_COLLECTION = "meshPipeline";
+constexpr auto DEFAULT_REMOTE = "/sceneReconstruction";
+constexpr auto DEFAULT_PREFIX = "/exampleSceneReconstructionClient";
+constexpr auto DEFAULT_COLLECTION = "meshPipeline";
 
+#if YARP_VERSION_MINOR >= 5
+constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab32('g','p','c');
+#else
 constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab('g','p','c');
+#endif
 
 int main(int argc, char * argv[])
 {
