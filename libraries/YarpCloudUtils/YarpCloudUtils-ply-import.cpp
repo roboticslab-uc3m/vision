@@ -13,6 +13,7 @@
 
 #include <yarp/os/LogStream.h>
 
+#include "LogComponent.hpp"
 #include "tinyply.h"
 
 namespace
@@ -525,7 +526,7 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yar
 
     if (ifs.fail())
     {
-        yError() << "unable to open" << filename << "for read";
+        yCError(YCU) << "Unable to open" << filename << "for read";
         return false;
     }
 
@@ -537,7 +538,7 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yar
 
     if (!ifs.read((char *)fileBufferBytes.data(), sizeBytes))
     {
-        yError() << "unable to read from" << filename;
+        yCError(YCU) << "Unable to read from" << filename;
         return false;
     }
 
@@ -549,7 +550,7 @@ bool loadPLY(const std::string & filename, yarp::sig::PointCloud<T> & cloud, yar
     }
     catch (const std::exception & e)
     {
-        yError() << e.what();
+        yCError(YCU) << e.what();
         return false;
     }
 }

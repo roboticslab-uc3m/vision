@@ -1,5 +1,6 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
+#include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Value.h>
 #include <yarp/cv/Cv.h>
@@ -12,25 +13,27 @@ using namespace roboticslab;
 
 namespace
 {
-    const std::string DEFAULT_ALGORITHM = "blueMinusRed";
-    const double DEFAULT_MORPH_CLOSING = 2;
-    const int DEFAULT_THRESHOLD = 55;
-    const int DEFAULT_MAX_NUM_BLOBS = 1;
+    YARP_LOG_COMPONENT(CRD, "rl.ColorRegionDetector")
 }
+
+constexpr auto DEFAULT_ALGORITHM = "blueMinusRed";
+constexpr auto DEFAULT_MORPH_CLOSING = 2;
+constexpr auto DEFAULT_THRESHOLD = 55;
+constexpr auto DEFAULT_MAX_NUM_BLOBS = 1;
 
 bool ColorRegionDetector::open(yarp::os::Searchable& config)
 {
     algorithm = config.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM)).asString();
-    yDebug() << "Using algorithm:" << algorithm;
+    yCDebug(CRD) << "Using algorithm:" << algorithm;
 
     morphClosing = config.check("morphClosing", yarp::os::Value(DEFAULT_MORPH_CLOSING)).asFloat64();
-    yDebug() << "Using morphClosing:" << morphClosing;
+    yCDebug(CRD) << "Using morphClosing:" << morphClosing;
 
     threshold = config.check("threshold", yarp::os::Value(DEFAULT_THRESHOLD)).asInt32();
-    yDebug() << "Using threshold:" << threshold;
+    yCDebug(CRD) << "Using threshold:" << threshold;
 
     maxNumBlobs = config.check("maxNumBlobs", yarp::os::Value(DEFAULT_MAX_NUM_BLOBS)).asInt32();
-    yDebug() << "Using maxNumBlobs:" << maxNumBlobs;
+    yCDebug(CRD) << "Using maxNumBlobs:" << maxNumBlobs;
 
     return true;
 }

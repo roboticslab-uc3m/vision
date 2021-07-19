@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <yarp/conf/version.h>
+#include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
 #include <yarp/sig/ImageDraw.h>
@@ -24,6 +25,8 @@ using namespace roboticslab;
 
 namespace
 {
+    YARP_LOG_COMPONENT(RGBD, "rl.RgbdDetection")
+
     void scaleXY(const yarp::sig::Image & frame1, const yarp::sig::Image & frame2, int px1, int py1, int * px2, int * py2)
     {
         if (frame1.width() != frame2.width() || frame1.height() != frame2.height())
@@ -53,7 +56,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
         return false;
     }
 
-    yDebug() << "RgbdDetection config:" << rf.toString();
+    yCDebug(RGBD) << "Config:" << rf.toString();
 
     auto strSensorDevice = rf.check("sensorDevice", yarp::os::Value(DEFAULT_SENSOR_DEVICE)).asString();
     auto strSensorRemote = rf.check("sensorRemote", yarp::os::Value(DEFAULT_SENSOR_REMOTE)).asString();
@@ -62,11 +65,11 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
 
     period = rf.check("period", yarp::os::Value(DEFAULT_PERIOD)).asFloat64();
 
-    yInfo() << "Using --sensorDevice" << strSensorDevice;
-    yInfo() << "Using --sensorRemote" << strSensorRemote;
-    yInfo() << "Using --localPrefix" << strLocalPrefix;
-    yInfo() << "Using --period" << period;
-    yInfo() << "Using --detector" << strDetector;
+    yCInfo(RGBD) << "Using --sensorDevice" << strSensorDevice;
+    yCInfo(RGBD) << "Using --sensorRemote" << strSensorRemote;
+    yCInfo(RGBD) << "Using --localPrefix" << strLocalPrefix;
+    yCInfo(RGBD) << "Using --period" << period;
+    yCInfo(RGBD) << "Using --detector" << strDetector;
 
     yarp::os::Property sensorOptions;
     sensorOptions.fromString(rf.toString());
@@ -80,7 +83,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
 
     if (!sensorDevice.open(sensorOptions) || !sensorDevice.view(iRGBDSensor))
     {
-        yError() << "Unable to initiate camera device";
+        yCError(RGBD) << "Unable to initiate camera device";
         return false;
     }
 
@@ -88,7 +91,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
 
     if (!iRGBDSensor->getDepthIntrinsicParam(depthParams))
     {
-        yError() << "Unable to retrieve depth intrinsic parameters";
+        yCError(RGBD) << "Unable to retrieve depth intrinsic parameters";
         return false;
     }
 
@@ -107,19 +110,19 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
 
     if (!detectorDevice.open(detectorOptions) || !detectorDevice.view(iDetector))
     {
-        yError() << "Unable to initiate detector device";
+        yCError(RGBD) << "Unable to initiate detector device";
         return false;
     }
 
     if (!statePort.open(strLocalPrefix + "/state:o"))
     {
-        yError() << "Unable to open output state port" << statePort.getName();
+        yCError(RGBD) << "Unable to open output state port" << statePort.getName();
         return false;
     }
 
     if (!imagePort.open(strLocalPrefix + "/img:o"))
     {
-        yError() << "Unable to open output image port" << imagePort.getName();
+        yCError(RGBD) << "Unable to open output image port" << imagePort.getName();
         return false;
     }
 
@@ -129,7 +132,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
 #ifdef HAVE_CROP
     if (!cropPort.open(strLocalPrefix + "/crop:i"))
     {
-        yError() << "Unable to open input crop port" << cropPort.getName();
+        yCError(RGBD) << "Unable to open input crop port" << cropPort.getName();
         return false;
     }
 
@@ -152,7 +155,7 @@ bool RgbdDetection::updateModule()
 
     if (!iRGBDSensor->getImages(colorFrame, depthFrame))
     {
-        yWarning() << "Frame acquisition failure";
+        yCWarning(RGBD) << "Frame acquisition failure";
         return true;
     }
 
@@ -167,7 +170,7 @@ bool RgbdDetection::updateModule()
     {
         if (!yarp::sig::utils::cropRect(colorFrame, vertices[0], vertices[1], rgbImage))
         {
-            yWarning() << "Crop failed, using full color frame";
+            yCWarning(RGBD) << "Crop failed, using full color frame";
             rgbImage.copy(colorFrame);
         }
         else
@@ -188,7 +191,7 @@ bool RgbdDetection::updateModule()
 
     if (!iDetector->detect(rgbImage, detectedObjects))
     {
-        yWarning() << "Detector failure";
+        yCWarning(RGBD) << "Detector failure";
     }
 
     if (detectedObjects.size() != 0)

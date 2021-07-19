@@ -4,10 +4,16 @@
 
 #include <algorithm> // std::min, std::max
 
+#include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/TypedReader.h>
 
 using namespace roboticslab;
+
+namespace
+{
+    YARP_LOG_COMPONENT(YCCB, "rl.YarpCropCallback")
+}
 
 void YarpCropCallback::onRead(yarp::os::Bottle & bot, const yarp::os::TypedReader<yarp::os::Bottle> & reader)
 {
@@ -25,16 +31,16 @@ void YarpCropCallback::onRead(yarp::os::Bottle & bot, const yarp::os::TypedReade
         };
         cropMutex.unlock();
 
-        yInfo("Port %s cropping input frames: (x1: %d, y1: %d) (x2: %d, y2: %d)",
-              reader.getName().c_str(),
-              cropVertices[0].first, cropVertices[0].second,
-              cropVertices[1].first, cropVertices[1].second);
+        yCInfo(YCCB, "Port %s cropping input frames: (x1: %d, y1: %d) (x2: %d, y2: %d)",
+               reader.getName().c_str(),
+               cropVertices[0].first, cropVertices[0].second,
+               cropVertices[1].first, cropVertices[1].second);
 
         isCropping = true;
     }
     else if (isCropping)
     {
-        yInfo() << "Crop disabled at port" << reader.getName();
+        yCInfo(YCCB) << "Crop disabled at port" << reader.getName();
 
         cropMutex.lock();
         cropVertices.clear();

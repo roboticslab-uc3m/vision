@@ -15,7 +15,9 @@ if(ENABLE_YarpCloudUtils)
                                       YarpCloudUtils-ply-export.cpp
                                       YarpCloudUtils-ply-import.cpp
                                       YarpCloudUtils-pcl.cpp
-                                      tinyply.h)
+                                      tinyply.h
+                                      LogComponent.hpp
+                                      LogComponent.cpp)
 
     set_property(TARGET YarpCloudUtils PROPERTY PUBLIC_HEADER YarpCloudUtils.hpp)
 

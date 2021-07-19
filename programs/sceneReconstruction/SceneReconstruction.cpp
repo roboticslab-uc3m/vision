@@ -9,6 +9,8 @@
 #include <yarp/os/Value.h>
 #include <yarp/os/Vocab.h>
 
+#include "LogComponent.hpp"
+
 using namespace roboticslab;
 
 constexpr auto DEFAULT_PREFIX = "/sceneReconstruction";
@@ -58,7 +60,7 @@ namespace
 
 bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 {
-    yDebug() << "Config:" << rf.toString();
+    yCDebug(KINFU) << "Config:" << rf.toString();
 
     period = rf.check("period", yarp::os::Value(DEFAULT_PERIOD * 1000), "update period (ms)").asInt32() * 0.001;
 
@@ -68,7 +70,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     if (rf.check("remote", "remote RGBD camera port"))
     {
         auto remote = rf.find("remote").asString();
-        yInfo() << "Using remote camera at port prefix" << remote;
+        yCInfo(KINFU) << "Using remote camera at port prefix" << remote;
 
         cameraOptions = {
             {"device", yarp::os::Value("RGBDSensorClient")},
@@ -87,7 +89,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     }
     else
     {
-        yInfo() << "Using local camera";
+        yCInfo(KINFU) << "Using local camera";
         cameraOptions.fromString(rf.toString());
 
         if (cameraOptions.check("subdevice"))
@@ -99,13 +101,13 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 
     if (!cameraDriver.open(cameraOptions))
     {
-        yError() << "Unable to open camera device";
+        yCError(KINFU) << "Unable to open camera device";
         return false;
     }
 
     if (!cameraDriver.view(iRGBDSensor))
     {
-        yError() << "Unable to acquire RGBD sensor interface handle";
+        yCError(KINFU) << "Unable to acquire RGBD sensor interface handle";
         return false;
     }
 
@@ -114,7 +116,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 
     if (!iRGBDSensor->getDepthIntrinsicParam(depthParams))
     {
-        yError() << "Unable to retrieve depth intrinsic parameters";
+        yCError(KINFU) << "Unable to retrieve depth intrinsic parameters";
         return false;
     }
 
@@ -150,7 +152,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 
         if (!iRGBDSensor->getRgbIntrinsicParam(rgbParams))
         {
-            yError() << "Unable to retrieve RGB intrinsic parameters";
+            yCError(KINFU) << "Unable to retrieve RGB intrinsic parameters";
             return false;
         }
 
@@ -164,25 +166,25 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
 #endif
     else
     {
-        yError() << "Unsupported or unrecognized algorithm:" << algorithm << "(available: kinfu, dynafu, kinfu_ls)";
+        yCError(KINFU) << "Unsupported or unrecognized algorithm:" << algorithm << "(available: kinfu, dynafu, kinfu_ls)";
         return false;
     }
 
     if (!kinfu)
     {
-        yError() << "Algorithm handle could not successfully initialize";
+        yCError(KINFU) << "Algorithm handle could not successfully initialize";
         return false;
     }
 
     if (!rpcServer.open(prefix + "/rpc:s"))
     {
-        yError() << "Unable to open RPC server port" << rpcServer.getName();
+        yCError(KINFU) << "Unable to open RPC server port" << rpcServer.getName();
         return false;
     }
 
     if (!renderPort.open(prefix + "/render:o"))
     {
-        yError() << "Unable to open render port" << renderPort.getName();
+        yCError(KINFU) << "Unable to open render port" << renderPort.getName();
         return false;
     }
 
@@ -200,7 +202,7 @@ bool SceneReconstruction::updateModule()
 
         if (!iRGBDSensor->getImages(rgbFrame, depthFrame))
         {
-            yWarning() << "Unable to retrieve sensor frames";
+            yCWarning(KINFU) << "Unable to retrieve sensor frames";
             return true;
         }
 
@@ -208,7 +210,7 @@ bool SceneReconstruction::updateModule()
 
         if (!kinfu->update(depthFrame, rgbFrame))
         {
-            yWarning() << "Kinect Fusion reset";
+            yCWarning(KINFU) << "Kinect Fusion reset";
             kinfu->reset();
         }
 
@@ -247,12 +249,12 @@ bool SceneReconstruction::read(yarp::os::ConnectionReader & connection)
 
     if (command.size() == 0)
     {
-        yWarning() << "Got empty bottle";
+        yCWarning(KINFU) << "Got empty bottle";
         yarp::os::Bottle reply {yarp::os::Value(VOCAB_FAIL, true)};
         return reply.write(*writer);
     }
 
-    yDebug() << "command:" << command.toString();
+    yCDebug(KINFU) << "command:" << command.toString();
 
 #if YARP_VERSION_MINOR >= 5
     switch (command.get(0).asVocab32())

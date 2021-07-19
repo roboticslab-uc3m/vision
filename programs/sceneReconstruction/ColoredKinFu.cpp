@@ -6,6 +6,8 @@
 #include <yarp/os/LogStream.h>
 #include <opencv2/rgbd/colored_kinfu.hpp>
 
+#include "LogComponent.hpp"
+
 using namespace roboticslab;
 
 template <>
@@ -48,39 +50,39 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
 
     auto params = Params::defaultParams();
 
-    yInfo() << "--- CAMERA PARAMETERS (depth) ---";
+    yCInfo(KINFU) << "--- CAMERA PARAMETERS (depth) ---";
 
     params->frameSize = cv::Size(depthWidth, depthHeight);
-    yInfo() << "width:" << depthWidth;
-    yInfo() << "height:" << depthHeight;
+    yCInfo(KINFU) << "width:" << depthWidth;
+    yCInfo(KINFU) << "height:" << depthHeight;
 
     params->intr = cv::Matx33f(depthIntrinsic.focalLengthX,                           0, depthIntrinsic.principalPointX,
                                                          0, depthIntrinsic.focalLengthY, depthIntrinsic.principalPointY,
                                                          0,                           0,                              1);
 
-    yInfo() << "focal length (X):" << depthIntrinsic.focalLengthX;
-    yInfo() << "focal length (Y):" << depthIntrinsic.focalLengthY;
-    yInfo() << "principal point (X):" << depthIntrinsic.principalPointX;
-    yInfo() << "principal point (Y):" << depthIntrinsic.principalPointY;
+    yCInfo(KINFU) << "focal length (X):" << depthIntrinsic.focalLengthX;
+    yCInfo(KINFU) << "focal length (Y):" << depthIntrinsic.focalLengthY;
+    yCInfo(KINFU) << "principal point (X):" << depthIntrinsic.principalPointX;
+    yCInfo(KINFU) << "principal point (Y):" << depthIntrinsic.principalPointY;
 
-    yInfo() << "--- CAMERA PARAMETERS (RGB) ---";
+    yCInfo(KINFU) << "--- CAMERA PARAMETERS (RGB) ---";
 
     params->rgb_frameSize = cv::Size(rgbWidth, rgbHeight);
-    yInfo() << "width:" << rgbWidth;
-    yInfo() << "height:" << rgbHeight;
+    yCInfo(KINFU) << "width:" << rgbWidth;
+    yCInfo(KINFU) << "height:" << rgbHeight;
 
     params->rgb_intr = cv::Matx33f(rgbIntrinsic.focalLengthX,                         0, rgbIntrinsic.principalPointX,
                                                            0, rgbIntrinsic.focalLengthY, rgbIntrinsic.principalPointY,
                                                            0,                         0,                            1);
 
-    yInfo() << "focal length (X):" << rgbIntrinsic.focalLengthX;
-    yInfo() << "focal length (Y):" << rgbIntrinsic.focalLengthY;
-    yInfo() << "principal point (X):" << rgbIntrinsic.principalPointX;
-    yInfo() << "principal point (Y):" << rgbIntrinsic.principalPointY;
+    yCInfo(KINFU) << "focal length (X):" << rgbIntrinsic.focalLengthX;
+    yCInfo(KINFU) << "focal length (Y):" << rgbIntrinsic.focalLengthY;
+    yCInfo(KINFU) << "principal point (X):" << rgbIntrinsic.principalPointX;
+    yCInfo(KINFU) << "principal point (Y):" << rgbIntrinsic.principalPointY;
 
-    yInfo() << "--- ALGORITHM PARAMETERS ---";
+    yCInfo(KINFU) << "--- ALGORITHM PARAMETERS ---";
 
-    yInfo() << "algorithm: colored_kinfu";
+    yCInfo(KINFU) << "algorithm: colored_kinfu";
 
     updateParam(*params, &Params::bilateral_kernel_size, config, "bilateralKernelSize", "kernel size in pixels for bilateral smooth");
     updateParam(*params, &Params::bilateral_sigma_depth, config, "bilateralSigmaDepth", "depth sigma in meters for bilateral smooth");
@@ -95,7 +97,7 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
 
         if (icpIterations == nullptr)
         {
-            yError() << "Parameter icpIterations must be a list";
+            yCError(KINFU) << "Parameter icpIterations must be a list";
             return nullptr;
         }
 
@@ -106,11 +108,11 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
             params->icpIterations[i] = icpIterations->get(i).asInt32();
         }
 
-        yInfo() << "icpIterations:" << icpIterations->toString();
+        yCInfo(KINFU) << "icpIterations:" << icpIterations->toString();
     }
     else
     {
-        yInfo() << "icpIterations (DEFAULT):" << params->icpIterations;
+        yCInfo(KINFU) << "icpIterations (DEFAULT):" << params->icpIterations;
     }
 
     if (config.check("lightPose", "light pose for rendering in meters"))
@@ -119,17 +121,17 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
 
         if (lightPose == nullptr || lightPose->size() != 3)
         {
-            yError() << "Parameter lightPose must be a list of 3 floats";
+            yCError(KINFU) << "Parameter lightPose must be a list of 3 floats";
             return nullptr;
         }
 
         params->lightPose = cv::Vec3f(lightPose->get(0).asFloat32(), lightPose->get(1).asFloat32(), lightPose->get(2).asFloat32());
-        yInfo() << "lightPose:" << lightPose->toString();
+        yCInfo(KINFU) << "lightPose:" << lightPose->toString();
     }
     else
     {
         const auto & cvLight = params->lightPose;
-        yInfo() << "lightPose (DEFAULT):" << cvLight[0] << cvLight[1] << cvLight[2];
+        yCInfo(KINFU) << "lightPose (DEFAULT):" << cvLight[0] << cvLight[1] << cvLight[2];
     }
 
     updateParam(*params, &Params::pyramidLevels, config, "pyramidLevels", "number of pyramid levels for ICP");
@@ -145,17 +147,17 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
 
         if (volumeDims == nullptr || volumeDims->size() != 3)
         {
-            yError() << "Parameter volumeDims must be a list of 3 integers";
+            yCError(KINFU) << "Parameter volumeDims must be a list of 3 integers";
             return nullptr;
         }
 
         params->volumeDims = cv::Vec3i(volumeDims->get(0).asInt32(), volumeDims->get(1).asInt32(), volumeDims->get(2).asInt32());
-        yInfo() << "volumeDims:" << volumeDims->toString();
+        yCInfo(KINFU) << "volumeDims:" << volumeDims->toString();
     }
     else
     {
         const auto & cvDims = params->volumeDims;
-        yInfo() << "volumeDims (DEFAULT):" << cvDims[0] << cvDims[1] << cvDims[2];
+        yCInfo(KINFU) << "volumeDims (DEFAULT):" << cvDims[0] << cvDims[1] << cvDims[2];
     }
 
     if (config.check("volumePoseRot", "volume pose (rotation matrix) in radians"))
@@ -164,7 +166,7 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
 
         if (volumePoseRot == nullptr || volumePoseRot->size() != 9)
         {
-            yError() << "Parameter volumePoseRot must be a list of 9 floats (3x3 matrix)";
+            yCError(KINFU) << "Parameter volumePoseRot must be a list of 9 floats (3x3 matrix)";
             return nullptr;
         }
 
@@ -173,12 +175,12 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
                                volumePoseRot->get(6).asFloat32(), volumePoseRot->get(7).asFloat32(), volumePoseRot->get(8).asFloat32());
 
         params->volumePose.rotation(rot);
-        yInfo() << "volumePoseRot:" << volumePoseRot->toString();
+        yCInfo(KINFU) << "volumePoseRot:" << volumePoseRot->toString();
     }
     else
     {
         const auto & rot = params->volumePose.rotation();
-        yInfo() << "volumePoseRot (DEFAULT):" << rot(0,0) << rot(0,1) << rot(0,2) << rot(1,0) << rot(1,1) << rot(1,2) << rot(2,0) << rot(2,1) << rot(2,2);
+        yCInfo(KINFU) << "volumePoseRot (DEFAULT):" << rot(0,0) << rot(0,1) << rot(0,2) << rot(1,0) << rot(1,1) << rot(1,2) << rot(2,0) << rot(2,1) << rot(2,2);
     }
 
     if (config.check("volumePoseTransl", "volume pose (translation vector) in meters"))
@@ -187,18 +189,18 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
 
         if (volumePoseTransl == nullptr || volumePoseTransl->size() != 3)
         {
-            yError() << "Parameter volumePoseTransl must be a list of 3 floats";
+            yCError(KINFU) << "Parameter volumePoseTransl must be a list of 3 floats";
             return nullptr;
         }
 
         auto transl = cv::Vec3f(volumePoseTransl->get(0).asFloat32(), volumePoseTransl->get(1).asFloat32(), volumePoseTransl->get(2).asFloat32());
         params->volumePose.translation(transl);
-        yInfo() << "volumePoseTransl:" << volumePoseTransl->toString();
+        yCInfo(KINFU) << "volumePoseTransl:" << volumePoseTransl->toString();
     }
     else
     {
         const auto & transl = params->volumePose.translation();
-        yInfo() << "volumePoseTransl (DEFAULT):" << transl[0] << transl[1] << transl[2];
+        yCInfo(KINFU) << "volumePoseTransl (DEFAULT):" << transl[0] << transl[1] << transl[2];
     }
 
     if (config.check("volumeType", "type of voxel volume (tsdf, hashtsdf)"))
@@ -207,17 +209,17 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
 
         if (stringToCvVolume.find(volumeType) == stringToCvVolume.end())
         {
-            yError() << "Unsupported volume type" << volumeType;
+            yCError(KINFU) << "Unsupported volume type" << volumeType;
             return nullptr;
         }
 
         params->volumeType = stringToCvVolume[volumeType];
-        yInfo() << "volumeType:" << volumeType;
+        yCInfo(KINFU) << "volumeType:" << volumeType;
     }
     else
     {
         auto res = std::find_if(stringToCvVolume.begin(), stringToCvVolume.end(), [&params](const auto & el) { return el.second == params->volumeType; });
-        yInfo() << "volumeType (DEFAULT):" << res->first;
+        yCInfo(KINFU) << "volumeType (DEFAULT):" << res->first;
     }
 
     updateParam(*params, &Params::voxelSize, config, "voxelSize", "size of voxel in meters");
