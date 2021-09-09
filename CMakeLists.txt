@@ -44,7 +44,7 @@ find_package(YARP 3.4 REQUIRED COMPONENTS os dev sig
 # Soft dependencies.
 find_package(OpenCV QUIET)
 find_package(PCL 1.8 QUIET COMPONENTS common features filters search surface)
-find_package(GTestSources 1.6.0 QUIET)
+find_package(GTestSources 1.8 QUIET)
 find_package(SWIG QUIET)
 find_package(Doxygen QUIET)
 
@@ -74,6 +74,9 @@ endif()
 
 # Create targets if specific requirements are satisfied.
 include(CMakeDependentOption)
+
+# Acknowledge this is a CTest-friendly project.
+enable_testing()
 
 # Add main contents.
 add_subdirectory(libraries)
