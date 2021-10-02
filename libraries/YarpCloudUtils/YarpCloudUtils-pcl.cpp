@@ -3,6 +3,9 @@
 #include "YarpCloudUtils.hpp"
 
 #include <yarp/os/LogStream.h>
+
+#include "LogComponent.hpp"
+
 #ifdef YCU_HAVE_PCL
 #include <yarp/pcl/Pcl.h>
 #include <yarp/conf/version.h>
@@ -19,7 +22,6 @@
 #include <pcl/PolygonMesh.h>
 #include <pcl/common/io.h> // pcl::copyPointCloud
 
-#include "LogComponent.hpp"
 #include "YarpCloudUtils-pcl.hpp"
 #include "YarpCloudUtils-pcl-traits.hpp"
 #include "YarpCloudUtils-pcl-impl.hpp"
@@ -239,7 +241,7 @@ namespace
         out = data.getCloud<T2>();
     }
 }
-#endif
+#endif // YCU_HAVE_PCL
 
 namespace
 {
