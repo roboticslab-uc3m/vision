@@ -30,7 +30,15 @@ swig_add_library(roboticslab_vision_python
 swig_link_libraries(roboticslab_vision_python ${RL_Python_Module_Target} ${SWIG_RL_LIBRARIES})
 
 set_target_properties(${SWIG_MODULE_roboticslab_vision_python_REAL_NAME} PROPERTIES OUTPUT_NAME "_roboticslab_vision"
-                                                                                    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/python")
+                                                                                    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/python"
+                                                                                    # see target_include_directories() below
+                                                                                    NO_SYSTEM_FROM_IMPORTED TRUE)
+
+# The INCLUDE_DIRECTORIES directory property might get polluted by 3rd party dep headers, most probably VTK's and PCL's.
+# Among those headers, there might be a /usr/lib/python2.x that predates Python3 development headers. The latter have
+# less precedence because of the SYSTEM flag. We need to import them as non-SYSTEM (see NO_SYSTEM_FROM_IMPORTED above)
+# and prepend to the existing list of header directories. CMake takes care of removing duplicates.
+target_include_directories(${SWIG_MODULE_roboticslab_vision_python_REAL_NAME} BEFORE PRIVATE ${Python3_INCLUDE_DIRS})
 
 # installation path is determined reliably on most platforms using distutils
 execute_process(COMMAND ${Python3_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(plat_specific=True,standard_lib=False,prefix=''))"
