@@ -184,8 +184,9 @@ application --myPipeline downsample estimate reconstruct \
 ```
 
 ```cxx
-yarp::os::Property options;
-options.fromCommand(argc, argv);
+yarp::os::Property config;
+config.fromCommand(argc, argv);
+
 bool ret = roboticslab::YarpCloudUtils::meshFromCloud(cloud, vertices, indices, config, "myPipeline");
 ```
 
