@@ -164,33 +164,36 @@ bool RgbDetection::updateModule()
 
     if (detectedObjects.size() != 0)
     {
-#ifdef HAVE_IMGPROC
-        cv::Mat cvFrame(frame.height(), frame.width(), CV_8UC3, frame.getRawImage(), frame.getRowSize());
-#endif
-
-        for (auto i = 0; i < detectedObjects.size(); i++)
+        if (imagePort.getOutputCount() > 0)
         {
-            const auto * detectedObject = detectedObjects.get(i).asDict();
-            auto tlx = detectedObject->find("tlx").asInt32();
-            auto tly = detectedObject->find("tly").asInt32();
-            auto brx = detectedObject->find("brx").asInt32();
-            auto bry = detectedObject->find("bry").asInt32();
+#ifdef HAVE_IMGPROC
+            cv::Mat cvFrame(frame.height(), frame.width(), CV_8UC3, frame.getRawImage(), frame.getRowSize());
+#endif
+
+            for (auto i = 0; i < detectedObjects.size(); i++)
+            {
+                const auto * detectedObject = detectedObjects.get(i).asDict();
+                auto tlx = detectedObject->find("tlx").asInt32();
+                auto tly = detectedObject->find("tly").asInt32();
+                auto brx = detectedObject->find("brx").asInt32();
+                auto bry = detectedObject->find("bry").asInt32();
 
 #ifdef HAVE_IMGPROC
-            cv::rectangle(cvFrame, {tlx, tly}, {brx, bry}, {255, 0, 0});
-            std::string label = findLabel(*detectedObject);
+                cv::rectangle(cvFrame, {tlx, tly}, {brx, bry}, {255, 0, 0});
+                std::string label = findLabel(*detectedObject);
 
-            if (!label.empty())
-            {
-                int base;
-                cv::Size size = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &base);
-                int top = cv::max(tly, size.height);
-                cv::rectangle(cvFrame, {tlx, top - size.height}, {tlx + size.width, top + base}, cv::Scalar::all(255), cv::FILLED);
-                cv::putText(cvFrame, label, {tlx, top}, cv::FONT_HERSHEY_SIMPLEX, 0.5, {});
-            }
+                if (!label.empty())
+                {
+                    int base;
+                    cv::Size size = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &base);
+                    int top = cv::max(tly, size.height);
+                    cv::rectangle(cvFrame, {tlx, top - size.height}, {tlx + size.width, top + base}, cv::Scalar::all(255), cv::FILLED);
+                    cv::putText(cvFrame, label, {tlx, top}, cv::FONT_HERSHEY_SIMPLEX, 0.5, {});
+                }
 #else
-            yarp::sig::draw::addRectangleOutline(frame, {255, 0, 0}, (tlx + brx) / 2, (tly + bry) / 2, (brx - tlx) / 2, (bry - tly) / 2);
+                yarp::sig::draw::addRectangleOutline(frame, {255, 0, 0}, (tlx + brx) / 2, (tly + bry) / 2, (brx - tlx) / 2, (bry - tly) / 2);
 #endif
+            }
         }
 
         statePort.prepare() = detectedObjects;

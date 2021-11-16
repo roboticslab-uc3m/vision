@@ -231,9 +231,11 @@ bool RgbdDetection::updateModule()
 
         for (const auto & r : records)
         {
+            const yarp::sig::PixelRgb * color = &red;
+
             if (&r == closest)
             {
-                yarp::sig::draw::addRectangleOutline(rgbImage, green, std::get<3>(r), std::get<4>(r), std::get<5>(r), std::get<6>(r));
+                color = &green;
 
                 float z = std::get<0>(r);
                 float x = ((std::get<1>(r) - depthIntrinsicParams.principalPointX) * z) / depthIntrinsicParams.focalLengthX;
@@ -242,9 +244,10 @@ bool RgbdDetection::updateModule()
                 statePort.prepare() = {yarp::os::Value(x), yarp::os::Value(y), yarp::os::Value(z)};
                 statePort.write();
             }
-            else
+
+            if (imagePort.getOutputCount() > 0)
             {
-                yarp::sig::draw::addRectangleOutline(rgbImage, red, std::get<3>(r), std::get<4>(r), std::get<5>(r), std::get<6>(r));
+                yarp::sig::draw::addRectangleOutline(rgbImage, *color, std::get<3>(r), std::get<4>(r), std::get<5>(r), std::get<6>(r));
             }
         }
     }
