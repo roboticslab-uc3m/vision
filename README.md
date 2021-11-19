@@ -49,7 +49,7 @@ Installation instructions for installing from source can be found [here](doc/vis
 - YARP
     - [visual-tracking-control](https://robotology.github.io/visual-tracking-control) ([robotology/visual-tracking-control](https://github.com/robotology/visual-tracking-control))
 - roboticslab-uc3m
-    - [follow-me](https://github.com/roboticslab-uc3m/follow-me) (see [follow-me#34](https://github.com/roboticslab-uc3m/follow-me/issues/34#issuecomment-433612540))
+    - [teo-follow-me](https://github.com/roboticslab-uc3m/teo-follow-me)
     - [legacy-matlab-visual-servo](https://github.com/roboticslab-uc3m/legacy-matlab-visual-servo) (legacy)
 
 ### Monocular SLAM
