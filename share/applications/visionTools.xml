@@ -28,11 +28,11 @@
         <parameters>--name /yarpview/rgbd/depthImage:i</parameters>
         <node>localhost</node>
     </module>
-    <!-- Requires YARP compiled with ENABLE_yarpcar_depthimage -->
+    <!-- Requires YARP compiled with ENABLE_yarppm_depthimage_to_mono -->
     <connection>
         <from>/rgbd/depthImage:o</from>
         <to>/yarpview/rgbd/depthImage:i</to>
-        <protocol>udp+recv.portmonitor+type.dll+file.depthimage</protocol>
+        <protocol>udp+recv.portmonitor+type.dll+file.depthimage_to_mono</protocol>
     </connection>
 
     <module>
@@ -40,11 +40,11 @@
         <parameters>--name /yarpview/rgbd/depthImage2:i</parameters>
         <node>localhost</node>
     </module>
-    <!-- Requires YARP compiled with ENABLE_yarpcar_depthimage2 -->
+    <!-- Requires YARP compiled with ENABLE_yarppm_depthimage_to_rgb -->
     <connection>
         <from>/rgbd/depthImage:o</from>
         <to>/yarpview/rgbd/depthImage2:i</to>
-        <protocol>udp+recv.portmonitor+type.dll+file.depthimage2</protocol>
+        <protocol>udp+recv.portmonitor+type.dll+file.depthimage_to_rgb</protocol>
     </connection>
 
     <!-- Requires YARP 3.5+ compiled with ENABLE_yarpmod_RGBDSensorFromRosTopic -->
