@@ -206,17 +206,21 @@ bool SceneReconstruction::updateModule()
             return true;
         }
 
-        kinfuMutex.lock();
+        std::unique_lock<std::mutex> lock(kinfuMutex);
 
         if (!kinfu->update(depthFrame, rgbFrame))
         {
             yCWarning(KINFU) << "Kinect Fusion reset";
             kinfu->reset();
+            return true;
         }
 
-        kinfu->render(renderPort.prepare());
-        kinfuMutex.unlock();
-        renderPort.write();
+        if (renderPort.getOutputCount() > 0)
+        {
+            kinfu->render(renderPort.prepare());
+            lock.unlock();
+            renderPort.write();
+        }
     }
 
     return true;
