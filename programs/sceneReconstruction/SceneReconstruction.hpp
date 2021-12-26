@@ -5,20 +5,40 @@
 
 #include <atomic>
 #include <mutex>
+#include <string>
 
-#include <yarp/os/BufferedPort.h>
 #include <yarp/os/RpcServer.h>
 #include <yarp/os/RFModule.h>
 
 #include <yarp/dev/IRGBDSensor.h>
 #include <yarp/dev/PolyDriver.h>
 
-#include <yarp/sig/Image.h>
-
 #include "KinectFusion.hpp"
 
 namespace roboticslab
 {
+
+class RenderUpdater
+{
+public:
+    RenderUpdater(KinectFusion & _kinfu, std::mutex & _mtx, yarp::dev::IRGBDSensor * _sensor)
+        : kinfu(_kinfu), mtx(_mtx), sensor(_sensor)
+    {}
+
+    enum class update_result { ACQUISITION_FAILED, KINFU_FAILED, SUCCESS };
+
+    virtual ~RenderUpdater() = default;
+    virtual std::string getPortName() const = 0;
+    virtual bool openPort(const std::string & name) = 0;
+    virtual void interruptPort() = 0;
+    virtual void closePort() = 0;
+    virtual update_result update() = 0;
+
+protected:
+    KinectFusion & kinfu;
+    std::mutex & mtx;
+    yarp::dev::IRGBDSensor * sensor;
+};
 
 /**
  * @ingroup sceneReconstruction
@@ -48,12 +68,15 @@ public:
 private:
     double period;
     std::atomic_bool isRunning {false};
-    std::mutex kinfuMutex;
+
+    mutable std::mutex kinfuMutex;
     std::unique_ptr<KinectFusion> kinfu {nullptr};
+
     yarp::dev::PolyDriver cameraDriver;
     yarp::dev::IRGBDSensor * iRGBDSensor {nullptr};
+
+    std::unique_ptr<RenderUpdater> renderUpdater {nullptr};
     yarp::os::RpcServer rpcServer;
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> renderPort;
 };
 
 } // namespace roboticslab

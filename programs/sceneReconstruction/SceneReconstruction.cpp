@@ -2,12 +2,17 @@
 
 #include "SceneReconstruction.hpp"
 
+#include <vector>
+
 #include <yarp/conf/version.h>
 
+#include <yarp/os/BufferedPort.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/Value.h>
 #include <yarp/os/Vocab.h>
+
+#include <yarp/sig/Image.h>
 
 #include "LogComponent.hpp"
 
@@ -39,6 +44,105 @@ constexpr auto VOCAB_GET_POINTS_AND_NORMALS = yarp::os::createVocab('g','p','c',
 
 namespace
 {
+    template <typename PixelType>
+    class TypedRenderUpdater : public RenderUpdater
+    {
+    public:
+        TypedRenderUpdater(KinectFusion & kinfu, std::mutex & mtx, yarp::dev::IRGBDSensor * sensor)
+            : RenderUpdater(kinfu, mtx, sensor)
+        { renderPort.setWriteOnly(); }
+
+        std::string getPortName() const override
+        { return renderPort.getName(); }
+
+        bool openPort(const std::string & name) override
+        { return renderPort.open(name); }
+
+        void interruptPort() override
+        { renderPort.interrupt(); }
+
+        void closePort() override
+        { renderPort.close(); }
+
+        update_result update() override
+        { renderPort.write(); return update_result::SUCCESS; }
+
+    protected:
+        bool isConnected()
+        { return renderPort.getOutputCount() > 0; }
+
+        yarp::sig::ImageOf<PixelType> & prepareFrame()
+        { return renderPort.prepare(); }
+
+    private:
+        yarp::os::BufferedPort<yarp::sig::ImageOf<PixelType>> renderPort;
+    };
+
+    class RenderMonoUpdater : public TypedRenderUpdater<yarp::sig::PixelMono>
+    {
+    public:
+        using TypedRenderUpdater::TypedRenderUpdater;
+
+        update_result update() override
+        {
+            if (!sensor->getDepthImage(depthFrame))
+            {
+                return update_result::ACQUISITION_FAILED;
+            }
+
+            std::lock_guard<std::mutex> lock(mtx);
+
+            if (!kinfu.update(depthFrame))
+            {
+                return update_result::KINFU_FAILED;
+            }
+
+            if (isConnected())
+            {
+                kinfu.render(prepareFrame());
+                return TypedRenderUpdater::update();
+            }
+
+            return update_result::SUCCESS;
+        }
+
+    private:
+        yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
+    };
+
+    class RenderRgbUpdater : public TypedRenderUpdater<yarp::sig::PixelRgb>
+    {
+    public:
+        using TypedRenderUpdater::TypedRenderUpdater;
+
+        update_result update() override
+        {
+            if (!sensor->getImages(rgbFrame, depthFrame))
+            {
+                return update_result::ACQUISITION_FAILED;
+            }
+
+            std::lock_guard<std::mutex> lock(mtx);
+
+            if (!kinfu.update(depthFrame, rgbFrame))
+            {
+                return update_result::KINFU_FAILED;
+            }
+
+            if (isConnected())
+            {
+                kinfu.render(prepareFrame());
+                return TypedRenderUpdater::update();
+            }
+
+            return update_result::SUCCESS;
+        }
+
+    private:
+        yarp::sig::FlexImage rgbFrame;
+        yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
+    };
+
     yarp::os::Bottle makeUsage()
     {
         return {
@@ -128,20 +232,35 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     const auto & params = rf.findGroup("KINECT_FUSION");
     auto algorithm = params.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM), "algorithm identifier").asString();
 
+    std::vector<std::string> availableAlgorithms {"kinfu"};
+
+#ifdef HAVE_DYNAFU
+    availableAlgorithms.push_back("dynafu");
+#endif
+#ifdef HAVE_KINFU_LS
+    availableAlgorithms.push_back("kinfu_ls");
+#endif
+#ifdef HAVE_COLORED_KINFU
+    availableAlgorithms.push_back("colored_kinfu");
+#endif
+
     if (algorithm == "kinfu")
     {
         kinfu = makeKinFu(params, depthIntrinsic, depthWidth, depthHeight);
+        renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, kinfuMutex, iRGBDSensor);
     }
 #ifdef HAVE_DYNAFU
     else if (algorithm == "dynafu")
     {
         kinfu = makeDynaFu(params, depthIntrinsic, depthWidth, depthHeight);
+        renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, kinfuMutex, iRGBDSensor);
     }
 #endif
 #ifdef HAVE_KINFU_LS
     else if (algorithm == "kinfu_ls")
     {
         kinfu = makeKinFuLargeScale(params, depthIntrinsic, depthWidth, depthHeight);
+        renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, kinfuMutex, iRGBDSensor);
     }
 #endif
 #ifdef HAVE_COLORED_KINFU
@@ -162,17 +281,18 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         int rgbHeight = iRGBDSensor->getDepthHeight();
 
         kinfu = makeColoredKinFu(params, depthIntrinsic, rgbIntrinsic, depthWidth, depthHeight, rgbWidth, rgbHeight);
+        renderUpdater = std::make_unique<RenderRgbUpdater>(*kinfu, kinfuMutex, iRGBDSensor);
     }
 #endif
     else
     {
-        yCError(KINFU) << "Unsupported or unrecognized algorithm:" << algorithm << "(available: kinfu, dynafu, kinfu_ls)";
+        yCError(KINFU) << "Unsupported or unrecognized algorithm" << algorithm << availableAlgorithms;
         return false;
     }
 
-    if (!kinfu)
+    if (!kinfu || !renderUpdater)
     {
-        yCError(KINFU) << "Algorithm handle could not successfully initialize";
+        yCError(KINFU) << "Algorithm or updater handles could not be initialized";
         return false;
     }
 
@@ -182,44 +302,33 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         return false;
     }
 
-    if (!renderPort.open(prefix + "/render:o"))
+    if (!renderUpdater->openPort(prefix + "/render:o"))
     {
-        yCError(KINFU) << "Unable to open render port" << renderPort.getName();
+        yCError(KINFU) << "Unable to open render port" << renderUpdater->getPortName();
         return false;
     }
 
     rpcServer.setReader(*this);
-    renderPort.setWriteOnly();
     return true;
 }
 
 bool SceneReconstruction::updateModule()
 {
-    if (isRunning)
+    if (isRunning && renderUpdater)
     {
-        yarp::sig::FlexImage rgbFrame;
-        yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
-
-        if (!iRGBDSensor->getImages(rgbFrame, depthFrame))
+        switch (renderUpdater->update())
         {
+        case RenderUpdater::update_result::ACQUISITION_FAILED:
             yCWarning(KINFU) << "Unable to retrieve sensor frames";
-            return true;
-        }
-
-        std::unique_lock<std::mutex> lock(kinfuMutex);
-
-        if (!kinfu->update(depthFrame, rgbFrame))
-        {
+            break;
+        case RenderUpdater::update_result::KINFU_FAILED:
             yCWarning(KINFU) << "Kinect Fusion reset";
-            kinfu->reset();
-            return true;
-        }
-
-        if (renderPort.getOutputCount() > 0)
-        {
-            kinfu->render(renderPort.prepare());
-            lock.unlock();
-            renderPort.write();
+            kinfuMutex.lock();
+            kinfu.reset();
+            kinfuMutex.unlock();
+            break;
+        case RenderUpdater::update_result::SUCCESS:
+            break;
         }
     }
 
@@ -229,7 +338,12 @@ bool SceneReconstruction::updateModule()
 bool SceneReconstruction::interruptModule()
 {
     isRunning = false;
-    renderPort.interrupt();
+
+    if (renderUpdater)
+    {
+        renderUpdater->interruptPort();
+    }
+
     rpcServer.interrupt();
     return true;
 }
@@ -237,7 +351,12 @@ bool SceneReconstruction::interruptModule()
 bool SceneReconstruction::close()
 {
     rpcServer.close();
-    renderPort.close();
+
+    if (renderUpdater)
+    {
+        renderUpdater->closePort();
+    }
+
     return cameraDriver.close();
 }
 

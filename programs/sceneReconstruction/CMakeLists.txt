@@ -43,7 +43,7 @@ if(ENABLE_sceneReconstruction)
         target_compile_definitions(sceneReconstruction PRIVATE HAVE_KINFU_LS)
     endif()
 
-    if(OpenCV_VERSION VERSION_GREATER_EQUAL 4.5.3)
+    if(OpenCV_VERSION VERSION_GREATER_EQUAL 4.5.5)
         target_sources(sceneReconstruction PRIVATE ColoredKinFu.cpp)
         target_compile_definitions(sceneReconstruction PRIVATE HAVE_COLORED_KINFU)
     endif()
