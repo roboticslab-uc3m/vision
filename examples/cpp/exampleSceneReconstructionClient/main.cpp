@@ -22,9 +22,9 @@ constexpr auto DEFAULT_PREFIX = "/exampleSceneReconstructionClient";
 constexpr auto DEFAULT_COLLECTION = "meshPipeline";
 
 #if YARP_VERSION_MINOR >= 5
-constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab32('g','p','c');
+constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab32('g','p','c','n');
 #else
-constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab('g','p','c');
+constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab('g','p','c','n');
 #endif
 
 int main(int argc, char * argv[])
@@ -70,7 +70,7 @@ int main(int argc, char * argv[])
     }
 
     yarp::os::Bottle cmd {yarp::os::Value(VOCAB_GET_POINTS, true)};
-    yarp::sig::PointCloudXYZ cloud;
+    yarp::sig::PointCloudXYZNormalRGBA cloud;
 
     if (!rpc.write(cmd, cloud))
     {
@@ -94,7 +94,7 @@ int main(int argc, char * argv[])
 
     if (!fileMesh.empty())
     {
-        yarp::sig::PointCloudXYZ meshPoints;
+        yarp::sig::PointCloudXYZRGBA meshPoints;
         yarp::sig::VectorOf<int> meshIndices;
 
         auto start = yarp::os::SystemClock::nowSystem();

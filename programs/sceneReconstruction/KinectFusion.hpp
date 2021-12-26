@@ -19,7 +19,7 @@ class KinectFusion
 public:
     virtual ~KinectFusion() {}
 
-    virtual void getCloud(yarp::sig::PointCloudXYZNormal & cloudWithNormals) const = 0;
+    virtual void getCloud(yarp::sig::PointCloudXYZNormalRGBA & cloudWithNormals) const = 0;
 
     virtual void getPoints(yarp::sig::PointCloudXYZ & cloud) const = 0;
 

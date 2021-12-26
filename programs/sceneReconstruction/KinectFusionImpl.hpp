@@ -24,7 +24,7 @@ public:
         cv::setUseOptimized(true);
     }
 
-    void getCloud(yarp::sig::PointCloudXYZNormal & cloudWithNormals) const override
+    void getCloud(yarp::sig::PointCloudXYZNormalRGBA & cloudWithNormals) const override
     {
         cv::Mat points, normals;
         handle->getCloud(points, normals);
@@ -34,7 +34,7 @@ public:
         {
             const auto & point = points.at<cv::Vec4f>(i);
             const auto & normal = normals.at<cv::Vec4f>(i);
-            cloudWithNormals(i) = {{point[0], point[1], point[2]}, {normal[0], normal[1], normal[2]}};
+            cloudWithNormals(i) = {{point[0], point[1], point[2]}, {normal[0], normal[1], normal[2]}, 0};
         }
     }
 

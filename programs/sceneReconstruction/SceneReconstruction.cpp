@@ -426,7 +426,7 @@ bool SceneReconstruction::read(yarp::os::ConnectionReader & connection)
     }
     case VOCAB_GET_POINTS_AND_NORMALS:
     {
-        yarp::sig::PointCloudXYZNormal cloudWithNormals;
+        yarp::sig::PointCloudXYZNormalRGBA cloudWithNormals;
         kinfuMutex.lock();
         kinfu->getCloud(cloudWithNormals);
         kinfuMutex.unlock();
