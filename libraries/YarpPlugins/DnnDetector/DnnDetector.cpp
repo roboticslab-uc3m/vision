@@ -88,7 +88,7 @@ bool DnnDetector::open(yarp::os::Searchable &config)
 
     while (std::getline(ifs, line))
     {
-        classes.push_back(line);
+        classes.push_back(std::move(line));
     }
 
     // Load a model.
@@ -197,8 +197,8 @@ void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> 
                     }
 
                     classIds.push_back((int)(data[i + 1]) - 1); // Skip 0th background class id.
-                    boxes.push_back(cv::Rect(left, top, width, height));
                     confidences.push_back(confidence);
+                    boxes.emplace_back(left, top, width, height);
                 }
             }
         }
@@ -231,7 +231,7 @@ void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> 
 
                     classIds.push_back(classIdPoint.x);
                     confidences.push_back((float)confidence);
-                    boxes.push_back(cv::Rect(left, top, width, height));
+                    boxes.emplace_back(left, top, width, height);
                 }
             }
         }

@@ -219,7 +219,7 @@ bool RgbdDetection::updateModule()
 
             if (depth > 0.0f)
             {
-                records.push_back({depth, pxDepth, pyDepth, pxColor, pyColor, (brx - tlx) / 2, (bry - tly) / 2});
+                records.emplace_back(depth, pxDepth, pyDepth, pxColor, pyColor, (brx - tlx) / 2, (bry - tly) / 2);
 
                 if (!closest || depth < std::get<0>(*closest))
                 {

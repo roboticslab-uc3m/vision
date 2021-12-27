@@ -262,7 +262,7 @@ namespace
                 if (!group.isNull())
                 {
                     auto groupConfig = group.tail();
-                    options.push_back(groupConfig.toString().c_str());
+                    options.emplace_back(groupConfig.toString().c_str());
                 }
                 else
                 {
