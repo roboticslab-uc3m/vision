@@ -27,16 +27,16 @@ namespace
         RenderUpdaterBase(KinectFusion & kinfu, yarp::dev::IRGBDSensor * sensor) : RenderUpdater(kinfu, sensor)
         { renderPort.setWriteOnly(); }
 
-        std::string getPortName() const override
+        std::string getPortName() const override final
         { return renderPort.getName(); }
 
-        bool openPort(const std::string & name) override
+        bool openPort(const std::string & name) override final
         { return renderPort.open(name); }
 
-        void interruptPort() override
+        void interruptPort() override final
         { renderPort.interrupt(); }
 
-        void closePort() override
+        void closePort() override final
         { renderPort.close(); }
 
         update_result update() override
