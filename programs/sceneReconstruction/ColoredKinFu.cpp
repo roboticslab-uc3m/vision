@@ -14,7 +14,11 @@ template <>
 void KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::getCloud(yarp::sig::PointCloudXYZNormalRGBA & cloudWithNormals) const
 {
     cv::Mat points, normals, colors;
+
+    mtx.lock();
     handle->getCloud(points, normals, colors);
+    mtx.unlock();
+
     cloudWithNormals.resize(points.rows);
 
     for (auto i = 0; i < points.rows; i++)
@@ -47,6 +51,8 @@ bool KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::update(const yarp::sig::
 
     cv::UMat depthUmat;
     depthMat.convertTo(depthUmat, depthMat.type(), 1000.0); // OpenCV uses milimeters
+
+    std::lock_guard<std::mutex> lock(mtx);
     return handle->update(depthUmat, bgrMat);
 }
 

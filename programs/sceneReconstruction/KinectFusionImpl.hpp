@@ -5,6 +5,7 @@
 
 #include "KinectFusion.hpp"
 
+#include <mutex>
 #include <type_traits>
 
 #include <yarp/os/LogStream.h>
@@ -27,7 +28,11 @@ public:
     void getCloud(yarp::sig::PointCloudXYZNormalRGBA & cloudWithNormals) const override
     {
         cv::Mat points, normals;
+
+        mtx.lock();
         handle->getCloud(points, normals);
+        mtx.unlock();
+
         cloudWithNormals.resize(points.rows);
 
         for (auto i = 0; i < points.rows; i++)
@@ -41,7 +46,11 @@ public:
     void getPoints(yarp::sig::PointCloudXYZ & cloud) const override
     {
         cv::Mat points;
+
+        mtx.lock();
         handle->getPoints(points);
+        mtx.unlock();
+
         cloud.resize(points.rows);
 
         for (auto i = 0; i < points.rows; i++)
@@ -53,7 +62,10 @@ public:
 
     void getPose(yarp::sig::Matrix & pose) const override
     {
+        mtx.lock();
         const auto & affine = handle->getPose().matrix;
+        mtx.unlock();
+
         pose.resize(4, 4);
 
         for (int i = 0; i < 4; i++)
@@ -73,11 +85,13 @@ public:
         cv::Mat mat = yarp::cv::toCvMat(nonConstDepthFrame);
         cv::UMat umat;
         mat.convertTo(umat, mat.type(), 1000.0); // OpenCV uses milimeters
+        std::lock_guard<std::mutex> lock(mtx);
         return handle->update(umat);
     }
 
     void reset() override
     {
+        std::lock_guard<std::mutex> lock(mtx);
         handle->reset();
     }
 
@@ -95,12 +109,17 @@ private:
     yarp::sig::ImageOf<yarp::sig::PixelBgra> renderBgra() const
     {
         cv::UMat umat;
+
+        mtx.lock();
         handle->render(umat);
+        mtx.unlock();
+
         cv::Mat mat = umat.getMat(cv::ACCESS_FAST); // no memcpy
         return yarp::cv::fromCvMat<yarp::sig::PixelBgra>(mat); // no conversion, use RVO
     }
 
     cv::Ptr<T> handle;
+    mutable std::mutex mtx;
 };
 
 template <typename T>

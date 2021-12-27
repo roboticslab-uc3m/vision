@@ -4,7 +4,6 @@
 #define __SCENE_RECONSTRUCTION_HPP__
 
 #include <atomic>
-#include <mutex>
 #include <string>
 
 #include <yarp/os/RpcServer.h>
@@ -22,11 +21,9 @@ namespace roboticslab
 class RenderUpdater
 {
 public:
-    RenderUpdater(KinectFusion & _kinfu, std::mutex & _mtx, yarp::dev::IRGBDSensor * _sensor)
-        : kinfu(_kinfu), mtx(_mtx), sensor(_sensor)
-    {}
-
     enum class update_result { ACQUISITION_FAILED, KINFU_FAILED, SUCCESS };
+
+    RenderUpdater(KinectFusion & _kinfu, yarp::dev::IRGBDSensor * _sensor) : kinfu(_kinfu), sensor(_sensor) {}
 
     virtual ~RenderUpdater() = default;
     virtual std::string getPortName() const = 0;
@@ -37,7 +34,6 @@ public:
 
 protected:
     KinectFusion & kinfu;
-    std::mutex & mtx;
     yarp::dev::IRGBDSensor * sensor;
 };
 
@@ -77,8 +73,6 @@ public:
 private:
     double period;
     std::atomic_bool isRunning {false};
-
-    mutable std::mutex kinfuMutex;
     std::unique_ptr<KinectFusion> kinfu {nullptr};
 
     yarp::dev::PolyDriver cameraDriver;

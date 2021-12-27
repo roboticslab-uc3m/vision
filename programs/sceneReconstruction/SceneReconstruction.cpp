@@ -25,8 +25,7 @@ namespace
     class TypedRenderUpdater : public RenderUpdater
     {
     public:
-        TypedRenderUpdater(KinectFusion & kinfu, std::mutex & mtx, yarp::dev::IRGBDSensor * sensor)
-            : RenderUpdater(kinfu, mtx, sensor)
+        TypedRenderUpdater(KinectFusion & kinfu, yarp::dev::IRGBDSensor * sensor) : RenderUpdater(kinfu, sensor)
         { renderPort.setWriteOnly(); }
 
         std::string getPortName() const override
@@ -67,8 +66,6 @@ namespace
                 return update_result::ACQUISITION_FAILED;
             }
 
-            std::lock_guard<std::mutex> lock(mtx);
-
             if (!kinfu.update(depthFrame))
             {
                 return update_result::KINFU_FAILED;
@@ -98,8 +95,6 @@ namespace
             {
                 return update_result::ACQUISITION_FAILED;
             }
-
-            std::lock_guard<std::mutex> lock(mtx);
 
             if (!kinfu.update(depthFrame, rgbFrame))
             {
@@ -206,20 +201,20 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     if (algorithm == "kinfu")
     {
         kinfu = makeKinFu(params, depthIntrinsic, depthWidth, depthHeight);
-        renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, kinfuMutex, iRGBDSensor);
+        renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, iRGBDSensor);
     }
 #ifdef HAVE_DYNAFU
     else if (algorithm == "dynafu")
     {
         kinfu = makeDynaFu(params, depthIntrinsic, depthWidth, depthHeight);
-        renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, kinfuMutex, iRGBDSensor);
+        renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, iRGBDSensor);
     }
 #endif
 #ifdef HAVE_KINFU_LS
     else if (algorithm == "kinfu_ls")
     {
         kinfu = makeKinFuLargeScale(params, depthIntrinsic, depthWidth, depthHeight);
-        renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, kinfuMutex, iRGBDSensor);
+        renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, iRGBDSensor);
     }
 #endif
 #ifdef HAVE_COLORED_KINFU
@@ -240,7 +235,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         int rgbHeight = iRGBDSensor->getDepthHeight();
 
         kinfu = makeColoredKinFu(params, depthIntrinsic, rgbIntrinsic, depthWidth, depthHeight, rgbWidth, rgbHeight);
-        renderUpdater = std::make_unique<RenderRgbUpdater>(*kinfu, kinfuMutex, iRGBDSensor);
+        renderUpdater = std::make_unique<RenderRgbUpdater>(*kinfu, iRGBDSensor);
     }
 #endif
     else
@@ -281,9 +276,7 @@ bool SceneReconstruction::updateModule()
             break;
         case RenderUpdater::update_result::KINFU_FAILED:
             yCWarning(KINFU) << "Kinect Fusion reset";
-            kinfuMutex.lock();
             kinfu.reset();
-            kinfuMutex.unlock();
             break;
         case RenderUpdater::update_result::SUCCESS:
             break;
@@ -331,7 +324,6 @@ void SceneReconstruction::resume()
 return_pose SceneReconstruction::getPose()
 {
     yarp::sig::Matrix pose;
-    std::lock_guard<std::mutex> lock(kinfuMutex);
     kinfu->getPose(pose);
     return {true, pose};
 }
@@ -339,7 +331,6 @@ return_pose SceneReconstruction::getPose()
 return_points SceneReconstruction::getPoints()
 {
     yarp::sig::PointCloudXYZ cloud;
-    std::lock_guard<std::mutex> lock(kinfuMutex);
     kinfu->getPoints(cloud);
     return {true, cloud};
 }
@@ -347,7 +338,6 @@ return_points SceneReconstruction::getPoints()
 return_points_with_normals SceneReconstruction::getPointsWithNormals()
 {
     yarp::sig::PointCloudXYZNormalRGBA cloudWithNormals;
-    std::lock_guard<std::mutex> lock(kinfuMutex);
     kinfu->getCloud(cloudWithNormals);
     return {true, cloudWithNormals};
 }
