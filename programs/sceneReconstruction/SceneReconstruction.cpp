@@ -276,7 +276,7 @@ bool SceneReconstruction::updateModule()
             break;
         case RenderUpdater::update_result::KINFU_FAILED:
             yCWarning(KINFU) << "Kinect Fusion reset";
-            kinfu.reset();
+            kinfu->reset();
             break;
         case RenderUpdater::update_result::SUCCESS:
             break;
