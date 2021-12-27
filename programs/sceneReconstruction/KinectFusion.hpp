@@ -17,7 +17,7 @@ namespace roboticslab
 class KinectFusion
 {
 public:
-    virtual ~KinectFusion() {}
+    virtual ~KinectFusion() = default;
 
     virtual void getCloud(yarp::sig::PointCloudXYZNormalRGBA & cloudWithNormals) const = 0;
 
@@ -51,9 +51,9 @@ std::unique_ptr<KinectFusion> makeKinFuLargeScale(const yarp::os::Searchable & c
 #ifdef HAVE_COLORED_KINFU
 std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & config,
                                                const yarp::sig::IntrinsicParams & depthIntrinsic,
-                                               const yarp::sig::IntrinsicParams & rgbIntrinsic,
+                                               const yarp::sig::IntrinsicParams & colorIntrinsic,
                                                int depthWidth, int depthHeight,
-                                               int rgbWidth, int rgbHeight);
+                                               int colorWidth, int colorHeight);
 #endif
 
 } // namespace roboticslab

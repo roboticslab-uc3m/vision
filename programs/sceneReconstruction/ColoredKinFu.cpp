@@ -70,9 +70,9 @@ namespace roboticslab
 
 std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & config,
                                                const yarp::sig::IntrinsicParams & depthIntrinsic,
-                                               const yarp::sig::IntrinsicParams & rgbIntrinsic,
+                                               const yarp::sig::IntrinsicParams & colorIntrinsic,
                                                int depthWidth, int depthHeight,
-                                               int rgbWidth, int rgbHeight)
+                                               int colorWidth, int colorHeight)
 {
     using Params = cv::colored_kinfu::Params;
 
@@ -93,20 +93,20 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
     yCInfo(KINFU) << "principal point (X):" << depthIntrinsic.principalPointX;
     yCInfo(KINFU) << "principal point (Y):" << depthIntrinsic.principalPointY;
 
-    yCInfo(KINFU) << "--- CAMERA PARAMETERS (RGB) ---";
+    yCInfo(KINFU) << "--- CAMERA PARAMETERS (color) ---";
 
-    params->rgb_frameSize = cv::Size(rgbWidth, rgbHeight);
-    yCInfo(KINFU) << "width:" << rgbWidth;
-    yCInfo(KINFU) << "height:" << rgbHeight;
+    params->rgb_frameSize = cv::Size(colorWidth, colorHeight);
+    yCInfo(KINFU) << "width:" << colorWidth;
+    yCInfo(KINFU) << "height:" << colorHeight;
 
-    params->rgb_intr = cv::Matx33f(rgbIntrinsic.focalLengthX,                         0, rgbIntrinsic.principalPointX,
-                                                           0, rgbIntrinsic.focalLengthY, rgbIntrinsic.principalPointY,
-                                                           0,                         0,                            1);
+    params->rgb_intr = cv::Matx33f(colorIntrinsic.focalLengthX,                           0, colorIntrinsic.principalPointX,
+                                                             0, colorIntrinsic.focalLengthY, colorIntrinsic.principalPointY,
+                                                             0,                           0,                              1);
 
-    yCInfo(KINFU) << "focal length (X):" << rgbIntrinsic.focalLengthX;
-    yCInfo(KINFU) << "focal length (Y):" << rgbIntrinsic.focalLengthY;
-    yCInfo(KINFU) << "principal point (X):" << rgbIntrinsic.principalPointX;
-    yCInfo(KINFU) << "principal point (Y):" << rgbIntrinsic.principalPointY;
+    yCInfo(KINFU) << "focal length (X):" << colorIntrinsic.focalLengthX;
+    yCInfo(KINFU) << "focal length (Y):" << colorIntrinsic.focalLengthY;
+    yCInfo(KINFU) << "principal point (X):" << colorIntrinsic.principalPointX;
+    yCInfo(KINFU) << "principal point (Y):" << colorIntrinsic.principalPointY;
 
     yCInfo(KINFU) << "--- ALGORITHM PARAMETERS ---";
 
