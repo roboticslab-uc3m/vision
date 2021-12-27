@@ -1,8 +1,8 @@
-[![Vision Homepage](https://img.shields.io/badge/roboticslab-vision-orange.svg)](http://robots.uc3m.es/dox-vision) [![Latest Release](https://img.shields.io/github/tag/roboticslab-uc3m/vision.svg?label=Latest%20Release)](https://github.com/roboticslab-uc3m/vision/tags)
+[![Vision Homepage](https://img.shields.io/badge/roboticslab-vision-orange.svg)](https://robots.uc3m.es/vision/) [![Latest Release](https://img.shields.io/github/tag/roboticslab-uc3m/vision.svg?label=Latest%20Release)](https://github.com/roboticslab-uc3m/vision/tags)
 
 Vision processing.
 
-Link to Doxygen generated documentation: https://roboticslab-uc3m.github.io/vision
+Link to Doxygen generated documentation: https://robots.uc3m.es/vision/
 
 ## Installation
 
