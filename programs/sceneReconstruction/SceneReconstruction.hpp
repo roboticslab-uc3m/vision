@@ -14,6 +14,7 @@
 #include <yarp/dev/PolyDriver.h>
 
 #include "KinectFusion.hpp"
+#include "SceneReconstructionIDL.h"
 
 namespace roboticslab
 {
@@ -46,7 +47,7 @@ protected:
  * @brief Exposes Kinect Fusion as a YARP service via RPC.
  */
 class SceneReconstruction : public yarp::os::RFModule,
-                            private yarp::os::PortReader
+                            public SceneReconstructionIDL
 {
 public:
     ~SceneReconstruction() override
@@ -63,7 +64,15 @@ public:
 
     bool close() override;
 
-    bool read(yarp::os::ConnectionReader & reader) override;
+    void pause() override;
+
+    void resume() override;
+
+    return_pose getPose() override;
+
+    return_points getPoints() override;
+
+    return_points_with_normals getPointsWithNormals() override;
 
 private:
     double period;

@@ -12,7 +12,10 @@ if(ENABLE_examples)
         add_subdirectory(exampleMeshFromCloud)
         add_subdirectory(exampleMeshFromLiveRGBD)
         add_subdirectory(exampleProcessCloud)
-        add_subdirectory(exampleSceneReconstructionClient)
+
+        if(TARGET ROBOTICSLAB::VisionIDL)
+            add_subdirectory(exampleSceneReconstructionClient)
+        endif()
     endif()
 
     add_subdirectory(exampleRemoteGrabber)

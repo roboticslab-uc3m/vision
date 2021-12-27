@@ -12,7 +12,7 @@ if(NOT DEFINED ENABLE_sceneReconstruction OR ENABLE_sceneReconstruction)
 endif()
 
 cmake_dependent_option(ENABLE_sceneReconstruction "Enable/disable sceneReconstruction program" ON
-                       "TARGET opencv_rgbd;OpenCV_VERSION VERSION_GREATER_EQUAL 4.0;_opencv_nonfree;YARP_cv_FOUND" OFF)
+                       "TARGET opencv_rgbd;OpenCV_VERSION VERSION_GREATER_EQUAL 4.0;_opencv_nonfree;YARP_cv_FOUND;ENABLE_VisionIDL" OFF)
 
 if(ENABLE_sceneReconstruction)
 
@@ -31,7 +31,8 @@ if(ENABLE_sceneReconstruction)
                                               YARP::YARP_dev
                                               YARP::YARP_sig
                                               YARP::YARP_cv
-                                              opencv_rgbd)
+                                              opencv_rgbd
+                                              ROBOTICSLAB::VisionIDL)
 
     if(OpenCV_VERSION VERSION_GREATER_EQUAL 4.2)
         target_sources(sceneReconstruction PRIVATE DynaFu.cpp)

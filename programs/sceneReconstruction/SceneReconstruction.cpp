@@ -4,13 +4,10 @@
 
 #include <vector>
 
-#include <yarp/conf/version.h>
-
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/Value.h>
-#include <yarp/os/Vocab.h>
 
 #include <yarp/sig/Image.h>
 
@@ -21,26 +18,6 @@ using namespace roboticslab;
 constexpr auto DEFAULT_PREFIX = "/sceneReconstruction";
 constexpr auto DEFAULT_PERIOD = 0.02; // [s]
 constexpr auto DEFAULT_ALGORITHM = "kinfu";
-
-#if YARP_VERSION_MINOR >= 5
-constexpr auto VOCAB_OK = yarp::os::createVocab32('o','k');
-constexpr auto VOCAB_FAIL = yarp::os::createVocab32('f','a','i','l');
-constexpr auto VOCAB_HELP = yarp::os::createVocab32('h','e','l','p');
-constexpr auto VOCAB_CMD_PAUSE = yarp::os::createVocab32('p','a','u','s');
-constexpr auto VOCAB_CMD_RESUME = yarp::os::createVocab32('r','s','m');
-constexpr auto VOCAB_GET_POSE = yarp::os::createVocab32('g','p','o','s');
-constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab32('g','p','c');
-constexpr auto VOCAB_GET_POINTS_AND_NORMALS = yarp::os::createVocab32('g','p','c','n');
-#else
-constexpr auto VOCAB_OK = yarp::os::createVocab('o','k');
-constexpr auto VOCAB_FAIL = yarp::os::createVocab('f','a','i','l');
-constexpr auto VOCAB_HELP = yarp::os::createVocab('h','e','l','p');
-constexpr auto VOCAB_CMD_PAUSE = yarp::os::createVocab('p','a','u','s');
-constexpr auto VOCAB_CMD_RESUME = yarp::os::createVocab('r','s','m');
-constexpr auto VOCAB_GET_POSE = yarp::os::createVocab('g','p','o','s');
-constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab('g','p','c');
-constexpr auto VOCAB_GET_POINTS_AND_NORMALS = yarp::os::createVocab('g','p','c','n');
-#endif
 
 namespace
 {
@@ -142,24 +119,6 @@ namespace
         yarp::sig::FlexImage rgbFrame;
         yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
     };
-
-    yarp::os::Bottle makeUsage()
-    {
-        return {
-            yarp::os::Value(VOCAB_HELP, true),
-            yarp::os::Value("\tlist commands"),
-            yarp::os::Value(VOCAB_CMD_PAUSE, true),
-            yarp::os::Value("\tpause scene reconstruction, don't process next frames"),
-            yarp::os::Value(VOCAB_CMD_RESUME, true),
-            yarp::os::Value("\tstart/resume scene reconstruction, process incoming frames"),
-            yarp::os::Value(VOCAB_GET_POSE, true),
-            yarp::os::Value("\tretrieve current camera pose"),
-            yarp::os::Value(VOCAB_GET_POINTS, true),
-            yarp::os::Value("\tretrieve point cloud"),
-            yarp::os::Value(VOCAB_GET_POINTS_AND_NORMALS, true),
-            yarp::os::Value("\tretrieve point cloud with normals"),
-        };
-    }
 }
 
 bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
@@ -308,8 +267,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         return false;
     }
 
-    rpcServer.setReader(*this);
-    return true;
+    return yarp::os::Wire::yarp().attachAsServer(rpcServer);
 }
 
 bool SceneReconstruction::updateModule()
@@ -360,80 +318,36 @@ bool SceneReconstruction::close()
     return cameraDriver.close();
 }
 
-bool SceneReconstruction::read(yarp::os::ConnectionReader & connection)
+void SceneReconstruction::pause()
 {
-    auto * writer = connection.getWriter();
-    yarp::os::Bottle command;
+    isRunning = false;
+}
 
-    if (!command.read(connection) || writer == nullptr)
-    {
-        return false;
-    }
+void SceneReconstruction::resume()
+{
+    isRunning = true;
+}
 
-    if (command.size() == 0)
-    {
-        yCWarning(KINFU) << "Got empty bottle";
-        yarp::os::Bottle reply {yarp::os::Value(VOCAB_FAIL, true)};
-        return reply.write(*writer);
-    }
+return_pose SceneReconstruction::getPose()
+{
+    yarp::sig::Matrix pose;
+    std::lock_guard<std::mutex> lock(kinfuMutex);
+    kinfu->getPose(pose);
+    return {true, pose};
+}
 
-    yCDebug(KINFU) << "command:" << command.toString();
+return_points SceneReconstruction::getPoints()
+{
+    yarp::sig::PointCloudXYZ cloud;
+    std::lock_guard<std::mutex> lock(kinfuMutex);
+    kinfu->getPoints(cloud);
+    return {true, cloud};
+}
 
-#if YARP_VERSION_MINOR >= 5
-    switch (command.get(0).asVocab32())
-#else
-    switch (command.get(0).asVocab())
-#endif
-    {
-    case VOCAB_HELP:
-    {
-        static auto usage = makeUsage();
-#if YARP_VERSION_MINOR >= 5
-        yarp::os::Bottle reply {yarp::os::Value(yarp::os::createVocab32('m','a','n','y'), true)};
-#else
-        yarp::os::Bottle reply {yarp::os::Value(yarp::os::createVocab('m','a','n','y'), true)};
-#endif
-        reply.append(usage);
-        return reply.write(*writer);
-    }
-    case VOCAB_CMD_PAUSE:
-    {
-        isRunning = false;
-        yarp::os::Bottle reply {yarp::os::Value(VOCAB_OK, true)};
-        return reply.write(*writer);
-    }
-    case VOCAB_CMD_RESUME:
-    {
-        isRunning = true;
-        yarp::os::Bottle reply {yarp::os::Value(VOCAB_OK, true)};
-        return reply.write(*writer);
-    }
-    case VOCAB_GET_POSE:
-    {
-        yarp::sig::Matrix pose;
-        kinfuMutex.lock();
-        kinfu->getPose(pose);
-        kinfuMutex.unlock();
-        return pose.write(*writer);
-    }
-    case VOCAB_GET_POINTS:
-    {
-        yarp::sig::PointCloudXYZ cloud;
-        kinfuMutex.lock();
-        kinfu->getPoints(cloud);
-        kinfuMutex.unlock();
-        return cloud.write(*writer);
-    }
-    case VOCAB_GET_POINTS_AND_NORMALS:
-    {
-        yarp::sig::PointCloudXYZNormalRGBA cloudWithNormals;
-        kinfuMutex.lock();
-        kinfu->getCloud(cloudWithNormals);
-        kinfuMutex.unlock();
-        return cloudWithNormals.write(*writer);
-    }
-    default:
-        yarp::os::Bottle reply {yarp::os::Value(VOCAB_FAIL, true)};
-        return reply.write(*writer);
-    }
+return_points_with_normals SceneReconstruction::getPointsWithNormals()
+{
+    yarp::sig::PointCloudXYZNormalRGBA cloudWithNormals;
+    std::lock_guard<std::mutex> lock(kinfuMutex);
+    kinfu->getCloud(cloudWithNormals);
+    return {true, cloudWithNormals};
 }
