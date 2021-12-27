@@ -261,8 +261,9 @@ namespace
 
                 if (!group.isNull())
                 {
-                    auto groupConfig = group.tail();
-                    options.emplace_back(groupConfig.toString().c_str());
+                    // perfect forwarding via `emplace_back` doesn't seem to work
+                    yarp::os::Property option(group.tail().toString().c_str());
+                    options.push_back(std::move(option));
                 }
                 else
                 {
