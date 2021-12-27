@@ -21,11 +21,10 @@ constexpr auto DEFAULT_ALGORITHM = "kinfu";
 
 namespace
 {
-    template <typename PixelType>
-    class TypedRenderUpdater : public RenderUpdater
+    class RenderUpdaterBase : public RenderUpdater
     {
     public:
-        TypedRenderUpdater(KinectFusion & kinfu, yarp::dev::IRGBDSensor * sensor) : RenderUpdater(kinfu, sensor)
+        RenderUpdaterBase(KinectFusion & kinfu, yarp::dev::IRGBDSensor * sensor) : RenderUpdater(kinfu, sensor)
         { renderPort.setWriteOnly(); }
 
         std::string getPortName() const override
@@ -41,23 +40,29 @@ namespace
         { renderPort.close(); }
 
         update_result update() override
-        { renderPort.write(); return update_result::SUCCESS; }
+        {
+            if (renderPort.getOutputCount() > 0)
+            {
+                auto & frame = renderPort.prepare();
+                frame.setPixelCode(getPixelCode());
+                kinfu.render(frame);
+                renderPort.write();
+            }
+
+            return update_result::SUCCESS;
+        }
 
     protected:
-        bool isConnected()
-        { return renderPort.getOutputCount() > 0; }
-
-        yarp::sig::ImageOf<PixelType> & prepareFrame()
-        { return renderPort.prepare(); }
+        virtual YarpVocabPixelTypesEnum getPixelCode() const = 0;
 
     private:
-        yarp::os::BufferedPort<yarp::sig::ImageOf<PixelType>> renderPort;
+        yarp::os::BufferedPort<yarp::sig::FlexImage> renderPort;
     };
 
-    class RenderMonoUpdater : public TypedRenderUpdater<yarp::sig::PixelMono>
+    class RenderMonoUpdater : public RenderUpdaterBase
     {
     public:
-        using TypedRenderUpdater::TypedRenderUpdater;
+        using RenderUpdaterBase::RenderUpdaterBase;
 
         update_result update() override
         {
@@ -71,47 +76,41 @@ namespace
                 return update_result::KINFU_FAILED;
             }
 
-            if (isConnected())
-            {
-                kinfu.render(prepareFrame());
-                return TypedRenderUpdater::update();
-            }
-
-            return update_result::SUCCESS;
+            return RenderUpdaterBase::update();
         }
 
     private:
+        YarpVocabPixelTypesEnum getPixelCode() const override
+        { return VOCAB_PIXEL_MONO; }
+
         yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
     };
 
-    class RenderRgbUpdater : public TypedRenderUpdater<yarp::sig::PixelRgb>
+    class RenderColorUpdater : public RenderUpdaterBase
     {
     public:
-        using TypedRenderUpdater::TypedRenderUpdater;
+        using RenderUpdaterBase::RenderUpdaterBase;
 
         update_result update() override
         {
-            if (!sensor->getImages(rgbFrame, depthFrame))
+            if (!sensor->getImages(colorFrame, depthFrame))
             {
                 return update_result::ACQUISITION_FAILED;
             }
 
-            if (!kinfu.update(depthFrame, rgbFrame))
+            if (!kinfu.update(depthFrame, colorFrame))
             {
                 return update_result::KINFU_FAILED;
             }
 
-            if (isConnected())
-            {
-                kinfu.render(prepareFrame());
-                return TypedRenderUpdater::update();
-            }
-
-            return update_result::SUCCESS;
+            return RenderUpdaterBase::update();
         }
 
     private:
-        yarp::sig::FlexImage rgbFrame;
+        YarpVocabPixelTypesEnum getPixelCode() const override
+        { return VOCAB_PIXEL_RGB; }
+
+        yarp::sig::FlexImage colorFrame;
         yarp::sig::ImageOf<yarp::sig::PixelFloat> depthFrame;
     };
 }
@@ -235,7 +234,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         int rgbHeight = iRGBDSensor->getDepthHeight();
 
         kinfu = makeColoredKinFu(params, depthIntrinsic, rgbIntrinsic, depthWidth, depthHeight, rgbWidth, rgbHeight);
-        renderUpdater = std::make_unique<RenderRgbUpdater>(*kinfu, iRGBDSensor);
+        renderUpdater = std::make_unique<RenderColorUpdater>(*kinfu, iRGBDSensor);
     }
 #endif
     else

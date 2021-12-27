@@ -77,14 +77,16 @@ public:
         }
     }
 
-    bool update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame, const yarp::sig::FlexImage & rgbFrame) override
+    bool update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame, const yarp::sig::FlexImage & colorFrame) override
     {
         // Cast away constness so that toCvMat accepts the YARP image. This function
         // does not alter the inner structure of PixelFloat images anyway.
         auto & nonConstDepthFrame = const_cast<yarp::sig::ImageOf<yarp::sig::PixelFloat> &>(depthFrame);
         cv::Mat mat = yarp::cv::toCvMat(nonConstDepthFrame);
+
         cv::UMat umat;
         mat.convertTo(umat, mat.type(), 1000.0); // OpenCV uses milimeters
+
         std::lock_guard<std::mutex> lock(mtx);
         return handle->update(umat);
     }
@@ -95,29 +97,20 @@ public:
         handle->reset();
     }
 
-    void render(yarp::sig::ImageOf<yarp::sig::PixelMono> & image) const override
+    void render(yarp::sig::FlexImage & image) const override
     {
         cv::UMat umat;
-        image.copy(renderBgr(umat)); // bgr to grayscale (single step convert+assign)
-    }
 
-    void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) const override
-    {
-        cv::UMat umat;
-        image.copy(renderBgr(umat)); // bgr to rgb (single step convert+assign)
-    }
-
-private:
-    yarp::sig::ImageOf<yarp::sig::PixelBgr> renderBgr(cv::UMat & umat) const
-    {
         mtx.lock();
         handle->render(umat);
         mtx.unlock();
 
         cv::Mat mat = umat.getMat(cv::ACCESS_FAST); // no memcpy
-        return yarp::cv::fromCvMat<yarp::sig::PixelBgr>(mat); // no conversion, use RVO
+        const auto & bgr = yarp::cv::fromCvMat<yarp::sig::PixelBgr>(mat); // no conversion
+        image.copy(bgr); // bgr to grayscale/rgb (single step convert+assign)
     }
 
+private:
     cv::Ptr<T> handle;
     mutable std::mutex mtx;
 };

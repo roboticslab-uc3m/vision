@@ -38,7 +38,7 @@ void KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::getCloud(yarp::sig::Poin
 
 template <>
 bool KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame,
-                                                               const yarp::sig::FlexImage & rgbFrame)
+                                                               const yarp::sig::FlexImage & colorFrame)
 {
     // Cast away constness so that toCvMat accepts the YARP image. This function
     // does not alter the inner structure of PixelFloat images anyway.
@@ -46,7 +46,7 @@ bool KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::update(const yarp::sig::
     cv::Mat depthMat = yarp::cv::toCvMat(nonConstDepthFrame);
 
     yarp::sig::ImageOf<yarp::sig::PixelBgr> bgrFrame;
-    bgrFrame.copy(rgbFrame);
+    bgrFrame.copy(colorFrame); // convert to BGR (probably from RGB)
     cv::Mat bgrMat = yarp::cv::toCvMat(bgrFrame);
 
     cv::UMat depthUmat;

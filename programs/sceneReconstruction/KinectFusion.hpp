@@ -25,13 +25,11 @@ public:
 
     virtual void getPose(yarp::sig::Matrix & pose) const = 0;
 
-    virtual bool update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame, const yarp::sig::FlexImage & rgbFrame = {}) = 0;
+    virtual bool update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame, const yarp::sig::FlexImage & colorFrame = {}) = 0;
 
     virtual void reset() = 0;
 
-    virtual void render(yarp::sig::ImageOf<yarp::sig::PixelMono> & image) const = 0;
-
-    virtual void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) const = 0;
+    virtual void render(yarp::sig::FlexImage & image) const = 0;
 };
 
 std::unique_ptr<KinectFusion> makeKinFu(const yarp::os::Searchable & config,
