@@ -97,25 +97,25 @@ public:
 
     void render(yarp::sig::ImageOf<yarp::sig::PixelMono> & image) const override
     {
-        image.copy(renderBgra()); // bgra to grayscale (single step convert+assign)
+        cv::UMat umat;
+        image.copy(renderBgr(umat)); // bgr to grayscale (single step convert+assign)
     }
 
     void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) const override
     {
-        image.copy(renderBgra()); // bgra to rgba (single step convert+assign)
+        cv::UMat umat;
+        image.copy(renderBgr(umat)); // bgr to rgb (single step convert+assign)
     }
 
 private:
-    yarp::sig::ImageOf<yarp::sig::PixelBgra> renderBgra() const
+    yarp::sig::ImageOf<yarp::sig::PixelBgr> renderBgr(cv::UMat & umat) const
     {
-        cv::UMat umat;
-
         mtx.lock();
         handle->render(umat);
         mtx.unlock();
 
         cv::Mat mat = umat.getMat(cv::ACCESS_FAST); // no memcpy
-        return yarp::cv::fromCvMat<yarp::sig::PixelBgra>(mat); // no conversion, use RVO
+        return yarp::cv::fromCvMat<yarp::sig::PixelBgr>(mat); // no conversion, use RVO
     }
 
     cv::Ptr<T> handle;
