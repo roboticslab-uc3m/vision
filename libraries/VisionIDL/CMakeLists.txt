@@ -22,7 +22,8 @@ if(ENABLE_VisionIDL)
 
     set_target_properties(VisionIDL PROPERTIES PUBLIC_HEADER "${idl_headers}")
 
-    target_link_libraries(VisionIDL PUBLIC YARP::YARP_os)
+    target_link_libraries(VisionIDL PUBLIC YARP::YARP_os
+                                           YARP::YARP_sig)
 
     target_include_directories(VisionIDL PUBLIC $<BUILD_INTERFACE:${idl_include_dirs}>
                                                 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
