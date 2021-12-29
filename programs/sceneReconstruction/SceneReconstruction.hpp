@@ -4,21 +4,38 @@
 #define __SCENE_RECONSTRUCTION_HPP__
 
 #include <atomic>
-#include <mutex>
+#include <string>
 
-#include <yarp/os/BufferedPort.h>
 #include <yarp/os/RpcServer.h>
 #include <yarp/os/RFModule.h>
 
 #include <yarp/dev/IRGBDSensor.h>
 #include <yarp/dev/PolyDriver.h>
 
-#include <yarp/sig/Image.h>
-
 #include "KinectFusion.hpp"
+#include "SceneReconstructionIDL.h"
 
 namespace roboticslab
 {
+
+class RenderUpdater
+{
+public:
+    enum class update_result { ACQUISITION_FAILED, KINFU_FAILED, SUCCESS };
+
+    RenderUpdater(KinectFusion & _kinfu, yarp::dev::IRGBDSensor * _sensor) : kinfu(_kinfu), sensor(_sensor) {}
+
+    virtual ~RenderUpdater() = default;
+    virtual std::string getPortName() const = 0;
+    virtual bool openPort(const std::string & name) = 0;
+    virtual void interruptPort() = 0;
+    virtual void closePort() = 0;
+    virtual update_result update() = 0;
+
+protected:
+    KinectFusion & kinfu;
+    yarp::dev::IRGBDSensor * sensor;
+};
 
 /**
  * @ingroup sceneReconstruction
@@ -26,7 +43,7 @@ namespace roboticslab
  * @brief Exposes Kinect Fusion as a YARP service via RPC.
  */
 class SceneReconstruction : public yarp::os::RFModule,
-                            private yarp::os::PortReader
+                            public SceneReconstructionIDL
 {
 public:
     ~SceneReconstruction() override
@@ -43,17 +60,26 @@ public:
 
     bool close() override;
 
-    bool read(yarp::os::ConnectionReader & reader) override;
+    void pause() override;
+
+    void resume() override;
+
+    return_pose getPose() override;
+
+    return_points getPoints() override;
+
+    return_points_with_normals getPointsWithNormals() override;
 
 private:
     double period;
     std::atomic_bool isRunning {false};
-    std::mutex kinfuMutex;
     std::unique_ptr<KinectFusion> kinfu {nullptr};
+
     yarp::dev::PolyDriver cameraDriver;
     yarp::dev::IRGBDSensor * iRGBDSensor {nullptr};
+
+    std::unique_ptr<RenderUpdater> renderUpdater {nullptr};
     yarp::os::RpcServer rpcServer;
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> renderPort;
 };
 
 } // namespace roboticslab

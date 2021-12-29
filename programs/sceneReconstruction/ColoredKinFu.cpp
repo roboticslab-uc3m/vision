@@ -11,8 +11,34 @@
 using namespace roboticslab;
 
 template <>
+void KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::getCloud(yarp::sig::PointCloudXYZNormalRGBA & cloudWithNormals) const
+{
+    cv::Mat points, normals, colors;
+
+    mtx.lock();
+    handle->getCloud(points, normals, colors);
+    mtx.unlock();
+
+    cloudWithNormals.resize(points.rows);
+
+    for (auto i = 0; i < points.rows; i++)
+    {
+        using color_t = unsigned char;
+        const auto & point = points.at<cv::Vec4f>(i);
+        const auto & normal = normals.at<cv::Vec4f>(i);
+        const auto & color = colors.at<cv::Vec4f>(i);
+
+        cloudWithNormals(i) = {
+            {point[0], point[1], point[2]},
+            {normal[0], normal[1], normal[2]},
+            {static_cast<color_t>(color[0]), static_cast<color_t>(color[1]), static_cast<color_t>(color[2]), static_cast<color_t>(color[3])}
+        };
+    }
+}
+
+template <>
 bool KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame,
-                                                               const yarp::sig::FlexImage & rgbFrame)
+                                                               const yarp::sig::FlexImage & colorFrame)
 {
     // Cast away constness so that toCvMat accepts the YARP image. This function
     // does not alter the inner structure of PixelFloat images anyway.
@@ -20,11 +46,13 @@ bool KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::update(const yarp::sig::
     cv::Mat depthMat = yarp::cv::toCvMat(nonConstDepthFrame);
 
     yarp::sig::ImageOf<yarp::sig::PixelBgr> bgrFrame;
-    bgrFrame.copy(rgbFrame);
+    bgrFrame.copy(colorFrame); // convert to BGR (probably from RGB)
     cv::Mat bgrMat = yarp::cv::toCvMat(bgrFrame);
 
     cv::UMat depthUmat;
     depthMat.convertTo(depthUmat, depthMat.type(), 1000.0); // OpenCV uses milimeters
+
+    std::lock_guard<std::mutex> lock(mtx);
     return handle->update(depthUmat, bgrMat);
 }
 
@@ -42,9 +70,9 @@ namespace roboticslab
 
 std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & config,
                                                const yarp::sig::IntrinsicParams & depthIntrinsic,
-                                               const yarp::sig::IntrinsicParams & rgbIntrinsic,
+                                               const yarp::sig::IntrinsicParams & colorIntrinsic,
                                                int depthWidth, int depthHeight,
-                                               int rgbWidth, int rgbHeight)
+                                               int colorWidth, int colorHeight)
 {
     using Params = cv::colored_kinfu::Params;
 
@@ -65,20 +93,20 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
     yCInfo(KINFU) << "principal point (X):" << depthIntrinsic.principalPointX;
     yCInfo(KINFU) << "principal point (Y):" << depthIntrinsic.principalPointY;
 
-    yCInfo(KINFU) << "--- CAMERA PARAMETERS (RGB) ---";
+    yCInfo(KINFU) << "--- CAMERA PARAMETERS (color) ---";
 
-    params->rgb_frameSize = cv::Size(rgbWidth, rgbHeight);
-    yCInfo(KINFU) << "width:" << rgbWidth;
-    yCInfo(KINFU) << "height:" << rgbHeight;
+    params->rgb_frameSize = cv::Size(colorWidth, colorHeight);
+    yCInfo(KINFU) << "width:" << colorWidth;
+    yCInfo(KINFU) << "height:" << colorHeight;
 
-    params->rgb_intr = cv::Matx33f(rgbIntrinsic.focalLengthX,                         0, rgbIntrinsic.principalPointX,
-                                                           0, rgbIntrinsic.focalLengthY, rgbIntrinsic.principalPointY,
-                                                           0,                         0,                            1);
+    params->rgb_intr = cv::Matx33f(colorIntrinsic.focalLengthX,                           0, colorIntrinsic.principalPointX,
+                                                             0, colorIntrinsic.focalLengthY, colorIntrinsic.principalPointY,
+                                                             0,                           0,                              1);
 
-    yCInfo(KINFU) << "focal length (X):" << rgbIntrinsic.focalLengthX;
-    yCInfo(KINFU) << "focal length (Y):" << rgbIntrinsic.focalLengthY;
-    yCInfo(KINFU) << "principal point (X):" << rgbIntrinsic.principalPointX;
-    yCInfo(KINFU) << "principal point (Y):" << rgbIntrinsic.principalPointY;
+    yCInfo(KINFU) << "focal length (X):" << colorIntrinsic.focalLengthX;
+    yCInfo(KINFU) << "focal length (Y):" << colorIntrinsic.focalLengthY;
+    yCInfo(KINFU) << "principal point (X):" << colorIntrinsic.principalPointX;
+    yCInfo(KINFU) << "principal point (Y):" << colorIntrinsic.principalPointY;
 
     yCInfo(KINFU) << "--- ALGORITHM PARAMETERS ---";
 
@@ -203,7 +231,7 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
         yCInfo(KINFU) << "volumePoseTransl (DEFAULT):" << transl[0] << transl[1] << transl[2];
     }
 
-    if (config.check("volumeType", "type of voxel volume (tsdf, hashtsdf)"))
+    if (config.check("volumeType", "type of voxel volume (tsdf, hashtsdf, coloredtsdf)"))
     {
         std::string volumeType = config.find("volumeType").asString();
 

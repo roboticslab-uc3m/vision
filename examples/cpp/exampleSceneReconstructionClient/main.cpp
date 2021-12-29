@@ -4,28 +4,21 @@
  * @brief Sample usage of @ref sceneReconstruction.
  */
 
-#include <yarp/conf/version.h>
-
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/os/RpcClient.h>
 #include <yarp/os/SystemClock.h>
 #include <yarp/os/Value.h>
-#include <yarp/os/Vocab.h>
+
 #include <yarp/sig/PointCloud.h>
 
 #include <YarpCloudUtils.hpp>
+#include <SceneReconstructionIDL.h>
 
 constexpr auto DEFAULT_REMOTE = "/sceneReconstruction";
 constexpr auto DEFAULT_PREFIX = "/exampleSceneReconstructionClient";
 constexpr auto DEFAULT_COLLECTION = "meshPipeline";
-
-#if YARP_VERSION_MINOR >= 5
-constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab32('g','p','c');
-#else
-constexpr auto VOCAB_GET_POINTS = yarp::os::createVocab('g','p','c');
-#endif
 
 int main(int argc, char * argv[])
 {
@@ -69,20 +62,22 @@ int main(int argc, char * argv[])
         return 1;
     }
 
-    yarp::os::Bottle cmd {yarp::os::Value(VOCAB_GET_POINTS, true)};
-    yarp::sig::PointCloudXYZ cloud;
+    roboticslab::SceneReconstructionIDL sceneReconstruction;
+    sceneReconstruction.yarp().attachAsClient(rpc);
 
-    if (!rpc.write(cmd, cloud))
+    auto result = sceneReconstruction.getPointsWithNormals();
+
+    if (!result.ret)
     {
         yError() << "Unable to send remote command";
         return 1;
     }
 
-    yInfo() << "Got cloud of" << cloud.size() << "points";
+    yInfo() << "Got cloud of" << result.pointsWithNormals.size() << "points";
 
     if (!fileCloud.empty())
     {
-        if (!roboticslab::YarpCloudUtils::savePLY(fileCloud, cloud, binary))
+        if (!roboticslab::YarpCloudUtils::savePLY(fileCloud, result.pointsWithNormals, binary))
         {
             yWarning() << "Unable to export cloud to" << fileCloud;
         }
@@ -94,12 +89,12 @@ int main(int argc, char * argv[])
 
     if (!fileMesh.empty())
     {
-        yarp::sig::PointCloudXYZ meshPoints;
+        yarp::sig::PointCloudXYZRGBA meshPoints;
         yarp::sig::VectorOf<int> meshIndices;
 
         auto start = yarp::os::SystemClock::nowSystem();
 
-        if (!roboticslab::YarpCloudUtils::meshFromCloud(cloud, meshPoints, meshIndices, options, collection))
+        if (!roboticslab::YarpCloudUtils::meshFromCloud(result.pointsWithNormals, meshPoints, meshIndices, options, collection))
         {
             yWarning() << "Unable to reconstruct surface from cloud";
         }

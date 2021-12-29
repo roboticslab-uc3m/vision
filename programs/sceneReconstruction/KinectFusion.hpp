@@ -17,19 +17,19 @@ namespace roboticslab
 class KinectFusion
 {
 public:
-    virtual ~KinectFusion() {}
+    virtual ~KinectFusion() = default;
 
-    virtual void getCloud(yarp::sig::PointCloudXYZNormal & cloudWithNormals) const = 0;
+    virtual void getCloud(yarp::sig::PointCloudXYZNormalRGBA & cloudWithNormals) const = 0;
 
     virtual void getPoints(yarp::sig::PointCloudXYZ & cloud) const = 0;
 
     virtual void getPose(yarp::sig::Matrix & pose) const = 0;
 
-    virtual bool update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame, const yarp::sig::FlexImage & rgbFrame) = 0;
+    virtual bool update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame, const yarp::sig::FlexImage & colorFrame = {}) = 0;
 
     virtual void reset() = 0;
 
-    virtual void render(yarp::sig::ImageOf<yarp::sig::PixelRgb> & image) const = 0;
+    virtual void render(yarp::sig::FlexImage & image) const = 0;
 };
 
 std::unique_ptr<KinectFusion> makeKinFu(const yarp::os::Searchable & config,
@@ -51,9 +51,9 @@ std::unique_ptr<KinectFusion> makeKinFuLargeScale(const yarp::os::Searchable & c
 #ifdef HAVE_COLORED_KINFU
 std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & config,
                                                const yarp::sig::IntrinsicParams & depthIntrinsic,
-                                               const yarp::sig::IntrinsicParams & rgbIntrinsic,
+                                               const yarp::sig::IntrinsicParams & colorIntrinsic,
                                                int depthWidth, int depthHeight,
-                                               int rgbWidth, int rgbHeight);
+                                               int colorWidth, int colorHeight);
 #endif
 
 } // namespace roboticslab
