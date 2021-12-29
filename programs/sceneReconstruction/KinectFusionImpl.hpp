@@ -106,8 +106,8 @@ public:
         mtx.unlock();
 
         cv::Mat mat = umat.getMat(cv::ACCESS_FAST); // no memcpy
-        const auto & bgr = yarp::cv::fromCvMat<yarp::sig::PixelBgr>(mat); // no conversion
-        image.copy(bgr); // bgr to grayscale/rgb (single step convert+assign)
+        const auto & bgr = yarp::cv::fromCvMat<yarp::sig::PixelBgra>(mat); // no conversion
+        image.copy(bgr); // bgra to grayscale/rgb (single step convert+assign)
     }
 
 private:
