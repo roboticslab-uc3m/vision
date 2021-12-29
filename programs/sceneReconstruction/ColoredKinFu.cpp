@@ -231,7 +231,7 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
         yCInfo(KINFU) << "volumePoseTransl (DEFAULT):" << transl[0] << transl[1] << transl[2];
     }
 
-    if (config.check("volumeType", "type of voxel volume (tsdf, hashtsdf)"))
+    if (config.check("volumeType", "type of voxel volume (tsdf, hashtsdf, coloredtsdf)"))
     {
         std::string volumeType = config.find("volumeType").asString();
 

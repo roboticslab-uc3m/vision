@@ -312,16 +312,19 @@ bool SceneReconstruction::close()
 
 void SceneReconstruction::pause()
 {
+    yCDebug(KINFU) << "Pausing";
     isRunning = false;
 }
 
 void SceneReconstruction::resume()
 {
+    yCDebug(KINFU) << "Resuming";
     isRunning = true;
 }
 
 return_pose SceneReconstruction::getPose()
 {
+    yCDebug(KINFU) << "Requesting pose";
     yarp::sig::Matrix pose;
     kinfu->getPose(pose);
     return {true, pose};
@@ -329,6 +332,7 @@ return_pose SceneReconstruction::getPose()
 
 return_points SceneReconstruction::getPoints()
 {
+    yCDebug(KINFU) << "Requesting points";
     yarp::sig::PointCloudXYZ cloud;
     kinfu->getPoints(cloud);
     return {true, cloud};
@@ -336,6 +340,7 @@ return_points SceneReconstruction::getPoints()
 
 return_points_with_normals SceneReconstruction::getPointsWithNormals()
 {
+    yCDebug(KINFU) << "Requesting points with normals";
     yarp::sig::PointCloudXYZNormalRGBA cloudWithNormals;
     kinfu->getCloud(cloudWithNormals);
     return {true, cloudWithNormals};
