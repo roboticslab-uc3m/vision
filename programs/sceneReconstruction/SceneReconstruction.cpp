@@ -335,6 +335,7 @@ return_points SceneReconstruction::getPoints()
     yCDebug(KINFU) << "Requesting points";
     yarp::sig::PointCloudXYZ cloud;
     kinfu->getPoints(cloud);
+    yCDebug(KINFU) << "Got cloud of" << cloud.size() << "points";
     return {true, cloud};
 }
 
@@ -343,5 +344,6 @@ return_points_with_normals SceneReconstruction::getPointsWithNormals()
     yCDebug(KINFU) << "Requesting points with normals";
     yarp::sig::PointCloudXYZNormalRGBA cloudWithNormals;
     kinfu->getCloud(cloudWithNormals);
+    yCDebug(KINFU) << "Got cloud of" << cloudWithNormals.size() << "points with normals";
     return {true, cloudWithNormals};
 }
