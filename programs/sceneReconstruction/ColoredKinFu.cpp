@@ -13,20 +13,24 @@ using namespace roboticslab;
 template <>
 void KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::getCloud(yarp::sig::PointCloudXYZNormalRGBA & cloudWithNormals) const
 {
-    cv::Mat points, normals, colors;
+    cv::UMat points, normals, colors;
 
     mtx.lock();
     handle->getCloud(points, normals, colors);
     mtx.unlock();
+
+    cv::Mat _points = points.getMat(cv::ACCESS_FAST); // no memcpy
+    cv::Mat _normals = normals.getMat(cv::ACCESS_FAST); // no memcpy
+    cv::Mat _colors = colors.getMat(cv::ACCESS_FAST); // no memcpy
 
     cloudWithNormals.resize(points.rows);
 
     for (auto i = 0; i < points.rows; i++)
     {
         using color_t = unsigned char;
-        const auto & point = points.at<cv::Vec4f>(i);
-        const auto & normal = normals.at<cv::Vec4f>(i);
-        const auto & color = colors.at<cv::Vec4f>(i);
+        const auto & point = _points.at<cv::Vec4f>(i);
+        const auto & normal = _normals.at<cv::Vec4f>(i);
+        const auto & color = _colors.at<cv::Vec4f>(i);
 
         cloudWithNormals(i) = {
             {point[0], point[1], point[2]},

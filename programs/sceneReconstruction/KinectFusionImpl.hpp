@@ -27,37 +27,37 @@ public:
 
     void getCloud(yarp::sig::PointCloudXYZNormalRGBA & cloudWithNormals) const override
     {
-        cv::Mat points, normals;
+        cv::UMat points, normals;
 
         mtx.lock();
         handle->getCloud(points, normals);
         mtx.unlock();
 
+        cv::Mat _points = points.getMat(cv::ACCESS_FAST); // no memcpy
+        cv::Mat _normals = normals.getMat(cv::ACCESS_FAST); // no memcpy
+
         cloudWithNormals.resize(points.rows);
 
         for (auto i = 0; i < points.rows; i++)
         {
-            const auto & point = points.at<cv::Vec4f>(i);
-            const auto & normal = normals.at<cv::Vec4f>(i);
+            const auto & point = _points.at<cv::Vec4f>(i);
+            const auto & normal = _normals.at<cv::Vec4f>(i);
             cloudWithNormals(i) = {{point[0], point[1], point[2]}, {normal[0], normal[1], normal[2]}, 0};
         }
     }
 
     void getPoints(yarp::sig::PointCloudXYZ & cloud) const override
     {
-        cv::Mat points;
+        cv::UMat points;
 
         mtx.lock();
         handle->getPoints(points);
         mtx.unlock();
 
-        cloud.resize(points.rows);
+        cv::Mat _points = points.getMat(cv::ACCESS_FAST); // no memcpy
+        auto data = const_cast<const char *>(reinterpret_cast<char *>(_points.data));
 
-        for (auto i = 0; i < points.rows; i++)
-        {
-            const auto & point = points.at<cv::Vec4f>(i);
-            cloud(i) = {point[0], point[1], point[2]};
-        }
+        cloud.fromExternalPC(data, yarp::sig::PointCloudBasicType::PC_XYZ_DATA, _points.rows, 1);
     }
 
     void getPose(yarp::sig::Matrix & pose) const override
