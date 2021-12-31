@@ -49,7 +49,7 @@
 
     <!-- Requires YARP 3.5+ compiled with ENABLE_yarpmod_RGBDSensorFromRosTopic -->
     <module>
-        <name>RGBDSensorWrapper</name>
+        <name>rgbdSensor_nws_yarp</name>
         <parameters>--name /rgbd --subdevice RGBDSensorFromRosTopic --rgb_data_topic /xtion/rgb/image_color --rgb_info_topic /xtion/rgb/camera_info --depth_data_topic /xtion/depth_registered/image_raw --depth_data_info /xtion/depth_registered/camera_info</parameters>
         <node>localhost</node>
         <deployer>yarpdev</deployer>

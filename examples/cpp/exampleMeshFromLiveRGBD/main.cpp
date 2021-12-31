@@ -4,13 +4,12 @@
  * @brief Transform RGBD frame to cloud/mesh.
  */
 
-#include <yarp/conf/version.h>
+#include <utility> // std::move
 
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/ResourceFinder.h>
-#include <yarp/os/SystemClock.h>
 #include <yarp/os/Value.h>
 
 #include <yarp/dev/IRGBDSensor.h>
@@ -100,13 +99,6 @@ int main(int argc, char * argv[])
             return 1;
         }
 
-#if YARP_VERSION_MINOR < 5
-        // Wait for the first few frames to arrive. We kept receiving invalid pixel codes
-        // from the depthCamera device if started straight away.
-        // https://github.com/roboticslab-uc3m/vision/issues/88
-        yarp::os::SystemClock::delaySystem(1.0);
-#endif
-
         yarp::os::Property intrinsic;
 
         if (!iRGBDSensor->getRgbIntrinsicParam(intrinsic))
@@ -136,7 +128,7 @@ int main(int argc, char * argv[])
     }
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> temp;
-    temp.copy(colorImage);
+    temp.getPixelCode() == colorImage.getPixelCode() ? temp.move(std::move(colorImage)) : temp.copy(colorImage);
     auto cloud = yarp::sig::utils::depthRgbToPC<yarp::sig::DataXYZRGBA>(depthImage, temp, colorParams);
     yInfo() << "Got cloud of" << cloud.size() << "points, organized as" << cloud.width() << "x" << cloud.height();
 

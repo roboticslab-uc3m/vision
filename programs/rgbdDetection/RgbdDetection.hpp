@@ -14,9 +14,7 @@
 #include <yarp/sig/IntrinsicParams.h>
 
 #include "IDetector.hpp"
-#ifdef HAVE_CROP
-# include "YarpCropCallback.hpp"
-#endif
+#include "YarpCropCallback.hpp"
 
 namespace roboticslab
 {
@@ -28,7 +26,7 @@ namespace roboticslab
 class RgbdDetection : public yarp::os::RFModule
 {
 public:
-    ~RgbdDetection()
+    ~RgbdDetection() override
     { close(); }
 
     bool configure(yarp::os::ResourceFinder &rf) override;
@@ -47,11 +45,8 @@ private:
 
     yarp::os::BufferedPort<yarp::os::Bottle> statePort;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> imagePort;
-
-#ifdef HAVE_CROP
     yarp::os::BufferedPort<yarp::os::Bottle> cropPort;
     YarpCropCallback cropCallback;
-#endif
 
     double period;
 };

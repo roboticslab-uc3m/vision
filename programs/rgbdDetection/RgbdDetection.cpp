@@ -4,17 +4,15 @@
 
 #include <cstdio>
 #include <tuple>
+#include <utility> // std::move
 #include <vector>
 
-#include <yarp/conf/version.h>
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
-#include <yarp/sig/ImageDraw.h>
 
-#ifdef HAVE_CROP
-# include <yarp/sig/ImageUtils.h>
-#endif
+#include <yarp/sig/ImageDraw.h>
+#include <yarp/sig/ImageUtils.h>
 
 constexpr auto DEFAULT_SENSOR_DEVICE = "RGBDSensorClient";
 constexpr auto DEFAULT_SENSOR_REMOTE = "/rgbd";
@@ -97,13 +95,6 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
 
     depthIntrinsicParams.fromProperty(depthParams);
 
-#if YARP_VERSION_MINOR < 5
-    // Wait for the first few frames to arrive. We kept receiving invalid pixel codes
-    // from the depthCamera device if started straight away.
-    // https://github.com/roboticslab-uc3m/vision/issues/88
-    yarp::os::Time::delay(1.0);
-#endif
-
     yarp::os::Property detectorOptions;
     detectorOptions.fromString(rf.toString());
     detectorOptions.put("device", strDetector);
@@ -129,7 +120,6 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     statePort.setWriteOnly();
     imagePort.setWriteOnly();
 
-#ifdef HAVE_CROP
     if (!cropPort.open(strLocalPrefix + "/crop:i"))
     {
         yCError(RGBD) << "Unable to open input crop port" << cropPort.getName();
@@ -138,7 +128,6 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
 
     cropPort.setReadOnly();
     cropPort.useCallback(cropCallback);
-#endif
 
     return true;
 }
@@ -163,15 +152,15 @@ bool RgbdDetection::updateModule()
     int offsetX = 0;
     int offsetY = 0;
 
-#ifdef HAVE_CROP
     auto vertices = cropCallback.getVertices();
+    bool isRgbCompatible = rgbImage.getPixelCode() == colorFrame.getPixelCode();
 
     if (vertices.size() != 0)
     {
         if (!yarp::sig::utils::cropRect(colorFrame, vertices[0], vertices[1], rgbImage))
         {
             yCWarning(RGBD) << "Crop failed, using full color frame";
-            rgbImage.copy(colorFrame);
+            isRgbCompatible ? rgbImage.move(std::move(colorFrame)) : rgbImage.copy(colorFrame);
         }
         else
         {
@@ -181,11 +170,8 @@ bool RgbdDetection::updateModule()
     }
     else
     {
-        rgbImage.copy(colorFrame);
+        isRgbCompatible ? rgbImage.move(std::move(colorFrame)) : rgbImage.copy(colorFrame);
     }
-#else
-    rgbImage.copy(colorFrame);
-#endif
 
     yarp::os::Bottle detectedObjects;
 
@@ -214,7 +200,7 @@ bool RgbdDetection::updateModule()
             int pyColor = (tly + bry) / 2;
 
             int pxDepth, pyDepth;
-            scaleXY(colorFrame, depthFrame, pxColor + offsetX, pyColor + offsetY, &pxDepth, &pyDepth);
+            scaleXY(rgbImage, depthFrame, pxColor + offsetX, pyColor + offsetY, &pxDepth, &pyDepth);
             float depth = depthFrame.pixel(pxDepth, pyDepth);
 
             if (depth > 0.0f)
@@ -260,10 +246,8 @@ bool RgbdDetection::interruptModule()
 {
     statePort.interrupt();
     imagePort.interrupt();
-#ifdef HAVE_CROP
     cropPort.interrupt();
     cropPort.disableCallback();
-#endif
     return true;
 }
 
@@ -273,8 +257,6 @@ bool RgbdDetection::close()
     detectorDevice.close();
     statePort.close();
     imagePort.close();
-#ifdef HAVE_CROP
     cropPort.close();
-#endif
     return true;
 }

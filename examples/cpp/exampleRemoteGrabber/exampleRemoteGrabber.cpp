@@ -6,20 +6,13 @@
  * @brief This example connects to a remote grabber (generally, RGB) device.
  */
 
-#include <yarp/conf/version.h>
-
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
 
 #include <yarp/dev/PolyDriver.h>
-
-#if YARP_VERSION_MINOR >= 5
-# include <yarp/dev/IFrameGrabberImage.h>
-# include <yarp/dev/IFrameGrabberControls.h>
-#else
-# include <yarp/dev/FrameGrabberInterfaces.h>
-#endif
+#include <yarp/dev/IFrameGrabberImage.h>
+#include <yarp/dev/IFrameGrabberControls.h>
 
 int main(int argc, char *argv[])
 {
@@ -77,7 +70,7 @@ int main(int argc, char *argv[])
         yWarning() << "iFrameGrabberControls->hasFeature() failed";
 
     // The following delay should avoid bad status
-    yarp::os::Time::delay(1);
+    yarp::os::Time::delay(1.0);
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> image;
 
@@ -89,8 +82,6 @@ int main(int argc, char *argv[])
 
     yInfo() << "Width:" << iFrameGrabberImage->width();
     yInfo() << "Height:" << iFrameGrabberImage->height();
-
-    dd.close();
 
     return 0;
 }
