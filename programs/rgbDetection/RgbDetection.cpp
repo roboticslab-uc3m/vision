@@ -169,30 +169,51 @@ bool RgbDetection::updateModule()
 #ifdef HAVE_IMGPROC
             cv::Mat cvFrame(frame.height(), frame.width(), CV_8UC3, frame.getRawImage(), frame.getRowSize());
 #endif
-
             for (auto i = 0; i < detectedObjects.size(); i++)
             {
-                const auto * detectedObject = detectedObjects.get(i).asDict();
-                auto tlx = detectedObject->find("tlx").asInt32();
-                auto tly = detectedObject->find("tly").asInt32();
-                auto brx = detectedObject->find("brx").asInt32();
-                auto bry = detectedObject->find("bry").asInt32();
+                const auto & detectedObject1 = detectedObjects.get(i);
+
+                if (detectedObject1.isList())
+                {
+                    const auto * detectedLandmarks = detectedObjects.get(i).asList();
+
+                    for (auto j = 0; j < detectedLandmarks->size(); j=j+2)
+                    {
+                        auto lmx = detectedLandmarks->get(j).asInt32();
+                        auto lmy = detectedLandmarks->get(j+1).asInt32();
 
 #ifdef HAVE_IMGPROC
-                cv::rectangle(cvFrame, {tlx, tly}, {brx, bry}, {255, 0, 0});
-                std::string label = findLabel(*detectedObject);
-
-                if (!label.empty())
-                {
-                    int base;
-                    cv::Size size = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &base);
-                    int top = cv::max(tly, size.height);
-                    cv::rectangle(cvFrame, {tlx, top - size.height}, {tlx + size.width, top + base}, cv::Scalar::all(255), cv::FILLED);
-                    cv::putText(cvFrame, label, {tlx, top}, cv::FONT_HERSHEY_SIMPLEX, 0.5, {});
-                }
+                        cv::circle(cvFrame, {lmx, lmy}, 1, {0, 0, 255}, 1);
 #else
-                yarp::sig::draw::addRectangleOutline(frame, {255, 0, 0}, (tlx + brx) / 2, (tly + bry) / 2, (brx - tlx) / 2, (bry - tly) / 2);
+                        yarp::sig::draw::addCircleOutline(frame, {0,0,255}, lmx, lmy, 1);
 #endif
+                    }
+                 }
+
+                else
+                {
+                    const auto * detectedObject = detectedObjects.get(i).asDict();
+                    auto tlx = detectedObject->find("tlx").asInt32();
+                    auto tly = detectedObject->find("tly").asInt32();
+                    auto brx = detectedObject->find("brx").asInt32();
+                    auto bry = detectedObject->find("bry").asInt32();
+
+#ifdef HAVE_IMGPROC
+                    cv::rectangle(cvFrame, {tlx, tly}, {brx, bry}, {255, 0, 0});
+                    std::string label = findLabel(*detectedObject);
+
+                    if (!label.empty())
+                    {
+                        int base;
+                        cv::Size size = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &base);
+                        int top = cv::max(tly, size.height);
+                        cv::rectangle(cvFrame, {tlx, top - size.height}, {tlx + size.width, top + base}, cv::Scalar::all(255), cv::FILLED);
+                        cv::putText(cvFrame, label, {tlx, top}, cv::FONT_HERSHEY_SIMPLEX, 0.5, {});
+                    }
+#else
+                    yarp::sig::draw::addRectangleOutline(frame, {255, 0, 0}, (tlx + brx) / 2, (tly + bry) / 2, (brx - tlx) / 2, (bry - tly) / 2);
+#endif
+                }
             }
         }
 
