@@ -21,7 +21,7 @@ bool HogFaceDetector::open(yarp::os::Searchable& parameters)
 
     hogFaceDetector = dlib::get_frontal_face_detector();
 
-    dlib::deserialize("/home/carlos/shape_predictor_68_face_landmarks.dat") >> predictor;
+    dlib::deserialize("/../vision/models/shape_predictor_68_face_landmarks/shape_predictor_68_face_landmarks.dat.bz2") >> predictor;
 
     return true;
 }

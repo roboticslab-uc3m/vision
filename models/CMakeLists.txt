@@ -44,4 +44,9 @@ if(DOWNLOAD_MODELS)
                      https://raw.githubusercontent.com/pjreddie/darknet/17d4774/cfg/yolov3-tiny.cfg 46282cefe5cf7a248b69d528d3372f5cf1ddf39d)
 
     _download_model(yolov3-tiny "${_yolov3-tiny}")
+
+    set(_shape_predictor_68_face_landmarks http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 6cbb70006b91b31ba39a88594c2698abb5fdb785)
+
+    _download_model(shape_predictor_68_face_landmarks "${_shape_predictor_68_face_landmarks}")
+
 endif()
