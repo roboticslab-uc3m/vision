@@ -26,6 +26,7 @@ public:
 
 private:
     cv::CascadeClassifier object_cascade;
+    //cv::Ptr<Facemark> facemark;
 };
 
 } // namespace roboticslab

@@ -18,6 +18,12 @@ constexpr auto DEFAULT_XMLCASCADE = "haarcascade_frontalface_alt.xml";
 
 bool HaarDetector::open(yarp::os::Searchable& parameters)
 {
+    if (parameters.check("useKazemi", "enable Kazemi detector"))
+    {
+        // load file
+        //facemark = createKazemiDetector();
+    }
+
     auto xmlCascade = parameters.check("xmlCascade", yarp::os::Value(DEFAULT_XMLCASCADE)).asString();
     yCDebug(HAAR) << "Using xmlCascade:" << xmlCascade;
 
@@ -60,6 +66,11 @@ bool HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle &
             {"brx", yarp::os::Value(object.x + object.width)},
             {"bry", yarp::os::Value(object.y + object.height)}
         };
+
+//        if (facemark)
+//        {
+//            ;
+//        }
     }
 
     return true;

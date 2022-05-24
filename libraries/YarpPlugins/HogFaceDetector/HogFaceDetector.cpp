@@ -49,20 +49,29 @@ bool HogFaceDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottl
         std::vector<yarp::os::Value> lms;
         yarp::os::Bottle detectedlms;
 
+        yarp::os::Property dict = detectedObjects.addDict();
+        dict.put("tlx", object.x);
+        dict.put("tly", object.y);
+        dict.put("brx", object.x + object.width);
+        dict.put("bry", object.y + object.height);
+
+        yarp::os::Value * list = yarp::os::Value::makeList();
+
         for (unsigned long j = 0; j < shape.num_parts(); j++)
         {
-            detectedlms.addInt32(shape.part(j).x());
-            detectedlms.addInt32(shape.part(j).y());
+            list->asList()->addList() = {
+                yarp::os::Value(shape.part(j).x()),
+                yarp::os::Value(shape.part(j).y())
+            };
+
+//            yarp::os::Bottle pair = list->asList()->addList();
+//            pair.addInt32(shape.part(j).x());
+//            pair.addInt32(shape.part(j).y());
         }
 
-        detectedObjects.addDict() = {
-            {"tlx", yarp::os::Value(object.x)},
-            {"tly", yarp::os::Value(object.y)},
-            {"brx", yarp::os::Value(object.x + object.width)},
-            {"bry", yarp::os::Value(object.y + object.height)}
-        };
-        
-        detectedObjects.addList() = detectedlms;
+        dict.put("landmarks", list);
+
+        // detectedObjects = ((tlx 5) (tly 10) (brx 7) (bry 9) (landmarks ((5 6) (4 2) (7 9)))) () ()
 
     }
 
