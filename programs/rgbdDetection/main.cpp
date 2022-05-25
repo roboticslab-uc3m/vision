@@ -52,14 +52,14 @@ int main(int argc, char * argv[])
         return 1;
     }
 
-    yInfo() << "Run \"%s --help\" for options" << argv[0];
-    yInfo() << argv[0] << "Checking for yarp network...";
+    yInfo() << "Add --help for usage notes";
+    yInfo() << "Checking for yarp network...";
 
     yarp::os::Network yarp;
 
     if (!yarp::os::Network::checkNetwork())
     {
-        yError() << argv[0] << "found no yarp network (try running \"yarpserver &\"), bye!";
+        yError() << "No YARP network found (try running \"yarpserver &\")";
         return 1;
     }
 

@@ -69,7 +69,7 @@ int main(int argc, char * argv[])
 
     if (!yarp::os::Network::checkNetwork())
     {
-        yError() << argv[0] << "found no yarp network (try running \"yarpserver &\"), bye!";
+        yError() << "No YARP network found (try running \"yarpserver &\")";
         return 1;
     }
 
