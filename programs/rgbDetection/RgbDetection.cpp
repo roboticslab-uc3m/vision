@@ -15,6 +15,8 @@
 # include <yarp/sig/ImageDraw.h>
 #endif
 
+#include <iostream>
+
 constexpr auto DEFAULT_SENSOR_DEVICE = "remote_grabber";
 constexpr auto DEFAULT_SENSOR_REMOTE = "/grabber";
 constexpr auto DEFAULT_LOCAL_PREFIX = "/rgbDetection";
@@ -171,13 +173,11 @@ bool RgbDetection::updateModule()
 #endif
             for (auto i = 0; i < detectedObjects.size(); i++)
             {
-
                 const auto * detectedObject = detectedObjects.get(i).asDict();
                 auto tlx = detectedObject->find("tlx").asInt32();
                 auto tly = detectedObject->find("tly").asInt32();
                 auto brx = detectedObject->find("brx").asInt32();
                 auto bry = detectedObject->find("bry").asInt32();
-
 
                 yarp::os::Bottle * landmarks = detectedObject->find("landmarks").asList();
 
@@ -191,7 +191,7 @@ bool RgbDetection::updateModule()
 #ifdef HAVE_IMGPROC
                         cv::circle(cvFrame, {lmx, lmy}, 1, {0, 0, 255}, 1);
 #else
-                        yarp::sig::draw::addCircleOutline(frame, {0,0,255}, lmx, lmy, 1);
+                        yarp::sig::draw::addCircleOutline(frame, {0, 0, 255}, lmx, lmy, 1);
 #endif
                     }
                 }

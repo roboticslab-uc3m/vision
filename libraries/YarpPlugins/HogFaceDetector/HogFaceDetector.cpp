@@ -21,7 +21,7 @@ bool HogFaceDetector::open(yarp::os::Searchable& parameters)
 
     hogFaceDetector = dlib::get_frontal_face_detector();
 
-    dlib::deserialize("/../vision/models/shape_predictor_68_face_landmarks/shape_predictor_68_face_landmarks.dat.bz2") >> predictor;
+    dlib::deserialize("shape_predictor_68_face_landmarks.dat") >> predictor;
 
     return true;
 }
@@ -41,15 +41,10 @@ bool HogFaceDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottl
 
     for (const auto & faceRect : faceRects)
     {
-        cv::Rect object;
-
-        object = cv::Rect(cv::Point2i(faceRect.left(), faceRect.top()), cv::Point2i(faceRect.right() + 1, faceRect.bottom() + 1));
+        cv::Rect object = cv::Rect(cv::Point2i(faceRect.left(), faceRect.top()), cv::Point2i(faceRect.right() + 1, faceRect.bottom() + 1));
         shape = predictor(dlibImage, faceRect);
 
-        std::vector<yarp::os::Value> lms;
-        yarp::os::Bottle detectedlms;
-
-        yarp::os::Property dict = detectedObjects.addDict();
+        yarp::os::Property & dict = detectedObjects.addDict();
         dict.put("tlx", object.x);
         dict.put("tly", object.y);
         dict.put("brx", object.x + object.width);
@@ -60,19 +55,12 @@ bool HogFaceDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottl
         for (unsigned long j = 0; j < shape.num_parts(); j++)
         {
             list->asList()->addList() = {
-                yarp::os::Value(shape.part(j).x()),
-                yarp::os::Value(shape.part(j).y())
+                    yarp::os::Value(shape.part(j).x(), false),
+                    yarp::os::Value(shape.part(j).y(), false)
             };
-
-//            yarp::os::Bottle pair = list->asList()->addList();
-//            pair.addInt32(shape.part(j).x());
-//            pair.addInt32(shape.part(j).y());
         }
 
         dict.put("landmarks", list);
-
-        // detectedObjects = ((tlx 5) (tly 10) (brx 7) (bry 9) (landmarks ((5 6) (4 2) (7 9)))) () ()
-
     }
 
     return true;
