@@ -49,4 +49,8 @@ if(DOWNLOAD_MODELS)
 
     _download_model(shape_predictor_68_face_landmarks "${_shape_predictor_68_face_landmarks}")
 
+    set(_lbfmodel https://raw.githubusercontent.com/kurnianggoro/GSOC2017/master/data/lbfmodel.yaml 2bcd8ce6cff58fa3ad74386b7b3f77b510198d27)
+
+    _download_model(lbfmodel "${_lbfmodel}")
+
 endif()

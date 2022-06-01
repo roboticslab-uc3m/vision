@@ -9,6 +9,12 @@
 
 #include <opencv2/face/facemark.hpp>
 
+#include <opencv2/face.hpp>
+
+#include <opencv2/opencv.hpp>
+
+#include <opencv2/face/facemarkLBF.hpp>
+
 #include "IDetector.hpp"
 
 namespace roboticslab
@@ -30,7 +36,6 @@ private:
     cv::CascadeClassifier object_cascade;
     cv::Ptr<cv::face::Facemark> facemark;
     std::vector< std::vector<cv::Point2f> > shapes;
-    //std::vector<cv::Point2f> shape;
 };
 
 } // namespace roboticslab
