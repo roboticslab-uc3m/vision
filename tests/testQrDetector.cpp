@@ -14,6 +14,9 @@
 namespace roboticslab
 {
 
+namespace test
+{
+
 struct PropertyHasher
 {
     std::size_t operator()(const yarp::os::Property & prop) const
@@ -37,7 +40,7 @@ struct PropertyComparer
 class QrDetectorTest : public testing::Test
 {
 public:
-    virtual void SetUp() override
+    void SetUp() override
     {
         yarp::os::Property deviceOptions {{"device", yarp::os::Value("QrDetector")}};
 
@@ -54,12 +57,12 @@ public:
         }
     }
 
-    virtual void TearDown() override
+    void TearDown() override
     {
     }
 
 protected:
-    roboticslab::IDetector *iDetector;
+    roboticslab::IDetector * iDetector;
     yarp::dev::PolyDriver detectorDevice;
     static std::unordered_set<yarp::os::Property, PropertyHasher, PropertyComparer> expectedValues;
 };
@@ -134,4 +137,5 @@ TEST_F(QrDetectorTest, QrDetector2)
     }
 }
 
+} // namespace test
 } // namespace roboticslab

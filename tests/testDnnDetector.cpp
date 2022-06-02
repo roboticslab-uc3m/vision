@@ -14,6 +14,9 @@
 namespace roboticslab
 {
 
+namespace test
+{
+
 /**
  * @ingroup vision_tests
  * @brief Tests @ref DnnDetector
@@ -21,7 +24,7 @@ namespace roboticslab
 class DnnDetectorTest : public testing::Test
 {
 public:
-    virtual void SetUp() override
+    void SetUp() override
     {
         yarp::os::Property deviceOptions {
             {"device", yarp::os::Value("DnnDetector")},
@@ -43,7 +46,7 @@ public:
         }
     }
 
-    virtual void TearDown() override
+    void TearDown() override
     {
     }
 
@@ -87,4 +90,5 @@ TEST_F(DnnDetectorTest, DnnDetector2)
     ASSERT_EQ(detectedObject->find("category").asString(), "teddy bear");
 }
 
+} // namespace test
 } // namespace roboticslab
