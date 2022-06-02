@@ -1,36 +1,42 @@
 /**
  *@brief The main, catch-all namespace for Robotics Lab UC3M.
  */
-namespace roboticslab {}
+namespace roboticslab
+{
+    /**
+     * @brief Contains classes related to unit testing.
+     */
+    namespace test {}
+}
 
 /**
- * \defgroup vision_applications vision Applications (Collections of Programs)
+ * @defgroup vision_applications vision Applications (Collections of Programs)
  * @brief vision applications (collections of programs).
  */
 
 /**
- * \defgroup vision_libraries vision Libraries
+ * @defgroup vision_libraries vision Libraries
  * @brief vision libraries.
  */
 
 /**
  * @ingroup vision_libraries
- * \defgroup YarpPlugins YarpPlugins
+ * @defgroup YarpPlugins YarpPlugins
  * @brief Contains vision libraries that implement YARP device interfaces
  * and therefore can be invoked as YARP plugins.
  */
 
 /**
- * \defgroup vision_programs vision Programs
+ * @defgroup vision_programs vision Programs
  * @brief vision programs.
  */
 
 /**
- * \defgroup vision_examples vision Examples
+ * @defgroup vision_examples vision Examples
  * @brief vision examples.
  */
 
 /**
- * \defgroup vision_tests vision Tests
+ * @defgroup vision_tests vision Tests
  * @brief vision tests.
  */
