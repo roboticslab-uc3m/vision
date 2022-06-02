@@ -15,8 +15,6 @@
 # include <yarp/sig/ImageDraw.h>
 #endif
 
-#include <iostream>
-
 constexpr auto DEFAULT_SENSOR_DEVICE = "remote_grabber";
 constexpr auto DEFAULT_SENSOR_REMOTE = "/grabber";
 constexpr auto DEFAULT_LOCAL_PREFIX = "/rgbDetection";
@@ -179,13 +177,13 @@ bool RgbDetection::updateModule()
                 auto brx = detectedObject->find("brx").asInt32();
                 auto bry = detectedObject->find("bry").asInt32();
 
-                yarp::os::Bottle * landmarks = detectedObject->find("landmarks").asList();
+                const auto * landmarks = detectedObject->find("landmarks").asList();
 
                 if (landmarks)
                 {
                     for (auto j = 0; j < landmarks->size(); j++)
                     {
-                        yarp::os::Bottle * pair = landmarks->get(j).asList();
+                        const auto * pair = landmarks->get(j).asList();
                         int lmx = pair->get(0).asInt32();
                         int lmy = pair->get(1).asInt32();
 #ifdef HAVE_IMGPROC

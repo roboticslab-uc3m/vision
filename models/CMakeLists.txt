@@ -45,10 +45,6 @@ if(DOWNLOAD_MODELS)
 
     _download_model(yolov3-tiny "${_yolov3-tiny}")
 
-    set(_shape_predictor_68_face_landmarks http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 6cbb70006b91b31ba39a88594c2698abb5fdb785)
-
-    _download_model(shape_predictor_68_face_landmarks "${_shape_predictor_68_face_landmarks}")
-
     set(_lbfmodel https://raw.githubusercontent.com/kurnianggoro/GSOC2017/master/data/lbfmodel.yaml 2bcd8ce6cff58fa3ad74386b7b3f77b510198d27)
 
     _download_model(lbfmodel "${_lbfmodel}")

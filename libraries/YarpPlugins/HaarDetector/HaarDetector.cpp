@@ -2,6 +2,8 @@
 
 #include "HaarDetector.hpp"
 
+#include <opencv2/face/facemarkLBF.hpp>
+
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/ResourceFinder.h>
@@ -19,20 +21,16 @@ constexpr auto DEFAULT_XMLCASCADE = "haarcascade_frontalface_alt.xml";
 bool HaarDetector::open(yarp::os::Searchable& parameters)
 {
     auto xmlCascade = parameters.check("xmlCascade", yarp::os::Value(DEFAULT_XMLCASCADE)).asString();
-    yCDebug(HAAR) << "Using xmlCascade:" << xmlCascade;
+    yCInfo(HAAR) << "Using xmlCascade:" << xmlCascade;
 
     yarp::os::ResourceFinder rf;
     rf.setDefaultContext("HaarDetector");
 
-    if (parameters.check("useKazemi", "enable Kazemi detector"))
+    if (parameters.check("useLBF", "enable LBF face landmark detector"))
     {
         facemark = cv::face::FacemarkLBF::create();
         facemark->loadModel("/home/carlos/HogFaceDetector/vision/models/lbfmodel/lbfmodel.yaml");
-
-//        facemark = cv::face::FacemarkKazemi::create();
-//        facemark->loadModel("/home/carlos/HogFaceDetector/vision/face_landmark_model.dat");
-
-        printf("Loaded model\n");
+        yCInfo(HAAR) << "Loaded face landmark model:" << "";
     }
 
     std::string xmlCascadeFullName = rf.findFileByName(xmlCascade);
@@ -63,34 +61,44 @@ bool HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle &
     std::vector<cv::Rect> objects;
     object_cascade.detectMultiScale(inCvMat, objects, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
 
-    yarp::os::Property & dict = detectedObjects.addDict();
-
-    for (const auto & object : objects)
-    {
-        dict.put("tlx", object.x);
-        dict.put("tly", object.y);
-        dict.put("brx", object.x + object.width);
-        dict.put("bry", object.y + object.height);
-    }
-
-    yarp::os::Value * list = yarp::os::Value::makeList();
-
     if (facemark)
     {
+        std::vector<std::vector<cv::Point2f>> shapes;
         facemark->fit(inCvMat, objects, shapes);
 
         for (unsigned long i = 0; i < objects.size(); i++)
         {
-            for(unsigned long k = 0; k < shapes[i].size(); k++)
+            auto & dict = detectedObjects.addDict();
+
+            dict.put("tlx", objects[i].x);
+            dict.put("tly", objects[i].y);
+            dict.put("brx", objects[i].x + objects[i].width);
+            dict.put("bry", objects[i].y + objects[i].height);
+
+            auto * list = yarp::os::Value::makeList();
+
+            for (unsigned long k = 0; k < shapes[i].size(); k++)
             {
                 list->asList()->addList() = {
                         yarp::os::Value(shapes[i][k].x, false),
                         yarp::os::Value(shapes[i][k].y, false)
                 };
             }
-        }
 
-        dict.put("landmarks", list);
+            dict.put("landmarks", list);
+        }
+    }
+    else
+    {
+        for (const auto & object : objects)
+        {
+            auto & dict = detectedObjects.addDict();
+
+            dict.put("tlx", object.x);
+            dict.put("tly", object.y);
+            dict.put("brx", object.x + object.width);
+            dict.put("bry", object.y + object.height);
+        }
     }
 
     return true;
