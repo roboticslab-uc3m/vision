@@ -6,10 +6,9 @@
 #include <yarp/dev/DeviceDriver.h>
 
 #include <opencv2/objdetect.hpp>
-
-#include <opencv2/face/facemark.hpp>
-
-#include <opencv2/face.hpp>
+#ifdef HAVE_CV_FACE
+# include <opencv2/face/facemark.hpp>
+#endif
 
 #include "IDetector.hpp"
 
