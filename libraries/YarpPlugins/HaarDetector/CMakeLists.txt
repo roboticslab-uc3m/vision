@@ -24,7 +24,7 @@ if(NOT SKIP_HaarDetector)
                                        opencv_objdetect
                                        ROBOTICSLAB::VisionInterfaces)
 
-    if(TARGET opencv_face)
+    if(TARGET opencv_face AND OpenCV_VERSION GREATER_EQUAL 3.4)
         target_compile_definitions(HaarDetector PRIVATE HAVE_CV_FACE)
         target_link_libraries(HaarDetector opencv_face)
         message(STATUS "Compiling HaarDetector with opencv_face support")
