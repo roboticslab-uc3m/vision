@@ -212,6 +212,19 @@ bool RgbdDetection::updateModule()
                     closest = &records.back();
                 }
             }
+
+            const auto * landmarks = detectedObject->find("landmarks").asList();
+
+            if (landmarks && imagePort.getOutputCount() > 0)
+            {
+                for (auto j = 0; j < landmarks->size(); j++)
+                {
+                    const auto * pair = landmarks->get(j).asList();
+                    int lmx = pair->get(0).asInt32();
+                    int lmy = pair->get(1).asInt32();
+                    yarp::sig::draw::addCircleOutline(rgbImage, {0, 0, 255}, lmx, lmy, 1);
+                }
+            }
         }
 
         for (const auto & r : records)
