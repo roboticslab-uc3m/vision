@@ -99,8 +99,8 @@ bool HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle &
                 for (auto k = 0; k < shapes[i].size(); k++)
                 {
                     list->asList()->addList() = {
-                        yarp::os::Value(shapes[i][k].x),
-                        yarp::os::Value(shapes[i][k].y)
+                        yarp::os::Value(shapes[i][k].x, false),
+                        yarp::os::Value(shapes[i][k].y, false)
                     };
                 }
 

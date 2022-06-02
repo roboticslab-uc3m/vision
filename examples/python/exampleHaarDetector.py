@@ -5,6 +5,7 @@ import roboticslab_vision
 
 detectorOptions = yarp.Property()
 detectorOptions.put("device", "HaarDetector")
+detectorOptions.put("useLBF", True)
 detectorDevice = yarp.PolyDriver(detectorOptions)
 
 if not detectorDevice.isValid():
@@ -35,3 +36,9 @@ print("tlx: %d" % detectedObject.find("tlx").asInt32()) # 90
 print("tly: %d" % detectedObject.find("brx").asInt32()) # 168
 print("brx: %d" % detectedObject.find("tly").asInt32()) # 68
 print("bry: %d" % detectedObject.find("bry").asInt32()) # 146
+
+landmarks = detectedObject.find("landmarks").asList()
+
+if landmarks:
+    print("Got %d landmarks" % landmarks.size())
+    print(landmarks.toString())

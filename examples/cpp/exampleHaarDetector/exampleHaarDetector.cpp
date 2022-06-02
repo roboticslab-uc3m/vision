@@ -19,7 +19,11 @@
 
 int main(int argc, char * argv[])
 {
-    yarp::os::Property detectorOptions {{"device", yarp::os::Value("HaarDetector")}};
+    yarp::os::Property detectorOptions {
+        {"device", yarp::os::Value("HaarDetector")},
+        {"useLBF", yarp::os::Value(true)}
+    };
+
     yarp::dev::PolyDriver detectorDevice(detectorOptions);
     roboticslab::IDetector * iDetector;
 
@@ -57,6 +61,14 @@ int main(int argc, char * argv[])
     yInfo() << "brx:" << detectedObject->find("brx").asInt32(); // 168
     yInfo() << "tly:" << detectedObject->find("tly").asInt32(); // 68
     yInfo() << "bry:" << detectedObject->find("bry").asInt32(); // 14
+
+    const auto * landmarks = detectedObject->find("landmarks").asList();
+
+    if (landmarks)
+    {
+        yInfo() << "Got" << landmarks->size() << "landmarks";
+        yInfo() << landmarks->toString();
+    }
 
     return 0;
 }
