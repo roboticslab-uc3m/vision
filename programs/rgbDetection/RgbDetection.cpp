@@ -169,7 +169,6 @@ bool RgbDetection::updateModule()
 #ifdef HAVE_IMGPROC
             cv::Mat cvFrame(frame.height(), frame.width(), CV_8UC3, frame.getRawImage(), frame.getRowSize());
 #endif
-
             for (auto i = 0; i < detectedObjects.size(); i++)
             {
                 const auto * detectedObject = detectedObjects.get(i).asDict();
@@ -177,6 +176,23 @@ bool RgbDetection::updateModule()
                 auto tly = detectedObject->find("tly").asInt32();
                 auto brx = detectedObject->find("brx").asInt32();
                 auto bry = detectedObject->find("bry").asInt32();
+
+                const auto * landmarks = detectedObject->find("landmarks").asList();
+
+                if (landmarks)
+                {
+                    for (auto j = 0; j < landmarks->size(); j++)
+                    {
+                        const auto * pair = landmarks->get(j).asList();
+                        int lmx = pair->get(0).asInt32();
+                        int lmy = pair->get(1).asInt32();
+#ifdef HAVE_IMGPROC
+                        cv::circle(cvFrame, {lmx, lmy}, 1, {0, 0, 255}, 1);
+#else
+                        yarp::sig::draw::addCircleOutline(frame, {0, 0, 255}, lmx, lmy, 1);
+#endif
+                    }
+                }
 
 #ifdef HAVE_IMGPROC
                 cv::rectangle(cvFrame, {tlx, tly}, {brx, bry}, {255, 0, 0});

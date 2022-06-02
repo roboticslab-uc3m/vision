@@ -43,6 +43,10 @@ if(ENABLE_tests)
                                                ROBOTICSLAB::VisionInterfaces
                                                gtest_main)
 
+        if(_HaarDetector_have_cv_face AND DOWNLOAD_MODELS)
+            target_compile_definitions(testHaarDetector PRIVATE HAVE_CV_FACE)
+        endif()
+
         gtest_discover_tests(testHaarDetector)
     endif()
 

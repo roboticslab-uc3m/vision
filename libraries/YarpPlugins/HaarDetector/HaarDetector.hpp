@@ -6,6 +6,9 @@
 #include <yarp/dev/DeviceDriver.h>
 
 #include <opencv2/objdetect.hpp>
+#ifdef HAVE_CV_FACE
+# include <opencv2/face/facemark.hpp>
+#endif
 
 #include "IDetector.hpp"
 
@@ -26,6 +29,9 @@ public:
 
 private:
     cv::CascadeClassifier object_cascade;
+#ifdef HAVE_CV_FACE
+    cv::Ptr<cv::face::Facemark> facemark;
+#endif
 };
 
 } // namespace roboticslab

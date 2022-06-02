@@ -24,6 +24,15 @@ if(NOT SKIP_HaarDetector)
                                        opencv_objdetect
                                        ROBOTICSLAB::VisionInterfaces)
 
+    if(TARGET opencv_face AND OpenCV_VERSION GREATER_EQUAL 3.4)
+        set(_HaarDetector_have_cv_face TRUE CACHE INTERNAL "HaarDetector was compiled with face support")
+        target_compile_definitions(HaarDetector PRIVATE HAVE_CV_FACE)
+        target_link_libraries(HaarDetector opencv_face)
+        message(STATUS "Compiling HaarDetector with opencv_face support")
+    else()
+        message(STATUS "Compiling HaarDetector without opencv_face support")
+    endif()
+
     yarp_install(TARGETS HaarDetector
                  LIBRARY DESTINATION ${ROBOTICSLAB-VISION_DYNAMIC_PLUGINS_INSTALL_DIR}
                  ARCHIVE DESTINATION ${ROBOTICSLAB-VISION_STATIC_PLUGINS_INSTALL_DIR}

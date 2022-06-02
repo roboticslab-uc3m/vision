@@ -27,7 +27,12 @@ class HaarDetectorTest : public testing::Test
 public:
     void SetUp() override
     {
-        yarp::os::Property deviceOptions {{"device", yarp::os::Value("HaarDetector")}};
+        yarp::os::Property deviceOptions {
+            {"device", yarp::os::Value("HaarDetector")},
+#ifdef HAVE_CV_FACE
+            {"useLBF", yarp::os::Value(true)}
+#endif
+        };
 
         if (!detectorDevice.open(deviceOptions))
         {
@@ -91,6 +96,12 @@ TEST_F(HaarDetectorTest, HaarDetector2)
 
     ASSERT_NEAR(cx, yarpImgRgb.width() / 2, 25);
     ASSERT_NEAR(cy, yarpImgRgb.height() / 2, 25);
+
+#ifdef HAVE_CV_FACE
+    const auto * landmarks = detectedObject->find("landmarks").asList();
+    ASSERT_TRUE(landmarks != nullptr);
+    ASSERT_EQ(landmarks->size(), 68);
+#endif
 }
 
 } // namespace test

@@ -7,6 +7,12 @@
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/cv/Cv.h>
 
+#ifdef HAVE_CV_FACE
+# include <opencv2/face/facemarkLBF.hpp>
+
+constexpr auto LBF_MODEL_PATH = "lbfmodel/lbfmodel.yaml";
+#endif
+
 using namespace roboticslab;
 
 namespace
@@ -40,6 +46,23 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
         return false;
     }
 
+#ifdef HAVE_CV_FACE
+    if (parameters.check("useLBF", "enable LBF face landmark detector"))
+    {
+        std::string lfbModelFullName = rf.findFileByName(LBF_MODEL_PATH);
+
+        if (lfbModelFullName.empty())
+        {
+            yCError(HAAR) << "LBF face landmark model NOT found";
+            return false;
+        }
+
+        facemark = cv::face::FacemarkLBF::create();
+        facemark->loadModel(lfbModelFullName);
+        yCDebug(HAAR) << "Loaded face landmark model:" << lfbModelFullName;
+    }
+#endif
+
     return true;
 }
 
@@ -54,13 +77,39 @@ bool HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle &
 
     for (const auto & object : objects)
     {
-        detectedObjects.addDict() = {
-            {"tlx", yarp::os::Value(object.x)},
-            {"tly", yarp::os::Value(object.y)},
-            {"brx", yarp::os::Value(object.x + object.width)},
-            {"bry", yarp::os::Value(object.y + object.height)}
-        };
+        auto & dict = detectedObjects.addDict();
+
+        dict.put("tlx", object.x);
+        dict.put("tly", object.y);
+        dict.put("brx", object.x + object.width);
+        dict.put("bry", object.y + object.height);
     }
+
+#ifdef HAVE_CV_FACE
+    if (facemark)
+    {
+        std::vector<std::vector<cv::Point2f>> shapes;
+
+        if (facemark->fit(inCvMat, objects, shapes))
+        {
+            for (auto i = 0; i < objects.size(); i++)
+            {
+                auto * list = yarp::os::Value::makeList();
+
+                for (auto k = 0; k < shapes[i].size(); k++)
+                {
+                    list->asList()->addList() = {
+                        yarp::os::Value(shapes[i][k].x, false),
+                        yarp::os::Value(shapes[i][k].y, false)
+                    };
+                }
+
+                auto * dict = detectedObjects.get(i).asDict();
+                dict->put("landmarks", list);
+            }
+        }
+    }
+#endif
 
     return true;
 }

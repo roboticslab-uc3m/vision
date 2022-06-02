@@ -44,4 +44,9 @@ if(DOWNLOAD_MODELS)
                      https://raw.githubusercontent.com/pjreddie/darknet/17d4774/cfg/yolov3-tiny.cfg 46282cefe5cf7a248b69d528d3372f5cf1ddf39d)
 
     _download_model(yolov3-tiny "${_yolov3-tiny}")
+
+    set(_lbfmodel https://raw.githubusercontent.com/kurnianggoro/GSOC2017/master/data/lbfmodel.yaml 2bcd8ce6cff58fa3ad74386b7b3f77b510198d27)
+
+    _download_model(lbfmodel "${_lbfmodel}")
+
 endif()
