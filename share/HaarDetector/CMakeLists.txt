@@ -21,5 +21,10 @@ yarp_install(FILES conf/haarcascade_cocacola_can.xml
                    conf/haarcascade_lamp.xml  
              DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/HaarDetector)
 
+if(DOWNLOAD_MODELS)
+    yarp_install(DIRECTORY ${CMAKE_SOURCE_DIR}/models/lbfmodel
+                 DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/HaarDetector)
+endif()
+
 yarp_install(FILES tests/face-nc.pgm
              DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/HaarDetector/tests)

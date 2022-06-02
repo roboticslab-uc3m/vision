@@ -25,7 +25,7 @@ constexpr auto DEFAULT_XMLCASCADE = "haarcascade_frontalface_alt.xml";
 bool HaarDetector::open(yarp::os::Searchable& parameters)
 {
     auto xmlCascade = parameters.check("xmlCascade", yarp::os::Value(DEFAULT_XMLCASCADE)).asString();
-    yCInfo(HAAR) << "Using xmlCascade:" << xmlCascade;
+    yCDebug(HAAR) << "Using xmlCascade:" << xmlCascade;
 
     yarp::os::ResourceFinder rf;
     rf.setDefaultContext("HaarDetector");
