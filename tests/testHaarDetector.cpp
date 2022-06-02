@@ -15,43 +15,43 @@
 namespace roboticslab
 {
 
+namespace test
+{
+
 /**
  * @ingroup vision_tests
  * @brief Tests \ref ColorRegionDetector
  */
 class HaarDetectorTest : public testing::Test
 {
+public:
+    void SetUp() override
+    {
+        yarp::os::Property deviceOptions {{"device", yarp::os::Value("HaarDetector")}};
 
-    public:
-        virtual void SetUp()
+        if (!detectorDevice.open(deviceOptions))
         {
-            yarp::os::Property deviceOptions;
-            deviceOptions.put("device", "HaarDetector");
-
-            if(!detectorDevice.open(deviceOptions))
-            {
-                yError() << "Failed to open HaarDetector device";
-                return;
-            }
-
-            if (!detectorDevice.view(iDetector))
-            {
-                yError() << "Problems acquiring detector interface";
-                return;
-            }
+            yError() << "Failed to open HaarDetector device";
+            return;
         }
 
-        virtual void TearDown()
+        if (!detectorDevice.view(iDetector))
         {
+            yError() << "Problems acquiring detector interface";
+            return;
         }
+    }
 
+    void TearDown() override
+    {
+    }
 
-    protected:
-        roboticslab::IDetector *iDetector;
-        yarp::dev::PolyDriver detectorDevice;
+protected:
+    roboticslab::IDetector * iDetector;
+    yarp::dev::PolyDriver detectorDevice;
 };
 
-TEST_F( HaarDetectorTest, HaarDetector1)
+TEST_F(HaarDetectorTest, HaarDetector1)
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
     yarpImgRgb.resize(300, 200);
@@ -63,10 +63,9 @@ TEST_F( HaarDetectorTest, HaarDetector1)
     ASSERT_EQ(detectedObjects.size(), 0);
 }
 
-TEST_F( HaarDetectorTest, HaarDetector2)
+TEST_F(HaarDetectorTest, HaarDetector2)
 {
     yarp::os::ResourceFinder rf;
-    rf.setVerbose(false);
     rf.setDefaultContext("HaarDetector");
     std::string faceFullName = rf.findFileByName("tests/face-nc.pgm");
     ASSERT_FALSE(faceFullName.empty());
@@ -94,4 +93,5 @@ TEST_F( HaarDetectorTest, HaarDetector2)
     ASSERT_NEAR(cy, yarpImgRgb.height() / 2, 25);
 }
 
-}  // namespace roboticslab
+} // namespace test
+} // namespace roboticslab

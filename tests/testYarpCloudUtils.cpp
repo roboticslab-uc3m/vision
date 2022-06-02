@@ -21,6 +21,9 @@
 namespace roboticslab
 {
 
+namespace test
+{
+
 template <typename T, typename Fn>
 void populateCloud(yarp::sig::PointCloud<T> & cloud, int iterations, Fn && generator)
 {
@@ -90,11 +93,11 @@ bool testEquality(const yarp::sig::PointCloud<T> & cloud1, const yarp::sig::Poin
 class YarpCloudUtilsTest : public testing::Test
 {
 public:
-    virtual void SetUp() override
+    void SetUp() override
     {
     }
 
-    virtual void TearDown() override
+    void TearDown() override
     {
     }
 
@@ -577,4 +580,5 @@ TEST_F(YarpCloudUtilsTest, pipelineFromConfig)
     _ASSERT_TRUE(YarpCloudUtils::processCloud(points, transformed, cloudConfig, collection));
 }
 
+} // namespace test
 } // namespace roboticslab

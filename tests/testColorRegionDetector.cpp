@@ -14,43 +14,46 @@
 namespace roboticslab
 {
 
+namespace test
+{
+
 /**
  * @ingroup vision_tests
  * @brief Tests \ref ColorRegionDetector
  */
 class ColorRegionDetectorTest : public testing::Test
 {
+public:
+    void SetUp() override
+    {
+        yarp::os::Property deviceOptions {
+            {"device", yarp::os::Value("ColorRegionDetector")},
+            {"algorithm", yarp::os::Value("redMinusGreen")}
+        };
 
-    public:
-        virtual void SetUp()
+        if (!detectorDevice.open(deviceOptions))
         {
-            yarp::os::Property deviceOptions;
-            deviceOptions.put("device", "ColorRegionDetector");
-            deviceOptions.put("algorithm", "redMinusGreen");
-
-            if(!detectorDevice.open(deviceOptions))
-            {
-                yError() << "Failed to open ColorRegionDetector device";
-                return;
-            }
-
-            if (!detectorDevice.view(iDetector))
-            {
-                yError() << "Problems acquiring detector interface";
-                return;
-            }
+            yError() << "Failed to open ColorRegionDetector device";
+            return;
         }
 
-        virtual void TearDown()
+        if (!detectorDevice.view(iDetector))
         {
+            yError() << "Problems acquiring detector interface";
+            return;
         }
+    }
 
-    protected:
-        roboticslab::IDetector *iDetector;
-        yarp::dev::PolyDriver detectorDevice;
+    void TearDown() override
+    {
+    }
+
+protected:
+    roboticslab::IDetector * iDetector;
+    yarp::dev::PolyDriver detectorDevice;
 };
 
-TEST_F( ColorRegionDetectorTest, ColorRegionDetector1)
+TEST_F(ColorRegionDetectorTest, ColorRegionDetector1)
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
     yarpImgRgb.resize(300, 200);
@@ -62,7 +65,7 @@ TEST_F( ColorRegionDetectorTest, ColorRegionDetector1)
     ASSERT_EQ(detectedObjects.size(), 0);
 }
 
-TEST_F( ColorRegionDetectorTest, ColorRegionDetector2)
+TEST_F(ColorRegionDetectorTest, ColorRegionDetector2)
 {
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
     yarpImgRgb.resize(300,200);
@@ -90,4 +93,5 @@ TEST_F( ColorRegionDetectorTest, ColorRegionDetector2)
     ASSERT_NEAR(cy, yarpImgRgb.height() / 2, 2);
 }
 
-}  // namespace roboticslab
+} // namespace test
+} // namespace roboticslab
