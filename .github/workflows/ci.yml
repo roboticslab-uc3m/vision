@@ -65,7 +65,11 @@ jobs:
         path: .deps/yarp
 
     - name: Install dependencies via apt
-      run: sudo apt-get update && sudo apt-get install -qq ccache libopencv-dev libpcl-dev swig googletest
+      uses: tecoli-com/actions-use-apt-tools@v0
+      with:
+        tools: ccache libopencv-dev libpcl-dev swig googletest
+        key: ${{matrix.os}}
+        method: timestamp
 
     - name: Set up CMake 3.12
       uses: jwlawson/actions-setup-cmake@v1.7
