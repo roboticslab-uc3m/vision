@@ -77,12 +77,12 @@ bool HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle &
 
     for (const auto & object : objects)
     {
-        auto & dict = detectedObjects.addDict();
-
-        dict.put("tlx", object.x);
-        dict.put("tly", object.y);
-        dict.put("brx", object.x + object.width);
-        dict.put("bry", object.y + object.height);
+        detectedObjects.addDict() = {
+            {"tlx", yarp::os::Value(object.x)},
+            {"tly", yarp::os::Value(object.y)},
+            {"brx", yarp::os::Value(object.x + object.width)},
+            {"bry", yarp::os::Value(object.y + object.height)}
+        };
     }
 
 #ifdef HAVE_CV_FACE
@@ -96,11 +96,11 @@ bool HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle &
             {
                 auto * list = yarp::os::Value::makeList();
 
-                for (auto k = 0; k < shapes[i].size(); k++)
+                for (const auto & shape : shapes[i])
                 {
                     list->asList()->addList() = {
-                        yarp::os::Value(shapes[i][k].x, false),
-                        yarp::os::Value(shapes[i][k].y, false)
+                        yarp::os::Value(shape.x, false),
+                        yarp::os::Value(shape.y, false)
                     };
                 }
 
