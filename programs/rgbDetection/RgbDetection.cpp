@@ -134,11 +134,9 @@ double RgbDetection::getPeriod()
 
 bool RgbDetection::updateModule()
 {
-    auto vertices = cropCallback.getVertices();
-
     yarp::sig::ImageOf<yarp::sig::PixelRgb> frame;
 
-    if (vertices.size() == 0)
+    if (auto vertices = cropCallback.getVertices(); vertices.size() == 0)
     {
         if (!frameGrabber->getImage(frame))
         {
@@ -196,9 +194,8 @@ bool RgbDetection::updateModule()
 
 #ifdef HAVE_IMGPROC
                 cv::rectangle(cvFrame, {tlx, tly}, {brx, bry}, {255, 0, 0});
-                std::string label = findLabel(*detectedObject);
 
-                if (!label.empty())
+                if (auto label = findLabel(*detectedObject); !label.empty())
                 {
                     int base;
                     cv::Size size = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &base);

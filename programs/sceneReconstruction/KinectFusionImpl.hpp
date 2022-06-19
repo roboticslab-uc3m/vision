@@ -116,22 +116,26 @@ private:
 };
 
 template <typename T>
-inline std::enable_if_t<std::is_integral<T>::value, T>
-getValue(const yarp::os::Value & v)
+T getValue(const yarp::os::Value & v)
 {
-    return v.asInt32();
-}
-
-template <typename T>
-inline std::enable_if_t<std::is_floating_point<T>::value, T>
-getValue(const yarp::os::Value & v)
-{
-    return v.asFloat32();
+    if constexpr (std::is_integral_v<T>)
+    {
+        return v.asInt32();
+    }
+    else if constexpr (std::is_floating_point_v<T>)
+    {
+        return v.asFloat64();
+    }
+    else
+    {
+        // https://stackoverflow.com/a/64354296/10404307
+        static_assert(!sizeof(T), "Unsupported type");
+    }
 }
 
 template <typename TParams, typename TRet>
 void updateParam(TParams & params, TRet TParams::* param, const yarp::os::Searchable & config,
-    const std::string & name, const std::string & description)
+                 const std::string & name, const std::string & description)
 {
     auto && log = yCInfo(KINFU);
     log << name + ":";

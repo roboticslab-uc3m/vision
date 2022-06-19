@@ -32,11 +32,7 @@ if(ENABLE_YarpCloudUtils)
                                                      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
     install(TARGETS YarpCloudUtils
-            EXPORT ROBOTICSLAB_VISION
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-            PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+            EXPORT ROBOTICSLAB_VISION)
 
     set_property(GLOBAL APPEND PROPERTY _exported_targets YarpCloudUtils)
     set_property(GLOBAL APPEND PROPERTY _exported_dependencies YARP_os YARP_sig)

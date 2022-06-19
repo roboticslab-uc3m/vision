@@ -195,8 +195,8 @@ struct pcl_descriptor<pcl::PointXYZINormal>
 
 template <typename T>
 constexpr auto is_unsupported_type =
-    std::is_same<T, pcl::PointXY>::value ||
-    std::is_same<T, pcl::Normal>::value;
+    std::is_same_v<T, pcl::PointXY> ||
+    std::is_same_v<T, pcl::Normal>;
 
 } // namespace
 

@@ -13,7 +13,6 @@ target_link_libraries(voxelOccupancyDetection YARP::YARP_os
                                               YARP::YARP_dev
                                               YARP::YARP_sig)
 
-install(TARGETS voxelOccupancyDetection
-        DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS voxelOccupancyDetection)
 
 endif()

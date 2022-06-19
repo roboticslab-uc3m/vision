@@ -18,8 +18,7 @@ if(ENABLE_rgbDetection)
         target_link_libraries(rgbDetection opencv_imgproc)
     endif()
 
-    install(TARGETS rgbDetection
-            DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS rgbDetection)
 
 else()
 

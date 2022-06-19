@@ -33,10 +33,7 @@ public:
     pcl::PolygonMesh::Ptr & setMesh();
 
 private:
-    template <typename T1, typename T2, std::enable_if_t<!std::is_same<T1, T2>::value, bool> = true>
-    static auto initializeCloudPointer(const typename pcl::PointCloud<T1>::ConstPtr & in);
-
-    template <typename T1, typename T2, std::enable_if_t<std::is_same<T1, T2>::value, bool> = true>
+    template <typename T1, typename T2>
     static auto initializeCloudPointer(const typename pcl::PointCloud<T1>::ConstPtr & in);
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr xyz;
@@ -51,25 +48,26 @@ private:
 
 // helpers
 
-template <typename T1, typename T2, std::enable_if_t<!std::is_same<T1, T2>::value, bool>>
+template <typename T1, typename T2>
 inline auto cloud_container::initializeCloudPointer(const typename pcl::PointCloud<T1>::ConstPtr & in)
 {
-    if (!pcl_is_convertible<T1, T2>::value)
+    if constexpr (!std::is_same_v<T1, T2>)
     {
-        std::string name_lhs = pcl_descriptor<T1>::name;
-        std::string name_rhs = pcl_descriptor<T2>::name;
-        throw std::runtime_error("illegal conversion from " + name_lhs + " to " + name_rhs);
+        if constexpr (!pcl_is_convertible<T1, T2>::value)
+        {
+            std::string name_lhs = pcl_descriptor<T1>::name;
+            std::string name_rhs = pcl_descriptor<T2>::name;
+            throw std::runtime_error("illegal conversion from " + name_lhs + " to " + name_rhs);
+        }
+
+        typename pcl::PointCloud<T2>::Ptr out(new pcl::PointCloud<T2>());
+        pcl::copyPointCloud(*in, *out);
+        return out;
     }
-
-    typename pcl::PointCloud<T2>::Ptr out(new pcl::PointCloud<T2>());
-    pcl::copyPointCloud(*in, *out);
-    return out;
-}
-
-template <typename T1, typename T2, std::enable_if_t<std::is_same<T1, T2>::value, bool>>
-inline auto cloud_container::initializeCloudPointer(const typename pcl::PointCloud<T1>::ConstPtr & in)
-{
-    return in;
+    else
+    {
+        return in;
+    }
 }
 
 // cloud_container::getCloud

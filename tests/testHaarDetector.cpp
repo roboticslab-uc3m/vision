@@ -12,10 +12,7 @@
 
 #include "IDetector.hpp"
 
-namespace roboticslab
-{
-
-namespace test
+namespace roboticslab::test
 {
 
 /**
@@ -104,5 +101,4 @@ TEST_F(HaarDetectorTest, HaarDetector2)
 #endif
 }
 
-} // namespace test
-} // namespace roboticslab
+} // namespace roboticslab::test

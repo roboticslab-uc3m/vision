@@ -11,10 +11,7 @@
 
 #include "IDetector.hpp"
 
-namespace roboticslab
-{
-
-namespace test
+namespace roboticslab::test
 {
 
 /**
@@ -93,5 +90,4 @@ TEST_F(ColorRegionDetectorTest, ColorRegionDetector2)
     ASSERT_NEAR(cy, yarpImgRgb.height() / 2, 2);
 }
 
-} // namespace test
-} // namespace roboticslab
+} // namespace roboticslab::test

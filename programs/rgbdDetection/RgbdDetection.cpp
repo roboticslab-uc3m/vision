@@ -4,7 +4,7 @@
 
 #include <cstdio>
 #include <tuple>
-#include <utility> // std::move
+#include <utility> // std::move, std::pair
 #include <vector>
 
 #include <yarp/os/LogComponent.h>
@@ -25,17 +25,18 @@ namespace
 {
     YARP_LOG_COMPONENT(RGBD, "rl.RgbdDetection")
 
-    void scaleXY(const yarp::sig::Image & frame1, const yarp::sig::Image & frame2, int px1, int py1, int * px2, int * py2)
+    std::pair<int, int> scaleXY(const yarp::sig::Image & frame1, const yarp::sig::Image & frame2, int px1, int py1)
     {
         if (frame1.width() != frame2.width() || frame1.height() != frame2.height())
         {
-            *px2 = px1 * ((double)frame2.width() / (double)frame1.width());
-            *py2 = py1 * ((double)frame2.height() / (double)frame1.height());
+            return {
+                px1 * ((double)frame2.width() / (double)frame1.width()),
+                py1 * ((double)frame2.height() / (double)frame1.height())
+            };
         }
         else
         {
-            *px2 = px1;
-            *py2 = py1;
+            return {px1, py1};
         }
     }
 }
@@ -152,10 +153,9 @@ bool RgbdDetection::updateModule()
     int offsetX = 0;
     int offsetY = 0;
 
-    auto vertices = cropCallback.getVertices();
     bool isRgbCompatible = rgbImage.getPixelCode() == colorFrame.getPixelCode();
 
-    if (vertices.size() != 0)
+    if (auto vertices = cropCallback.getVertices(); vertices.size() != 0)
     {
         if (!yarp::sig::utils::cropRect(colorFrame, vertices[0], vertices[1], rgbImage))
         {
@@ -199,8 +199,7 @@ bool RgbdDetection::updateModule()
             int pxColor = (tlx + brx) / 2;
             int pyColor = (tly + bry) / 2;
 
-            int pxDepth, pyDepth;
-            scaleXY(rgbImage, depthFrame, pxColor + offsetX, pyColor + offsetY, &pxDepth, &pyDepth);
+            auto [pxDepth, pyDepth] = scaleXY(rgbImage, depthFrame, pxColor + offsetX, pyColor + offsetY);
             float depth = depthFrame.pixel(pxDepth, pyDepth);
 
             if (depth > 0.0f)

@@ -11,10 +11,7 @@
 
 #include "IDetector.hpp"
 
-namespace roboticslab
-{
-
-namespace test
+namespace roboticslab::test
 {
 
 struct PropertyHasher
@@ -137,5 +134,4 @@ TEST_F(QrDetectorTest, QrDetector2)
     }
 }
 
-} // namespace test
-} // namespace roboticslab
+} // namespace roboticslab::test

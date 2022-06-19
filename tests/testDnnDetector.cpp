@@ -11,10 +11,7 @@
 
 #include "IDetector.hpp"
 
-namespace roboticslab
-{
-
-namespace test
+namespace roboticslab::test
 {
 
 /**
@@ -90,5 +87,4 @@ TEST_F(DnnDetectorTest, DnnDetector2)
     ASSERT_EQ(detectedObject->find("category").asString(), "teddy bear");
 }
 
-} // namespace test
-} // namespace roboticslab
+} // namespace roboticslab::test

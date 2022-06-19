@@ -76,9 +76,7 @@ namespace
 
         yCDebug(YCU) << "Step:" << options.toString();
 
-        auto algorithm = options.find("algorithm").asString();
-
-        switch (makeHash(algorithm))
+        switch (auto algorithm = options.find("algorithm").asString(); makeHash(algorithm))
         {
         case "transformPointCloud"_hash:
             doTransformPointCloud<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
@@ -197,48 +195,50 @@ namespace
         }
     }
 
-    template <typename T, std::enable_if_t<is_unsupported_type<T>, bool> = true>
-    void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr &, pcl::PolygonMesh::ConstPtr &, const yarp::sig::VectorOf<yarp::os::Property> &)
-    {
-        throw std::invalid_argument("unsupported point type"); // don't remove this
-    }
-
-    template <typename T, std::enable_if_t<!is_unsupported_type<T>, bool> = true>
+    template <typename T>
     void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr & cloud, pcl::PolygonMesh::ConstPtr & mesh, const yarp::sig::VectorOf<yarp::os::Property> & options)
     {
-        cloud_container data;
-        data.setCloud<T>() = cloud;
-
-        for (const auto & step : options)
+        if constexpr (!is_unsupported_type<T>)
         {
-            cloud_container temp;
-            processStep<T>(data, temp, step);
-            data = std::move(temp);
+            cloud_container data;
+            data.setCloud<T>() = cloud;
+
+            for (const auto & step : options)
+            {
+                cloud_container temp;
+                processStep<T>(data, temp, step);
+                data = std::move(temp);
+            }
+
+            mesh = data.getMesh();
         }
-
-        mesh = data.getMesh();
+        else
+        {
+            throw std::invalid_argument("unsupported point type"); // don't remove this
+        }
     }
 
-    template <typename T1, typename T2, std::enable_if_t<is_unsupported_type<T1> || is_unsupported_type<T2>, bool> = true>
-    void processCloudPCL(const typename pcl::PointCloud<T1>::Ptr &, typename pcl::PointCloud<T2>::ConstPtr &, const yarp::sig::VectorOf<yarp::os::Property> &)
-    {
-        throw std::invalid_argument("unsupported point type"); // don't remove this
-    }
-
-    template <typename T1, typename T2, std::enable_if_t<!is_unsupported_type<T1> && !is_unsupported_type<T2>, bool> = true>
+    template <typename T1, typename T2>
     void processCloudPCL(const typename pcl::PointCloud<T1>::Ptr & in, typename pcl::PointCloud<T2>::ConstPtr & out, const yarp::sig::VectorOf<yarp::os::Property> & options)
     {
-        cloud_container data;
-        data.setCloud<T1>() = in;
-
-        for (const auto & step : options)
+        if constexpr (!is_unsupported_type<T1> && !is_unsupported_type<T2>)
         {
-            cloud_container temp;
-            processStep<T1>(data, temp, step);
-            data = std::move(temp);
-        }
+            cloud_container data;
+            data.setCloud<T1>() = in;
 
-        out = data.getCloud<T2>();
+            for (const auto & step : options)
+            {
+                cloud_container temp;
+                processStep<T1>(data, temp, step);
+                data = std::move(temp);
+            }
+
+            out = data.getCloud<T2>();
+        }
+        else
+        {
+            throw std::invalid_argument("unsupported point type"); // don't remove this
+        }
     }
 }
 #endif // YCU_HAVE_PCL

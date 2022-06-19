@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.16)
 
 project(exampleRemoteRGBDSensor LANGUAGES CXX)
 
 if(NOT YARP_FOUND)
-    find_package(YARP 3.5 REQUIRED COMPONENTS os dev sig)
+    find_package(YARP 3.6 REQUIRED COMPONENTS os dev sig)
 endif()
 
 add_executable(exampleRemoteRGBDSensor exampleRemoteRGBDSensor.cpp)

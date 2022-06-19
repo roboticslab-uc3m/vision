@@ -49,8 +49,7 @@ if(ENABLE_sceneReconstruction)
         target_compile_definitions(sceneReconstruction PRIVATE HAVE_COLORED_KINFU)
     endif()
 
-    install(TARGETS sceneReconstruction
-            DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS sceneReconstruction)
 
 else()
 

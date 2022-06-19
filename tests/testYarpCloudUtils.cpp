@@ -18,10 +18,7 @@
 # define _ASSERT_FALSE(cond) ASSERT_FALSE(cond)
 #endif
 
-namespace roboticslab
-{
-
-namespace test
+namespace roboticslab::test
 {
 
 template <typename T, typename Fn>
@@ -580,5 +577,4 @@ TEST_F(YarpCloudUtilsTest, pipelineFromConfig)
     _ASSERT_TRUE(YarpCloudUtils::processCloud(points, transformed, cloudConfig, collection));
 }
 
-} // namespace test
-} // namespace roboticslab
+} // namespace roboticslab::test

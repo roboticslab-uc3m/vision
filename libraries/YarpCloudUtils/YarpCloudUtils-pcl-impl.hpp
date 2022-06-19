@@ -60,9 +60,7 @@ auto getTransformation(const yarp::os::Searchable & options)
 {
     auto transformation = Eigen::Transform<double, 3, Eigen::Affine>::Identity();
 
-    const auto & translation = options.find("translation");
-
-    if (!translation.isNull())
+    if (const auto & translation = options.find("translation"); !translation.isNull())
     {
         if (!translation.isList() || translation.asList()->size() != 3)
         {
@@ -74,9 +72,7 @@ auto getTransformation(const yarp::os::Searchable & options)
         transformation.translate(vector);
     }
 
-    const auto & rotation = options.find("rotation");
-
-    if (!rotation.isNull())
+    if (const auto & rotation = options.find("rotation"); !rotation.isNull())
     {
         if (!rotation.isList() || rotation.asList()->size() != 3)
         {

@@ -20,11 +20,7 @@ if(ENABLE_TravisLib)
                                                 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
     install(TARGETS TravisLib
-            EXPORT ROBOTICSLAB_VISION
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-            PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+            EXPORT ROBOTICSLAB_VISION)
 
     set_property(GLOBAL APPEND PROPERTY _exported_targets TravisLib)
     set_property(GLOBAL APPEND PROPERTY _exported_dependencies OpenCV)

@@ -2,11 +2,11 @@
 
 ### Install the Software dependencies:
 
-- [Install CMake 3.12+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-cmake.md/)
+- [Install CMake 3.16+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-cmake.md/)
 - [Install PCL with VTK >= 5](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-pcl.md/)
 - [Install OpenNI2 & NiTE2](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-openni-nite.md/)
 - [Install YCM 0.11+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-ycm.md/)
-- [Install YARP 3.5+ and depthCamera](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-yarp.md#install-additional-yarp-device-depthcamera-ubuntu)
+- [Install YARP 3.6+ and depthCamera](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-yarp.md#install-additional-yarp-device-depthcamera-ubuntu)
 - [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-opencv.md/)
 
 ### Install the Software on Ubuntu (working on all tested versions)

@@ -31,8 +31,7 @@ if(ENABLE_pointAtObjectServer)
                                               YARP::YARP_sig
                                               ${PCL_LIBRARIES})
 
-    install(TARGETS pointAtObjectServer
-            DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS pointAtObjectServer)
 
 else()
 

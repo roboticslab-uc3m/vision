@@ -13,8 +13,7 @@ if(ENABLE_rgbdDetection)
                                         ROBOTICSLAB::YarpCropCallback
                                         ROBOTICSLAB::VisionInterfaces)
 
-    install(TARGETS rgbdDetection
-            DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS rgbdDetection)
 
 else()
 
