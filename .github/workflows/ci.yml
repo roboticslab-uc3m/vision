@@ -65,8 +65,7 @@ jobs:
         path: .deps/yarp
 
     - name: Install dependencies via apt
-      #uses: awalsh128/cache-apt-pkgs-action@v1.0.1
-      uses: PeterBowman/cache-apt-pkgs-action@fix-cmd-path
+      uses: awalsh128/cache-apt-pkgs-action@v1.1.0
       with:
         packages: ccache libopencv-dev libpcl-dev swig googletest
         version: ${{matrix.os}}
