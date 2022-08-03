@@ -68,7 +68,7 @@ jobs:
       uses: awalsh128/cache-apt-pkgs-action@v1.1.0
       with:
         packages: ccache libopencv-dev libpcl-dev swig googletest
-        version: ${{matrix.os}}
+        version: ${{matrix.os}}-${{matrix.robotology.yarp}}-${{matrix.compiler.cc}}
 
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v1
