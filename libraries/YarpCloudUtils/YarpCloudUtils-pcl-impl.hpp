@@ -8,6 +8,7 @@
 #include <ctime> // std::time
 
 #include <limits> // std::numeric_limits
+#include <memory> // std::const_pointer_cast
 #include <stdexcept> // std::invalid_argument, std::runtime_error
 #include <string>
 
@@ -814,7 +815,11 @@ void doShadowPoints(const typename pcl::PointCloud<T>::ConstPtr & in, const type
     auto negative = options.check("negative", yarp::os::Value(false)).asBool();
     auto threshold = options.check("threshold", yarp::os::Value(0.1f)).asFloat32();
 
+#if PCL_VERSION_COMPARE(>=, 1, 11, 0)
+    typename pcl::PointCloud<T>::Ptr temp = std::const_pointer_cast<pcl::PointCloud<T>>(in); // cast away constness
+#else
     typename pcl::PointCloud<T>::Ptr temp = boost::const_pointer_cast<pcl::PointCloud<T>>(in); // cast away constness
+#endif
 
     pcl::ShadowPoints<T, T> shadow;
     shadow.setInputCloud(in);
