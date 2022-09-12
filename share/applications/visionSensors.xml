@@ -1,5 +1,5 @@
 <application>
-<name>visionSensors App</name>
+    <name>visionSensors App</name>
 
     <!-- Requires YARP compiled with ENABLE_yarpmod_opencv_grabber -->
     <module>

@@ -1,31 +1,62 @@
-# Copyright: 2019 UC3M
-# Author: Juan G Victores
-# CopyPolicy: Released under the terms of the GNU LGPL v2.1.
-
-yarp_install(FILES applications/ymanager.ini
-                   applications/example_rgbDetection.xml
-                   applications/example_rgbdDetection.xml
-                   applications/visionFakeSensors.xml
-                   applications/visionSensors.xml
-                   applications/visionTools.xml
-             DESTINATION ${ROBOTICSLAB-VISION_APPLICATIONS_INSTALL_DIR})
-
-### Go through single applications
-
 if(ENABLE_DnnDetector)
-    add_subdirectory(DnnDetector)
+    yarp_install(DIRECTORY contexts/DnnDetector
+                 DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}
+                 PATTERN tests EXCLUDE)
+
+    if(DOWNLOAD_MODELS)
+        yarp_install(DIRECTORY ${CMAKE_SOURCE_DIR}/models/yolov3-tiny
+                     DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/DnnDetector)
+    endif()
+
+    if(ENABLE_tests)
+        yarp_install(DIRECTORY contexts/DnnDetector/tests
+                     DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/DnnDetector)
+    endif()
 endif()
 
 if(ENABLE_HaarDetector)
-    add_subdirectory(HaarDetector)
+    yarp_install(DIRECTORY contexts/HaarDetector
+                 DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}
+                 PATTERN tests EXCLUDE)
+
+    if(DOWNLOAD_MODELS)
+        yarp_install(DIRECTORY ${CMAKE_SOURCE_DIR}/models/lbfmodel
+                     DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/HaarDetector)
+    endif()
+
+    if(ENABLE_tests)
+        yarp_install(DIRECTORY contexts/HaarDetector/tests
+                     DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/HaarDetector)
+    endif()
 endif()
 
 if(ENABLE_QrDetector)
-    add_subdirectory(QrDetector)
+    if(ENABLE_tests)
+        yarp_install(DIRECTORY contexts/QrDetector/tests
+                     DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/QrDetector)
+    endif()
 endif()
 
 if(ENABLE_sceneReconstruction)
-    add_subdirectory(sceneReconstruction)
+    yarp_install(DIRECTORY contexts/sceneReconstruction
+                 DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR})
 endif()
 
-add_subdirectory(sensors)
+yarp_install(DIRECTORY contexts/sensors
+             DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR})
+
+yarp_install(FILES applications/visionFakeSensors.xml
+                   applications/visionSensors.xml
+                   applications/visionTools.xml
+                   applications/ymanager.ini
+             DESTINATION ${ROBOTICSLAB-VISION_APPLICATIONS_INSTALL_DIR})
+
+if(ENABLE_rgbdDetection)
+    yarp_install(FILES applications/example_rgbdDetection.xml
+                 DESTINATION ${ROBOTICSLAB-VISION_APPLICATIONS_INSTALL_DIR})
+endif()
+
+if(ENABLE_rgbDetection)
+    yarp_install(FILES applications/example_rgbDetection.xml
+                 DESTINATION ${ROBOTICSLAB-VISION_APPLICATIONS_INSTALL_DIR})
+endif()

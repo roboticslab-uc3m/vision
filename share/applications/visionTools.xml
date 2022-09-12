@@ -1,5 +1,5 @@
 <application>
-<name>visionTools App</name>
+    <name>visionTools App</name>
 
     <module>
         <name>yarpview</name>

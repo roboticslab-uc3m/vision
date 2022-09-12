@@ -1,5 +1,5 @@
 <application>
-<name>visionFakeSensors App</name>
+    <name>visionFakeSensors App</name>
 
     <module>
         <name>test_grabber</name>
