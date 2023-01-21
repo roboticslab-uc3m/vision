@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     }
 
     yarp::os::Property options {
-        {"device", yarp::os::Value("remote_grabber")},
+        {"device", yarp::os::Value("frameGrabber_nwc_yarp")},
         {"local", yarp::os::Value("/exampleRemoteGrabber")},
         {"remote", yarp::os::Value("/grabber")},
     };

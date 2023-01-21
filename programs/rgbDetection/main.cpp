@@ -7,15 +7,15 @@
  *
  * @section rgbDetectionOptions Options
  *
- * | PROPERTY     | DESCRIPTION                          | DEFAULT          |
- * |--------------|--------------------------------------|------------------|
- * | from         | file.ini                             | rgbDetection.ini |
- * | context      | context name                         | rgbDetection     |
- * | sensorDevice | sensor device name                   | remote_grabber   |
- * | sensorRemote | if accesing remote, remote port name | /grabber         |
- * | localPrefx   | local port name prefix               | /rgbDetection    |
- * | period       | update period (seconds)              | 0.02             |
- * | detector     | detector device name                 |                  |
+ * | PROPERTY     | DESCRIPTION                          | DEFAULT               |
+ * |--------------|--------------------------------------|-----------------------|
+ * | from         | file.ini                             | rgbDetection.ini      |
+ * | context      | context name                         | rgbDetection          |
+ * | sensorDevice | sensor device name                   | frameGrabber_nwc_yarp |
+ * | sensorRemote | if accesing remote, remote port name | /grabber              |
+ * | localPrefx   | local port name prefix               | /rgbDetection         |
+ * | period       | update period (seconds)              | 0.02                  |
+ * | detector     | detector device name                 |                       |
  *
  * @section rgbDetectionInputPorts Input ports
  *

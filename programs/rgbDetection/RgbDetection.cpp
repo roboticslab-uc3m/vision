@@ -15,7 +15,7 @@
 # include <yarp/sig/ImageDraw.h>
 #endif
 
-constexpr auto DEFAULT_SENSOR_DEVICE = "remote_grabber";
+constexpr auto DEFAULT_SENSOR_DEVICE = "frameGrabber_nwc_yarp";
 constexpr auto DEFAULT_SENSOR_REMOTE = "/grabber";
 constexpr auto DEFAULT_LOCAL_PREFIX = "/rgbDetection";
 constexpr auto DEFAULT_PERIOD = 0.02; // [s]
