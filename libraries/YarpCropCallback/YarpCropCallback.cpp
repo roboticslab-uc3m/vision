@@ -52,6 +52,6 @@ void YarpCropCallback::onRead(yarp::os::Bottle & bot, const yarp::os::TypedReade
 
 yarp::sig::VectorOf<YarpCropCallback::VertexType> YarpCropCallback::getVertices() const
 {
-    std::lock_guard<std::mutex> lock(cropMutex);
+    std::lock_guard lock(cropMutex);
     return cropVertices;
 }

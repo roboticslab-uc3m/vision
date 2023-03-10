@@ -56,7 +56,7 @@ bool KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::update(const yarp::sig::
     cv::UMat depthUmat;
     depthMat.convertTo(depthUmat, depthMat.type(), 1000.0); // OpenCV uses milimeters
 
-    std::lock_guard<std::mutex> lock(mtx);
+    std::lock_guard lock(mtx);
     return handle->update(depthUmat, bgrMat);
 }
 

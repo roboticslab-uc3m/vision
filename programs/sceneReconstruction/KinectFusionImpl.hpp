@@ -87,13 +87,13 @@ public:
         cv::UMat umat;
         mat.convertTo(umat, mat.type(), 1000.0); // OpenCV uses milimeters
 
-        std::lock_guard<std::mutex> lock(mtx);
+        std::lock_guard lock(mtx);
         return handle->update(umat);
     }
 
     void reset() override
     {
-        std::lock_guard<std::mutex> lock(mtx);
+        std::lock_guard lock(mtx);
         handle->reset();
     }
 
