@@ -40,6 +40,7 @@ Installation instructions for installing from source can be found [here](doc/vis
 - [CloudCompare/CloudCompare](https://github.com/CloudCompare/CloudCompare): A 3D point cloud (and triangular mesh) processing software
 - [pmp-library/pmp-library](https://github.com/pmp-library/pmp-library): Interactive cloud visualization and processing tools
 - [MIT-SPARK/Kimera-VIO](https://github.com/MIT-SPARK/Kimera-VIO): Visual Inertial Odometry with SLAM capabilities and 3D Mesh generation
+- [NVlabs/BundleSDF](https://github.com/NVlabs/BundleSDF): Neural 6-DoF Tracking and 3D Reconstruction of Unknown Objects
 - YARP
     - [robotology/segmentation](https://github.com/robotology/segmentation) ([doxygen](http://robotology.github.io/segmentation/doxygen/doc/html/modules.html))
     - [icVision](http://juxi.net/projects/icVision) ([Juxi/icVision](https://github.com/Juxi/icVision))
