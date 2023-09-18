@@ -29,7 +29,7 @@ if(ENABLE_VisionIDL)
                                                 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
     install(TARGETS VisionIDL
-            EXPORT ROBOTICSLAB_SPEECH)
+            EXPORT ROBOTICSLAB_VISION)
 
     set_property(GLOBAL APPEND PROPERTY _exported_targets VisionIDL)
 
