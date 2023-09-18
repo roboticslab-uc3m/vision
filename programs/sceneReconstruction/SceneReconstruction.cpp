@@ -310,16 +310,25 @@ bool SceneReconstruction::close()
     return cameraDriver.close();
 }
 
-void SceneReconstruction::pause()
+bool SceneReconstruction::pause()
 {
     yCDebug(KINFU) << "Pausing";
     isRunning = false;
+    return true;
 }
 
-void SceneReconstruction::resume()
+bool SceneReconstruction::resume()
 {
     yCDebug(KINFU) << "Resuming";
     isRunning = true;
+    return true;
+}
+
+bool SceneReconstruction::reset()
+{
+    yCDebug(KINFU) << "Resetting";
+    kinfu->reset();
+    return true;
 }
 
 return_pose SceneReconstruction::getPose()

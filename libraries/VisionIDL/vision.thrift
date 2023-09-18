@@ -38,12 +38,18 @@ service SceneReconstructionIDL
     /**
      * pause the scene reconstruction process
      */
-    void pause();
+    bool pause();
 
     /**
      * start/resume the scene reconstruction process
      */
-    void resume();
+    bool resume();
+
+    /**
+     * reset the currently stored reconstruction
+     * @return bool
+     */
+    bool reset();
 
     /**
      * get current camera pose

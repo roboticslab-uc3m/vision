@@ -60,9 +60,11 @@ public:
 
     bool close() override;
 
-    void pause() override;
+    bool pause() override;
 
-    void resume() override;
+    bool resume() override;
+
+    bool reset() override;
 
     return_pose getPose() override;
 
