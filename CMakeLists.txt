@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.16)
 
 project(ROBOTICSLAB_VISION LANGUAGES CXX)
 
+# Set CMake policies.
+cmake_policy(SET CMP0127 NEW)
+
 # Let the user specify a configuration (only single-config generators).
 if(NOT CMAKE_CONFIGURATION_TYPES)
     # Possible values.
