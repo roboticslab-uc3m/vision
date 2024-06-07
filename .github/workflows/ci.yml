@@ -76,6 +76,12 @@ jobs:
       with:
         key: ${{matrix.os}}-${{matrix.robotology.yarp}}-${{matrix.compiler.cc}}
 
+    - name: Set up model cache
+      uses: actions/cache@v4
+      with:
+        path: models
+        key: vision-models-${{hashFiles('models/**/*')}}
+
     - name: Set environment variables
       run: |
         echo "CC=${{matrix.compiler.cc}}" >> $GITHUB_ENV
