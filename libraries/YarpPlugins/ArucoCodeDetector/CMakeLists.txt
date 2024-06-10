@@ -1,5 +1,5 @@
 if(NOT DEFINED ENABLE_ArucoCodeDetector OR ENABLE_ArucoCodeDetector)
-    if(NOT TARGET opencv_objdetect)
+    if(NOT TARGET opencv_objdetect OR NOT OpenCV_VERSION VERSION_GREATER_EQUAL 4.7)
         message(WARNING "OpenCV objdetect module not found, disabling ArucoCodeDetector device")
     elseif(NOT YARP_cv_FOUND)
         message(WARNING "YARP_cv package not found, disabling ArucoCodeDetector device")
@@ -19,10 +19,11 @@ if(NOT SKIP_ArucoCodeDetector)
                                       ArucoCodeDetector.cpp)
 
     target_link_libraries(ArucoCodeDetector YARP::YARP_os
-                                        YARP::YARP_dev
-                                        YARP::YARP_cv
-                                        opencv_objdetect
-                                        ROBOTICSLAB::VisionInterfaces)
+                                            YARP::YARP_dev
+                                            YARP::YARP_cv
+                                            opencv_objdetect
+                                            opencv_core
+                                            ROBOTICSLAB::VisionInterfaces)
 
     yarp_install(TARGETS ArucoCodeDetector
                  LIBRARY DESTINATION ${ROBOTICSLAB-VISION_DYNAMIC_PLUGINS_INSTALL_DIR}

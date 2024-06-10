@@ -2,7 +2,14 @@
 
 #include "ArucoCodeDetector.hpp"
 
+#include <iostream>
 #include <vector>
+#include <yarp/os/Value.h>
+#include <yarp/cv/Cv.h>
+
+#include <opencv2/core.hpp>
+#include <opencv2/core/version.hpp>
+
 
 using namespace roboticslab;
 
@@ -11,6 +18,8 @@ bool ArucoCodeDetector::open(yarp::os::Searchable& config)
     // default params
     detectorParams = cv::aruco::DetectorParameters();
     dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_250);
+
+    return true;
 }
 
 bool ArucoCodeDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects) 
@@ -23,24 +32,21 @@ bool ArucoCodeDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bott
     std::vector<std::vector<cv::Point2f>> corners, rejectedCandidates;
 
     cv::aruco::ArucoDetector detector(dictionary, detectorParams);
-    detector.detectMarkers(inputImage, corners, markerIds, rejectedCandidates);
+    detector.detectMarkers(inCvMat, corners, markerIds, rejectedCandidates);
 
-    for (auto i = 0; i < corners.size() / 4; i++)
+    for (auto i = 0; i < corners.size(); i++)
     {
-        const auto & tl = corners[4 * i];
-        const auto & tr = corners[4 * i + 1];
-        const auto & br = corners[4 * i + 2];
-        const auto & bl = corners[4 * i + 3];
+        const auto & corner = corners[i];
 
         detectedObjects.addDict() = {
-            {"tlx", yarp::os::Value(tl.x)},
-            {"tly", yarp::os::Value(tl.y)},
-            {"trx", yarp::os::Value(tr.x)},
-            {"try", yarp::os::Value(tr.y)},
-            {"brx", yarp::os::Value(br.x)},
-            {"bry", yarp::os::Value(br.y)},
-            {"blx", yarp::os::Value(bl.x)},
-            {"bly", yarp::os::Value(bl.y)}
+            {"tlx", yarp::os::Value(corner[0].x)},
+            {"tly", yarp::os::Value(corner[0].y)},
+            {"trx", yarp::os::Value(corner[1].x)},
+            {"try", yarp::os::Value(corner[1].y)},
+            {"brx", yarp::os::Value(corner[2].x)},
+            {"bry", yarp::os::Value(corner[2].y)},
+            {"blx", yarp::os::Value(corner[3].x)},
+            {"bly", yarp::os::Value(corner[3].y)}
         };
     }
 
