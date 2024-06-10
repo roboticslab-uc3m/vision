@@ -1,19 +1,19 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "ArucoDetector.hpp"
+#include "ArucoCodeDetector.hpp"
 
 #include <vector>
 
 using namespace roboticslab;
 
-bool ArucoDetector::open(yarp::os::Searchable& config) 
+bool ArucoCodeDetector::open(yarp::os::Searchable& config) 
 {
     // default params
     detectorParams = cv::aruco::DetectorParameters();
     dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_250);
 }
 
-bool ArucoDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects) 
+bool ArucoCodeDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects) 
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -22,8 +22,8 @@ bool ArucoDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& 
     std::vector<int> markerIds;
     std::vector<std::vector<cv::Point2f>> corners, rejectedCandidates;
 
-    cv::aruco::ArucoDetector arucoDetector(dictionary, detectorParams);
-    arucoDetector.detectMarkers(inputImage, corners, markerIds, rejectedCandidates);
+    cv::aruco::ArucoDetector detector(dictionary, detectorParams);
+    detector.detectMarkers(inputImage, corners, markerIds, rejectedCandidates);
 
     for (auto i = 0; i < corners.size() / 4; i++)
     {

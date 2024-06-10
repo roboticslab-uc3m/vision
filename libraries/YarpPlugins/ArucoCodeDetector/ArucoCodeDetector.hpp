@@ -5,6 +5,7 @@
 
 #include <yarp/dev/DeviceDriver.h>
 #include <opencv2/objdetect.hpp>
+#include <opencv2/objdetect/aruco_detector.hpp>
 #include "IDetector.hpp"
 
 namespace roboticslab
@@ -12,12 +13,12 @@ namespace roboticslab
 
 /**
  * @ingroup YarpPlugins
- * @defgroup ArucoDetector
- * @brief Contains roboticslab::ArucoDetector.
+ * @defgroup ArucoCodeDetector
+ * @brief Contains roboticslab::ArucoCodeDetector.
  */
 
-class ArucoDetector : public yarp::dev::DeviceDriver,
-                      public IDetector
+class ArucoCodeDetector : public yarp::dev::DeviceDriver,
+                          public IDetector
 {
 public:
     bool open(yarp::os::Searchable& config) override;
