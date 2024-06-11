@@ -17,7 +17,7 @@ bool ArucoCodeDetector::open(yarp::os::Searchable& config)
 {
     // default params
     detectorParams = cv::aruco::DetectorParameters();
-    dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_250);
+    dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_ARUCO_ORIGINAL);
 
     return true;
 }
