@@ -4,10 +4,8 @@
 #define __ARUCO_DETECTOR_HPP__
 
 #include <yarp/dev/DeviceDriver.h>
-#include <opencv2/objdetect.hpp>
+
 #include <opencv2/objdetect/aruco_detector.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/core/version.hpp>
 
 #include "IDetector.hpp"
 
