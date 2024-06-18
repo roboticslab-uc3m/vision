@@ -52,6 +52,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
         std::printf("\t--localPrefix (local port name prefix, default: \"%s\")\n", DEFAULT_LOCAL_PREFIX);
         std::printf("\t--period ([s] default: \"%f\")\n", DEFAULT_PERIOD);
         std::printf("\t--detector (detector device)\n");
+        std::printf("\t--ros (also publish point in ros)\n");
         return false;
     }
 
@@ -61,6 +62,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     auto strSensorRemote = rf.check("sensorRemote", yarp::os::Value(DEFAULT_SENSOR_REMOTE)).asString();
     auto strLocalPrefix = rf.check("localPrefix", yarp::os::Value(DEFAULT_LOCAL_PREFIX)).asString();
     auto strDetector = rf.check("detector", yarp::os::Value("")).asString();
+    strRos = rf.check("ros");
 
     period = rf.check("period", yarp::os::Value(DEFAULT_PERIOD)).asFloat64();
 
@@ -69,6 +71,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     yCInfo(RGBD) << "Using --localPrefix" << strLocalPrefix;
     yCInfo(RGBD) << "Using --period" << period;
     yCInfo(RGBD) << "Using --detector" << strDetector;
+    yCInfo(RGBD) << "Using --ros" << strRos;
 
     yarp::os::Property sensorOptions;
     sensorOptions.fromString(rf.toString());
@@ -130,11 +133,14 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     cropPort.setReadOnly();
     cropPort.useCallback(cropCallback);
 
-    node = new yarp::os::Node("/yarp/rgbd_detection_publisher");
+    if (strRos)
+    {
+        node = new yarp::os::Node("/yarp/rgbd_detection_publisher");
 
-    if (!publisher.topic("/rgbd_detection_coords")) {
-        yCError(RGBD) << "Failed to create publisher to /rgbd_detection_coords";
-        return false;
+        if (!publisher.topic("/rgbd_detection_coords")) {
+            yCError(RGBD) << "Failed to create publisher to /rgbd_detection_coords";
+            return false;
+        }
     }
 
     return true;
@@ -248,12 +254,15 @@ bool RgbdDetection::updateModule()
                 statePort.prepare() = {yarp::os::Value(x), yarp::os::Value(y), yarp::os::Value(z)};
                 statePort.write();
 
-                yarp::rosmsg::geometry_msgs::Point data;
-                data.x = x;
-                data.y = y;
-                data.z = z;
+                if (strRos)
+                {
+                    yarp::rosmsg::geometry_msgs::Point data;
+                    data.x = x;
+                    data.y = y;
+                    data.z = z;
 
-                publisher.write(data);
+                    publisher.write(data);
+                }
             }
 
             if (imagePort.getOutputCount() > 0)
