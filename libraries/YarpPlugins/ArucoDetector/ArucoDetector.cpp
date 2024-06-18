@@ -1,8 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
-#include "ArucoCodeDetector.hpp"
+#include "ArucoDetector.hpp"
 
-#include <iostream>
 #include <vector>
 
 #include <yarp/os/LogComponent.h>
@@ -14,12 +13,12 @@ using namespace roboticslab;
 
 namespace
 {
-    YARP_LOG_COMPONENT(AC, "rl.ArucoCodeDetector")
+    YARP_LOG_COMPONENT(AC, "rl.ArucoDetector")
 }
 
 constexpr auto DEFAULT_ARUCO_SIZE = "ARUCO_ORIGINAL";
 
-bool ArucoCodeDetector::open(yarp::os::Searchable& config) 
+bool ArucoDetector::open(yarp::os::Searchable& config)
 {
     // default params
     detectorParams = cv::aruco::DetectorParameters();
@@ -44,7 +43,7 @@ bool ArucoCodeDetector::open(yarp::os::Searchable& config)
     return true;
 }
 
-bool ArucoCodeDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects) 
+bool ArucoDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -73,11 +72,6 @@ bool ArucoCodeDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bott
             {"blx", yarp::os::Value(bl.x)},
             {"bly", yarp::os::Value(bl.y)}
         };
-
-        /*yCDebug(AC) << "Top Left: " << tl.x << ", " << tl.y;
-        yCDebug(AC) << "Top Right: " << tr.x << ", " << tr.y;
-        yCDebug(AC) << "Bottom Right: " << br.x << ", " << br.y;
-        yCDebug(AC) << "Bottom Left: " << bl.x << ", " << bl.y;*/
     }
 
     return true;

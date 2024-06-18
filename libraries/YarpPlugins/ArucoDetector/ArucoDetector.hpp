@@ -14,12 +14,12 @@ namespace roboticslab
 
 /**
  * @ingroup YarpPlugins
- * @defgroup ArucoCodeDetector
- * @brief Contains roboticslab::ArucoCodeDetector.
+ * @defgroup ArucoDetector
+ * @brief Contains roboticslab::ArucoDetector.
  */
 
-class ArucoCodeDetector : public yarp::dev::DeviceDriver,
-                          public IDetector
+class ArucoDetector : public yarp::dev::DeviceDriver,
+                      public IDetector
 {
 public:
     bool open(yarp::os::Searchable& config) override;
