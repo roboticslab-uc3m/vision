@@ -15,7 +15,7 @@
 
 #include <yarp/os/Node.h>
 #include <yarp/os/Publisher.h>
-#include <yarp/rosmsg/std_msgs/String.h>
+#include <yarp/rosmsg/geometry_msgs/Point.h>
 
 #include "IDetector.hpp"
 #include "YarpCropCallback.hpp"
@@ -53,7 +53,7 @@ private:
     YarpCropCallback cropCallback;
 
     yarp::os::Node * node {nullptr};
-    yarp::os::Publisher<yarp::rosmsg::std_msgs::String> publisher;
+    yarp::os::Publisher<yarp::rosmsg::geometry_msgs::Point> publisher;
 
     double period;
 };
