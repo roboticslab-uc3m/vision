@@ -11,7 +11,7 @@ yarp_prepare_plugin(ArucoCodeDetector
                     TYPE roboticslab::ArucoCodeDetector
                     INCLUDE ArucoCodeDetector.hpp
                     DEFAULT ON
-                    DEPENDS "TARGET opencv_objdetect;YARP_cv_FOUND")
+                    DEPENDS "TARGET opencv_objdetect;OpenCV_VERSION VERSION_GREATER_EQUAL 4.7;YARP_cv_FOUND")
 
 if(NOT SKIP_ArucoCodeDetector)
 
