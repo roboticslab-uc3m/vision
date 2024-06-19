@@ -3,7 +3,10 @@ name: Continuous Integration
 on:
   push:
     paths-ignore:
+    - .github/workflows/docker.yml
+    - .github/workflows/doxygen.yml
     - 'doc/**'
+    - 'docker/**'
     - '**.md'
   pull_request:
   schedule:
@@ -27,6 +30,10 @@ jobs:
   build:
     name: build (${{matrix.os}}, ${{matrix.robotology.yarp}}, ${{matrix.compiler.cc}})
     runs-on: ${{matrix.os}}
+    container:
+      image: ghcr.io/roboticslab-uc3m/vision:${{matrix.os}}-opencv-4.x
+      env:
+        DEBIAN_FRONTEND: noninteractive
     needs: maybe_skip
     if: ${{needs.maybe_skip.outputs.should_skip != 'true'}}
 
@@ -63,8 +70,8 @@ jobs:
         ref: ${{matrix.robotology.yarp}}
         path: .deps/yarp
 
-    - name: Install dependencies via apt
-      run: sudo apt-get update && sudo apt-get install -qq ccache libopencv-dev libpcl-dev swig googletest
+    # - name: Install dependencies via apt
+    #   run: apt-get update && apt-get upgrade -qqy
 
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v2
@@ -91,13 +98,13 @@ jobs:
       run: |
         cmake -S .deps/ycm -B .deps/ycm/build
         cmake --build .deps/ycm/build
-        sudo cmake --install .deps/ycm/build
+        cmake --install .deps/ycm/build
 
     - name: Build YARP
       run: |
         cmake -S .deps/yarp -B .deps/yarp/build $CMAKE_CCACHE_LAUNCHER -DSKIP_ACE=ON -DYARP_DISABLE_VERSION_SOURCE=ON
         cmake --build .deps/yarp/build
-        sudo cmake --install .deps/yarp/build
+        cmake --install .deps/yarp/build
 
     - name: Configure vision
       run: cmake -S . -B build $CMAKE_CCACHE_LAUNCHER -DCREATE_BINDINGS_PYTHON=ON -DENABLE_examples=ON
@@ -106,11 +113,11 @@ jobs:
       run: cmake --build build
 
     - name: Install vision
-      run: sudo cmake --install build && sudo ldconfig
+      run: cmake --install build && ldconfig
 
     - name: Test vision
       working-directory: build
       run: ctest -V
 
     - name: Uninstall vision
-      run: sudo cmake --build build --target uninstall
+      run: cmake --build build --target uninstall
