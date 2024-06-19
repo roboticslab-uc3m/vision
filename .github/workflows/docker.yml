@@ -1,30 +1,30 @@
 name: Docker
 
 on:
+  push:
+    # paths:
+    # - 'docker/**'
   workflow_dispatch:
-    inputs:
-      ubuntu-tag:
-        description: 'The Ubuntu tag to use for the Docker image'
-        required: true
-        type: choice
-        options:
-        - '20.04'
-        - '22.04'
-      opencv-tag:
-        description: 'The OpenCV tag to use for the Docker image'
-        required: true
-        type: choice
-        options:
-        - '3.4'
-        - '4.x'
-        - '5.x'
 
 env:
   REGISTRY: ghcr.io
+  IMAGE_NAME: ${{github.repository}}
 
 jobs:
   docker:
+    name: build (Ubuntu ${{matrix.ubuntu}}, OpenCV ${{matrix.opencv}})
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    strategy:
+      matrix:
+        ubuntu: ['20.04', '22.04']
+        opencv: ['4.x']
+
     steps:
     - name: Check out main project
       uses: actions/checkout@v4
@@ -36,12 +36,19 @@ jobs:
         username: ${{github.actor}}
         password: ${{secrets.GITHUB_TOKEN}}
 
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
+
     - name: Build and push
       uses: docker/build-push-action@v6
       with:
         push: true
-        tags: vision:ubuntu-${{inputs.ubuntu-tag}}
         context: docker
+        tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:ubuntu-${{matrix.ubuntu}}-opencv-${{matrix.opencv}}
+        labels: ${{steps.meta.outputs.labels}}
         build-args: |
-          OPENCV_TAG=${{inputs.opencv-tag}}
-          UBUNTU_TAG=${{inputs.ubuntu-tag}}
+          OPENCV_TAG=${{matrix.opencv}}
+          UBUNTU_TAG=${{matrix.ubuntu}}

@@ -14,7 +14,7 @@ RUN apt-get update && \
         -DBUILD_TESTS=OFF \
         -DBUILD_PERF_TESTS=OFF \
         -DOPENCV_ENABLE_NONFREE=ON && \
-    cmake --build opencv-${OPENCV_TAG}/build -j && \
+    cmake --build opencv-${OPENCV_TAG}/build && \
     cmake --install opencv-${OPENCV_TAG}/build && \
     rm -rf opencv.zip opencv_contrib.zip opencv-${OPENCV_TAG} opencv_contrib-${OPENCV_TAG} && \
     apt-get clean

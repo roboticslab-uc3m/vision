@@ -4,6 +4,7 @@ on:
   push:
     paths-ignore:
     - 'doc/**'
+    - 'docker/**'
     - '**.md'
   pull_request:
   schedule:
