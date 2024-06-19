@@ -2,13 +2,13 @@ ARG UBUNTU_TAG
 FROM ubuntu:${UBUNTU_TAG}
 
 ARG OPENCV_TAG
-ARG COMPILER
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y \
-        ${COMPILER} \
+        g++ \
+        clang \
         cmake \
         wget \
         unzip \
