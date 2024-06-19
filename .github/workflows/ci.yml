@@ -3,6 +3,8 @@ name: Continuous Integration
 on:
   push:
     paths-ignore:
+    - .github/workflows/docker.yml
+    - .github/workflows/doxygen.yml
     - 'doc/**'
     - 'docker/**'
     - '**.md'

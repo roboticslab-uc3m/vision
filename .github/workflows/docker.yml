@@ -2,8 +2,8 @@ name: Docker
 
 on:
   push:
-    # paths:
-    # - 'docker/**'
+    paths:
+    - 'docker/**'
   workflow_dispatch:
 
 env:
@@ -12,7 +12,7 @@ env:
 
 jobs:
   docker:
-    name: build (Ubuntu ${{matrix.ubuntu}}, OpenCV ${{matrix.opencv}})
+    name: build (Ubuntu ${{matrix.ubuntu}}, OpenCV ${{matrix.opencv}}, ${{matrix.compiler.label}})
     runs-on: ubuntu-latest
 
     permissions:
@@ -24,6 +24,9 @@ jobs:
       matrix:
         ubuntu: ['20.04', '22.04']
         opencv: ['4.x']
+        compiler:
+        - { cmd: 'g++', label: 'gcc' }
+        - { cmd: 'clang', label: 'clang' }
 
     steps:
     - name: Check out main project
@@ -47,8 +50,9 @@ jobs:
       with:
         push: true
         context: docker
-        tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:ubuntu-${{matrix.ubuntu}}-opencv-${{matrix.opencv}}
+        tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:ubuntu-${{matrix.ubuntu}}-opencv-${{matrix.opencv}}-${{matrix.compiler.label}}
         labels: ${{steps.meta.outputs.labels}}
         build-args: |
           OPENCV_TAG=${{matrix.opencv}}
           UBUNTU_TAG=${{matrix.ubuntu}}
+          COMPILER=${{matrix.compiler.cmd}}

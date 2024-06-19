@@ -1,10 +1,21 @@
 ARG UBUNTU_TAG
-FROM ubuntu:$UBUNTU_TAG
+FROM ubuntu:${UBUNTU_TAG}
 
 ARG OPENCV_TAG
+ARG COMPILER
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get install -y cmake g++ wget unzip && \
+    apt-get install -y \
+        ${COMPILER} \
+        cmake \
+        wget \
+        unzip \
+        ccache \
+        libpcl-dev \
+        swig \
+        googletest && \
     wget -O opencv.zip https://github.com/opencv/opencv/archive/${OPENCV_TAG}.zip && \
     wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/${OPENCV_TAG}.zip && \
     unzip opencv.zip && \
