@@ -37,7 +37,7 @@ bool QrDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& det
     std::vector<std::string> texts;
     std::vector<cv::Point> corners;
 
-#if CV_MINOR_VERSION >= 3
+#if CV_VERSION_MAJOR > 4 || (CV_VERSION_MAJOR == 4 && CV_VERSION_MINOR >= 3)
     qrcode.detectAndDecodeMulti(inCvMat, texts, corners);
 #else
     std::string text = qrcode.detectAndDecode(inCvMat, corners);

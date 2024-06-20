@@ -4,7 +4,7 @@ set(CMAKE_REQUIRED_QUIET TRUE)
 check_cxx_symbol_exists(HAVE_QUIRC opencv2/cvconfig.h _have_quirc)
 
 if(NOT DEFINED ENABLE_QrDetector OR ENABLE_QrDetector)
-    if(NOT TARGET opencv_objdetect OR NOT OpenCV_VERSION VERSION_GREATER_EQUAL 4.7 OR NOT _have_quirc)
+    if(NOT TARGET opencv_objdetect OR NOT (OpenCV_VERSION VERSION_GREATER_EQUAL 4.7 OR _have_quirc))
         message(WARNING "OpenCV 4.x objdetect module with QR support not found, disabling QrDetector device")
     elseif(NOT YARP_cv_FOUND)
         message(WARNING "YARP_cv package not found, disabling QrDetector device")
@@ -16,7 +16,7 @@ yarp_prepare_plugin(QrDetector
                     TYPE roboticslab::QrDetector
                     INCLUDE QrDetector.hpp
                     DEFAULT ON
-                    DEPENDS "TARGET opencv_objdetect;OpenCV_VERSION VERSION_GREATER_EQUAL 4.7;_have_quirc;YARP_cv_FOUND")
+                    DEPENDS "TARGET opencv_objdetect;OpenCV_VERSION VERSION_GREATER_EQUAL 4.7 OR _have_quirc;YARP_cv_FOUND")
 
 if(NOT SKIP_QrDetector)
 
