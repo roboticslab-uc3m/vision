@@ -299,10 +299,17 @@ void doGreedyProjectionTriangulation(const typename pcl::PointCloud<T>::ConstPtr
 template <typename T>
 void doGridMinimum(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
+    auto keepOrganized = options.check("keepOrganized", yarp::os::Value(false)).asBool();
+    auto negative = options.check("negative", yarp::os::Value(false)).asBool();
     auto resolution = options.check("resolution", yarp::os::Value(0.0f)).asFloat32();
+
     pcl::GridMinimum<T> grid(resolution);
+
     grid.setInputCloud(in);
+    grid.setKeepOrganized(keepOrganized);
+    grid.setNegative(negative);
     grid.filter(*out);
+
     checkOutput<T>(out, "GridMinimum");
 }
 
@@ -332,11 +339,13 @@ void doGridProjection(const typename pcl::PointCloud<T>::ConstPtr & in, const pc
 template <typename T>
 void doLocalMaximum(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
+    auto keepOrganized = options.check("keepOrganized", yarp::os::Value(false)).asBool();
     auto negative = options.check("negative", yarp::os::Value(false)).asBool();
     auto radius = options.check("radius", yarp::os::Value(1.0f)).asFloat32();
 
     pcl::LocalMaximum<T> local;
     local.setInputCloud(in);
+    local.setKeepOrganized(keepOrganized);
     local.setNegative(negative);
     local.setRadius(radius);
     local.filter(*out);
@@ -702,12 +711,14 @@ void doPassThrough(const typename pcl::PointCloud<T>::ConstPtr & in, const typen
     auto filterFieldName = options.check("filterFieldName", yarp::os::Value("")).asString();
     auto filterLimitMax = options.check("filterLimitMax", yarp::os::Value(std::numeric_limits<float>::max())).asFloat32();
     auto filterLimitMin = options.check("filterLimitMin", yarp::os::Value(std::numeric_limits<float>::min())).asFloat32();
+    auto keepOrganized = options.check("keepOrganized", yarp::os::Value(false)).asBool();
     auto negative = options.check("negative", yarp::os::Value(false)).asBool();
 
     pcl::PassThrough<T> pass;
     pass.setFilterFieldName(filterFieldName);
     pass.setFilterLimits(filterLimitMin, filterLimitMax);
     pass.setInputCloud(in);
+    pass.setKeepOrganized(keepOrganized);
     pass.setNegative(negative);
     pass.filter(*out);
 
@@ -760,12 +771,14 @@ void doPoisson(const typename pcl::PointCloud<T>::ConstPtr & in, const pcl::Poly
 template <typename T>
 void doRadiusOutlierRemoval(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
+    auto keepOrganized = options.check("keepOrganized", yarp::os::Value(false)).asBool();
     auto minNeighborsInRadius = options.check("minNeighborsInRadius", yarp::os::Value(1)).asInt32();
     auto negative = options.check("negative", yarp::os::Value(false)).asBool();
     auto radiusSearch = options.check("radiusSearch", yarp::os::Value(0.0)).asFloat64();
 
     pcl::RadiusOutlierRemoval<T> remover;
     remover.setInputCloud(in);
+    remover.setKeepOrganized(keepOrganized);
     remover.setMinNeighborsInRadius(minNeighborsInRadius);
     remover.setNegative(negative);
     remover.setRadiusSearch(radiusSearch);
@@ -777,12 +790,14 @@ void doRadiusOutlierRemoval(const typename pcl::PointCloud<T>::ConstPtr & in, co
 template <typename T>
 void doRandomSample(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
+    auto keepOrganized = options.check("keepOrganized", yarp::os::Value(false)).asBool();
     auto negative = options.check("negative", yarp::os::Value(false)).asBool();
     auto sample = options.check("sample", yarp::os::Value(std::numeric_limits<int>::max())).asInt64(); // note the shortening conversion
     auto seed = options.check("seed", yarp::os::Value(static_cast<int>(std::time(nullptr)))).asInt64(); // note the shortening conversion
 
     pcl::RandomSample<T> random;
     random.setInputCloud(in);
+    random.setKeepOrganized(keepOrganized);
     random.setNegative(negative);
     random.setSample(sample);
     random.setSeed(seed);
@@ -842,12 +857,14 @@ void doSimplificationRemoveUnusedVertices(const pcl::PolygonMesh::ConstPtr & in,
 template <typename T>
 void doStatisticalOutlierRemoval(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
+    auto keepOrganized = options.check("keepOrganized", yarp::os::Value(false)).asBool();
     auto meanK = options.check("meanK", yarp::os::Value(1)).asInt32();
     auto negative = options.check("negative", yarp::os::Value(false)).asBool();
     auto stddevMulThresh = options.check("stddevMulThresh", yarp::os::Value(0.0)).asFloat64();
 
     pcl::StatisticalOutlierRemoval<T> remover;
     remover.setInputCloud(in);
+    remover.setKeepOrganized(keepOrganized);
     remover.setMeanK(meanK);
     remover.setNegative(negative);
     remover.setStddevMulThresh(stddevMulThresh);
@@ -859,10 +876,18 @@ void doStatisticalOutlierRemoval(const typename pcl::PointCloud<T>::ConstPtr & i
 template <typename T>
 void doUniformSampling(const typename pcl::PointCloud<T>::ConstPtr & in, const typename pcl::PointCloud<T>::Ptr & out, const yarp::os::Searchable & options)
 {
+#if PCL_VERSION_COMPARE(>=, 1, 15, 0)
+    auto keepOrganized = options.check("keepOrganized", yarp::os::Value(false)).asBool();
+    auto negative = options.check("negative", yarp::os::Value(false)).asBool();
+#endif
     auto radiusSearch = options.check("radiusSearch", yarp::os::Value(0.0)).asFloat64();
 
     pcl::UniformSampling<T> uniform;
     uniform.setInputCloud(in);
+#if PCL_VERSION_COMPARE(>=, 1, 15, 0)
+    uniform.setKeepOrganized(keepOrganized);
+    uniform.setNegative(negative);
+#endif
     uniform.setRadiusSearch(radiusSearch);
     uniform.filter(*out);
 
