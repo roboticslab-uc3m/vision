@@ -43,9 +43,7 @@
 #include <pcl/surface/grid_projection.h>
 #include <pcl/surface/marching_cubes_hoppe.h>
 #include <pcl/surface/marching_cubes_rbf.h>
-#if PCL_VERSION_COMPARE(>=, 1, 9, 0)
 #include <pcl/surface/mls.h>
-#endif
 #include <pcl/surface/organized_fast_mesh.h>
 #include <pcl/surface/poisson.h>
 #include <pcl/surface/simplification_remove_unused_vertices.h>
@@ -146,7 +144,7 @@ void doBilateralFilter(const typename pcl::PointCloud<T>::ConstPtr & in, const t
     auto halfSize = options.check("halfSize", yarp::os::Value(0.0)).asFloat64();
     auto stdDev = options.check("stdDev", yarp::os::Value(std::numeric_limits<double>::max())).asFloat64();
 
-    typename pcl::search::KdTree<T>::Ptr tree(new pcl::search::KdTree<T>());
+    auto tree = pcl::make_shared<pcl::search::KdTree<T>>();
     tree->setInputCloud(in);
 
     pcl::BilateralFilter<T> filter;
@@ -277,7 +275,7 @@ void doGreedyProjectionTriangulation(const typename pcl::PointCloud<T>::ConstPtr
     auto normalConsistency = options.check("normalConsistency", yarp::os::Value(false)).asBool();
     auto searchRadius = options.check("searchRadius", yarp::os::Value(0.0)).asFloat64();
 
-    typename pcl::search::KdTree<T>::Ptr tree(new pcl::search::KdTree<T>());
+    auto tree = pcl::make_shared<pcl::search::KdTree<T>>();
     tree->setInputCloud(in);
 
     pcl::GreedyProjectionTriangulation<T> gp3;
@@ -321,7 +319,7 @@ void doGridProjection(const typename pcl::PointCloud<T>::ConstPtr & in, const pc
     auto paddingSize = options.check("paddingSize", yarp::os::Value(3)).asInt32();
     auto resolution = options.check("resolution", yarp::os::Value(0.001)).asFloat64();
 
-    typename pcl::search::KdTree<T>::Ptr tree(new pcl::search::KdTree<T>());
+    auto tree = pcl::make_shared<pcl::search::KdTree<T>>();
     tree->setInputCloud(in);
 
     pcl::GridProjection<T> gp;
@@ -356,9 +354,7 @@ void doLocalMaximum(const typename pcl::PointCloud<T>::ConstPtr & in, const type
 template <typename T>
 void doMarchingCubesHoppe(const typename pcl::PointCloud<T>::ConstPtr & in, const pcl::PolygonMesh::Ptr & out, const yarp::os::Searchable & options)
 {
-#if PCL_VERSION_COMPARE(>=, 1, 9, 0)
     auto distanceIgnore = options.check("distanceIgnore", yarp::os::Value(-1.0f)).asFloat32();
-#endif
     auto gridResolution = options.check("gridResolution", yarp::os::Value(32)).asInt32();
     auto gridResolutionX = options.check("gridResolutionX", yarp::os::Value(gridResolution)).asInt32();
     auto gridResolutionY = options.check("gridResolutionY", yarp::os::Value(gridResolution)).asInt32();
@@ -366,13 +362,11 @@ void doMarchingCubesHoppe(const typename pcl::PointCloud<T>::ConstPtr & in, cons
     auto isoLevel = options.check("isoLevel", yarp::os::Value(0.0f)).asFloat32();
     auto percentageExtendGrid = options.check("percentageExtendGrid", yarp::os::Value(0.0f)).asFloat32();
 
-    typename pcl::search::KdTree<T>::Ptr tree(new pcl::search::KdTree<T>());
+    auto tree = pcl::make_shared<pcl::search::KdTree<T>>();
     tree->setInputCloud(in);
 
     pcl::MarchingCubesHoppe<T> hoppe;
-#if PCL_VERSION_COMPARE(>=, 1, 9, 0)
     hoppe.setDistanceIgnore(distanceIgnore);
-#endif
     hoppe.setGridResolution(gridResolutionX, gridResolutionY, gridResolutionZ);
     hoppe.setInputCloud(in);
     hoppe.setIsoLevel(isoLevel);
@@ -394,7 +388,7 @@ void doMarchingCubesRBF(const typename pcl::PointCloud<T>::ConstPtr & in, const 
     auto offSurfaceDisplacement = options.check("offSurfaceDisplacement", yarp::os::Value(0.1f)).asFloat32();
     auto percentageExtendGrid = options.check("percentageExtendGrid", yarp::os::Value(0.0f)).asFloat32();
 
-    typename pcl::search::KdTree<T>::Ptr tree(new pcl::search::KdTree<T>());
+    auto tree = pcl::make_shared<pcl::search::KdTree<T>>();
     tree->setInputCloud(in);
 
     pcl::MarchingCubesRBF<T> rbf;
@@ -515,7 +509,6 @@ void doMeshSubdivisionVTK(const pcl::PolygonMesh::ConstPtr & in, const pcl::Poly
     checkOutput(out, "MeshSubdivisionVTK");
 }
 
-#if PCL_VERSION_COMPARE(>=, 1, 9, 0)
 template <typename T1, typename T2 = T1>
 void doMovingLeastSquares(const typename pcl::PointCloud<T1>::ConstPtr & in, const typename pcl::PointCloud<T2>::Ptr & out, const yarp::os::Searchable & options)
 {
@@ -579,7 +572,7 @@ void doMovingLeastSquares(const typename pcl::PointCloud<T1>::ConstPtr & in, con
         throw std::invalid_argument("unknown upsampling method: " + upsamplingMethodStr);
     }
 
-    typename pcl::search::KdTree<T1>::Ptr tree(new pcl::search::KdTree<T1>());
+    auto tree = pcl::make_shared<pcl::search::KdTree<T1>>();
     tree->setInputCloud(in);
 
     pcl::MovingLeastSquares<T1, T2> mls;
@@ -602,7 +595,6 @@ void doMovingLeastSquares(const typename pcl::PointCloud<T1>::ConstPtr & in, con
 
     checkOutput<T2>(out, "MovingLeastSquares");
 }
-#endif
 
 template <typename T1, typename T2>
 void doNormalEstimation(const typename pcl::PointCloud<T1>::ConstPtr & in, const typename pcl::PointCloud<T2>::Ptr & out, const yarp::os::Searchable & options)
@@ -610,7 +602,7 @@ void doNormalEstimation(const typename pcl::PointCloud<T1>::ConstPtr & in, const
     auto kSearch = options.check("kSearch", yarp::os::Value(0)).asInt32();
     auto radiusSearch = options.check("radiusSearch", yarp::os::Value(0.0)).asFloat64();
 
-    typename pcl::search::KdTree<T1>::Ptr tree(new pcl::search::KdTree<T1>());
+    auto tree = pcl::make_shared<pcl::search::KdTree<T1>>();
     tree->setInputCloud(in);
 
     pcl::NormalEstimation<T1, T2> estimator;
@@ -630,7 +622,7 @@ void doNormalEstimationOMP(const typename pcl::PointCloud<T1>::ConstPtr & in, co
     auto numberOfThreads = options.check("numberOfThreads", yarp::os::Value(0)).asInt32();
     auto radiusSearch = options.check("radiusSearch", yarp::os::Value(0.0)).asFloat64();
 
-    typename pcl::search::KdTree<T1>::Ptr tree(new pcl::search::KdTree<T1>());
+    auto tree = pcl::make_shared<pcl::search::KdTree<T1>>();
     tree->setInputCloud(in);
 
     pcl::NormalEstimationOMP<T1, T2> estimator;
@@ -743,7 +735,7 @@ void doPoisson(const typename pcl::PointCloud<T>::ConstPtr & in, const pcl::Poly
     auto threads = options.check("threads", yarp::os::Value(1)).asInt32();
 #endif
 
-    typename pcl::search::KdTree<T>::Ptr tree(new pcl::search::KdTree<T>());
+    auto tree = pcl::make_shared<pcl::search::KdTree<T>>();
     tree->setInputCloud(in);
 
     pcl::Poisson<T> poisson;
@@ -831,9 +823,9 @@ void doShadowPoints(const typename pcl::PointCloud<T>::ConstPtr & in, const type
     auto threshold = options.check("threshold", yarp::os::Value(0.1f)).asFloat32();
 
 #if PCL_VERSION_COMPARE(>=, 1, 11, 0)
-    typename pcl::PointCloud<T>::Ptr temp = std::const_pointer_cast<pcl::PointCloud<T>>(in); // cast away constness
+    auto temp = std::const_pointer_cast<pcl::PointCloud<T>>(in); // cast away constness
 #else
-    typename pcl::PointCloud<T>::Ptr temp = boost::const_pointer_cast<pcl::PointCloud<T>>(in); // cast away constness
+    auto temp = boost::const_pointer_cast<pcl::PointCloud<T>>(in); // cast away constness
 #endif
 
     pcl::ShadowPoints<T, T> shadow;

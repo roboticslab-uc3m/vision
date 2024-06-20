@@ -8,7 +8,6 @@
 
 #ifdef YCU_HAVE_PCL
 #include <yarp/pcl/Pcl.h>
-#include <yarp/conf/version.h>
 
 #include <cstdint>
 
@@ -141,14 +140,12 @@ namespace
         case "MeshSubdivisionVTK"_hash:
             doMeshSubdivisionVTK(prev.getMesh(), curr.setMesh(), options);
             break;
-#if PCL_VERSION_COMPARE(>=, 1, 9, 0)
         case "MovingLeastSquares"_hash:
             if (options.check("computeNormals"), yarp::os::Value(false).asBool())
                 doMovingLeastSquares<any_xyz_t, normal_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<normal_t>(), options);
             else
                 doMovingLeastSquares<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
             break;
-#endif
         case "NormalEstimation"_hash:
             pcl::copyPointCloud(*prev.getCloud<any_xyz_t>(), *curr.setCloud<normal_t>());
             doNormalEstimation<any_xyz_t, normal_t>(prev.getCloud<any_xyz_t>(), curr.useCloud<normal_t>(), options);
@@ -317,7 +314,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
         return false;
     }
 
-    typename pcl::PointCloud<pcl_input_type>::Ptr pclCloud(new pcl::PointCloud<pcl_input_type>());
+    auto pclCloud = pcl::make_shared<pcl::PointCloud<pcl_input_type>>();;
 
     // Convert YARP cloud to PCL cloud.
     yarp::pcl::toPCL(cloud, *pclCloud);
@@ -336,7 +333,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
     }
 
     // Extract point cloud of vertices from mesh.
-    typename pcl::PointCloud<pcl_output_type>::Ptr pclMeshPoints(new pcl::PointCloud<pcl_output_type>());
+    auto pclMeshPoints = pcl::make_shared<pcl::PointCloud<pcl_output_type>>();
     pcl::fromPCLPointCloud2(pclMesh->cloud, *pclMeshPoints);
 
     // Convert PCL mesh to YARP cloud and vector of indices.
@@ -390,7 +387,7 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
         return false;
     }
 
-    typename pcl::PointCloud<pcl_input_type>::Ptr pclCloudIn(new pcl::PointCloud<pcl_input_type>());
+    auto pclCloudIn = pcl::make_shared<pcl::PointCloud<pcl_input_type>>();
 
     // Convert YARP cloud to PCL cloud.
     yarp::pcl::toPCL(in, *pclCloudIn);
