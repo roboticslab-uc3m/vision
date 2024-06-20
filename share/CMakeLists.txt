@@ -37,6 +37,13 @@ if(ENABLE_QrDetector)
     endif()
 endif()
 
+if(ENABLE_ArucoDetector)
+    if(ENABLE_tests)
+        yarp_install(DIRECTORY contexts/ArucoDetector/tests
+                     DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR}/ArucoDetector)
+    endif()
+endif()
+
 if(ENABLE_sceneReconstruction)
     yarp_install(DIRECTORY contexts/sceneReconstruction
                  DESTINATION ${ROBOTICSLAB-VISION_CONTEXTS_INSTALL_DIR})
