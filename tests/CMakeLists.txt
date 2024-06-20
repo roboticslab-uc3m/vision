@@ -62,6 +62,18 @@ if(ENABLE_tests)
         gtest_discover_tests(testQrDetector)
     endif()
 
+    if(ENABLE_ArucoDetector)
+        add_executable(testArucoDetector testArucoDetector.cpp)
+
+        target_link_libraries(testArucoDetector YARP::YARP_os
+                                                YARP::YARP_dev
+                                                YARP::YARP_sig
+                                                ROBOTICSLAB::VisionInterfaces
+                                                gtest_main)
+
+        gtest_discover_tests(testArucoDetector)
+    endif()
+
     if(TARGET YarpCloudUtils)
         add_executable(testYarpCloudUtils testYarpCloudUtils.cpp)
 
