@@ -6,6 +6,7 @@ if(ENABLE_examples)
         add_subdirectory(exampleDnnDetector)
         add_subdirectory(exampleHaarDetector)
         add_subdirectory(exampleQrDetector)
+        add_subdirectory(exampleArucoDetector)
     endif()
 
     if(TARGET ROBOTICSLAB::YarpCloudUtils)
