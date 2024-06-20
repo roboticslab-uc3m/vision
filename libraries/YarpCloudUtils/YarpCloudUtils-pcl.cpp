@@ -280,10 +280,7 @@ namespace
     }
 }
 
-namespace roboticslab
-{
-
-namespace YarpCloudUtils
+namespace roboticslab::YarpCloudUtils
 {
 
 template <typename T1, typename T2>
@@ -430,9 +427,7 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
     return processCloud(in, out, makeFromConfig(config, collection));
 }
 
-} // namespace YarpCloudUtils
-
-} // namespace roboticslab
+} // namespace roboticslab::YarpCloudUtils
 
 // explicit instantiations
 #include "YarpCloudUtils-pcl-inst.hpp"
