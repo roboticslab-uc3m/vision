@@ -38,7 +38,7 @@ find_package(YARP 3.8 REQUIRED COMPONENTS os dev sig
 
 # Soft dependencies.
 find_package(OpenCV QUIET)
-find_package(PCL 1.8 QUIET COMPONENTS common features filters search surface)
+find_package(PCL 1.10 QUIET COMPONENTS common features filters search surface)
 find_package(GTestSources 1.8 QUIET)
 find_package(SWIG QUIET)
 find_package(Doxygen QUIET)

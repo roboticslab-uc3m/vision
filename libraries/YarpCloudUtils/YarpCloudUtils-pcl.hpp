@@ -60,7 +60,7 @@ inline auto cloud_container::initializeCloudPointer(const typename pcl::PointClo
             throw std::runtime_error("illegal conversion from " + name_lhs + " to " + name_rhs);
         }
 
-        typename pcl::PointCloud<T2>::Ptr out(new pcl::PointCloud<T2>());
+        auto out = pcl::make_shared<pcl::PointCloud<T2>>();
         pcl::copyPointCloud(*in, *out);
         return out;
     }
@@ -114,49 +114,49 @@ typename pcl::PointCloud<T>::ConstPtr cloud_container::getCloud() const
 template <>
 pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud_container::setCloud<pcl::PointXYZ>()
 {
-    xyz.reset(new pcl::PointCloud<pcl::PointXYZ>());
+    xyz = pcl::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     return xyz;
 }
 
 template <>
 pcl::PointCloud<pcl::PointXYZRGB>::Ptr & cloud_container::setCloud<pcl::PointXYZRGB>()
 {
-    xyz_rgb.reset(new pcl::PointCloud<pcl::PointXYZRGB>());
+    xyz_rgb = pcl::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
     return xyz_rgb;
 }
 
 template <>
 pcl::PointCloud<pcl::PointXYZI>::Ptr & cloud_container::setCloud<pcl::PointXYZI>()
 {
-    xyzi.reset(new pcl::PointCloud<pcl::PointXYZI>());
+    xyzi = pcl::make_shared<pcl::PointCloud<pcl::PointXYZI>>();
     return xyzi;
 }
 
 template <>
 pcl::PointCloud<pcl::InterestPoint>::Ptr & cloud_container::setCloud<pcl::InterestPoint>()
 {
-    xyz_interest.reset(new pcl::PointCloud<pcl::InterestPoint>());
+    xyz_interest = pcl::make_shared<pcl::PointCloud<pcl::InterestPoint>>();
     return xyz_interest;
 }
 
 template <>
 pcl::PointCloud<pcl::PointNormal>::Ptr & cloud_container::setCloud<pcl::PointNormal>()
 {
-    xyz_normal.reset(new pcl::PointCloud<pcl::PointNormal>());
+    xyz_normal = pcl::make_shared<pcl::PointCloud<pcl::PointNormal>>();
     return xyz_normal;
 }
 
 template <>
 pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr & cloud_container::setCloud<pcl::PointXYZRGBNormal>()
 {
-    xyz_rgb_normal.reset(new pcl::PointCloud<pcl::PointXYZRGBNormal>());
+    xyz_rgb_normal = pcl::make_shared<pcl::PointCloud<pcl::PointXYZRGBNormal>>();
     return xyz_rgb_normal;
 }
 
 template <>
 pcl::PointCloud<pcl::PointXYZINormal>::Ptr & cloud_container::setCloud<pcl::PointXYZINormal>()
 {
-    xyzi_normal.reset(new pcl::PointCloud<pcl::PointXYZINormal>());
+    xyzi_normal = pcl::make_shared<pcl::PointCloud<pcl::PointXYZINormal>>();
     return xyzi_normal;
 }
 
@@ -210,7 +210,7 @@ inline pcl::PolygonMesh::ConstPtr cloud_container::getMesh() const
 {
     if (mesh)
     {
-        return mesh;
+        return mesh; // a ctor is called here (Ptr is turned into ConstPtr)
     }
     else
     {
@@ -220,7 +220,7 @@ inline pcl::PolygonMesh::ConstPtr cloud_container::getMesh() const
 
 inline pcl::PolygonMesh::Ptr & cloud_container::setMesh()
 {
-    mesh.reset(new pcl::PolygonMesh());
+    mesh = pcl::make_shared<pcl::PolygonMesh>();
     return mesh;
 }
 

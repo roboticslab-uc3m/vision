@@ -15,10 +15,7 @@
     template bool processCloud(const in &, out &, const yarp::sig::VectorOf<yarp::os::Property> &); \
     template bool processCloud(const in &, out &, const yarp::os::Searchable &, const std::string &);
 
-namespace roboticslab
-{
-
-namespace YarpCloudUtils
+namespace roboticslab::YarpCloudUtils
 {
 
 YCU_PCL_SIGNATURES(yarp::sig::PointCloudXY, yarp::sig::PointCloudXY)
@@ -93,8 +90,6 @@ YCU_PCL_SIGNATURES(yarp::sig::PointCloudXYZNormalRGBA, yarp::sig::PointCloudInte
 YCU_PCL_SIGNATURES(yarp::sig::PointCloudXYZNormalRGBA, yarp::sig::PointCloudXYZNormal)
 YCU_PCL_SIGNATURES(yarp::sig::PointCloudXYZNormalRGBA, yarp::sig::PointCloudXYZNormalRGBA)
 
-} // YarpCloudUtils
-
-} // namespace roboticslab
+} // namespace roboticslab::YarpCloudUtils
 
 #endif // __YARP_CLOUD_UTILS_PCL_INST_HPP__

@@ -2,15 +2,6 @@ option(ENABLE_YarpCloudUtils "Enable/disable YarpCloudUtils" ON)
 
 if(ENABLE_YarpCloudUtils)
 
-    if(PCL_VERSION VERSION_LESS 1.9)
-        include_directories(${PCL_INCLUDE_DIRS})
-        link_directories(${PCL_LIBRARY_DIRS})
-
-        # workaround for PCL 1.8 (Ubuntu 18.04), exclude empty/blank strings as compile defs
-        list(FILTER PCL_DEFINITIONS EXCLUDE REGEX "^ +$")
-        add_definitions(${PCL_DEFINITIONS})
-    endif()
-
     add_library(YarpCloudUtils SHARED YarpCloudUtils.hpp
                                       YarpCloudUtils-ply-export.cpp
                                       YarpCloudUtils-ply-import.cpp
