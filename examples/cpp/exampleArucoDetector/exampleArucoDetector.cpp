@@ -55,17 +55,17 @@ int main(int argc, char const *argv[])
     {
         const auto * detectedObject = detectedObjects.get(i).asDict();
 
-        auto tlX = detectedObject->find("tlx").asInt32();
-        auto tlY = detectedObject->find("tly").asInt32();
-        auto trX = detectedObject->find("trx").asInt32();
-        auto trY = detectedObject->find("try").asInt32();
-        auto blX = detectedObject->find("blx").asInt32();
-        auto blY = detectedObject->find("bly").asInt32();
-        auto brX = detectedObject->find("brx").asInt32();
-        auto brY = detectedObject->find("bry").asInt32();
+        auto tlX = detectedObject->find("tlx").asFloat32();
+        auto tlY = detectedObject->find("tly").asFloat32();
+        auto trX = detectedObject->find("trx").asFloat32();
+        auto trY = detectedObject->find("try").asFloat32();
+        auto blX = detectedObject->find("blx").asFloat32();
+        auto blY = detectedObject->find("bly").asFloat32();
+        auto brX = detectedObject->find("brx").asFloat32();
+        auto brY = detectedObject->find("bry").asFloat32();
         auto text = detectedObject->find("text").asInt32();
 
-        yInfo("aruco%d [[%d,%d],[%d,%d],[%d,%d],[%d,%d]]: \"%d\"", i, tlX, tlY, trX, trY, brX, brY, blX, blY, text);
+        yInfo("aruco%d [[%f,%f],[%f,%f],[%f,%f],[%f,%f]]: \"%d\"", i, tlX, tlY, trX, trY, brX, brY, blX, blY, text);
     }
 
     return 0;
