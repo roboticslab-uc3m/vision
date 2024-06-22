@@ -17,3 +17,5 @@ target_link_libraries(exampleSceneReconstructionClient YARP::YARP_os
                                                        YARP::YARP_sig
                                                        ROBOTICSLAB::YarpCloudUtils
                                                        ROBOTICSLAB::VisionIDL)
+
+target_compile_definitions(exampleSceneReconstructionClient PRIVATE SAMPLE_CONFIG="${CMAKE_CURRENT_SOURCE_DIR}/pipeline.ini")
