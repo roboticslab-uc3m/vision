@@ -23,7 +23,7 @@ jobs:
     - uses: fkirc/skip-duplicate-actions@master
       with:
         cancel_others: 'true'
-    - run: sudo apt-get install -qq --no-install-recommends doxygen
+    - run: sudo apt-get install -qq --no-install-recommends doxygen texlive-bibtex-extra
     - uses: actions/checkout@v2
     - run: cmake -S doc -B doc/build
     - run: cmake --build doc/build --target dox
