@@ -19,6 +19,7 @@ set(DOXYGEN_IMAGE_PATH ./doc/fig)
 set(DOXYGEN_HTML_TIMESTAMP YES)
 set(DOXYGEN_USE_MATHJAX YES)
 set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ./README.md)
+set(DOXYGEN_CITE_BIB_FILES ./doc/vision.bib)
 
 set(_doxygen_input README.md
                    doc
