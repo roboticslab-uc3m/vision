@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(ROBOTICSLAB_VISION LANGUAGES CXX)
+# 'C' required by prograns/voxelOccupancyDetection in Ubuntu 24.04
+# see https://github.com/roboticslab-uc3m/vision/issues/106
+project(ROBOTICSLAB_VISION LANGUAGES C CXX)
 
 # Set CMake policies.
 if(POLICY CMP0127)
