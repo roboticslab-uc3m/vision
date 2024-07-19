@@ -208,4 +208,5 @@ Bartek Łukawski, Alberto Rodríguez-Sanz, Elisabeth Menendez, Juan G. Victores,
     booktitle = {XLV Jornadas de Automática},
     year      = {2024},
     publisher = {Universidade da Coruña},
+    doi       = {10.17979/ja-cea.2024.45.10925}
 }
