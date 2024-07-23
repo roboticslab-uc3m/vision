@@ -70,7 +70,8 @@ bool ArucoDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& 
             {"brx", yarp::os::Value(br.x)},
             {"bry", yarp::os::Value(br.y)},
             {"blx", yarp::os::Value(bl.x)},
-            {"bly", yarp::os::Value(bl.y)}
+            {"bly", yarp::os::Value(bl.y)},
+            {"text", yarp::os::Value(markerIds[i])}
         };
     }
 

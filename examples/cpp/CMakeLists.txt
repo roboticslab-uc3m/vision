@@ -2,6 +2,7 @@ option(ENABLE_examples "Enable/disable C++ examples" OFF)
 
 if(ENABLE_examples)
     if(TARGET ROBOTICSLAB::VisionInterfaces)
+        add_subdirectory(exampleArucoDetector)
         add_subdirectory(exampleColorRegionDetector)
         add_subdirectory(exampleDnnDetector)
         add_subdirectory(exampleHaarDetector)
