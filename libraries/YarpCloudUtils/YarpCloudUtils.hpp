@@ -17,6 +17,7 @@
  * @brief Collection of cloud-related utilities for YARP.
  *
  * @see [Instructions](@ref yarpcloudutils).
+ * @see @cite lukawski2024jjaa
  */
 
 namespace roboticslab

@@ -196,3 +196,17 @@ use the `include` feature combined with simultaneous section collection
 ([docs](https://www.yarp.it/git-master/yarp_config_files.html#yarp_config_file_includes)).
 Refer to YARP documentation for further examples and a similar functionality related to
 directory inclusion.
+
+## See also
+
+Bartek Łukawski, Alberto Rodríguez-Sanz, Elisabeth Menendez, Juan G. Victores, and Carlos Balaguer. A user-friendly point cloud processing pipeline for interfacing PCL with YARP. In *XLV Jornadas de Automática*. Universidade da Coruña, 2024.
+
+```bibtex
+@inproceedings{lukawski2024jjaa,
+    author    = {{\L}ukawski, Bartek and Rodríguez-Sanz, Alberto and Menendez, Elisabeth and Victores, Juan G. and Balaguer, Carlos},
+    title     = {A user-friendly point cloud processing pipeline for interfacing {PCL} with {YARP}},
+    booktitle = {XLV Jornadas de Automática},
+    year      = {2024},
+    publisher = {Universidade da Coruña},
+    doi       = {10.17979/ja-cea.2024.45.10925}
+}

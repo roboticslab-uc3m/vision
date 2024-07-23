@@ -30,8 +30,16 @@ int main(int argc, char * argv[])
         return 1;
     }
 
-    yarp::os::ResourceFinder options;
-    options.configure(argc, argv);
+    yarp::os::ResourceFinder rf;
+    rf.configure(argc, argv);
+
+    yarp::os::Property options(rf.toString().c_str());
+
+#ifdef SAMPLE_CONFIG
+    // set sensible defaults
+    std::string sampleConfigFile = SAMPLE_CONFIG;
+    options.fromConfigFile(sampleConfigFile, false);
+#endif
 
     yDebug() << "Config:" << options.toString();
 

@@ -16,7 +16,6 @@ cmake_dependent_option(ENABLE_sceneReconstruction "Enable/disable sceneReconstru
 
 if(ENABLE_sceneReconstruction)
 
-    # sceneReconstruction
     add_executable(sceneReconstruction main.cpp
                                        SceneReconstruction.hpp
                                        SceneReconstruction.cpp

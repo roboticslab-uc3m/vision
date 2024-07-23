@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 project(exampleProcessCloud LANGUAGES CXX)
 
 if(NOT YARP_FOUND)
-    find_package(YARP 3.6 REQUIRED COMPONENTS os)
+    find_package(YARP 3.8 REQUIRED COMPONENTS os)
 endif()
 
 if(NOT TARGET ROBOTICSLAB::YarpCloudUtils)

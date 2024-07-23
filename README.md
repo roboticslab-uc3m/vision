@@ -23,6 +23,25 @@ Installation instructions for installing from source can be found [here](doc/vis
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
+## Citation
+
+If you found this project useful, please consider citing the following works:
+
+- [YarpCloudUtils](libraries/YarpCloudUtils/)
+
+Bartek Łukawski, Alberto Rodríguez-Sanz, Elisabeth Menendez, Juan G. Victores, and Carlos Balaguer. A user-friendly point cloud processing pipeline for interfacing PCL with YARP. In *XLV Jornadas de Automática*. Universidade da Coruña, 2024.
+
+```bibtex
+@inproceedings{lukawski2024jjaa,
+    author    = {{\L}ukawski, Bartek and Rodríguez-Sanz, Alberto and Menendez, Elisabeth and Victores, Juan G. and Balaguer, Carlos},
+    title     = {A user-friendly point cloud processing pipeline for interfacing {PCL} with {YARP}},
+    booktitle = {XLV Jornadas de Automática},
+    year      = {2024},
+    publisher = {Universidade da Coruña},
+    doi       = {10.17979/ja-cea.2024.45.10925},
+}
+```
+
 ## Status
 
 [![CI (Linux)](https://github.com/roboticslab-uc3m/vision/workflows/Continuous%20Integration/badge.svg)](https://github.com/roboticslab-uc3m/vision/actions)
