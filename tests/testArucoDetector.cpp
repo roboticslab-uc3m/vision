@@ -115,7 +115,7 @@ TEST_F(ArucoDetectorTest, ArucoDetector2)
     yarp::os::ResourceFinder rf;
     rf.setVerbose(false);
     rf.setDefaultContext("ArucoDetector");
-    std::string arucoFullName = rf.findFileByName("tests/rdaruco.png");
+    std::string arucoFullName = rf.findFileByName("tests/aruco.png");
     ASSERT_FALSE(arucoFullName.empty());
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;

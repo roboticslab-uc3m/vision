@@ -10,6 +10,18 @@ if(ENABLE_tests)
     add_subdirectory(${GTestSources_SOURCE_DIR} ${CMAKE_BINARY_DIR}/googletest)
     include_directories(${GTestSources_INCLUDE_DIR})
 
+    if(ENABLE_ArucoDetector)
+        add_executable(testArucoDetector testArucoDetector.cpp)
+
+        target_link_libraries(testArucoDetector YARP::YARP_os
+                                                YARP::YARP_dev
+                                                YARP::YARP_sig
+                                                ROBOTICSLAB::VisionInterfaces
+                                                gtest_main)
+
+        gtest_discover_tests(testArucoDetector)
+    endif()
+
     if(ENABLE_ColorRegionDetector)
         add_executable(testColorRegionDetector testColorRegionDetector.cpp)
 
@@ -60,18 +72,6 @@ if(ENABLE_tests)
                                              gtest_main)
 
         gtest_discover_tests(testQrDetector)
-    endif()
-
-    if(ENABLE_ArucoDetector)
-        add_executable(testArucoDetector testArucoDetector.cpp)
-
-        target_link_libraries(testArucoDetector YARP::YARP_os
-                                                YARP::YARP_dev
-                                                YARP::YARP_sig
-                                                ROBOTICSLAB::VisionInterfaces
-                                                gtest_main)
-
-        gtest_discover_tests(testArucoDetector)
     endif()
 
     if(TARGET YarpCloudUtils)

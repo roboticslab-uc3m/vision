@@ -3,7 +3,6 @@
 #include "ArucoDetector.hpp"
 
 #include <vector>
-#include <iostream>
 
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>

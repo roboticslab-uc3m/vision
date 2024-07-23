@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
 
     yarp::os::ResourceFinder rf;
     rf.setDefaultContext("ArucoDetector");
-    std::string qrFullName = rf.findFileByName("tests/rdaruco.png");
+    std::string qrFullName = rf.findFileByName("tests/aruco.png");
 
     yarp::sig::ImageOf<yarp::sig::PixelRgb> yarpImgRgb;
 

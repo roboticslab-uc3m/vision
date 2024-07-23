@@ -15,7 +15,7 @@ iDetector = roboticslab_vision.viewIDetector(detectorDevice)
 
 rf = yarp.ResourceFinder()
 rf.setDefaultContext("ArucoDetector")
-arucoFullName = rf.findFileByName("tests/rdaruco.png")
+arucoFullName = rf.findFileByName("tests/aruco.png")
 yarpImgRgb = yarp.ImageRgb()
 
 if not yarp.read(yarpImgRgb, arucoFullName, yarp.FORMAT_PNG):
