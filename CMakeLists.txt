@@ -1,13 +1,8 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.16..3.28)
 
 # 'C' required by prograns/voxelOccupancyDetection in Ubuntu 24.04
 # see https://github.com/roboticslab-uc3m/vision/issues/106
 project(ROBOTICSLAB_VISION LANGUAGES C CXX)
-
-# Set CMake policies.
-if(POLICY CMP0127)
-    cmake_policy(SET CMP0127 NEW)
-endif()
 
 # Let the user specify a configuration (only single-config generators).
 if(NOT CMAKE_CONFIGURATION_TYPES)
