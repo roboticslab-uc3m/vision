@@ -3,9 +3,8 @@ FROM ubuntu:${UBUNTU_TAG}
 
 ARG OPENCV_TAG
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update && \
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get update && \
     apt-get install -y \
         g++ \
         clang \
