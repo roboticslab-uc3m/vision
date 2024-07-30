@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.16..3.28)
 
-# 'C' required by prograns/voxelOccupancyDetection in Ubuntu 24.04
-# see https://github.com/roboticslab-uc3m/vision/issues/106
+# 'C' required by target MPI::MPI_C via PCLConfig.cmake (affects Ubuntu 24.04).
 project(ROBOTICSLAB_VISION LANGUAGES C CXX)
 
 # Let the user specify a configuration (only single-config generators).
