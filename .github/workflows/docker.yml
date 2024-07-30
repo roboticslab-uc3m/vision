@@ -1,9 +1,6 @@
 name: Docker
 
 on:
-  push:
-    paths:
-    - 'docker/**'
   workflow_dispatch:
 
 env:
