@@ -20,7 +20,8 @@ if(ENABLE_VisionIDL)
 
     add_library(VisionIDL SHARED ${idl_sources} ${idl_headers})
 
-    set_target_properties(VisionIDL PROPERTIES PUBLIC_HEADER "${idl_headers}")
+    set_target_properties(VisionIDL PROPERTIES PUBLIC_HEADER "${idl_headers}"
+                                               WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
     target_link_libraries(VisionIDL PUBLIC YARP::YARP_os
                                            YARP::YARP_sig)
