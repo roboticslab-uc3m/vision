@@ -5,8 +5,9 @@ ARG CORES=1
 ARG SWIG_TAG=4.2.1
 ARG OPENCV_TAG
 
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get update && \
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
     apt-get install -y \
         g++ \
         clang \
