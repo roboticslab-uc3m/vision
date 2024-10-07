@@ -27,7 +27,9 @@ public:
             {"device", yarp::os::Value("DnnDetector")},
             {"trainedModel", yarp::os::Value("yolov3-tiny/yolov3-tiny.weights")},
             {"configDNNModel", yarp::os::Value("yolov3-tiny/yolov3-tiny.cfg")},
-            {"classesTrainedModel", yarp::os::Value("coco-object-categories.txt")}
+            {"classesTrainedModel", yarp::os::Value("coco-object-categories.txt")},
+            {"backend", yarp::os::Value(0)}, // DNN_BACKEND_DEFAULT
+            {"target", yarp::os::Value(0)} // DNN_TARGET_CPU
         };
 
         if (!detectorDevice.open(deviceOptions))
