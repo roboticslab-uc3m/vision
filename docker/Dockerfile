@@ -17,7 +17,8 @@ RUN apt-get update && \
         ccache \
         libpcl-dev \
         bison \
-        googletest && \
+        googletest \
+        python3-setuptools && \
     wget -O swig.zip https://github.com/swig/swig/archive/v${SWIG_TAG}.zip && \
     wget -O opencv.zip https://github.com/opencv/opencv/archive/${OPENCV_TAG}.zip && \
     wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/${OPENCV_TAG}.zip && \
