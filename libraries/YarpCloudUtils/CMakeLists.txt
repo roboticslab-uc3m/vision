@@ -37,7 +37,7 @@ if(ENABLE_YarpCloudUtils)
         target_link_libraries(YarpCloudUtils PRIVATE YARP::YARP_pcl
                                                      ${PCL_LIBRARIES})
 
-        target_compile_definitions(YarpCloudUtils PUBLIC YCU_HAVE_PCL PCL_NO_PRECOMPILE)
+        target_compile_definitions(YarpCloudUtils PUBLIC YCU_HAVE_PCL)
     endif()
 
     add_library(ROBOTICSLAB::YarpCloudUtils ALIAS YarpCloudUtils)

@@ -67,6 +67,8 @@ namespace
         using rgb_t = typename pcl_decay<T, pcl_rgb_types_tag>::type;
         using xyzi_t = typename pcl_decay<T, pcl_xyzi_types_tag>::type;
         using normal_t = typename pcl_decay<T, pcl_normal_types_tag>::type;
+        using mls_t = typename pcl_decay<T, pcl_mls_types_tag>::type;
+        using mls_normal_t = typename pcl_decay<T, pcl_mls_normal_types_tag>::type;
 
         if (!options.check("algorithm"))
         {
@@ -142,9 +144,9 @@ namespace
             break;
         case "MovingLeastSquares"_hash:
             if (options.check("computeNormals"), yarp::os::Value(false).asBool())
-                doMovingLeastSquares<any_xyz_t, normal_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<normal_t>(), options);
+                doMovingLeastSquares<mls_t, mls_normal_t>(prev.getCloud<mls_t>(), curr.setCloud<mls_normal_t>(), options);
             else
-                doMovingLeastSquares<any_xyz_t>(prev.getCloud<any_xyz_t>(), curr.setCloud<any_xyz_t>(), options);
+                doMovingLeastSquares<mls_t>(prev.getCloud<mls_t>(), curr.setCloud<mls_t>(), options);
             break;
         case "NormalEstimation"_hash:
             pcl::copyPointCloud(*prev.getCloud<any_xyz_t>(), *curr.setCloud<normal_t>());
