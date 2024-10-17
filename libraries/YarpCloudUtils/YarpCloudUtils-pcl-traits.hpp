@@ -59,6 +59,11 @@ struct pcl_xyzi_types_tag {}; // XYZI(+Normal)
 
 struct pcl_normal_types_tag {};
 
+// special cases for pcl::MovingLeastSquares, see:
+// https://github.com/PointCloudLibrary/pcl/pull/5764
+struct pcl_mls_types_tag : public pcl_all_xyz_types_tag {};
+struct pcl_mls_normal_types_tag : public pcl_normal_types_tag {};
+
 // map PCL type according to selected tag
 
 template <typename T, typename tag>
@@ -128,6 +133,36 @@ struct pcl_decay<pcl::PointXYZI, pcl_normal_types_tag>
 
 template <>
 struct pcl_decay<pcl::InterestPoint, pcl_normal_types_tag>
+{ typedef pcl::PointNormal type; };
+
+// mappings for pcl::MovingLeastSquares (special case, less precompiled instantiations)
+
+template <typename T>
+struct pcl_decay<T, pcl_mls_types_tag>
+{ typedef T type; };
+
+template <>
+struct pcl_decay<pcl::InterestPoint, pcl_mls_types_tag>
+{ typedef pcl::PointXYZ type; };
+
+template <typename T>
+struct pcl_decay<T, pcl_mls_normal_types_tag>
+{ typedef T type; };
+
+template <>
+struct pcl_decay<pcl::PointXYZ, pcl_mls_normal_types_tag>
+{ typedef pcl::PointNormal type; };
+
+template <>
+struct pcl_decay<pcl::PointXYZRGB, pcl_mls_normal_types_tag>
+{ typedef pcl::PointXYZRGBNormal type; };
+
+template <>
+struct pcl_decay<pcl::PointXYZI, pcl_mls_normal_types_tag>
+{ typedef pcl::PointNormal type; };
+
+template <>
+struct pcl_decay<pcl::InterestPoint, pcl_mls_normal_types_tag>
 { typedef pcl::PointNormal type; };
 
 // register allowed conversions

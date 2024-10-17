@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        ubuntu: ['20.04', '22.04']
+        ubuntu: ['22.04', '24.04']
         opencv: ['4.x']
 
     steps:
