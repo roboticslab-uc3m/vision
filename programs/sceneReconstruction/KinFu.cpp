@@ -11,7 +11,7 @@
 
 #include "LogComponent.hpp"
 
-#if CV_VERSION_MINOR >= 4
+#if CV_VERSION_MAJOR > 4 || CV_VERSION_MINOR >= 4
 namespace
 {
     std::map<std::string, cv::kinfu::VolumeType> stringToCvVolume {
@@ -104,11 +104,7 @@ std::unique_ptr<KinectFusion> makeKinFu(const yarp::os::Searchable & config, con
 
     updateParam(*params, &Params::pyramidLevels, config, "pyramidLevels", "number of pyramid levels for ICP");
     updateParam(*params, &Params::raycast_step_factor, config, "raycastStepFactor", "a length in voxel sizes for one raycast step");
-
-#if CV_VERSION_MINOR >= 2
     updateParam(*params, &Params::truncateThreshold, config, "truncateThreshold", "threshold for depth truncation in meters");
-#endif
-
     updateParam(*params, &Params::tsdf_max_weight, config, "tsdfMaxWeight", "max number of frames per voxel");
     updateParam(*params, &Params::tsdf_min_camera_movement, config, "tsdfMinCameraMovement", "minimal camera movement in meters");
     updateParam(*params, &Params::tsdf_trunc_dist, config, "tsdfTruncDist", "distance to truncate in meters");
@@ -175,7 +171,7 @@ std::unique_ptr<KinectFusion> makeKinFu(const yarp::os::Searchable & config, con
         yCInfo(KINFU) << "volumePoseTransl (DEFAULT):" << transl[0] << transl[1] << transl[2];
     }
 
-#if CV_VERSION_MINOR >= 4
+#if CV_VERSION_MAJOR > 4 || CV_VERSION_MINOR >= 4
     if (config.check("volumeType", "type of voxel volume (tsdf, hashtsdf)"))
     {
         std::string volumeType = config.find("volumeType").asString();

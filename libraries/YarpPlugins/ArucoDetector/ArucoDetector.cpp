@@ -16,23 +16,24 @@ namespace
     YARP_LOG_COMPONENT(AC, "rl.ArucoDetector")
 }
 
-constexpr auto DEFAULT_ARUCO_SIZE = "ARUCO_ORIGINAL";
-
 bool ArucoDetector::open(yarp::os::Searchable& config)
 {
+    if (!parseParams(config))
+    {
+        yCError(AC) << "Failed to parse parameters";
+        return false;
+    }
+
     // default params
     detectorParams = cv::aruco::DetectorParameters();
 
-    // dictionary depends on aruco size
-    std::string aruco_size = config.check("aruco_size", yarp::os::Value(DEFAULT_ARUCO_SIZE)).asString();
-
-    if (aruco_size == "4X4_1000")
+    if (m_aruco_size == "4X4_1000")
         dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_4X4_1000);
-    else if (aruco_size == "ARUCO_ORIGINAL")
+    else if (m_aruco_size == "ARUCO_ORIGINAL")
         dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_ARUCO_ORIGINAL);
-    else if (aruco_size == "6X6_1000")
+    else if (m_aruco_size == "6X6_1000")
         dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_1000);
-    else if (aruco_size == "7X7_1000")
+    else if (m_aruco_size == "7X7_1000")
         dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_7X7_1000);
     else
     {

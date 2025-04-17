@@ -8,15 +8,20 @@ endif()
 
 yarp_prepare_plugin(HaarDetector
                     CATEGORY device
-                    TYPE roboticslab::HaarDetector
+                    TYPE HaarDetector
                     INCLUDE HaarDetector.hpp
                     DEFAULT ON
-                    DEPENDS "TARGET opencv_objdetect;YARP_cv_FOUND")
+                    DEPENDS "TARGET opencv_objdetect;YARP_cv_FOUND"
+                    GENERATE_PARSER)
 
 if(NOT SKIP_HaarDetector)
 
-    yarp_add_plugin(HaarDetector HaarDetector.hpp
-                                 HaarDetector.cpp)
+    yarp_add_plugin(HaarDetector)
+
+    target_sources(HaarDetector PRIVATE HaarDetector.hpp
+                                        HaarDetector.cpp
+                                        HaarDetector_ParamsParser.h
+                                        HaarDetector_ParamsParser.cpp)
 
     target_link_libraries(HaarDetector YARP::YARP_os
                                        YARP::YARP_dev
@@ -24,7 +29,7 @@ if(NOT SKIP_HaarDetector)
                                        opencv_objdetect
                                        ROBOTICSLAB::VisionInterfaces)
 
-    if(TARGET opencv_face AND OpenCV_VERSION GREATER_EQUAL 3.4)
+    if(TARGET opencv_face)
         set(_HaarDetector_have_cv_face TRUE CACHE INTERNAL "HaarDetector was compiled with face support")
         target_compile_definitions(HaarDetector PRIVATE HAVE_CV_FACE)
         target_link_libraries(HaarDetector opencv_face)

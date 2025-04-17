@@ -6,14 +6,7 @@ set_source_files_properties(${SWIG_BINDINGS_SOURCE_FILE} PROPERTIES CPLUSPLUS ON
 
 set(CMAKE_SWIG_FLAGS "-module;roboticslab_vision;-threads;${SWIG_COMMON_FLAGS}")
 
-# https://github.com/pybind/pybind11/pull/2689
-if(${CMAKE_VERSION} VERSION_LESS "3.18.0")
-  set(RL_Python_Development_Component "Development")
-else()
-  set(RL_Python_Development_Component "Development.Module")
-endif()
-
-find_package(Python3 COMPONENTS Interpreter ${RL_Python_Development_Component} REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 
 set(CMAKE_SWIG_OUTDIR "${CMAKE_BINARY_DIR}/lib/python")
 set(SWIG_OUTFILE_DIR "${CMAKE_CURRENT_BINARY_DIR}")

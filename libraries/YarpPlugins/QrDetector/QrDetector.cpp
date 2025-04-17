@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include <yarp/os/LogComponent.h>
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Value.h>
 #include <yarp/cv/Cv.h>
 
@@ -11,18 +13,27 @@
 
 using namespace roboticslab;
 
+namespace
+{
+    YARP_LOG_COMPONENT(QR, "rl.QrDetector")
+}
+
 bool QrDetector::open(yarp::os::Searchable& config)
 {
-    if (config.check("epsX", "eps used during horizontal scan of QR code stop marker detection"))
+    if (!parseParams(config))
     {
-        double epsX = config.find("epsX").asFloat64();
-        qrcode.setEpsX(epsX);
+        yCError(QR) << "Failed to parse parameters";
+        return false;
     }
 
-    if (config.check("epsY", "eps used during vertical scan of QR code stop marker detection"))
+    if (m_epsX > 0.0)
     {
-        double epsY = config.find("epsY").asFloat64();
-        qrcode.setEpsY(epsY);
+        qrcode.setEpsX(m_epsX);
+    }
+
+    if (m_epsY > 0.0)
+    {
+        qrcode.setEpsY(m_epsY);
     }
 
     return true;
@@ -37,7 +48,7 @@ bool QrDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& det
     std::vector<std::string> texts;
     std::vector<cv::Point> corners;
 
-#if CV_VERSION_MAJOR > 4 || (CV_VERSION_MAJOR == 4 && CV_VERSION_MINOR >= 3)
+#if CV_VERSION_MAJOR > 4 || CV_VERSION_MINOR >= 3
     qrcode.detectAndDecodeMulti(inCvMat, texts, corners);
 #else
     std::string text = qrcode.detectAndDecode(inCvMat, corners);

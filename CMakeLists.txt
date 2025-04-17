@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16..3.28)
+cmake_minimum_required(VERSION 3.16...3.28)
 
 # 'C' required by target MPI::MPI_C via PCLConfig.cmake (affects Ubuntu 24.04).
 project(ROBOTICSLAB_VISION LANGUAGES C CXX)
@@ -29,11 +29,11 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake
 
 # Hard dependencies.
 find_package(YCM 0.11 REQUIRED)
-find_package(YARP 3.8 REQUIRED COMPONENTS os dev sig
-                               OPTIONAL_COMPONENTS cv idl_tools pcl)
+find_package(YARP 3.10 REQUIRED COMPONENTS os dev sig
+                                OPTIONAL_COMPONENTS cv idl_tools pcl)
 
 # Soft dependencies.
-find_package(OpenCV QUIET)
+find_package(OpenCV 4.2 QUIET)
 find_package(PCL 1.10 QUIET COMPONENTS common features filters search surface)
 find_package(GTestSources 1.8 QUIET)
 find_package(SWIG QUIET)

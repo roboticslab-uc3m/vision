@@ -16,24 +16,13 @@ namespace
     YARP_LOG_COMPONENT(CRD, "rl.ColorRegionDetector")
 }
 
-constexpr auto DEFAULT_ALGORITHM = "blueMinusRed";
-constexpr auto DEFAULT_MORPH_CLOSING = 2;
-constexpr auto DEFAULT_THRESHOLD = 55;
-constexpr auto DEFAULT_MAX_NUM_BLOBS = 1;
-
 bool ColorRegionDetector::open(yarp::os::Searchable& config)
 {
-    algorithm = config.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM)).asString();
-    yCDebug(CRD) << "Using algorithm:" << algorithm;
-
-    morphClosing = config.check("morphClosing", yarp::os::Value(DEFAULT_MORPH_CLOSING)).asFloat64();
-    yCDebug(CRD) << "Using morphClosing:" << morphClosing;
-
-    threshold = config.check("threshold", yarp::os::Value(DEFAULT_THRESHOLD)).asInt32();
-    yCDebug(CRD) << "Using threshold:" << threshold;
-
-    maxNumBlobs = config.check("maxNumBlobs", yarp::os::Value(DEFAULT_MAX_NUM_BLOBS)).asInt32();
-    yCDebug(CRD) << "Using maxNumBlobs:" << maxNumBlobs;
+    if (!parseParams(config))
+    {
+        yCError(CRD) << "Failed to parse parameters";
+        return false;
+    }
 
     return true;
 }
@@ -46,21 +35,21 @@ bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bo
     Travis travis(false, true);
     travis.setCvMat(yarp::cv::toCvMat(inYarpImgBgr));
 
-    if (algorithm == "hue")
+    if (m_algorithm == "hue")
     {
-        travis.binarize("hue", threshold - 5, threshold + 5);
+        travis.binarize("hue", m_threshold - 5, m_threshold + 5);
     }
-    else if (algorithm == "canny")
+    else if (m_algorithm == "canny")
     {
         travis.binarize("canny");
     }
     else
     {
-        travis.binarize(algorithm.c_str(), threshold);
+        travis.binarize(m_algorithm.c_str(), m_threshold);
     }
 
-    travis.morphClosing(inYarpImg.width() * morphClosing / 100.0);
-    int numBlobs = travis.blobize(maxNumBlobs);
+    travis.morphClosing(inYarpImg.width() * m_morphClosing / 100.0);
+    int numBlobs = travis.blobize(m_maxNumBlobs);
 
     if (numBlobs == 0)
     {

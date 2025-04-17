@@ -2,11 +2,11 @@
 
 ### Install the Software dependencies:
 
-- [Install CMake 3.16+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-cmake.md/)
+- [Install CMake 3.19+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-cmake.md/)
 - [Install PCL with VTK >= 5](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-pcl.md/)
 - [Install YCM 0.11+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-ycm.md/)
-- [Install YARP 3.8+ and depthCamera](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-yarp.md#install-additional-yarp-device-depthcamera-ubuntu)
-- [Install OpenCV](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-opencv.md/)
+- [Install YARP 3.10+ and depthCamera](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-yarp.md#install-additional-yarp-device-depthcamera-ubuntu)
+- [Install OpenCV 4.2+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-opencv.md/)
 
 ### Install the Software on Ubuntu (working on all tested versions)
 
@@ -22,9 +22,4 @@ sudo make install  # Install :-)
 sudo ldconfig # For libTravisLib.so
 ```
 
-You may want to (from the same build dir):
-```bash
-echo "export ROBOTICSLAB_VISION_DIR=`pwd`" >> ~/.bashrc
-```
-
-For additional VISION options use ccmake instead of cmake.
+For additional options, use `ccmake` instead of `cmake`.

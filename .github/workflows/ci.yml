@@ -14,7 +14,8 @@ on:
   workflow_dispatch:
 
 env:
-  CMAKE_CCACHE_LAUNCHER: -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+  CMAKE_C_COMPILER_LAUNCHER: ccache
+  CMAKE_CXX_COMPILER_LAUNCHER: ccache
 
 jobs:
   maybe_skip:
@@ -42,8 +43,8 @@ jobs:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
         robotology:
-        - { yarp: yarp-3.8, cmake: 3.16.x }
-        - { yarp: yarp-3.9, cmake: 3.16.x }
+        - { yarp: yarp-3.10, cmake: 3.19.x }
+        - { yarp: yarp-3.11, cmake: 3.19.x }
         - { yarp: master, cmake: 3.19.x }
         compiler:
         - { cc: gcc, cxx: g++ }
@@ -99,12 +100,12 @@ jobs:
 
     - name: Build YARP
       run: |
-        cmake -S .deps/yarp -B .deps/yarp/build $CMAKE_CCACHE_LAUNCHER -DSKIP_ACE=ON -DYARP_DISABLE_VERSION_SOURCE=ON
+        cmake -S .deps/yarp -B .deps/yarp/build -DSKIP_ACE=ON -DYARP_DISABLE_VERSION_SOURCE=ON
         cmake --build .deps/yarp/build
         cmake --install .deps/yarp/build
 
     - name: Configure vision
-      run: cmake -S . -B build $CMAKE_CCACHE_LAUNCHER -DCREATE_BINDINGS_PYTHON=ON -DENABLE_examples=ON
+      run: cmake -S . -B build -DCREATE_BINDINGS_PYTHON=ON -DENABLE_examples=ON
 
     - name: Compile vision
       run: cmake --build build

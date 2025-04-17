@@ -13,15 +13,20 @@ endif()
 
 yarp_prepare_plugin(QrDetector
                     CATEGORY device
-                    TYPE roboticslab::QrDetector
+                    TYPE QrDetector
                     INCLUDE QrDetector.hpp
                     DEFAULT ON
-                    DEPENDS "TARGET opencv_objdetect;OpenCV_VERSION VERSION_GREATER_EQUAL 4.7 OR _have_quirc;YARP_cv_FOUND")
+                    DEPENDS "TARGET opencv_objdetect;OpenCV_VERSION VERSION_GREATER_EQUAL 4.7 OR _have_quirc;YARP_cv_FOUND"
+                    GENERATE_PARSER)
 
 if(NOT SKIP_QrDetector)
 
-    yarp_add_plugin(QrDetector QrDetector.hpp
-                               QrDetector.cpp)
+    yarp_add_plugin(QrDetector)
+
+    target_sources(QrDetector PRIVATE QrDetector.hpp
+                                      QrDetector.cpp
+                                      QrDetector_ParamsParser.h
+                                      QrDetector_ParamsParser.cpp)
 
     target_link_libraries(QrDetector YARP::YARP_os
                                      YARP::YARP_dev

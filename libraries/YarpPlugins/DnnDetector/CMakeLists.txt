@@ -8,15 +8,20 @@ endif()
 
 yarp_prepare_plugin(DnnDetector
                     CATEGORY device
-                    TYPE roboticslab::DnnDetector
+                    TYPE DnnDetector
                     INCLUDE DnnDetector.hpp
                     DEFAULT ON
-                    DEPENDS "TARGET opencv_dnn;YARP_cv_FOUND")
+                    DEPENDS "TARGET opencv_dnn;YARP_cv_FOUND"
+                    GENERATE_PARSER)
 
 if(NOT SKIP_DnnDetector)
 
-    yarp_add_plugin(DnnDetector DnnDetector.hpp
-                                DnnDetector.cpp)
+    yarp_add_plugin(DnnDetector)
+
+    target_sources(DnnDetector PRIVATE DnnDetector.hpp
+                                       DnnDetector.cpp
+                                       DnnDetector_ParamsParser.h
+                                       DnnDetector_ParamsParser.cpp)
 
     target_link_libraries(DnnDetector YARP::YARP_os
                                       YARP::YARP_dev

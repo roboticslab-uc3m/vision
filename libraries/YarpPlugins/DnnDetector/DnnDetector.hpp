@@ -8,17 +8,16 @@
 #include <opencv2/dnn.hpp>
 
 #include "IDetector.hpp"
-
-namespace roboticslab
-{
+#include "DnnDetector_ParamsParser.h"
 
 /**
  * @ingroup YarpPlugins
  * @defgroup DnnDetector
- * @brief Contains roboticslab::DnnDetector.
+ * @brief Contains DnnDetector.
  */
 class DnnDetector : public yarp::dev::DeviceDriver,
-                    public IDetector
+                    public roboticslab::IDetector,
+                    public DnnDetector_ParamsParser
 {
 public:
     bool open(yarp::os::Searchable & config) override;
@@ -29,15 +28,10 @@ private:
     std::vector<std::string> classes;
     std::vector<std::string> outNames;
 
-    float confThreshold; // Confidence threshold
-    float nmsThreshold; // Non-max supression threshold
-    float scale;
     cv::Scalar mean;
 
     void preprocess(const cv::Mat & frame);
     void postprocess(const cv::Size & size, const std::vector<cv::Mat> & outs, yarp::os::Bottle & detectedObjects);
 };
-
-} // namespace roboticslab
 
 #endif // __DNN_DETECTOR_HPP__
