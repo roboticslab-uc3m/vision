@@ -148,12 +148,6 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     {
         yCInfo(KINFU) << "Using local camera";
         cameraOptions.fromString(rf.toString());
-
-        if (cameraOptions.check("subdevice"))
-        {
-            cameraOptions.put("device", cameraOptions.find("subdevice"));
-            cameraOptions.unput("subdevice");
-        }
     }
 
     if (!cameraDriver.open(cameraOptions))
