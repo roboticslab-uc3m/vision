@@ -8,17 +8,16 @@
 #include <opencv2/objdetect.hpp>
 
 #include "IDetector.hpp"
-
-namespace roboticslab
-{
+#include "QrDetector_ParamsParser.h"
 
 /**
  * @ingroup YarpPlugins
  * @defgroup QrDetector
- * @brief Contains roboticslab::QrDetector.
+ * @brief Contains QrDetector.
  */
 class QrDetector : public yarp::dev::DeviceDriver,
-                   public IDetector
+                   public roboticslab::IDetector,
+                   public QrDetector_ParamsParser
 {
 public:
     bool open(yarp::os::Searchable& config) override;
@@ -27,7 +26,5 @@ public:
 private:
     cv::QRCodeDetector qrcode;
 };
-
-}
 
 #endif // __QR_DETECTOR_HPP__

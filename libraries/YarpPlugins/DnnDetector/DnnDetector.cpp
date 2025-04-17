@@ -7,8 +7,6 @@
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/cv/Cv.h>
 
-#include <opencv2/core/version.hpp>
-
 #include "DnnDetector.hpp"
 
 using namespace roboticslab;
@@ -18,50 +16,61 @@ namespace
     YARP_LOG_COMPONENT(DNN, "rl.DnnDetector")
 }
 
-constexpr auto DEFAULT_MODEL_FILE = "yolov3-tiny/yolov3-tiny.weights";
-constexpr auto DEFAULT_CONFIG_DNN_FILE = "yolov3-tiny/yolov3-tiny.cfg";
-constexpr auto DEFAULT_FRAMEWORK = "darknet";
-constexpr auto DEFAULT_CLASSES_FILE = "coco-object-categories.txt";
-#if CV_VERSION_MAJOR >= 4
-constexpr auto DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_CUDA;
-constexpr auto DEFAULT_TARGET = cv::dnn::DNN_TARGET_CUDA;
-#else
-constexpr auto DEFAULT_BACKEND = cv::dnn::DNN_BACKEND_DEFAULT;
-constexpr auto DEFAULT_TARGET = cv::dnn::DNN_TARGET_CPU;
-#endif
-constexpr auto DEFAULT_SCALE = 0.00392;
-constexpr auto DEFAULT_MEAN = 0;
-constexpr auto DEFAULT_CONF_THR = 0.1;
-constexpr auto DEFAULT_NMS_THR = 0.4;
-
 bool DnnDetector::open(yarp::os::Searchable &config)
 {
-    auto modelFile = config.check("trainedModel", yarp::os::Value(DEFAULT_MODEL_FILE)).asString();
-    yCDebug(DNN) << "Using --trainedModel" << modelFile;
+    if (!parseParams(config))
+    {
+        yCError(DNN) << "Failed to parse parameters";
+        return false;
+    }
 
-    auto configDNNFile = config.check("configDNNModel", yarp::os::Value(DEFAULT_CONFIG_DNN_FILE)).asString();
-    yCDebug(DNN) << "Using --configDNNModel" << configDNNFile;
+    cv::dnn::Backend backend;
 
-    auto framework = config.check("framework", yarp::os::Value(DEFAULT_FRAMEWORK)).asString();
-    yCDebug(DNN) << "Using --framework" << framework;
+    if (m_backend == "default")
+    {
+        backend = cv::dnn::Backend::DNN_BACKEND_DEFAULT;
+    }
+    else if (m_backend == "opencv")
+    {
+        backend = cv::dnn::DNN_BACKEND_OPENCV;
+    }
+    else if (m_backend == "cuda")
+    {
+        backend = cv::dnn::DNN_BACKEND_CUDA;
+    }
+    else
+    {
+        yCError(DNN) << "Unknown backend:" << m_backend;
+        return false;
+    }
 
-    auto classesFile = config.check("classesTrainedModel", yarp::os::Value(DEFAULT_CLASSES_FILE)).asString();
-    yCDebug(DNN) << "Using --classesTrainedModel" << classesFile;
+    cv::dnn::Target target;
 
-    auto backend = config.check("backend", yarp::os::Value(DEFAULT_BACKEND)).asInt32();
-    yCDebug(DNN) << "Using --backend" << backend;
-
-    auto target = config.check("target", yarp::os::Value(DEFAULT_TARGET)).asInt32();
-    yCDebug(DNN) << "Using --target" << target;
+    if (m_target == "cpu")
+    {
+        target = cv::dnn::DNN_TARGET_CPU;
+    }
+    else if (m_target == "opencl")
+    {
+        target = cv::dnn::DNN_TARGET_OPENCL;
+    }
+    else if (m_target == "cuda")
+    {
+        target = cv::dnn::DNN_TARGET_CUDA;
+    }
+    else
+    {
+        yCError(DNN) << "Unknown target:" << m_target;
+        return false;
+    }
 
     yarp::os::ResourceFinder rf;
-    rf.setVerbose(false);
     rf.setDefaultContext("DnnDetector");
 
     // Set model and config path from the resource finder.
-    std::string modelPath = rf.findFileByName(modelFile);
-    std::string configDNNPath = rf.findFileByName(configDNNFile);
-    std::string classesPath = rf.findFileByName(classesFile);
+    std::string modelPath = rf.findFileByName(m_trainedModel);
+    std::string configDNNPath = rf.findFileByName(m_configDNNModel);
+    std::string classesPath = rf.findFileByName(m_classesTrainedModel);
 
     if (configDNNPath.empty())
     {
@@ -92,23 +101,12 @@ bool DnnDetector::open(yarp::os::Searchable &config)
     }
 
     // Load a model.
-    net = cv::dnn::readNet(modelPath, configDNNPath, framework);
+    net = cv::dnn::readNet(modelPath, configDNNPath, m_framework);
     net.setPreferableBackend(backend);
     net.setPreferableTarget(target);
     outNames = net.getUnconnectedOutLayersNames();
 
-    scale = config.check("scale", yarp::os::Value(DEFAULT_SCALE)).asFloat32();
-    yCDebug(DNN) << "Using --scale" << scale;
-
-    auto _mean = config.check("mean", yarp::os::Value(DEFAULT_MEAN)).asFloat64();
-    mean = {_mean, _mean, _mean};
-    yCDebug(DNN) << "Using --mean" << _mean;
-
-    confThreshold = config.check("confThreshold", yarp::os::Value(DEFAULT_CONF_THR)).asFloat32();
-    yCDebug(DNN) << "Using --confThreshold" << confThreshold;
-
-    nmsThreshold = config.check("nmsThreshold", yarp::os::Value(DEFAULT_NMS_THR)).asFloat32();
-    yCDebug(DNN) << "Using --nmsThreshold" << nmsThreshold;
+    mean = {m_mean, m_mean, m_mean};
 
     return true;
 }
@@ -143,7 +141,7 @@ void DnnDetector::preprocess(const cv::Mat & frame)
     cv::dnn::blobFromImage(frame, blob, 1.0, frame.size(), cv::Scalar(), true, false, CV_8U);
 
     // Run a model.
-    net.setInput(blob, "", scale, mean);
+    net.setInput(blob, "", m_scale, mean);
 
     if (net.getLayer(0)->outputNameToIndex("im_info") != -1) // Faster-RCNN or R-FCN
     {
@@ -177,7 +175,7 @@ void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> 
             {
                 float confidence = data[i + 2];
 
-                if (confidence > confThreshold)
+                if (confidence > m_confThreshold)
                 {
                     int left = (int)data[i + 3];
                     int top = (int)data[i + 4];
@@ -220,7 +218,7 @@ void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> 
                 double confidence;
                 cv::minMaxLoc(scores, 0, &confidence, 0, &classIdPoint);
 
-                if (confidence > confThreshold)
+                if (confidence > m_confThreshold)
                 {
                     int centerX = (int)(data[0] * size.width);
                     int centerY = (int)(data[1] * size.height);
@@ -243,7 +241,7 @@ void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> 
     }
 
     std::vector<int> indices;
-    cv::dnn::NMSBoxes(boxes, confidences, confThreshold, nmsThreshold, indices);
+    cv::dnn::NMSBoxes(boxes, confidences, m_confThreshold, m_nmsThreshold, indices);
 
     for (auto idx : indices)
     {

@@ -11,7 +11,7 @@
 
 #include "LogComponent.hpp"
 
-#if CV_VERSION_MINOR >= 5 && CV_VERSION_REVISION >= 1
+#if CV_VERSION_MAJOR > 4 || CV_VERSION_MINOR >= 5
 namespace
 {
     std::map<std::string, cv::kinfu::VolumeType> stringToCvVolume {
@@ -171,7 +171,7 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config, co
         yCInfo(KINFU) << "volumePoseTransl (DEFAULT):" << transl[0] << transl[1] << transl[2];
     }
 
-#if CV_VERSION_MINOR >= 5 && CV_VERSION_REVISION >= 1
+#if CV_VERSION_MAJOR > 4 || CV_VERSION_MINOR >= 5
     if (config.check("volumeType", "type of voxel volume (tsdf, hashtsdf)"))
     {
         std::string volumeType = config.find("volumeType").asString();

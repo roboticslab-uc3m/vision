@@ -4,15 +4,20 @@ endif()
 
 yarp_prepare_plugin(ColorRegionDetector
                     CATEGORY device
-                    TYPE roboticslab::ColorRegionDetector
+                    TYPE ColorRegionDetector
                     INCLUDE ColorRegionDetector.hpp
                     DEFAULT ON
-                    DEPENDS "ENABLE_TravisLib;YARP_cv_FOUND")
+                    DEPENDS "ENABLE_TravisLib;YARP_cv_FOUND"
+                    GENERATE_PARSER)
 
 if(NOT SKIP_ColorRegionDetector)
 
-    yarp_add_plugin(ColorRegionDetector ColorRegionDetector.hpp
-                                        ColorRegionDetector.cpp)
+    yarp_add_plugin(ColorRegionDetector)
+
+    target_sources(ColorRegionDetector PRIVATE ColorRegionDetector.hpp
+                                               ColorRegionDetector.cpp
+                                               ColorRegionDetector_ParamsParser.h
+                                               ColorRegionDetector_ParamsParser.cpp)
 
     target_link_libraries(ColorRegionDetector YARP::YARP_os
                                               YARP::YARP_dev

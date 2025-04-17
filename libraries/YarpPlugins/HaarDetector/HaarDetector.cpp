@@ -9,8 +9,6 @@
 
 #ifdef HAVE_CV_FACE
 # include <opencv2/face/facemarkLBF.hpp>
-
-constexpr auto LBF_MODEL_PATH = "lbfmodel/lbfmodel.yaml";
 #endif
 
 using namespace roboticslab;
@@ -20,21 +18,22 @@ namespace
     YARP_LOG_COMPONENT(HAAR, "rl.HaarDetector")
 }
 
-constexpr auto DEFAULT_XMLCASCADE = "haarcascade_frontalface_alt.xml";
-
-bool HaarDetector::open(yarp::os::Searchable& parameters)
+bool HaarDetector::open(yarp::os::Searchable& config)
 {
-    auto xmlCascade = parameters.check("xmlCascade", yarp::os::Value(DEFAULT_XMLCASCADE)).asString();
-    yCDebug(HAAR) << "Using xmlCascade:" << xmlCascade;
+    if (!parseParams(config))
+    {
+        yCError(HAAR) << "Failed to parse parameters";
+        return false;
+    }
 
     yarp::os::ResourceFinder rf;
     rf.setDefaultContext("HaarDetector");
 
-    std::string xmlCascadeFullName = rf.findFileByName(xmlCascade);
+    std::string xmlCascadeFullName = rf.findFileByName(m_xmlCascade);
 
     if (xmlCascadeFullName.empty())
     {
-        yCError(HAAR) << "xmlCascadeFullName NOT found";
+        yCError(HAAR) << "xmlCascadeFullName not found";
         return false;
     }
 
@@ -42,26 +41,29 @@ bool HaarDetector::open(yarp::os::Searchable& parameters)
 
     if (!object_cascade.load(xmlCascadeFullName))
     {
-        yCError(HAAR) << "Cannot load xmlCascadeFullName!";
+        yCError(HAAR) << "Cannot load xmlCascadeFullName";
         return false;
     }
 
-#ifdef HAVE_CV_FACE
-    if (parameters.check("useLBF", "enable LBF face landmark detector"))
+    if (!m_lbfModel.empty())
     {
-        std::string lfbModelFullName = rf.findFileByName(LBF_MODEL_PATH);
+#ifdef HAVE_CV_FACE
+        std::string lfbModelFullName = rf.findFileByName(m_lbfModel);
 
         if (lfbModelFullName.empty())
         {
-            yCError(HAAR) << "LBF face landmark model NOT found";
+            yCError(HAAR) << "LBF face landmark model not found";
             return false;
         }
 
         facemark = cv::face::FacemarkLBF::create();
         facemark->loadModel(lfbModelFullName);
         yCDebug(HAAR) << "Loaded face landmark model:" << lfbModelFullName;
-    }
+#else
+        yCError(HAAR) << "LBF face landmark model specified, but OpenCV was not built with face module";
+        return false;
 #endif
+    }
 
     return true;
 }

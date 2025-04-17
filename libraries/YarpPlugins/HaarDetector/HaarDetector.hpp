@@ -11,17 +11,16 @@
 #endif
 
 #include "IDetector.hpp"
-
-namespace roboticslab
-{
+#include "HaarDetector_ParamsParser.h"
 
 /**
  * @ingroup YarpPlugins
  * @defgroup HaarDetector
- * @brief Contains roboticslab::HaarDetector.
+ * @brief Contains HaarDetector.
  */
 class HaarDetector : public yarp::dev::DeviceDriver,
-                     public IDetector
+                     public roboticslab::IDetector,
+                     public HaarDetector_ParamsParser
 {
 public:
     bool open(yarp::os::Searchable& config) override;
@@ -33,7 +32,5 @@ private:
     cv::Ptr<cv::face::Facemark> facemark;
 #endif
 };
-
-} // namespace roboticslab
 
 #endif // __HAAR_DETECTOR_HPP__

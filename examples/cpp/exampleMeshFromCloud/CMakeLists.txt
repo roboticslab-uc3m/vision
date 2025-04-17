@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.16..3.28)
+cmake_minimum_required(VERSION 3.19..3.28)
 
 project(exampleMeshFromCloud LANGUAGES CXX)
 
 if(NOT YARP_FOUND)
-    find_package(YARP 3.8 REQUIRED COMPONENTS os)
+    find_package(YARP 3.10 REQUIRED COMPONENTS os)
 endif()
 
 if(NOT TARGET ROBOTICSLAB::YarpCloudUtils)

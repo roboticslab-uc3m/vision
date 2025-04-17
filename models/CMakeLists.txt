@@ -24,7 +24,7 @@ function(_download_model _dir _files)
         message(STATUS "Downloading ${_dir}/${_file}")
 
         file(DOWNLOAD ${_url} "${CMAKE_CURRENT_SOURCE_DIR}/${_dir}/${_file}"
-             INACTIVITY_TIMEOUT 5
+             INACTIVITY_TIMEOUT 30 # originally 5 seconds, but this was causing frequent CI timeouts
              STATUS _status
              TIMEOUT 30
              EXPECTED_HASH SHA1=${_sha1})

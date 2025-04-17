@@ -6,29 +6,20 @@
 #include <yarp/dev/DeviceDriver.h>
 
 #include "IDetector.hpp"
-
-namespace roboticslab
-{
+#include "ColorRegionDetector_ParamsParser.h"
 
 /**
  * @ingroup YarpPlugins
  * @defgroup ColorRegionDetector
- * @brief Contains roboticslab::ColorRegionDetector.
+ * @brief Contains ColorRegionDetector.
  */
 class ColorRegionDetector : public yarp::dev::DeviceDriver,
-                            public IDetector
+                            public roboticslab::IDetector,
+                            public ColorRegionDetector_ParamsParser
 {
 public:
     bool open(yarp::os::Searchable& config) override;
     bool detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects) override;
-
-private:
-    std::string algorithm;
-    double morphClosing;
-    int threshold;
-    int maxNumBlobs;
 };
-
-} // namespace roboticslab
 
 #endif // __COLOR_REGION_DETECTOR_HPP__

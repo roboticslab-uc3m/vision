@@ -8,15 +8,20 @@ endif()
 
 yarp_prepare_plugin(ArucoDetector
                     CATEGORY device
-                    TYPE roboticslab::ArucoDetector
+                    TYPE ArucoDetector
                     INCLUDE ArucoDetector.hpp
                     DEFAULT ON
-                    DEPENDS "TARGET opencv_objdetect;OpenCV_VERSION VERSION_GREATER_EQUAL 4.7;YARP_cv_FOUND")
+                    DEPENDS "TARGET opencv_objdetect;OpenCV_VERSION VERSION_GREATER_EQUAL 4.7;YARP_cv_FOUND"
+                    GENERATE_PARSER)
 
 if(NOT SKIP_ArucoDetector)
 
-    yarp_add_plugin(ArucoDetector ArucoDetector.hpp
-                                  ArucoDetector.cpp)
+    yarp_add_plugin(ArucoDetector)
+
+    target_sources(ArucoDetector PRIVATE ArucoDetector.hpp
+                                         ArucoDetector.cpp
+                                         ArucoDetector_ParamsParser.h
+                                         ArucoDetector_ParamsParser.cpp)
 
     target_link_libraries(ArucoDetector YARP::YARP_os
                                         YARP::YARP_dev

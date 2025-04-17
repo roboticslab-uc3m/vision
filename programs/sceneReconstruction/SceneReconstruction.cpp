@@ -148,12 +148,6 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     {
         yCInfo(KINFU) << "Using local camera";
         cameraOptions.fromString(rf.toString());
-
-        if (cameraOptions.check("subdevice"))
-        {
-            cameraOptions.put("device", cameraOptions.find("subdevice"));
-            cameraOptions.unput("subdevice");
-        }
     }
 
     if (!cameraDriver.open(cameraOptions))
@@ -185,11 +179,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     const auto & params = rf.findGroup("KINECT_FUSION");
     auto algorithm = params.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM), "algorithm identifier").asString();
 
-    std::vector<std::string> availableAlgorithms {"kinfu"};
-
-#ifdef HAVE_DYNAFU
-    availableAlgorithms.push_back("dynafu");
-#endif
+    std::vector<std::string> availableAlgorithms {"kinfu", "dynafu"};
 #ifdef HAVE_KINFU_LS
     availableAlgorithms.push_back("kinfu_ls");
 #endif
@@ -202,13 +192,11 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         kinfu = makeKinFu(params, depthIntrinsic, depthWidth, depthHeight);
         renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, iRGBDSensor);
     }
-#ifdef HAVE_DYNAFU
     else if (algorithm == "dynafu")
     {
         kinfu = makeDynaFu(params, depthIntrinsic, depthWidth, depthHeight);
         renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, iRGBDSensor);
     }
-#endif
 #ifdef HAVE_KINFU_LS
     else if (algorithm == "kinfu_ls")
     {

@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.16..3.28)
+cmake_minimum_required(VERSION 3.19..3.28)
 
 project(exampleRemoteGrabber LANGUAGES CXX)
 
 if(NOT YARP_FOUND)
-    find_package(YARP 3.8 REQUIRED COMPONENTS os dev sig)
+    find_package(YARP 3.10 REQUIRED COMPONENTS os dev sig)
 endif()
 
 add_executable(exampleRemoteGrabber exampleRemoteGrabber.cpp)
