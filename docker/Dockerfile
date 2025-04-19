@@ -1,16 +1,18 @@
-ARG UBUNTU_TAG
+ARG UBUNTU_TAG=latest
 FROM ubuntu:${UBUNTU_TAG}
 
 ARG CORES=1
 ARG SWIG_TAG=4.2.1
 ARG OPENCV_TAG
+ARG GCC_TAG
+ARG CLANG_TAG
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y \
-        g++ \
-        clang \
+        ${GCC_TAG} \
+        ${CLANG_TAG} \
         cmake \
         wget \
         unzip \

@@ -9,7 +9,7 @@ env:
 
 jobs:
   docker:
-    name: build (Ubuntu ${{matrix.ubuntu}}, OpenCV ${{matrix.opencv}})
+    name: build (ubuntu-${{matrix.system.ubuntu}}, opencv-${{matrix.opencv}})
     runs-on: ubuntu-latest
 
     permissions:
@@ -19,7 +19,10 @@ jobs:
 
     strategy:
       matrix:
-        ubuntu: ['22.04', '24.04']
+        system:
+        # https://github.com/roboticslab-uc3m/questions-and-answers/issues/101
+        - { ubuntu: '22.04', gcc: g++-11, clang: clang-15 }
+        - { ubuntu: '24.04', gcc: g++-13, clang: clang-18 }
         opencv: ['4.x']
 
     steps:
@@ -44,8 +47,10 @@ jobs:
       with:
         push: true
         context: docker
-        tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:ubuntu-${{matrix.ubuntu}}-opencv-${{matrix.opencv}}
+        tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:ubuntu-${{matrix.system.ubuntu}}-opencv-${{matrix.opencv}}
         labels: ${{steps.meta.outputs.labels}}
         build-args: |
           OPENCV_TAG=${{matrix.opencv}}
-          UBUNTU_TAG=${{matrix.ubuntu}}
+          UBUNTU_TAG=${{matrix.system.ubuntu}}
+          GCC_TAG=${{matrix.system.gcc}}
+          CLANG_TAG=${{matrix.system.clang}}
