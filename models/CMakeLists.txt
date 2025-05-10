@@ -42,14 +42,14 @@ if(DOWNLOAD_MODELS)
     # format: set(_var [_url_1 _sha1_1] [_url_2 _sha1_2] ...)
 
     if (ENABLE_DnnDetector)
-        set(_yolov3-tiny https://pjreddie.com/media/files/yolov3-tiny.weights 40f3c11883bef62fd850213bc14266632ed4414f
+        set(_yolov3-tiny https://web.archive.org/web/20250416004738/https://pjreddie.com/media/files/yolov3-tiny.weights 40f3c11883bef62fd850213bc14266632ed4414f
                          https://raw.githubusercontent.com/pjreddie/darknet/17d4774/cfg/yolov3-tiny.cfg 46282cefe5cf7a248b69d528d3372f5cf1ddf39d)
 
         _download_model(yolov3-tiny "${_yolov3-tiny}")
     endif()
 
     if(ENABLE_HaarDetector)
-        set(_lbfmodel https://raw.githubusercontent.com/kurnianggoro/GSOC2017/master/data/lbfmodel.yaml 2bcd8ce6cff58fa3ad74386b7b3f77b510198d27)
+        set(_lbfmodel https://raw.githubusercontent.com/kurnianggoro/GSOC2017/7523caa/data/lbfmodel.yaml 2bcd8ce6cff58fa3ad74386b7b3f77b510198d27)
         _download_model(lbfmodel "${_lbfmodel}")
     endif()
 
