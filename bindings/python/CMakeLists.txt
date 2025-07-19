@@ -31,7 +31,8 @@ if(Python3_VERSION VERSION_GREATER_EQUAL 3.12)
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
 else()
   execute_process(COMMAND ${Python3_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(1,0,prefix=''))"
-                  OUTPUT_VARIABLE Python_INSTDIR)
+                  OUTPUT_VARIABLE Python_INSTDIR
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
 set(_CMAKE_INSTALL_PYTHONDIR "${Python_INSTDIR}")
