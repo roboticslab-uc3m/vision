@@ -1,6 +1,3 @@
-# Created by Juan G Victores 2013 @ UC3M
-# Thanks to Paul Fitzpatrick for all the YARP and iCub SWIG stuff for inspiration
-
 # this is set in the parent directory, but for some reason it does not get inherited
 set_source_files_properties(${SWIG_BINDINGS_SOURCE_FILE} PROPERTIES CPLUSPLUS ON)
 
@@ -27,10 +24,15 @@ set_target_properties(${SWIG_MODULE_roboticslab_vision_python_REAL_NAME} PROPERT
 # and prepend to the existing list of header directories. CMake takes care of removing duplicates.
 target_include_directories(${SWIG_MODULE_roboticslab_vision_python_REAL_NAME} BEFORE PRIVATE ${Python3_INCLUDE_DIRS})
 
-# installation path is determined reliably on most platforms using distutils
-execute_process(COMMAND ${Python3_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(plat_specific=True,standard_lib=False,prefix=''))"
-                OUTPUT_VARIABLE Python_INSTDIR
-                OUTPUT_STRIP_TRAILING_WHITESPACE )
+# installation path is determined reliably on most platforms using sysconfig
+if(Python3_VERSION VERSION_GREATER_EQUAL 3.12)
+  execute_process(COMMAND ${Python3_EXECUTABLE} -c "import os;import sysconfig;relative_site_packages = sysconfig.get_path('purelib').replace(sysconfig.get_path('data'), '').lstrip(os.path.sep);print(relative_site_packages)"
+                  OUTPUT_VARIABLE Python_INSTDIR
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+else()
+  execute_process(COMMAND ${Python3_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(1,0,prefix=''))"
+                  OUTPUT_VARIABLE Python_INSTDIR)
+endif()
 
 set(_CMAKE_INSTALL_PYTHONDIR "${Python_INSTDIR}")
 set(CMAKE_INSTALL_PYTHONDIR ${_CMAKE_INSTALL_PYTHONDIR} CACHE PATH "python bindings (${_CMAKE_INSTALL_PYTHONDIR})")
