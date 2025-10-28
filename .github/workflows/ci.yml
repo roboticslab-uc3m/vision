@@ -16,6 +16,7 @@ on:
 env:
   CMAKE_C_COMPILER_LAUNCHER: ccache
   CMAKE_CXX_COMPILER_LAUNCHER: ccache
+  CMAKE_BUILD_TYPE: Debug
 
 jobs:
   maybe_skip:
@@ -48,9 +49,10 @@ jobs:
         - { os: ubuntu-24.04, compiler: { cc: gcc-13,   cxx: g++-13 } }
         - { os: ubuntu-24.04, compiler: { cc: clang-18, cxx: clang++-18 } }
         robotology:
-        - { yarp: yarp-3.11, cmake: 3.19.x }
-        - { yarp: yarp-3.12, cmake: 3.19.x }
-        - { yarp: master,    cmake: 3.19.x }
+        # CMake 3.22 instead of 3.19 because of the CMAKE_BUILD_TYPE env var
+        - { yarp: yarp-3.11, cmake: 3.22.x }
+        - { yarp: yarp-3.12, cmake: 3.22.x }
+        - { yarp: master,    cmake: 3.22.x }
         experimental:
         - ${{github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'}}
         exclude:
