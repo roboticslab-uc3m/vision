@@ -29,7 +29,7 @@ If you found this project useful, please consider citing the following works:
 
 - [YarpCloudUtils](libraries/YarpCloudUtils/)
 
-Bartek Łukawski, Alberto Rodríguez-Sanz, Elisabeth Menendez, Juan G. Victores, and Carlos Balaguer. A user-friendly point cloud processing pipeline for interfacing PCL with YARP. In *XLV Jornadas de Automática*. Universidade da Coruña, 2024.
+Bartek Łukawski, Alberto Rodríguez-Sanz, Elisabeth Menendez, Juan G. Victores, and Carlos Balaguer. A user-friendly point cloud processing pipeline for interfacing PCL with YARP. In *XLV Jornadas de Automática*. Universidade da Coruña, 2024. DOI: [10.17979/ja-cea.2024.45.10925](https://doi.org/10.17979/ja-cea.2024.45.10925)
 
 ```bibtex
 @inproceedings{lukawski2024jjaa,
