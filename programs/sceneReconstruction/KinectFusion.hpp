@@ -40,19 +40,15 @@ std::unique_ptr<KinectFusion> makeDynaFu(const yarp::os::Searchable & config,
                                          const yarp::sig::IntrinsicParams & intrinsic,
                                          int width, int height);
 
-#ifdef HAVE_KINFU_LS
 std::unique_ptr<KinectFusion> makeKinFuLargeScale(const yarp::os::Searchable & config,
                                                   const yarp::sig::IntrinsicParams & intrinsic,
                                                   int width, int height);
-#endif
 
-#ifdef HAVE_COLORED_KINFU
 std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & config,
                                                const yarp::sig::IntrinsicParams & depthIntrinsic,
                                                const yarp::sig::IntrinsicParams & colorIntrinsic,
                                                int depthWidth, int depthHeight,
                                                int colorWidth, int colorHeight);
-#endif
 
 } // namespace roboticslab
 

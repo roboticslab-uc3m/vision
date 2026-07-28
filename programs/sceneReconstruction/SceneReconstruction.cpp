@@ -179,13 +179,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     const auto & params = rf.findGroup("KINECT_FUSION");
     auto algorithm = params.check("algorithm", yarp::os::Value(DEFAULT_ALGORITHM), "algorithm identifier").asString();
 
-    std::vector<std::string> availableAlgorithms {"kinfu", "dynafu"};
-#ifdef HAVE_KINFU_LS
-    availableAlgorithms.push_back("kinfu_ls");
-#endif
-#ifdef HAVE_COLORED_KINFU
-    availableAlgorithms.push_back("colored_kinfu");
-#endif
+    std::vector<std::string> availableAlgorithms {"kinfu", "dynafu", "kinfu_ls", "colored_kinfu"};
 
     if (algorithm == "kinfu")
     {
@@ -197,14 +191,11 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         kinfu = makeDynaFu(params, depthIntrinsic, depthWidth, depthHeight);
         renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, iRGBDSensor);
     }
-#ifdef HAVE_KINFU_LS
     else if (algorithm == "kinfu_ls")
     {
         kinfu = makeKinFuLargeScale(params, depthIntrinsic, depthWidth, depthHeight);
         renderUpdater = std::make_unique<RenderMonoUpdater>(*kinfu, iRGBDSensor);
     }
-#endif
-#ifdef HAVE_COLORED_KINFU
     else if (algorithm == "colored_kinfu")
     {
         yarp::os::Property rgbParams;
@@ -224,7 +215,6 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         kinfu = makeColoredKinFu(params, depthIntrinsic, rgbIntrinsic, depthWidth, depthHeight, rgbWidth, rgbHeight);
         renderUpdater = std::make_unique<RenderColorUpdater>(*kinfu, iRGBDSensor);
     }
-#endif
     else
     {
         yCError(KINFU) << "Unsupported or unrecognized algorithm" << algorithm << availableAlgorithms;

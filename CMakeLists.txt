@@ -33,7 +33,7 @@ find_package(YARP 3.11 REQUIRED COMPONENTS os dev sig
                                 OPTIONAL_COMPONENTS cv idl_tools pcl)
 
 # Soft dependencies.
-find_package(OpenCV 4.2 QUIET)
+find_package(OpenCV 4.6 QUIET)
 find_package(PCL 1.10 QUIET COMPONENTS common features filters search surface)
 find_package(GTestSources 1.8 QUIET)
 find_package(SWIG QUIET)
