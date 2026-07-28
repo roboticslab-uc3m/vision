@@ -22,15 +22,21 @@ RUN apt-get update && \
         bison \
         googletest \
         python3-setuptools && \
-    wget -O swig.zip https://github.com/swig/swig/archive/v${SWIG_TAG}.zip && \
-    wget -O opencv.zip https://github.com/opencv/opencv/archive/${OPENCV_TAG}.zip && \
-    wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/${OPENCV_TAG}.zip && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
+
+RUN wget -O swig.zip https://github.com/swig/swig/archive/v${SWIG_TAG}.zip && \
     unzip swig.zip && \
-    unzip opencv.zip && \
-    unzip opencv_contrib.zip && \
     cmake -S swig-${SWIG_TAG} -B swig-${SWIG_TAG}/build && \
     cmake --build swig-${SWIG_TAG}/build -- -j$CORES && \
     cmake --install swig-${SWIG_TAG}/build && \
+    rm swig.zip && \
+    rm -rf swig-${SWIG_TAG}
+
+RUN wget -O opencv.zip https://github.com/opencv/opencv/archive/${OPENCV_TAG}.zip && \
+    wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/${OPENCV_TAG}.zip && \
+    unzip opencv.zip && \
+    unzip opencv_contrib.zip && \
     cmake -S opencv-${OPENCV_TAG} -B opencv-${OPENCV_TAG}/build \
         -DOPENCV_EXTRA_MODULES_PATH=opencv_contrib-${OPENCV_TAG}/modules \
         -DBUILD_TESTS=OFF \
@@ -38,7 +44,5 @@ RUN apt-get update && \
         -DOPENCV_ENABLE_NONFREE=ON && \
     cmake --build opencv-${OPENCV_TAG}/build -- -j$CORES && \
     cmake --install opencv-${OPENCV_TAG}/build && \
-    rm swig.zip opencv.zip opencv_contrib.zip && \
-    rm -rf swig-${SWIG_TAG} opencv-${OPENCV_TAG} opencv_contrib-${OPENCV_TAG} && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
+    rm opencv.zip opencv_contrib.zip && \
+    rm -rf opencv-${OPENCV_TAG} opencv_contrib-${OPENCV_TAG}
