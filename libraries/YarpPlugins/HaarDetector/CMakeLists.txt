@@ -1,5 +1,7 @@
 if(NOT DEFINED ENABLE_HaarDetector OR ENABLE_HaarDetector)
-    if(NOT TARGET opencv_objdetect)
+    if(OpenCV_VERSION VERSION_GREATER_EQUAL 5 AND NOT TARGET opencv_xobjdetect)
+        message(WARNING "OpenCV xobjdetect module not found, disabling HaarDetector device")
+    elseif(OpenCV_VERSION VERSION_LESS 5 AND NOT TARGET opencv_objdetect)
         message(WARNING "OpenCV objdetect module not found, disabling HaarDetector device")
     elseif(NOT YARP_cv_FOUND)
         message(WARNING "YARP_cv package not found, disabling HaarDetector device")
@@ -11,7 +13,7 @@ yarp_prepare_plugin(HaarDetector
                     TYPE HaarDetector
                     INCLUDE HaarDetector.hpp
                     DEFAULT ON
-                    DEPENDS "TARGET opencv_objdetect;YARP_cv_FOUND"
+                    DEPENDS "TARGET opencv_xobjdetect OR TARGET opencv_objdetect;YARP_cv_FOUND"
                     GENERATE_PARSER)
 
 if(NOT SKIP_HaarDetector)
@@ -26,8 +28,13 @@ if(NOT SKIP_HaarDetector)
     target_link_libraries(HaarDetector YARP::YARP_os
                                        YARP::YARP_dev
                                        YARP::YARP_cv
-                                       opencv_objdetect
                                        ROBOTICSLAB::VisionInterfaces)
+
+    if(OpenCV_VERSION VERSION_GREATER_EQUAL 5)
+        target_link_libraries(HaarDetector opencv_xobjdetect)
+    else()
+        target_link_libraries(HaarDetector opencv_objdetect)
+    endif()
 
     if(TARGET opencv_face)
         set(_HaarDetector_have_cv_face TRUE CACHE INTERNAL "HaarDetector was compiled with face support")
