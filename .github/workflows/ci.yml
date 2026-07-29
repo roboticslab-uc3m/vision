@@ -75,6 +75,11 @@ jobs:
         ref: ${{matrix.robotology.yarp}}
         path: .deps/yarp
 
+    # Silly clang/gcc16 apt mismatch due to PCL; see alternatives: https://stackoverflow.com/a/74605488
+    - name: Install dependencies via apt
+      if: ${{matrix.system.os == 'ubuntu-26.04' && matrix.compiler.cc == 'clang'}}
+      run: apt-get update && apt-get install -qq libstdc++-16-dev
+
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
