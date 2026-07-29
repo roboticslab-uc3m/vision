@@ -9,8 +9,6 @@
 #include <yarp/os/Value.h>
 #include <yarp/cv/Cv.h>
 
-#include <opencv2/core/version.hpp>
-
 using namespace roboticslab;
 
 namespace
@@ -48,12 +46,7 @@ bool QrDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& det
     std::vector<std::string> texts;
     std::vector<cv::Point> corners;
 
-#if CV_VERSION_MAJOR > 4 || CV_VERSION_MINOR >= 3
     qrcode.detectAndDecodeMulti(inCvMat, texts, corners);
-#else
-    std::string text = qrcode.detectAndDecode(inCvMat, corners);
-    texts.push_back(std::move(text));
-#endif
 
     for (auto i = 0; i < corners.size() / 4; i++)
     {

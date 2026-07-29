@@ -23,6 +23,8 @@ if(ENABLE_sceneReconstruction)
                                        KinectFusionImpl.hpp
                                        KinFu.cpp
                                        DynaFu.cpp
+                                       KinFuLargeScale.cpp
+                                       ColoredKinFu.cpp
                                        LogComponent.hpp
                                        LogComponent.cpp)
 
@@ -33,16 +35,6 @@ if(ENABLE_sceneReconstruction)
                                               YARP::YARP_cv
                                               opencv_rgbd
                                               ROBOTICSLAB::VisionIDL)
-
-    if(OpenCV_VERSION VERSION_GREATER_EQUAL 4.5.1)
-        target_sources(sceneReconstruction PRIVATE KinFuLargeScale.cpp)
-        target_compile_definitions(sceneReconstruction PRIVATE HAVE_KINFU_LS)
-    endif()
-
-    if(OpenCV_VERSION VERSION_GREATER_EQUAL 4.5.5)
-        target_sources(sceneReconstruction PRIVATE ColoredKinFu.cpp)
-        target_compile_definitions(sceneReconstruction PRIVATE HAVE_COLORED_KINFU)
-    endif()
 
     install(TARGETS sceneReconstruction)
 

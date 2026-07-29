@@ -731,9 +731,7 @@ void doPoisson(const typename pcl::PointCloud<T>::ConstPtr & in, const pcl::Poly
     auto samplesPerNode = options.check("samplesPerNode", yarp::os::Value(1.0f)).asFloat32();
     auto scale = options.check("scale", yarp::os::Value(1.1f)).asFloat32();
     auto solverDivide = options.check("solverDivide", yarp::os::Value(8)).asInt32();
-#if PCL_VERSION_COMPARE(>=, 1, 12, 0)
     auto threads = options.check("threads", yarp::os::Value(1)).asInt32();
-#endif
 
     auto tree = pcl::make_shared<pcl::search::KdTree<T>>();
     tree->setInputCloud(in);
@@ -752,9 +750,7 @@ void doPoisson(const typename pcl::PointCloud<T>::ConstPtr & in, const pcl::Poly
     poisson.setScale(scale);
     poisson.setSearchMethod(tree);
     poisson.setSolverDivide(solverDivide);
-#if PCL_VERSION_COMPARE(>=, 1, 12, 0)
     poisson.setThreads(threads);
-#endif
     poisson.reconstruct(*out);
 
     checkOutput(out, "Poisson");
@@ -822,11 +818,7 @@ void doShadowPoints(const typename pcl::PointCloud<T>::ConstPtr & in, const type
     auto negative = options.check("negative", yarp::os::Value(false)).asBool();
     auto threshold = options.check("threshold", yarp::os::Value(0.1f)).asFloat32();
 
-#if PCL_VERSION_COMPARE(>=, 1, 11, 0)
     auto temp = std::const_pointer_cast<pcl::PointCloud<T>>(in); // cast away constness
-#else
-    auto temp = boost::const_pointer_cast<pcl::PointCloud<T>>(in); // cast away constness
-#endif
 
     pcl::ShadowPoints<T, T> shadow;
     shadow.setInputCloud(in);

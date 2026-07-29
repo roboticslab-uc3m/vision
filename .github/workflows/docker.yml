@@ -2,6 +2,17 @@ name: Docker
 
 on:
   workflow_dispatch:
+    inputs:
+      ubuntu:
+        description: 'Ubuntu version'
+        required: true
+        default: '26.04'
+        type: string
+      opencv:
+        description: 'OpenCV branch/tag'
+        required: true
+        default: '5.x'
+        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -9,7 +20,7 @@ env:
 
 jobs:
   docker:
-    name: build (ubuntu-${{matrix.system.ubuntu}}, opencv-${{matrix.opencv}})
+    name: build (ubuntu-${{inputs.ubuntu}}, opencv-${{inputs.opencv}})
     runs-on: ubuntu-latest
 
     permissions:
@@ -17,20 +28,12 @@ jobs:
       packages: write
       id-token: write
 
-    strategy:
-      matrix:
-        system:
-        # https://github.com/roboticslab-uc3m/questions-and-answers/issues/101
-        - { ubuntu: '22.04', gcc: g++-11, clang: clang-15 }
-        - { ubuntu: '24.04', gcc: g++-13, clang: clang-18 }
-        opencv: ['4.x']
-
     steps:
     - name: Check out main project
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Log in to the Container Registry
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       with:
         registry: ${{env.REGISTRY}}
         username: ${{github.actor}}
@@ -38,19 +41,17 @@ jobs:
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
-      uses: docker/metadata-action@v5
+      uses: docker/metadata-action@v6
       with:
         images: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
 
     - name: Build and push
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         push: true
         context: docker
-        tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:ubuntu-${{matrix.system.ubuntu}}-opencv-${{matrix.opencv}}
+        tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:ubuntu-${{inputs.ubuntu}}-opencv-${{inputs.opencv}}
         labels: ${{steps.meta.outputs.labels}}
         build-args: |
-          OPENCV_TAG=${{matrix.opencv}}
-          UBUNTU_TAG=${{matrix.system.ubuntu}}
-          GCC_TAG=${{matrix.system.gcc}}
-          CLANG_TAG=${{matrix.system.clang}}
+          OPENCV_TAG=${{inputs.opencv}}
+          UBUNTU_TAG=${{inputs.ubuntu}}
