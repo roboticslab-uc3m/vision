@@ -14,6 +14,9 @@
 #include <yarp/sig/ImageDraw.h>
 #include <yarp/sig/ImageUtils.h>
 
+//#include <yarp/os/Nodes.h>
+//#include <yarp/os/impl/NameClient.h>
+
 constexpr auto DEFAULT_SENSOR_DEVICE = "RGBDSensorClient";
 constexpr auto DEFAULT_SENSOR_REMOTE = "/rgbd";
 constexpr auto DEFAULT_LOCAL_PREFIX = "/rgbdDetection";
@@ -129,6 +132,15 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
 
     cropPort.setReadOnly();
     cropPort.useCallback(cropCallback);
+
+    node = new yarp::os::Node("/yarp/test_publisher");
+
+    if (!publisher.topic("/chatter")) {
+        yCError(RGBD) << "Failed to create publisher to /chatter";
+        return false;
+    }
+
+    yCDebug(RGBD) << "ROS publisher is ready";
 
     return true;
 }
@@ -251,6 +263,13 @@ bool RgbdDetection::updateModule()
 
     imagePort.prepare() = rgbImage;
     imagePort.write();
+
+    // publish ros msgs
+    yarp::rosmsg::std_msgs::String data;
+    data.data = "Hello from YARP";
+
+    publisher.write(data);
+
     return true;
 }
 

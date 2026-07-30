@@ -13,6 +13,10 @@
 #include <yarp/sig/Image.h>
 #include <yarp/sig/IntrinsicParams.h>
 
+#include <yarp/os/Node.h>
+#include <yarp/os/Publisher.h>
+#include <yarp/rosmsg/std_msgs/String.h>
+
 #include "IDetector.hpp"
 #include "YarpCropCallback.hpp"
 
@@ -47,6 +51,9 @@ private:
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> imagePort;
     yarp::os::BufferedPort<yarp::os::Bottle> cropPort;
     YarpCropCallback cropCallback;
+
+    yarp::os::Node * node {nullptr};
+    yarp::os::Publisher<yarp::rosmsg::std_msgs::String> publisher;
 
     double period;
 };
