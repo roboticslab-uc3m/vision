@@ -54,6 +54,7 @@ private:
 
     yarp::os::Node * node {nullptr};
     yarp::os::Publisher<yarp::rosmsg::geometry_msgs::Point> publisher;
+    bool strRos;
 
     double period;
 };
