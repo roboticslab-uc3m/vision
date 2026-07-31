@@ -2,17 +2,6 @@ name: Docker
 
 on:
   workflow_dispatch:
-    inputs:
-      ubuntu:
-        description: 'Ubuntu version'
-        required: true
-        default: '26.04'
-        type: string
-      opencv:
-        description: 'OpenCV branch/tag'
-        required: true
-        default: '5.x'
-        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -20,13 +9,20 @@ env:
 
 jobs:
   docker:
-    name: build (ubuntu-${{inputs.ubuntu}}, opencv-${{inputs.opencv}})
+    name: build (ubuntu-${{matrix.system.ubuntu}}, opencv-${{matrix.system.opencv}})
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
       packages: write
       id-token: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        system:
+        - { ubuntu: '24.04', opencv: '4.x', ros: jazzy }
+        - { ubuntu: '26.04', opencv: '5.x', ros: lyrical }
 
     steps:
     - name: Check out main project
@@ -50,8 +46,8 @@ jobs:
       with:
         push: true
         context: docker
-        tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:ubuntu-${{inputs.ubuntu}}-opencv-${{inputs.opencv}}
+        tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:ubuntu-${{matrix.system.ubuntu}}-opencv-${{matrix.system.opencv}}
         labels: ${{steps.meta.outputs.labels}}
         build-args: |
-          OPENCV_TAG=${{inputs.opencv}}
-          UBUNTU_TAG=${{inputs.ubuntu}}
+          OPENCV_TAG=${{matrix.system.opencv}}
+          ROS_TAG=${{matrix.system.ros}}
