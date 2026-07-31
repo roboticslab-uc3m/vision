@@ -35,6 +35,10 @@
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
 
+#ifdef HAVE_ROS
+# include <rclcpp/rclcpp.hpp>
+#endif // HAVE_ROS
+
 #include "RgbdDetection.hpp"
 
 int main(int argc, char * argv[])
@@ -62,6 +66,10 @@ int main(int argc, char * argv[])
         yError() << "No YARP network found (try running \"yarpserver &\")";
         return 1;
     }
+
+#ifdef HAVE_ROS
+    rclcpp::init(argc, argv);
+#endif // HAVE_ROS
 
     return mod.runModule(rf);
 }

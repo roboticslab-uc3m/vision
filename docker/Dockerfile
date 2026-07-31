@@ -1,5 +1,5 @@
-ARG UBUNTU_TAG=latest
-FROM ubuntu:${UBUNTU_TAG}
+ARG ROS_TAG=latest
+FROM ros:${ROS_TAG}-ros-core
 
 ARG OPENCV_TAG
 
@@ -12,6 +12,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y \
+        build-essential \
         ${GCC_TAG} \
         ${CLANG_TAG} \
         cmake \

@@ -52,6 +52,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
         std::printf("\t--localPrefix (local port name prefix, default: \"%s\")\n", DEFAULT_LOCAL_PREFIX);
         std::printf("\t--period ([s] default: \"%f\")\n", DEFAULT_PERIOD);
         std::printf("\t--detector (detector device)\n");
+        std::printf("\t--ros (also publish point in ROS)\n");
         return false;
     }
 
@@ -61,6 +62,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     auto strSensorRemote = rf.check("sensorRemote", yarp::os::Value(DEFAULT_SENSOR_REMOTE)).asString();
     auto strLocalPrefix = rf.check("localPrefix", yarp::os::Value(DEFAULT_LOCAL_PREFIX)).asString();
     auto strDetector = rf.check("detector", yarp::os::Value("")).asString();
+    auto useRos = rf.check("ros");
 
     period = rf.check("period", yarp::os::Value(DEFAULT_PERIOD)).asFloat64();
 
@@ -69,6 +71,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     yCInfo(RGBD) << "Using --localPrefix" << strLocalPrefix;
     yCInfo(RGBD) << "Using --period" << period;
     yCInfo(RGBD) << "Using --detector" << strDetector;
+    yCInfo(RGBD) << "Using --ros" << useRos;
 
     yarp::os::Property sensorOptions;
     sensorOptions.fromString(rf.toString());
@@ -129,6 +132,17 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
 
     cropPort.setReadOnly();
     cropPort.useCallback(cropCallback);
+
+    if (useRos)
+    {
+#ifdef HAVE_ROS
+        node = std::make_shared<rclcpp::Node>("rgbd_detection_node");
+        publisher = node->create_publisher<geometry_msgs::msg::Point>(strLocalPrefix + "/point", 10);
+#else
+        yCError(RGBD) << "ROS support not available. Please install ROS and rebuild.";
+        return false;
+#endif
+    }
 
     return true;
 }
@@ -240,6 +254,18 @@ bool RgbdDetection::updateModule()
 
                 statePort.prepare() = {yarp::os::Value(x), yarp::os::Value(y), yarp::os::Value(z)};
                 statePort.write();
+
+#ifdef HAVE_ROS
+                if (publisher)
+                {
+                    geometry_msgs::msg::Point data;
+                    data.x = x;
+                    data.y = y;
+                    data.z = z;
+
+                    publisher->publish(data);
+                }
+#endif
             }
 
             if (imagePort.getOutputCount() > 0)
@@ -251,6 +277,7 @@ bool RgbdDetection::updateModule()
 
     imagePort.prepare() = rgbImage;
     imagePort.write();
+
     return true;
 }
 

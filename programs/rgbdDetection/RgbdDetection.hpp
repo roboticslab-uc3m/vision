@@ -13,6 +13,11 @@
 #include <yarp/sig/Image.h>
 #include <yarp/sig/IntrinsicParams.h>
 
+#ifdef HAVE_ROS
+# include <rclcpp/rclcpp.hpp>
+# include <geometry_msgs/msg/point.hpp>
+#endif // HAVE_ROS
+
 #include "IDetector.hpp"
 #include "YarpCropCallback.hpp"
 
@@ -47,6 +52,11 @@ private:
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> imagePort;
     yarp::os::BufferedPort<yarp::os::Bottle> cropPort;
     YarpCropCallback cropCallback;
+
+#ifdef HAVE_ROS
+    rclcpp::Node::SharedPtr node;
+    rclcpp::Publisher<geometry_msgs::msg::Point>::SharedPtr publisher;
+#endif
 
     double period;
 };

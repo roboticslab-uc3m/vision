@@ -43,8 +43,8 @@ jobs:
       fail-fast: false
       matrix:
         system:
-        - { os: ubuntu-24.04, opencv: 4.x }
-        - { os: ubuntu-26.04, opencv: 5.x }
+        - { os: ubuntu-24.04, opencv: 4.x, ros: jazzy }
+        - { os: ubuntu-26.04, opencv: 5.x, ros: lyrical }
         compiler:
         - { cc: gcc,   cxx: g++ }
         - { cc: clang, cxx: clang++ }
@@ -114,10 +114,14 @@ jobs:
         cmake --install .deps/yarp/build
 
     - name: Configure main project
-      run: cmake -S . -B build -DCREATE_BINDINGS_PYTHON=ON -DENABLE_examples=ON -DALLOW_DEVICE_PARAM_PARSER_GENERATION=ON
+      run: |
+        . /opt/ros/${{matrix.system.ros}}/setup.sh
+        cmake -S . -B build -DCREATE_BINDINGS_PYTHON=ON -DENABLE_examples=ON -DALLOW_DEVICE_PARAM_PARSER_GENERATION=ON
 
     - name: Compile main project
-      run: cmake --build build
+      run: |
+        . /opt/ros/${{matrix.system.ros}}/setup.sh
+        cmake --build build
 
     - name: Install main project
       run: cmake --install build && ldconfig
