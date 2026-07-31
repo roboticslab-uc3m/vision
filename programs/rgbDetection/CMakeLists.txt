@@ -14,6 +14,7 @@ if(ENABLE_rgbDetection)
                                        ROBOTICSLAB::YarpCropCallback)
 
     if(TARGET opencv_imgproc)
+        message(STATUS "Building rgbDetection with OpenCV imgproc support")
         target_compile_definitions(rgbDetection PRIVATE HAVE_IMGPROC)
         target_link_libraries(rgbDetection opencv_imgproc)
     endif()

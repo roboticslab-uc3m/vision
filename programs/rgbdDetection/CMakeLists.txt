@@ -13,6 +13,13 @@ if(ENABLE_rgbdDetection)
                                         ROBOTICSLAB::YarpCropCallback
                                         ROBOTICSLAB::VisionInterfaces)
 
+    if(TARGET rclcpp::rclcpp AND TARGET geometry_msgs::geometry_msgs)
+        message(STATUS "Building rgbdDetection with ROS 2 support")
+        target_compile_definitions(rgbdDetection PRIVATE HAVE_ROS)
+        target_link_libraries(rgbdDetection rclcpp::rclcpp
+                                            geometry_msgs::geometry_msgs__rosidl_typesupport_cpp)
+    endif()
+
     install(TARGETS rgbdDetection)
 
 else()
