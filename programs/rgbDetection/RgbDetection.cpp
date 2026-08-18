@@ -5,6 +5,8 @@
 #include <cstdio>
 #include <string>
 
+#include <yarp/conf/version.h>
+
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
@@ -146,7 +148,16 @@ bool RgbDetection::updateModule()
     }
     else
     {
+#if YARP_VERSION_COMPARE(>=, 4, 0, 0)
+        std::vector<yarp::dev::vertex_t> verticesCompat {
+            {vertices[0].first, vertices[0].second},
+            {vertices[1].first, vertices[1].second}
+        };
+
+        if (!frameGrabber->getImageCrop(yarp::dev::YARP_CROP_RECT, verticesCompat, frame))
+#else
         if (!frameGrabber->getImageCrop(YARP_CROP_RECT, vertices, frame))
+#endif
         {
             yCWarning(RGB) << "Cropped frame acquisition failure";
             return true;

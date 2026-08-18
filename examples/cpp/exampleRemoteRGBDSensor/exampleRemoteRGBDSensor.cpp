@@ -8,53 +8,46 @@
 
 #include <cstdio>
 
+#include <yarp/conf/version.h>
+
+#include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
-#include <yarp/os/ResourceFinder.h>
-#include <yarp/os/Time.h>
+#include <yarp/os/SystemClock.h>
 
 #include <yarp/dev/PolyDriver.h>
 #include <yarp/dev/IRGBDSensor.h>
 
 #include <yarp/sig/Vector.h>
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
     yarp::os::Network yarp;
 
     if (!yarp::os::Network::checkNetwork())
     {
-        std::printf("Please start a yarp name server first\n");
+        yError() << "Please start a yarp name server first";
         return 1;
     }
 
     std::string strRGBDLocal = "/exampleRemoteRGBDSensor";
     std::string strRGBDRemote = "/rgbd";
 
-    yarp::os::Property options;
-
-    options.put("device","RGBDSensorClient");
-    options.put("localImagePort",strRGBDLocal+"/rgbImage:i");
-    options.put("localDepthPort",strRGBDLocal+"/depthImage:i");
-    options.put("localRpcPort",strRGBDLocal+"/rpc:o");
-    options.put("remoteImagePort",strRGBDRemote+"/rgbImage:o");
-    options.put("remoteDepthPort",strRGBDRemote+"/depthImage:o");
-    options.put("remoteRpcPort",strRGBDRemote+"/rpc:i");
-
-    // Alternative read directly from ROS (without any bridge module)
-    /*options.put("device","RGBDSensorFromRosTopic");
-    options.put("rgb_data_topic","/xtion/rgb/image_color");
-    options.put("rgb_info_topic","/xtion/rgb/camera_info");
-    options.put("depth_data_topic","/xtion/depth_registered/image_raw");
-    options.put("depth_data_info","/xtion/depth_registered/camera_info");*/
-
-    //options.put("noMirror",1);
+    yarp::os::Property options {
+        {"device", yarp::os::Value("RGBDSensorClient")},
+        {"localImagePort", yarp::os::Value(strRGBDLocal + "/rgbImage:i")},
+        {"localDepthPort", yarp::os::Value(strRGBDLocal + "/depthImage:i")},
+        {"localRpcPort", yarp::os::Value(strRGBDLocal + "/rpc:o")},
+        {"remoteImagePort", yarp::os::Value(strRGBDRemote + "/rgbImage:o")},
+        {"remoteDepthPort", yarp::os::Value(strRGBDRemote + "/depthImage:o")},
+        {"remoteRpcPort", yarp::os::Value(strRGBDRemote + "/rpc:i")}
+    };
 
     yarp::dev::PolyDriver dd(options);
 
     if (!dd.isValid())
     {
-        std::printf("Device not available.\n");
+        yError() << "Device not available.";
         return 1;
     }
 
@@ -62,26 +55,32 @@ int main(int argc, char *argv[])
 
     if (!dd.view(iRGBDSensor))
     {
-        std::printf("[error] Problems acquiring interface\n");
+        yError() << "Problems acquiring interface";
         return 1;
     }
 
-    std::printf("[success] acquired interface\n");
+    yInfo() << "Acquired interface";
 
     // The following delay should avoid bad status
-    yarp::os::Time::delay(1);
+    yarp::os::SystemClock::delaySystem(1.0);
 
-    if(iRGBDSensor->getSensorStatus() ==  yarp::dev::IRGBDSensor::RGBD_SENSOR_OK_IN_USE  )
-        std::printf("Status: RGBD_SENSOR_OK_IN_USE (good!)\n");
+#if YARP_VERSION_COMPARE(>=, 4, 0, 0)
+    if (yarp::dev::IRGBDSensor::RGBDSensor_status status; iRGBDSensor->getSensorStatus(status) && status == yarp::dev::IRGBDSensor::RGBD_SENSOR_OK_IN_USE)
+#else
+    if (yarp::dev::IRGBDSensor::RGBDSensor_status status; (status = iRGBDSensor->getSensorStatus()) == yarp::dev::IRGBDSensor::RGBD_SENSOR_OK_IN_USE)
+#endif
+    {
+        yInfo() << "Status: RGBD_SENSOR_OK_IN_USE (good!)";
+    }
     else
-        std::printf("Status: %d\n", iRGBDSensor->getSensorStatus());
+    {
+        yWarning() << "Status:" << status << "(bad!)";
+    }
 
-    std::printf("DepthWidth: %d\n", iRGBDSensor->getDepthWidth());
-    std::printf("DepthHeight: %d\n", iRGBDSensor->getDepthHeight());
-    std::printf("RgbWidth: %d\n", iRGBDSensor->getRgbWidth());
-    std::printf("RgbHeight: %d\n", iRGBDSensor->getDepthHeight());
-
-    dd.close();
+    yInfo() << "DepthWidth:" << iRGBDSensor->getDepthWidth();
+    yInfo() << "DepthHeight:" << iRGBDSensor->getDepthHeight();
+    yInfo() << "RgbWidth:" << iRGBDSensor->getRgbWidth();
+    yInfo() << "RgbHeight:" << iRGBDSensor->getRgbHeight();
 
     return 0;
 }

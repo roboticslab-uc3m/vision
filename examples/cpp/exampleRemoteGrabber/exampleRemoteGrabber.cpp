@@ -6,6 +6,8 @@
  * @brief This example connects to a remote grabber (generally, RGB) device.
  */
 
+#include <yarp/conf/version.h>
+
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
@@ -55,12 +57,20 @@ int main(int argc, char *argv[])
 
     bool has;
 
+#if YARP_VERSION_COMPARE(>=, 4, 0, 0)
+    if (iFrameGrabberControls->hasFeature(yarp::dev::cameraFeature_id_t::YARP_FEATURE_ZOOM, has))
+#else
     if (iFrameGrabberControls->hasFeature(YARP_FEATURE_ZOOM, &has))
+#endif
     {
         if (has)
         {
             double val;
+#if YARP_VERSION_COMPARE(>=, 4, 0, 0)
+            iFrameGrabberControls->getFeature(yarp::dev::cameraFeature_id_t::YARP_FEATURE_ZOOM, val);
+#else
             iFrameGrabberControls->getFeature(YARP_FEATURE_ZOOM, &val);
+#endif
             yInfo() << "Zoom feature:" << val;
         }
         else

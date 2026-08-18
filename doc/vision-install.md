@@ -5,7 +5,7 @@
 - [Install CMake 3.19+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-cmake.md/)
 - [Install PCL 1.14+ with VTK >= 5](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-pcl.md/)
 - [Install YCM 0.11+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-ycm.md/)
-- [Install YARP 3.11+ and depthCamera](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-yarp.md#install-additional-yarp-device-depthcamera-ubuntu)
+- [Install YARP 3.12+ and depthCamera](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-yarp.md#install-additional-yarp-device-depthcamera-ubuntu)
 - [Install OpenCV 4.6+](https://github.com/roboticslab-uc3m/installation-guides/blob/master/docs/install-opencv.md/)
 
 ### Install the Software on Ubuntu (working on all tested versions)
