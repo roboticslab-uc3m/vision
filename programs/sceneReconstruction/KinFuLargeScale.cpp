@@ -6,17 +6,29 @@
 
 #include <yarp/os/LogStream.h>
 
+#include <opencv2/core/version.hpp>
+#if CV_VERSION_MAJOR >= 5
+# include <opencv2/ptcloud.hpp>
+#endif
 #include <opencv2/rgbd/large_kinfu.hpp>
 
 #include "LogComponent.hpp"
 
 namespace
 {
+#if CV_VERSION_MAJOR >= 5
+    std::map<std::string, cv::VolumeType> stringToCvVolume {
+        {"tsdf", cv::VolumeType::TSDF},
+        {"hashtsdf", cv::VolumeType::HashTSDF},
+        {"coloredtsdf", cv::VolumeType::ColorTSDF}
+    };
+#else
     std::map<std::string, cv::kinfu::VolumeType> stringToCvVolume {
         {"tsdf", cv::kinfu::VolumeType::TSDF},
         {"hashtsdf", cv::kinfu::VolumeType::HASHTSDF},
         {"coloredtsdf", cv::kinfu::VolumeType::COLOREDTSDF}
     };
+#endif
 }
 
 namespace roboticslab
@@ -25,7 +37,11 @@ namespace roboticslab
 std::unique_ptr<KinectFusion> makeKinFuLargeScale(const yarp::os::Searchable & config, const yarp::sig::IntrinsicParams & intrinsic, int width, int height)
 {
     using Params = cv::large_kinfu::Params;
+#if CV_VERSION_MAJOR >= 5
+    using VolParams = cv::large_kinfu::VolumeParams;
+#else
     using VolParams = cv::kinfu::VolumeParams;
+#endif
 
     auto params = Params::defaultParams();
 
@@ -116,13 +132,25 @@ std::unique_ptr<KinectFusion> makeKinFuLargeScale(const yarp::os::Searchable & c
             return nullptr;
         }
 
+#if CV_VERSION_MAJOR >= 5
+        params->volumeParams.resolutionX = volumeDims->get(0).asInt32();
+        params->volumeParams.resolutionY = volumeDims->get(1).asInt32();
+        params->volumeParams.resolutionZ = volumeDims->get(2).asInt32();
+#else
         params->volumeParams.resolution = cv::Vec3i(volumeDims->get(0).asInt32(), volumeDims->get(1).asInt32(), volumeDims->get(2).asInt32());
+#endif
         yCInfo(KINFU) << "volumeDims:" << volumeDims->toString();
     }
     else
     {
+#if CV_VERSION_MAJOR >= 5
+        yCInfo(KINFU) << "volumeDims (DEFAULT):" << params->volumeParams.resolutionX
+                                                 << params->volumeParams.resolutionY
+                                                 << params->volumeParams.resolutionZ;
+#else
         const auto & cvDims = params->volumeParams.resolution;
         yCInfo(KINFU) << "volumeDims (DEFAULT):" << cvDims[0] << cvDims[1] << cvDims[2];
+#endif
     }
 
     updateParam(params->volumeParams, &VolParams::unitResolution, config, "unitResolution", "resolution of volumeUnit in voxel space");
@@ -141,12 +169,20 @@ std::unique_ptr<KinectFusion> makeKinFuLargeScale(const yarp::os::Searchable & c
                                volumePoseRot->get(3).asFloat32(), volumePoseRot->get(4).asFloat32(), volumePoseRot->get(5).asFloat32(),
                                volumePoseRot->get(6).asFloat32(), volumePoseRot->get(7).asFloat32(), volumePoseRot->get(8).asFloat32());
 
+#if CV_VERSION_MAJOR >= 5
+        params->volumeParams.pose = cv::Affine3f().rotate(rot).matrix;
+#else
         params->volumeParams.pose.rotation(rot);
+#endif
         yCInfo(KINFU) << "volumePoseRot:" << volumePoseRot->toString();
     }
     else
     {
+#if CV_VERSION_MAJOR >= 5
+        const auto rot = params->volumeParams.pose.get_minor<3, 3>(0, 0);
+#else
         const auto & rot = params->volumeParams.pose.rotation();
+#endif
         yCInfo(KINFU) << "volumePoseRot (DEFAULT):" << rot(0,0) << rot(0,1) << rot(0,2) << rot(1,0) << rot(1,1) << rot(1,2) << rot(2,0) << rot(2,1) << rot(2,2);
     }
 
@@ -160,14 +196,24 @@ std::unique_ptr<KinectFusion> makeKinFuLargeScale(const yarp::os::Searchable & c
             return nullptr;
         }
 
+#if CV_VERSION_MAJOR >= 5
+        params->volumeParams.pose(0, 3) = volumePoseTransl->get(0).asFloat32();
+        params->volumeParams.pose(1, 3) = volumePoseTransl->get(1).asFloat32();
+        params->volumeParams.pose(2, 3) = volumePoseTransl->get(2).asFloat32();
+#else
         auto transl = cv::Vec3f(volumePoseTransl->get(0).asFloat32(), volumePoseTransl->get(1).asFloat32(), volumePoseTransl->get(2).asFloat32());
         params->volumeParams.pose.translation(transl);
+#endif
         yCInfo(KINFU) << "volumePoseTransl:" << volumePoseTransl->toString();
     }
     else
     {
+#if CV_VERSION_MAJOR >= 5
+        const auto transl = params->volumeParams.pose.get_minor<3, 1>(0, 3);
+#else
         const auto & transl = params->volumeParams.pose.translation();
-        yCInfo(KINFU) << "volumePoseTransl (DEFAULT):" << transl[0] << transl[1] << transl[2];
+#endif
+        yCInfo(KINFU) << "volumePoseTransl (DEFAULT):" << transl(0) << transl(1) << transl(2);
     }
 
     if (config.check("volumeType", "type of voxel volume (tsdf, hashtsdf)"))
@@ -180,12 +226,20 @@ std::unique_ptr<KinectFusion> makeKinFuLargeScale(const yarp::os::Searchable & c
             return nullptr;
         }
 
+#if CV_VERSION_MAJOR >= 5
+        params->volumeParams.kind = stringToCvVolume[volumeType];
+#else
         params->volumeParams.type = stringToCvVolume[volumeType];
+#endif
         yCInfo(KINFU) << "volumeType:" << volumeType;
     }
     else
     {
+#if CV_VERSION_MAJOR >= 5
+        auto res = std::find_if(stringToCvVolume.begin(), stringToCvVolume.end(), [&params](const auto & el) { return el.second == params->volumeParams.kind; });
+#else
         auto res = std::find_if(stringToCvVolume.begin(), stringToCvVolume.end(), [&params](const auto & el) { return el.second == params->volumeParams.type; });
+#endif
         yCInfo(KINFU) << "volumeType (DEFAULT):" << res->first;
     }
 

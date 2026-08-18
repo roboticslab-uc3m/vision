@@ -1,10 +1,14 @@
-include(CheckCXXSymbolExists)
-set(CMAKE_REQUIRED_INCLUDES "${OpenCV_INCLUDE_DIRS}")
-set(CMAKE_REQUIRED_QUIET TRUE)
-check_cxx_symbol_exists(HAVE_QUIRC opencv2/cvconfig.h _have_quirc)
+set(_have_quirc FALSE)
+
+if(OpenCV_FOUND AND OpenCV_VERSION VERSION_LESS 4.9)
+    include(CheckCXXSymbolExists)
+    set(CMAKE_REQUIRED_INCLUDES "${OpenCV_INCLUDE_DIRS}")
+    set(CMAKE_REQUIRED_QUIET TRUE)
+    check_cxx_symbol_exists(HAVE_QUIRC opencv2/cvconfig.h _have_quirc)
+endif()
 
 if(NOT DEFINED ENABLE_QrDetector OR ENABLE_QrDetector)
-    if(NOT TARGET opencv_objdetect OR NOT (OpenCV_VERSION VERSION_GREATER_EQUAL 4.7 OR _have_quirc))
+    if(NOT TARGET opencv_objdetect OR NOT (OpenCV_VERSION VERSION_GREATER_EQUAL 4.9 OR _have_quirc))
         message(WARNING "OpenCV 4.x objdetect module with QR support not found, disabling QrDetector device")
     elseif(NOT YARP_cv_FOUND)
         message(WARNING "YARP_cv package not found, disabling QrDetector device")
@@ -16,7 +20,7 @@ yarp_prepare_plugin(QrDetector
                     TYPE QrDetector
                     INCLUDE QrDetector.hpp
                     DEFAULT ON
-                    DEPENDS "TARGET opencv_objdetect;OpenCV_VERSION VERSION_GREATER_EQUAL 4.7 OR _have_quirc;YARP_cv_FOUND"
+                    DEPENDS "TARGET opencv_objdetect;OpenCV_VERSION VERSION_GREATER_EQUAL 4.9 OR _have_quirc;YARP_cv_FOUND"
                     GENERATE_PARSER)
 
 if(NOT SKIP_QrDetector)

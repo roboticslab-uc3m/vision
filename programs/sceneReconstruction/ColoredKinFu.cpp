@@ -3,13 +3,21 @@
 #include "KinectFusionImpl.hpp"
 
 #include <map>
+
 #include <yarp/os/LogStream.h>
+
+#include <opencv2/core/version.hpp>
+#if CV_VERSION_MAJOR >= 5
+# include <opencv2/ptcloud.hpp>
+#endif
 #include <opencv2/rgbd/colored_kinfu.hpp>
 
 #include "LogComponent.hpp"
 
 using namespace roboticslab;
 
+// FIXME: re-enable in OpenCV 5.x after https://github.com/opencv/opencv_contrib/pull/4184 is merged
+#if CV_VERSION_MAJOR < 5
 template <>
 void KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::getCloud(yarp::sig::PointCloudXYZNormalRGBA & cloudWithNormals) const
 {
@@ -39,6 +47,7 @@ void KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::getCloud(yarp::sig::Poin
         };
     }
 }
+#endif // CV_VERSION_MAJOR < 5
 
 template <>
 bool KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame,
@@ -62,11 +71,19 @@ bool KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::update(const yarp::sig::
 
 namespace
 {
+#if CV_VERSION_MAJOR >= 5
+    std::map<std::string, cv::VolumeType> stringToCvVolume {
+        {"tsdf", cv::VolumeType::TSDF},
+        {"hashtsdf", cv::VolumeType::HashTSDF},
+        {"coloredtsdf", cv::VolumeType::ColorTSDF}
+    };
+#else
     std::map<std::string, cv::kinfu::VolumeType> stringToCvVolume {
         {"tsdf", cv::kinfu::VolumeType::TSDF},
         {"hashtsdf", cv::kinfu::VolumeType::HASHTSDF},
         {"coloredtsdf", cv::kinfu::VolumeType::COLOREDTSDF}
     };
+#endif
 }
 
 namespace roboticslab
@@ -206,12 +223,20 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
                                volumePoseRot->get(3).asFloat32(), volumePoseRot->get(4).asFloat32(), volumePoseRot->get(5).asFloat32(),
                                volumePoseRot->get(6).asFloat32(), volumePoseRot->get(7).asFloat32(), volumePoseRot->get(8).asFloat32());
 
+#if CV_VERSION_MAJOR >= 5
+        params->volumePose = cv::Affine3f().rotate(rot).matrix;
+#else
         params->volumePose.rotation(rot);
+#endif
         yCInfo(KINFU) << "volumePoseRot:" << volumePoseRot->toString();
     }
     else
     {
+#if CV_VERSION_MAJOR >= 5
+        const auto rot = params->volumePose.get_minor<3, 3>(0, 0);
+#else
         const auto & rot = params->volumePose.rotation();
+#endif
         yCInfo(KINFU) << "volumePoseRot (DEFAULT):" << rot(0,0) << rot(0,1) << rot(0,2) << rot(1,0) << rot(1,1) << rot(1,2) << rot(2,0) << rot(2,1) << rot(2,2);
     }
 
@@ -225,14 +250,24 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
             return nullptr;
         }
 
+#if CV_VERSION_MAJOR >= 5
+        params->volumePose(0, 3) = volumePoseTransl->get(0).asFloat32();
+        params->volumePose(1, 3) = volumePoseTransl->get(1).asFloat32();
+        params->volumePose(2, 3) = volumePoseTransl->get(2).asFloat32();
+#else
         auto transl = cv::Vec3f(volumePoseTransl->get(0).asFloat32(), volumePoseTransl->get(1).asFloat32(), volumePoseTransl->get(2).asFloat32());
         params->volumePose.translation(transl);
+#endif
         yCInfo(KINFU) << "volumePoseTransl:" << volumePoseTransl->toString();
     }
     else
     {
+#if CV_VERSION_MAJOR >= 5
+        const auto transl = params->volumePose.get_minor<3, 1>(0, 3);
+#else
         const auto & transl = params->volumePose.translation();
-        yCInfo(KINFU) << "volumePoseTransl (DEFAULT):" << transl[0] << transl[1] << transl[2];
+#endif
+        yCInfo(KINFU) << "volumePoseTransl (DEFAULT):" << transl(0) << transl(1) << transl(2);
     }
 
     if (config.check("volumeType", "type of voxel volume (tsdf, hashtsdf, coloredtsdf)"))
@@ -245,12 +280,20 @@ std::unique_ptr<KinectFusion> makeColoredKinFu(const yarp::os::Searchable & conf
             return nullptr;
         }
 
+#if CV_VERSION_MAJOR >= 5
+        params->volumeKind = stringToCvVolume[volumeType];
+#else
         params->volumeType = stringToCvVolume[volumeType];
+#endif
         yCInfo(KINFU) << "volumeType:" << volumeType;
     }
     else
     {
+#if CV_VERSION_MAJOR >= 5
+        auto res = std::find_if(stringToCvVolume.begin(), stringToCvVolume.end(), [&params](const auto & el) { return el.second == params->volumeKind; });
+#else
         auto res = std::find_if(stringToCvVolume.begin(), stringToCvVolume.end(), [&params](const auto & el) { return el.second == params->volumeType; });
+#endif
         yCInfo(KINFU) << "volumeType (DEFAULT):" << res->first;
     }
 

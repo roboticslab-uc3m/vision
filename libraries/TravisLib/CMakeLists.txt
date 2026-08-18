@@ -15,6 +15,10 @@ if(ENABLE_TravisLib)
     target_link_libraries(TravisLib PUBLIC opencv_core
                                     PRIVATE opencv_imgproc)
 
+    if(OpenCV_VERSION VERSION_GREATER_EQUAL 5.0)
+        target_link_libraries(TravisLib PRIVATE opencv_geometry)
+    endif()
+
     target_include_directories(TravisLib PUBLIC ${OpenCV_INCLUDE_DIRS}
                                                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                                                 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)

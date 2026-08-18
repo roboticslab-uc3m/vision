@@ -40,6 +40,9 @@ endif()
 
 # Soft dependencies.
 find_package(OpenCV 4.6 QUIET)
+if(NOT OpenCV_FOUND)
+    find_package(OpenCV 5.0 QUIET)
+endif()
 find_package(PCL 1.14 QUIET COMPONENTS common features filters search surface)
 find_package(rclcpp QUIET)
 find_package(geometry_msgs QUIET)
