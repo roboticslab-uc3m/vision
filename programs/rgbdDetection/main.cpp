@@ -7,15 +7,15 @@
  *
  * @section rgbdDetectionOptions Options
  *
- * | PROPERTY     | DESCRIPTION                          | DEFAULT           |
- * |--------------|--------------------------------------|-------------------|
- * | from         | file.ini                             | rgbdDetection.ini |
- * | context      | context name                         | rgbdDetection     |
- * | sensorDevice | sensor device name                   | RGBDSensorClient  |
- * | sensorRemote | if accesing remote, remote port name | /rgbd             |
- * | localPrefx   | local port name prefix               | /rgbdDetection    |
- * | period       | update period (seconds)              | 0.02              |
- * | detector     | detector device name                 |                   |
+ * | PROPERTY     | DESCRIPTION                          | DEFAULT             |
+ * |--------------|--------------------------------------|---------------------|
+ * | from         | file.ini                             | rgbdDetection.ini   |
+ * | context      | context name                         | rgbdDetection       |
+ * | sensorDevice | sensor device name                   | RGBDSensor_nwc_yarp |
+ * | sensorRemote | if accesing remote, remote port name | /rgbd               |
+ * | localPrefx   | local port name prefix               | /rgbdDetection      |
+ * | period       | update period (seconds)              | 0.02                |
+ * | detector     | detector device name                 |                     |
  *
  * @section rgbDetectionInputPorts Input ports (requires YARP 3.5+)
  *

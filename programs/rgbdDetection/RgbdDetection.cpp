@@ -14,7 +14,7 @@
 #include <yarp/sig/ImageDraw.h>
 #include <yarp/sig/ImageUtils.h>
 
-constexpr auto DEFAULT_SENSOR_DEVICE = "RGBDSensorClient";
+constexpr auto DEFAULT_SENSOR_DEVICE = "RGBDSensor_nwc_yarp";
 constexpr auto DEFAULT_SENSOR_REMOTE = "/rgbd";
 constexpr auto DEFAULT_LOCAL_PREFIX = "/rgbdDetection";
 constexpr auto DEFAULT_PERIOD = 0.02; // [s]

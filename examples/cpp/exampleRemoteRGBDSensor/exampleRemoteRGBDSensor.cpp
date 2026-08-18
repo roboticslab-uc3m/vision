@@ -34,7 +34,7 @@ int main(int argc, char * argv[])
     std::string strRGBDRemote = "/rgbd";
 
     yarp::os::Property options {
-        {"device", yarp::os::Value("RGBDSensorClient")},
+        {"device", yarp::os::Value("RGBDSensor_nwc_yarp")},
         {"localImagePort", yarp::os::Value(strRGBDLocal + "/rgbImage:i")},
         {"localDepthPort", yarp::os::Value(strRGBDLocal + "/depthImage:i")},
         {"localRpcPort", yarp::os::Value(strRGBDLocal + "/rpc:o")},

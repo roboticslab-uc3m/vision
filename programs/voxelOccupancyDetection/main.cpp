@@ -16,7 +16,7 @@
  * |from         |file.ini                               |                          |
  * |context      |path                                   |                          |
  * |cropSelector |                                       | 0                        |
- * |RGBDDevice   |device we create                       | RGBDSensorClient         |
+ * |RGBDDevice   |device we create                       | RGBDSensor_nwc_yarp      |
  * |RGBDLocal    |if accesing remote, local port name    | /voxelOccupancyDetection |
  * |RGBDRemote   |if accesing remote, remote port name   | /rgbd                    |
  * |watchdog     |                                       | 2.000000                 |
@@ -70,4 +70,3 @@ int main(int argc, char** argv) {
 
     return mod.runModule(rf);
 }
-

@@ -74,7 +74,7 @@ int main(int argc, char * argv[])
 
     {
         yarp::os::Property sensorOptions {
-            {"device", yarp::os::Value("RGBDSensorClient")},
+            {"device", yarp::os::Value("RGBDSensor_nwc_yarp")},
             {"localImagePort", yarp::os::Value(prefix + "/client/rgbImage:i")},
             {"localDepthPort", yarp::os::Value(prefix + "/client/depthImage:i")},
             {"localRpcPort", yarp::os::Value(prefix + "/client/rpc:o")},
