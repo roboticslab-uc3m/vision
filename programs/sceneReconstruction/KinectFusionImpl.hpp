@@ -8,6 +8,8 @@
 #include <mutex>
 #include <type_traits>
 
+#include <opencv2/core.hpp>
+
 #include <yarp/os/LogStream.h>
 #include <yarp/cv/Cv.h>
 
