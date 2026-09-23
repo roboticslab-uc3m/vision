@@ -3,7 +3,12 @@ cmake_minimum_required(VERSION 3.19..3.28)
 project(exampleSceneReconstructionClient LANGUAGES CXX)
 
 if(NOT YARP_FOUND)
-    find_package(YARP 3.11 REQUIRED COMPONENTS os sig)
+    set(_yarp_components os sig)
+    find_package(YARP 3.12 QUIET COMPONENTS ${_yarp_components})
+
+    if(NOT YARP_FOUND)
+        find_package(YARP 4.0 REQUIRED COMPONENTS ${_yarp_components})
+    endif()
 endif()
 
 if(NOT TARGET ROBOTICSLAB::YarpCloudUtils OR NOT TARGET ROBOTICSLAB::VisionIDL)
