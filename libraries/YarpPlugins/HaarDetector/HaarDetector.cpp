@@ -18,7 +18,7 @@ namespace
     YARP_LOG_COMPONENT(HAAR, "rl.HaarDetector")
 }
 
-bool HaarDetector::open(yarp::os::Searchable& config)
+bool HaarDetector::open(yarp::os::Searchable & config)
 {
     if (!parseParams(config))
     {
@@ -68,7 +68,7 @@ bool HaarDetector::open(yarp::os::Searchable& config)
     return true;
 }
 
-bool HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
+yarp::dev::ReturnValue HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -113,5 +113,5 @@ bool HaarDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle &
     }
 #endif
 
-    return true;
+    return yarp::dev::ReturnValue_ok;
 }

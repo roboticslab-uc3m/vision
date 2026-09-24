@@ -28,8 +28,8 @@ class HaarDetector : public yarp::dev::DeviceDriver,
                      public HaarDetector_ParamsParser
 {
 public:
-    bool open(yarp::os::Searchable& config) override;
-    bool detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects) override;
+    bool open(yarp::os::Searchable & config) override;
+    yarp::dev::ReturnValue detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects) override;
 
 private:
     cv::CascadeClassifier object_cascade;

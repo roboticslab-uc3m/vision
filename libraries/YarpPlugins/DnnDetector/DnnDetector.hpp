@@ -21,7 +21,7 @@ class DnnDetector : public yarp::dev::DeviceDriver,
 {
 public:
     bool open(yarp::os::Searchable & config) override;
-    bool detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects) override;
+    yarp::dev::ReturnValue detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects) override;
 
 private:
     cv::dnn::Net net;

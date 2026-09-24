@@ -18,8 +18,8 @@ class ColorRegionDetector : public yarp::dev::DeviceDriver,
                             public ColorRegionDetector_ParamsParser
 {
 public:
-    bool open(yarp::os::Searchable& config) override;
-    bool detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects) override;
+    bool open(yarp::os::Searchable & config) override;
+    yarp::dev::ReturnValue detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects) override;
 };
 
 #endif // __COLOR_REGION_DETECTOR_HPP__

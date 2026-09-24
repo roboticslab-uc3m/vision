@@ -1,13 +1,15 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
+#include "ColorRegionDetector.hpp"
+
+#include <yarp/conf/version.h>
+
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Value.h>
 #include <yarp/cv/Cv.h>
 
 #include "TravisLib.hpp"
-
-#include "ColorRegionDetector.hpp"
 
 using namespace roboticslab;
 
@@ -16,7 +18,7 @@ namespace
     YARP_LOG_COMPONENT(CRD, "rl.ColorRegionDetector")
 }
 
-bool ColorRegionDetector::open(yarp::os::Searchable& config)
+bool ColorRegionDetector::open(yarp::os::Searchable & config)
 {
     if (!parseParams(config))
     {
@@ -27,7 +29,7 @@ bool ColorRegionDetector::open(yarp::os::Searchable& config)
     return true;
 }
 
-bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects)
+yarp::dev::ReturnValue ColorRegionDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle& detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -54,7 +56,11 @@ bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bo
     if (numBlobs == 0)
     {
         travis.release();
-        return false;
+#if YARP_VERSION_COMPARE(>=, 4, 0, 0)
+        return yarp::dev::ReturnValue_error_method_failed;
+#else
+        return yarp::dev::ReturnValue::return_code::return_value_error_method_failed;
+#endif
     }
 
     std::vector<cv::Rect> blobsRect;
@@ -62,7 +68,11 @@ bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bo
     if (!travis.getBlobsRect(blobsRect))
     {
         travis.release();
-        return false;
+#if YARP_VERSION_COMPARE(>=, 4, 0, 0)
+        return yarp::dev::ReturnValue_error_method_failed;
+#else
+        return yarp::dev::ReturnValue::return_code::return_value_error_method_failed;
+#endif
     }
 
     for (const auto & blob : blobsRect)
@@ -80,5 +90,5 @@ bool ColorRegionDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bo
 
     travis.release();
 
-    return true;
+    return yarp::dev::ReturnValue_ok;
 }

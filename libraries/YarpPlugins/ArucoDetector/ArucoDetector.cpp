@@ -16,7 +16,7 @@ namespace
     YARP_LOG_COMPONENT(AC, "rl.ArucoDetector")
 }
 
-bool ArucoDetector::open(yarp::os::Searchable& config)
+bool ArucoDetector::open(yarp::os::Searchable & config)
 {
     if (!parseParams(config))
     {
@@ -44,7 +44,7 @@ bool ArucoDetector::open(yarp::os::Searchable& config)
     return true;
 }
 
-bool ArucoDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects)
+yarp::dev::ReturnValue ArucoDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -76,5 +76,5 @@ bool ArucoDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& 
         };
     }
 
-    return true;
+    return yarp::dev::ReturnValue_ok;
 }

@@ -16,7 +16,7 @@ namespace
     YARP_LOG_COMPONENT(QR, "rl.QrDetector")
 }
 
-bool QrDetector::open(yarp::os::Searchable& config)
+bool QrDetector::open(yarp::os::Searchable & config)
 {
     if (!parseParams(config))
     {
@@ -37,7 +37,7 @@ bool QrDetector::open(yarp::os::Searchable& config)
     return true;
 }
 
-bool QrDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& detectedObjects)
+yarp::dev::ReturnValue QrDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -68,5 +68,5 @@ bool QrDetector::detect(const yarp::sig::Image& inYarpImg, yarp::os::Bottle& det
         };
     }
 
-    return true;
+    return yarp::dev::ReturnValue_ok;
 }

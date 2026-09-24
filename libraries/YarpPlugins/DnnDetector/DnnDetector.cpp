@@ -16,7 +16,7 @@ namespace
     YARP_LOG_COMPONENT(DNN, "rl.DnnDetector")
 }
 
-bool DnnDetector::open(yarp::os::Searchable &config)
+bool DnnDetector::open(yarp::os::Searchable & config)
 {
     if (!parseParams(config))
     {
@@ -113,7 +113,7 @@ bool DnnDetector::open(yarp::os::Searchable &config)
 
 /*****************************************************************/
 
-bool DnnDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
+yarp::dev::ReturnValue DnnDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & detectedObjects)
 {
     yarp::sig::ImageOf<yarp::sig::PixelBgr> inYarpImgBgr;
     inYarpImgBgr.copy(inYarpImg);
@@ -128,7 +128,7 @@ bool DnnDetector::detect(const yarp::sig::Image & inYarpImg, yarp::os::Bottle & 
 
     postprocess(inCvMat.size(), outs, detectedObjects);
 
-    return true;
+    return yarp::dev::ReturnValue_ok;
 }
 
 /************************************************************************/
