@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include <yarp/conf/version.h>
+
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
@@ -162,6 +164,15 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         return false;
     }
 
+#if YARP_VERSION_COMPARE(>=, 4, 1, 0) || defined(YARP_NEXT)
+    yarp::sig::IntrinsicParams depthIntrinsic;
+
+    if (!iRGBDSensor->getDepthIntrinsicParam(depthIntrinsic))
+    {
+        yCError(KINFU) << "Unable to retrieve depth intrinsic parameters";
+        return false;
+    }
+#else
     yarp::os::Property depthParams;
     yarp::sig::IntrinsicParams depthIntrinsic;
 
@@ -172,6 +183,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     }
 
     depthIntrinsic.fromProperty(depthParams);
+#endif
 
     int depthWidth = iRGBDSensor->getDepthWidth();
     int depthHeight = iRGBDSensor->getDepthHeight();
@@ -198,6 +210,15 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
     }
     else if (algorithm == "colored_kinfu")
     {
+#if YARP_VERSION_COMPARE(>=, 4, 1, 0) || defined(YARP_NEXT)
+        yarp::sig::IntrinsicParams rgbIntrinsic;
+
+        if (!iRGBDSensor->getRgbIntrinsicParam(rgbIntrinsic))
+        {
+            yCError(KINFU) << "Unable to retrieve RGB intrinsic parameters";
+            return false;
+        }
+#else
         yarp::os::Property rgbParams;
         yarp::sig::IntrinsicParams rgbIntrinsic;
 
@@ -208,6 +229,7 @@ bool SceneReconstruction::configure(yarp::os::ResourceFinder & rf)
         }
 
         rgbIntrinsic.fromProperty(rgbParams);
+#endif
 
         int rgbWidth = iRGBDSensor->getDepthWidth();
         int rgbHeight = iRGBDSensor->getDepthHeight();

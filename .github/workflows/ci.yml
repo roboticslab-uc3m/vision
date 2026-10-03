@@ -101,6 +101,11 @@ jobs:
         echo "CC=${{matrix.compiler.cc}}" >> $GITHUB_ENV
         echo "CXX=${{matrix.compiler.cxx}}" >> $GITHUB_ENV
 
+    - name: Set environment variables (YARP next)
+      if: ${{matrix.robotology.yarp == 'master'}}
+      run: |
+        echo "CXXFLAGS=-DYARP_NEXT" >> $GITHUB_ENV
+
     - name: Build YCM
       run: |
         cmake -S .deps/ycm -B .deps/ycm/build

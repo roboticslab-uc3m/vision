@@ -148,7 +148,14 @@ bool RgbDetection::updateModule()
     }
     else
     {
-#if YARP_VERSION_COMPARE(>=, 4, 0, 0)
+#if YARP_VERSION_COMPARE(>=, 4, 1, 0) || defined(YARP_NEXT)
+        std::vector<yarp::dev::VertexData> verticesCompat {
+            {vertices[0].first, vertices[0].second},
+            {vertices[1].first, vertices[1].second}
+        };
+
+        if (!frameGrabber->getImageCrop(yarp::dev::YARP_CROP_RECT, verticesCompat, frame))
+#elif YARP_VERSION_COMPARE(>=, 4, 0, 0)
         std::vector<yarp::dev::vertex_t> verticesCompat {
             {vertices[0].first, vertices[0].second},
             {vertices[1].first, vertices[1].second}

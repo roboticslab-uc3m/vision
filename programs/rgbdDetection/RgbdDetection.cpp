@@ -7,6 +7,8 @@
 #include <utility> // std::move, std::pair
 #include <vector>
 
+#include <yarp/conf/version.h>
+
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Property.h>
@@ -89,6 +91,13 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
         return false;
     }
 
+#if YARP_VERSION_COMPARE(>=, 4, 1, 0) || defined(YARP_NEXT)
+if (!iRGBDSensor->getDepthIntrinsicParam(depthIntrinsicParams))
+    {
+        yCError(RGBD) << "Unable to retrieve depth intrinsic parameters";
+        return false;
+    }
+#else
     yarp::os::Property depthParams;
 
     if (!iRGBDSensor->getDepthIntrinsicParam(depthParams))
@@ -98,6 +107,7 @@ bool RgbdDetection::configure(yarp::os::ResourceFinder &rf)
     }
 
     depthIntrinsicParams.fromProperty(depthParams);
+#endif
 
     yarp::os::Property detectorOptions;
     detectorOptions.fromString(rf.toString());
