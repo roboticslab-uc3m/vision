@@ -93,7 +93,7 @@ namespace
             if (faces)
             {
                 indices.resize(faces->count * 3);
-                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                std::memcpy(indices.data(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -134,7 +134,7 @@ namespace
             if (faces)
             {
                 indices.resize(faces->count * 3);
-                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                std::memcpy(indices.data(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -189,7 +189,7 @@ namespace
             if (faces)
             {
                 indices.resize(faces->count * 3);
-                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                std::memcpy(indices.data(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -256,7 +256,7 @@ namespace
             if (faces)
             {
                 indices.resize(faces->count * 3);
-                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                std::memcpy(indices.data(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -300,7 +300,7 @@ namespace
             if (faces)
             {
                 indices.resize(faces->count * 3);
-                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                std::memcpy(indices.data(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -344,7 +344,7 @@ namespace
             if (faces)
             {
                 indices.resize(faces->count * 3);
-                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                std::memcpy(indices.data(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -411,7 +411,7 @@ namespace
             if (faces)
             {
                 indices.resize(faces->count * 3);
-                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                std::memcpy(indices.data(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
@@ -503,7 +503,7 @@ namespace
             if (faces)
             {
                 indices.resize(faces->count * 3);
-                std::memcpy(indices.getMemoryBlock(), faces->buffer.get_const(), faces->buffer.size_bytes());
+                std::memcpy(indices.data(), faces->buffer.get_const(), faces->buffer.size_bytes());
             }
 
             return true;
