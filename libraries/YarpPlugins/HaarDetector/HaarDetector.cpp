@@ -4,7 +4,9 @@
 
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
+#include <yarp/os/Property.h>
 #include <yarp/os/ResourceFinder.h>
+
 #include <yarp/cv/Cv.h>
 
 #ifdef HAVE_CV_FACE
@@ -79,12 +81,14 @@ yarp::dev::ReturnValue HaarDetector::detect(const yarp::sig::Image & inYarpImg, 
 
     for (const auto & object : objects)
     {
-        detectedObjects.addDict() = {
+        yarp::os::Property dict = {
             {"tlx", yarp::os::Value(object.x)},
             {"tly", yarp::os::Value(object.y)},
             {"brx", yarp::os::Value(object.x + object.width)},
             {"bry", yarp::os::Value(object.y + object.height)}
         };
+
+        detectedObjects.addList().fromString(dict.toString());
     }
 
 #ifdef HAVE_CV_FACE
@@ -96,18 +100,20 @@ yarp::dev::ReturnValue HaarDetector::detect(const yarp::sig::Image & inYarpImg, 
         {
             for (auto i = 0; i < objects.size(); i++)
             {
-                auto * list = yarp::os::Value::makeList();
+                auto * dict = detectedObjects.get(i).asList();
+
+                auto & landmarks = dict->addList();
+                landmarks.addString("landmarks");
+
+                auto & landmarkList = landmarks.addList();
 
                 for (const auto & shape : shapes[i])
                 {
-                    list->asList()->addList() = {
+                    landmarkList.addList() = {
                         yarp::os::Value(shape.x, false),
                         yarp::os::Value(shape.y, false)
                     };
                 }
-
-                auto * dict = detectedObjects.get(i).asDict();
-                dict->put("landmarks", list);
             }
         }
     }

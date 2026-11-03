@@ -6,7 +6,9 @@
 
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
+#include <yarp/os/Property.h>
 #include <yarp/os/Value.h>
+
 #include <yarp/cv/Cv.h>
 
 using namespace roboticslab;
@@ -55,7 +57,7 @@ yarp::dev::ReturnValue QrDetector::detect(const yarp::sig::Image & inYarpImg, ya
         const auto & br = corners[4 * i + 2];
         const auto & bl = corners[4 * i + 3];
 
-        detectedObjects.addDict() = {
+        yarp::os::Property dict = {
             {"tlx", yarp::os::Value(tl.x)},
             {"tly", yarp::os::Value(tl.y)},
             {"trx", yarp::os::Value(tr.x)},
@@ -66,6 +68,8 @@ yarp::dev::ReturnValue QrDetector::detect(const yarp::sig::Image & inYarpImg, ya
             {"bly", yarp::os::Value(bl.y)},
             {"text", yarp::os::Value(texts[i])}
         };
+
+        detectedObjects.addList().fromString(dict.toString());
     }
 
     return yarp::dev::ReturnValue_ok;

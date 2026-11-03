@@ -4,7 +4,9 @@
 
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
+#include <yarp/os/Property.h>
 #include <yarp/os/ResourceFinder.h>
+
 #include <yarp/cv/Cv.h>
 
 #include "DnnDetector.hpp"
@@ -249,7 +251,7 @@ void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> 
         float confidence = confidences[idx];
         const std::string className = classes[classIds[idx]];
 
-        detectedObjects.addDict() = {
+        yarp::os::Property dict = {
             {"category", yarp::os::Value(className)},
             {"confidence", yarp::os::Value(confidence)},
             {"tlx", yarp::os::Value(box.x)},
@@ -259,6 +261,7 @@ void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> 
         };
 
         yCInfo(DNN) << "Detected" << className << "with" << confidence << "confidence";
+        detectedObjects.addList().fromString(dict.toString());
     }
 }
 

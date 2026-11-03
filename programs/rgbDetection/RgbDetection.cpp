@@ -187,7 +187,7 @@ bool RgbDetection::updateModule()
 #endif
             for (auto i = 0; i < detectedObjects.size(); i++)
             {
-                const auto * detectedObject = detectedObjects.get(i).asDict();
+                const auto * detectedObject = detectedObjects.get(i).asList();
                 auto tlx = detectedObject->find("tlx").asInt32();
                 auto tly = detectedObject->find("tly").asInt32();
                 auto brx = detectedObject->find("brx").asInt32();

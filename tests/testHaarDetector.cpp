@@ -81,7 +81,7 @@ TEST_F(HaarDetectorTest, HaarDetector2)
 
     ASSERT_EQ(detectedObjects.size(), 1);
 
-    const auto * detectedObject = detectedObjects.get(0).asDict();
+    const auto * detectedObject = detectedObjects.get(0).asList();
 
     ASSERT_TRUE(detectedObject->check("tlx"));
     ASSERT_TRUE(detectedObject->check("brx"));

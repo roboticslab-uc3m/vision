@@ -5,11 +5,10 @@
 
 #include <mutex>
 #include <utility> // std::pair
+#include <vector>
 
 #include <yarp/os/Bottle.h>
 #include <yarp/os/TypedReaderCallback.h>
-
-#include <yarp/sig/Vector.h>
 
 namespace roboticslab
 {
@@ -25,10 +24,10 @@ public:
     using VertexType = std::pair<int, int>;
 
     void onRead(yarp::os::Bottle & bot, const yarp::os::TypedReader<yarp::os::Bottle> & reader) override;
-    yarp::sig::VectorOf<VertexType> getVertices() const;
+    std::vector<VertexType> getVertices() const;
 
 private:
-    yarp::sig::VectorOf<VertexType> cropVertices;
+    std::vector<VertexType> cropVertices;
     mutable std::mutex cropMutex;
     bool isCropping {false};
 };

@@ -78,7 +78,7 @@ TEST_F(DnnDetectorTest, DnnDetector2)
     ASSERT_TRUE(iDetector->detect(yarpImgRgb, detectedObjects));
 
     ASSERT_EQ(detectedObjects.size(), 1);
-    const auto * detectedObject = detectedObjects.get(0).asDict();
+    const auto * detectedObject = detectedObjects.get(0).asList();
     ASSERT_NE(detectedObject, nullptr);
 
     ASSERT_NEAR(detectedObject->find("tlx").asInt32(), 100, 5);

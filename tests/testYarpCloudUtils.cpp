@@ -380,7 +380,7 @@ TEST_F(YarpCloudUtilsTest, meshFromCloud)
 
     yarp::sig::VectorOf<int> indices;
 
-    yarp::sig::VectorOf<yarp::os::Property> options {
+    std::vector<yarp::os::Property> options {
         {{"algorithm", yarp::os::Value("ConvexHull")}},
         {{"algorithm", yarp::os::Value("SimplificationRemoveUnusedVertices")}}
     };
@@ -457,7 +457,7 @@ TEST_F(YarpCloudUtilsTest, meshFromCloud)
     _ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_normal, indices, options));
     _ASSERT_TRUE(YarpCloudUtils::meshFromCloud(points_xyz_normal_rgba, vertices_xyz_normal_rgba, indices, options));
 
-    yarp::sig::VectorOf<yarp::os::Property> empty {};
+    std::vector<yarp::os::Property> empty {};
     _ASSERT_FALSE(YarpCloudUtils::meshFromCloud(points_xyz, vertices_xyz, indices, empty));
 }
 
@@ -475,7 +475,7 @@ TEST_F(YarpCloudUtilsTest, processCloud)
     yarp::sig::PointCloudXYZNormal in_xyz_normal(points), out_xyz_normal;
     yarp::sig::PointCloudXYZNormalRGBA in_xyz_normal_rgba(points), out_xyz_normal_rgba;
 
-    yarp::sig::VectorOf<yarp::os::Property> options {
+    std::vector<yarp::os::Property> options {
         {{"algorithm", yarp::os::Value("ApproximateVoxelGrid")}, {"leafSize", yarp::os::Value(0.5f)}}
     };
 
@@ -551,7 +551,7 @@ TEST_F(YarpCloudUtilsTest, processCloud)
     _ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyz_normal_rgba, out_xyz_normal, options));
     _ASSERT_TRUE(YarpCloudUtils::processCloud(in_xyz_normal_rgba, out_xyz_normal_rgba, options));
 
-    yarp::sig::VectorOf<yarp::os::Property> empty {};
+    std::vector<yarp::os::Property> empty {};
     _ASSERT_FALSE(YarpCloudUtils::processCloud(in_xyz, out_xyz, empty));
 }
 
