@@ -30,7 +30,7 @@ jobs:
         cancel_others: 'true'
 
   build:
-    name: build (${{matrix.system.os}}, ${{matrix.robotology.yarp}}, ${{matrix.compiler.cc}})
+    name: build (${{matrix.system.os}}, ${{matrix.robotology.yarp}}, opencv-${{matrix.system.opencv}}, ${{matrix.compiler.cc}})
     runs-on: ${{matrix.system.os}}
     container:
       image: ghcr.io/roboticslab-uc3m/vision:${{matrix.system.os}}-opencv-${{matrix.system.opencv}}
