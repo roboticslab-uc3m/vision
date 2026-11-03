@@ -63,9 +63,9 @@ int main(int argc, char const *argv[])
         auto blY = detectedObject->find("bly").asInt32();
         auto brX = detectedObject->find("brx").asInt32();
         auto brY = detectedObject->find("bry").asInt32();
-        auto text = detectedObject->find("text").asInt32();
+        auto id = detectedObject->find("id").asInt32();
 
-        yInfo("aruco%d [[%d,%d],[%d,%d],[%d,%d],[%d,%d]]: \"%d\"", i, tlX, tlY, trX, trY, blX, blY, brX, brY, text);
+        yInfo("aruco%d [[%d,%d],[%d,%d],[%d,%d],[%d,%d]]: \"%d\"", i, tlX, tlY, trX, trY, blX, blY, brX, brY, id);
     }
 
     return 0;

@@ -74,7 +74,7 @@ yarp::dev::ReturnValue ArucoDetector::detect(const yarp::sig::Image & inYarpImg,
             {"bry", yarp::os::Value(static_cast<int>(br.y))},
             {"blx", yarp::os::Value(static_cast<int>(bl.x))},
             {"bly", yarp::os::Value(static_cast<int>(bl.y))},
-            {"text", yarp::os::Value(markerIds[i])}
+            {"id", yarp::os::Value(markerIds[i])}
         };
 
         detectedObjects.addList().fromString(dict.toString());

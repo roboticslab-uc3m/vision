@@ -74,7 +74,7 @@ decltype(ArucoDetectorTest::expectedValues) ArucoDetectorTest::expectedValues = 
         {"bry", yarp::os::Value(1637)},
         {"blx", yarp::os::Value(430)},
         {"bly", yarp::os::Value(1636)},
-        {"text", yarp::os::Value(5)}
+        {"id", yarp::os::Value(5)}
     },
     {
         {"tlx", yarp::os::Value(1301)},
@@ -85,7 +85,7 @@ decltype(ArucoDetectorTest::expectedValues) ArucoDetectorTest::expectedValues = 
         {"bry", yarp::os::Value(1557)},
         {"blx", yarp::os::Value(1300)},
         {"bly", yarp::os::Value(1555)},
-        {"text", yarp::os::Value(20)}
+        {"id", yarp::os::Value(20)}
     },
     {
         {"tlx", yarp::os::Value(334)},
@@ -96,7 +96,7 @@ decltype(ArucoDetectorTest::expectedValues) ArucoDetectorTest::expectedValues = 
         {"bry", yarp::os::Value(962)},
         {"blx", yarp::os::Value(333)},
         {"bly", yarp::os::Value(961)},
-        {"text", yarp::os::Value(10)}
+        {"id", yarp::os::Value(10)}
     }
 };
 

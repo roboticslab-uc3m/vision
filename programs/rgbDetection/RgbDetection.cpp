@@ -43,6 +43,10 @@ namespace
         {
             return data.find("text").asString();
         }
+        else if (data.check("id"))
+        {
+            return std::to_string(data.find("id").asInt32());
+        }
         else
         {
             return {};

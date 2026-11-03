@@ -50,7 +50,11 @@ void YarpCropCallback::onRead(yarp::os::Bottle & bot, const yarp::os::TypedReade
     }
 }
 
+#if YARP_VERSION_COMPARE(>=, 4, 0, 0)
 std::vector<YarpCropCallback::VertexType> YarpCropCallback::getVertices() const
+#else
+yarp::sig::VectorOf<YarpCropCallback::VertexType> YarpCropCallback::getVertices() const
+#endif
 {
     std::lock_guard lock(cropMutex);
     return cropVertices;
