@@ -98,11 +98,11 @@ with the expected input of step N+1, an error will be reported.
 
 ### Vector of dictionaries
 
-The most straightforward way to configure a pipeline is using the `VectorOf<Property>`
+The most straightforward way to configure a pipeline is using the `std::vector<Property>`
 overload. Each element of the vector is one step of the pipeline, order is preserved:
 
 ```cxx
-yarp::sig::VectorOf<yarp::os::Property> options {
+std::vector<yarp::os::Property> options {
     {
         {"algorithm", yarp::os::Value("VoxelGrid")},
         {"leafSize", yarp::os::Value(0.02f)}
