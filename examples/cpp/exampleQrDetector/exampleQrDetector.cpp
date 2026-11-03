@@ -53,7 +53,7 @@ int main(int argc, char * argv[])
 
     for (auto i = 0; i < detectedObjects.size(); i++)
     {
-        const auto * detectedObject = detectedObjects.get(i).asDict();
+        const auto * detectedObject = detectedObjects.get(i).asList();
 
         auto tlX = detectedObject->find("tlx").asInt32();
         auto tlY = detectedObject->find("tly").asInt32();
@@ -65,7 +65,7 @@ int main(int argc, char * argv[])
         auto brY = detectedObject->find("bry").asInt32();
         auto text = detectedObject->find("text").asString();
 
-        yInfo("qr%d [[%d,%d],[%d,%d],[%d,%d],[%d,%d]]: \"%s\"", i, tlX, tlY, trX, trY, brX, brY, blX, blY, text.c_str());
+        yInfo("qr%d [[%d,%d],[%d,%d],[%d,%d],[%d,%d]]: \"%s\"", i, tlX, tlY, trX, trY, blX, blY, brX, brY, text.c_str());
     }
 
     return 0;

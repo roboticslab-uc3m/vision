@@ -66,37 +66,37 @@ protected:
 
 decltype(ArucoDetectorTest::expectedValues) ArucoDetectorTest::expectedValues = {
     {
-        {"tlx", yarp::os::Value(431.0)},
-        {"tly", yarp::os::Value(1164.0)},
-        {"trx", yarp::os::Value(904.0)},
-        {"try", yarp::os::Value(1165.0)},
-        {"brx", yarp::os::Value(903.0)},
-        {"bry", yarp::os::Value(1637.0)},
-        {"blx", yarp::os::Value(430.0)},
-        {"bly", yarp::os::Value(1636.0)},
-        {"text", yarp::os::Value(5)}
+        {"tlx", yarp::os::Value(431)},
+        {"tly", yarp::os::Value(1164)},
+        {"trx", yarp::os::Value(904)},
+        {"try", yarp::os::Value(1165)},
+        {"brx", yarp::os::Value(903)},
+        {"bry", yarp::os::Value(1637)},
+        {"blx", yarp::os::Value(430)},
+        {"bly", yarp::os::Value(1636)},
+        {"id", yarp::os::Value(5)}
     },
     {
-        {"tlx", yarp::os::Value(1301.0)},
-        {"tly", yarp::os::Value(515.0)},
-        {"trx", yarp::os::Value(2341.0)},
-        {"try", yarp::os::Value(515.0)},
-        {"brx", yarp::os::Value(2340.0)},
-        {"bry", yarp::os::Value(1557.0)},
-        {"blx", yarp::os::Value(1300.0)},
-        {"bly", yarp::os::Value(1555.0)},
-        {"text", yarp::os::Value(20)}
+        {"tlx", yarp::os::Value(1301)},
+        {"tly", yarp::os::Value(515)},
+        {"trx", yarp::os::Value(2341)},
+        {"try", yarp::os::Value(515)},
+        {"brx", yarp::os::Value(2340)},
+        {"bry", yarp::os::Value(1557)},
+        {"blx", yarp::os::Value(1300)},
+        {"bly", yarp::os::Value(1555)},
+        {"id", yarp::os::Value(20)}
     },
     {
-        {"tlx", yarp::os::Value(334.0)},
-        {"tly", yarp::os::Value(298.0)},
-        {"trx", yarp::os::Value(997.0)},
-        {"try", yarp::os::Value(299.0)},
-        {"brx", yarp::os::Value(996.0)},
-        {"bry", yarp::os::Value(962.0)},
-        {"blx", yarp::os::Value(333.0)},
-        {"bly", yarp::os::Value(961.0)},
-        {"text", yarp::os::Value(10)}
+        {"tlx", yarp::os::Value(334)},
+        {"tly", yarp::os::Value(298)},
+        {"trx", yarp::os::Value(997)},
+        {"try", yarp::os::Value(299)},
+        {"brx", yarp::os::Value(996)},
+        {"bry", yarp::os::Value(962)},
+        {"blx", yarp::os::Value(333)},
+        {"bly", yarp::os::Value(961)},
+        {"id", yarp::os::Value(10)}
     }
 };
 
@@ -127,10 +127,13 @@ TEST_F(ArucoDetectorTest, ArucoDetector2)
     ASSERT_GE(detectedObjects.size(), 1);
     ASSERT_LE(detectedObjects.size(), 3);
 
+    yarp::os::Property dict;
+
     for (auto i = 0; i < detectedObjects.size(); i++)
     {
-        const auto * detectedObject = detectedObjects.get(i).asDict();
-        ASSERT_TRUE(expectedValues.find(*detectedObject) != expectedValues.end());
+        const auto * detectedObject = detectedObjects.get(i).asList();
+        dict.fromString(detectedObject->toString());
+        ASSERT_TRUE(expectedValues.find(dict) != expectedValues.end());
     }
 }
 

@@ -127,10 +127,13 @@ TEST_F(QrDetectorTest, QrDetector2)
     ASSERT_GE(detectedObjects.size(), 1);
     ASSERT_LE(detectedObjects.size(), 3);
 
+    yarp::os::Property dict;
+
     for (auto i = 0; i < detectedObjects.size(); i++)
     {
-        const auto * detectedObject = detectedObjects.get(i).asDict();
-        ASSERT_TRUE(expectedValues.find(*detectedObject) != expectedValues.end());
+        const auto * detectedObject = detectedObjects.get(i).asList();
+        dict.fromString(detectedObject->toString());
+        ASSERT_TRUE(expectedValues.find(dict) != expectedValues.end());
     }
 }
 

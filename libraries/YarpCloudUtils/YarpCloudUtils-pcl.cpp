@@ -34,7 +34,7 @@ namespace
         return ((count ? fnv1a_32(s, count - 1) : 2166136261u) ^ s[count]) * 16777619u;
     }
 
-    constexpr std::uint32_t operator"" _hash(const char * s, std::size_t count)
+    constexpr std::uint32_t operator""_hash(const char * s, std::size_t count)
     {
         return fnv1a_32(s, count);
     }
@@ -195,7 +195,7 @@ namespace
     }
 
     template <typename T>
-    void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr & cloud, pcl::PolygonMesh::ConstPtr & mesh, const yarp::sig::VectorOf<yarp::os::Property> & options)
+    void meshFromCloudPCL(const typename pcl::PointCloud<T>::Ptr & cloud, pcl::PolygonMesh::ConstPtr & mesh, const std::vector<yarp::os::Property> & options)
     {
         if constexpr (!is_unsupported_type<T>)
         {
@@ -218,7 +218,7 @@ namespace
     }
 
     template <typename T1, typename T2>
-    void processCloudPCL(const typename pcl::PointCloud<T1>::Ptr & in, typename pcl::PointCloud<T2>::ConstPtr & out, const yarp::sig::VectorOf<yarp::os::Property> & options)
+    void processCloudPCL(const typename pcl::PointCloud<T1>::Ptr & in, typename pcl::PointCloud<T2>::ConstPtr & out, const std::vector<yarp::os::Property> & options)
     {
         if constexpr (!is_unsupported_type<T1> && !is_unsupported_type<T2>)
         {
@@ -246,7 +246,7 @@ namespace
 {
     auto makeFromConfig(const yarp::os::Searchable & config, const std::string & collection)
     {
-        yarp::sig::VectorOf<yarp::os::Property> options;
+        std::vector<yarp::os::Property> options;
         const auto & pipeline = config.findGroup(collection);
 
         if (!pipeline.isNull())
@@ -260,9 +260,7 @@ namespace
 
                 if (!group.isNull())
                 {
-                    // perfect forwarding via `emplace_back` doesn't seem to work
-                    yarp::os::Property option(group.tail().toString().c_str());
-                    options.push_back(std::move(option));
+                    options.emplace_back(group.tail().toString().c_str());
                 }
                 else
                 {
@@ -286,7 +284,7 @@ template <typename T1, typename T2>
 bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
                    yarp::sig::PointCloud<T2> & meshPoints,
                    yarp::sig::VectorOf<int> & meshIndices,
-                   const yarp::sig::VectorOf<yarp::os::Property> & options)
+                   const std::vector<yarp::os::Property> & options)
 {
 #ifdef YCU_HAVE_PCL
     using pcl_input_type = typename pcl_type_from_yarp<T1>::type;
@@ -310,7 +308,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
         return false;
     }
 
-    if (options.size() == 0)
+    if (options.empty())
     {
         yCError(YCU) << "Empty configuration";
         return false;
@@ -362,7 +360,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
 template <typename T1, typename T2>
 bool processCloud(const yarp::sig::PointCloud<T1> & in,
                   yarp::sig::PointCloud<T2> & out,
-                  const yarp::sig::VectorOf<yarp::os::Property> & options)
+                  const std::vector<yarp::os::Property> & options)
 {
 #ifdef YCU_HAVE_PCL
     using pcl_input_type = typename pcl_type_from_yarp<T1>::type;
@@ -383,7 +381,7 @@ bool processCloud(const yarp::sig::PointCloud<T1> & in,
         return false;
     }
 
-    if (options.size() == 0)
+    if (options.empty())
     {
         yCError(YCU) << "Empty configuration";
         return false;

@@ -5,11 +5,16 @@
 
 #include <mutex>
 #include <utility> // std::pair
+#include <vector>
+
+#include <yarp/conf/version.h>
 
 #include <yarp/os/Bottle.h>
 #include <yarp/os/TypedReaderCallback.h>
 
+#if YARP_VERSION_COMPARE(<, 4, 0, 0)
 #include <yarp/sig/Vector.h>
+#endif
 
 namespace roboticslab
 {
@@ -25,10 +30,18 @@ public:
     using VertexType = std::pair<int, int>;
 
     void onRead(yarp::os::Bottle & bot, const yarp::os::TypedReader<yarp::os::Bottle> & reader) override;
+#if YARP_VERSION_COMPARE(>=, 4, 0, 0)
+    std::vector<VertexType> getVertices() const;
+#else
     yarp::sig::VectorOf<VertexType> getVertices() const;
+#endif
 
 private:
+#if YARP_VERSION_COMPARE(>=, 4, 0, 0)
+    std::vector<VertexType> cropVertices;
+#else
     yarp::sig::VectorOf<VertexType> cropVertices;
+#endif
     mutable std::mutex cropMutex;
     bool isCropping {false};
 };

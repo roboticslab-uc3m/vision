@@ -4,15 +4,16 @@
 #define __YARP_CLOUD_UTILS_PCL_INST_HPP__
 
 #include <string>
+#include <vector>
 
 #include <yarp/os/Searchable.h>
 #include <yarp/sig/PointCloud.h>
 #include <yarp/sig/Vector.h>
 
 #define YCU_PCL_SIGNATURES(in, out) \
-    template bool meshFromCloud(const in &, out &, yarp::sig::VectorOf<int> &, const yarp::sig::VectorOf<yarp::os::Property> &); \
+    template bool meshFromCloud(const in &, out &, yarp::sig::VectorOf<int> &, const std::vector<yarp::os::Property> &); \
     template bool meshFromCloud(const in &, out &, yarp::sig::VectorOf<int> &, const yarp::os::Searchable &, const std::string &); \
-    template bool processCloud(const in &, out &, const yarp::sig::VectorOf<yarp::os::Property> &); \
+    template bool processCloud(const in &, out &, const std::vector<yarp::os::Property> &); \
     template bool processCloud(const in &, out &, const yarp::os::Searchable &, const std::string &);
 
 namespace roboticslab::YarpCloudUtils

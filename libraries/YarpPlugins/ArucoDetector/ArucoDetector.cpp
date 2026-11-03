@@ -6,7 +6,9 @@
 
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
+#include <yarp/os/Property.h>
 #include <yarp/os/Value.h>
+
 #include <yarp/cv/Cv.h>
 
 using namespace roboticslab;
@@ -63,17 +65,19 @@ yarp::dev::ReturnValue ArucoDetector::detect(const yarp::sig::Image & inYarpImg,
         const auto & br = corners[i][2];
         const auto & bl = corners[i][3];
 
-        detectedObjects.addDict() = {
-            {"tlx", yarp::os::Value(tl.x)},
-            {"tly", yarp::os::Value(tl.y)},
-            {"trx", yarp::os::Value(tr.x)},
-            {"try", yarp::os::Value(tr.y)},
-            {"brx", yarp::os::Value(br.x)},
-            {"bry", yarp::os::Value(br.y)},
-            {"blx", yarp::os::Value(bl.x)},
-            {"bly", yarp::os::Value(bl.y)},
-            {"text", yarp::os::Value(markerIds[i])}
+        yarp::os::Property dict = {
+            {"tlx", yarp::os::Value(static_cast<int>(tl.x))},
+            {"tly", yarp::os::Value(static_cast<int>(tl.y))},
+            {"trx", yarp::os::Value(static_cast<int>(tr.x))},
+            {"try", yarp::os::Value(static_cast<int>(tr.y))},
+            {"brx", yarp::os::Value(static_cast<int>(br.x))},
+            {"bry", yarp::os::Value(static_cast<int>(br.y))},
+            {"blx", yarp::os::Value(static_cast<int>(bl.x))},
+            {"bly", yarp::os::Value(static_cast<int>(bl.y))},
+            {"id", yarp::os::Value(markerIds[i])}
         };
+
+        detectedObjects.addList().fromString(dict.toString());
     }
 
     return yarp::dev::ReturnValue_ok;

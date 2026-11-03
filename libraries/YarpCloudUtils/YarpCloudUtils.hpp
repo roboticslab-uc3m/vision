@@ -4,6 +4,7 @@
 #define __YARP_CLOUD_UTILS_HPP__
 
 #include <string>
+#include <vector>
 
 #include <yarp/os/Property.h>
 #include <yarp/os/Searchable.h>
@@ -113,7 +114,7 @@ template <typename T1, typename T2 = T1>
 bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
                    yarp::sig::PointCloud<T2> & meshPoints,
                    yarp::sig::VectorOf<int> & meshIndices,
-                   const yarp::sig::VectorOf<yarp::os::Property> & options);
+                   const std::vector<yarp::os::Property> & options);
 
 /**
  * @ingroup YarpCloudUtils
@@ -154,7 +155,7 @@ bool meshFromCloud(const yarp::sig::PointCloud<T1> & cloud,
 template <typename T1, typename T2 = T1>
 bool processCloud(const yarp::sig::PointCloud<T1> & in,
                   yarp::sig::PointCloud<T2> & out,
-                  const yarp::sig::VectorOf<yarp::os::Property> & options);
+                  const std::vector<yarp::os::Property> & options);
 
 /**
  * @ingroup YarpCloudUtils

@@ -21,7 +21,7 @@ int main(int argc, char const *argv[])
 {
     yarp::os::Property detectorOptions {{"device", yarp::os::Value("ArucoDetector")}};
     yarp::dev::PolyDriver detectorDevice(detectorOptions);
-    roboticslab::IDetector *iDetector;
+    roboticslab::IDetector * iDetector;
 
     if (!detectorDevice.isValid() || !detectorDevice.view(iDetector))
     {
@@ -53,19 +53,19 @@ int main(int argc, char const *argv[])
 
     for (auto i = 0; i < detectedObjects.size(); i++)
     {
-        const auto * detectedObject = detectedObjects.get(i).asDict();
+        const auto * detectedObject = detectedObjects.get(i).asList();
 
-        auto tlX = detectedObject->find("tlx").asFloat32();
-        auto tlY = detectedObject->find("tly").asFloat32();
-        auto trX = detectedObject->find("trx").asFloat32();
-        auto trY = detectedObject->find("try").asFloat32();
-        auto blX = detectedObject->find("blx").asFloat32();
-        auto blY = detectedObject->find("bly").asFloat32();
-        auto brX = detectedObject->find("brx").asFloat32();
-        auto brY = detectedObject->find("bry").asFloat32();
-        auto text = detectedObject->find("text").asInt32();
+        auto tlX = detectedObject->find("tlx").asInt32();
+        auto tlY = detectedObject->find("tly").asInt32();
+        auto trX = detectedObject->find("trx").asInt32();
+        auto trY = detectedObject->find("try").asInt32();
+        auto blX = detectedObject->find("blx").asInt32();
+        auto blY = detectedObject->find("bly").asInt32();
+        auto brX = detectedObject->find("brx").asInt32();
+        auto brY = detectedObject->find("bry").asInt32();
+        auto id = detectedObject->find("id").asInt32();
 
-        yInfo("aruco%d [[%f,%f],[%f,%f],[%f,%f],[%f,%f]]: \"%d\"", i, tlX, tlY, trX, trY, brX, brY, blX, blY, text);
+        yInfo("aruco%d [[%d,%d],[%d,%d],[%d,%d],[%d,%d]]: \"%d\"", i, tlX, tlY, trX, trY, blX, blY, brX, brY, id);
     }
 
     return 0;

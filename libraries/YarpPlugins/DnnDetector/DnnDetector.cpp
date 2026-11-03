@@ -4,7 +4,9 @@
 
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
+#include <yarp/os/Property.h>
 #include <yarp/os/ResourceFinder.h>
+
 #include <yarp/cv/Cv.h>
 
 #include "DnnDetector.hpp"
@@ -145,7 +147,10 @@ void DnnDetector::preprocess(const cv::Mat & frame)
 
     if (net.getLayer(0)->outputNameToIndex("im_info") != -1) // Faster-RCNN or R-FCN
     {
-        cv::Mat imInfo = (cv::Mat_<float>(1, 3) << frame.rows, frame.cols, 1.6f);
+        cv::Mat imInfo(1, 3, CV_32F);
+        imInfo.at<float>(0, 0) = static_cast<float>(frame.rows);
+        imInfo.at<float>(0, 1) = static_cast<float>(frame.cols);
+        imInfo.at<float>(0, 2) = 1.6f;
         net.setInput(imInfo, "im_info");
     }
 }
@@ -249,7 +254,7 @@ void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> 
         float confidence = confidences[idx];
         const std::string className = classes[classIds[idx]];
 
-        detectedObjects.addDict() = {
+        yarp::os::Property dict = {
             {"category", yarp::os::Value(className)},
             {"confidence", yarp::os::Value(confidence)},
             {"tlx", yarp::os::Value(box.x)},
@@ -259,6 +264,7 @@ void DnnDetector::postprocess(const cv::Size & size, const std::vector<cv::Mat> 
         };
 
         yCInfo(DNN) << "Detected" << className << "with" << confidence << "confidence";
+        detectedObjects.addList().fromString(dict.toString());
     }
 }
 

@@ -6,7 +6,9 @@
 
 #include <yarp/os/LogComponent.h>
 #include <yarp/os/LogStream.h>
+#include <yarp/os/Property.h>
 #include <yarp/os/Value.h>
+
 #include <yarp/cv/Cv.h>
 
 #include "TravisLib.hpp"
@@ -80,12 +82,14 @@ yarp::dev::ReturnValue ColorRegionDetector::detect(const yarp::sig::Image & inYa
         const auto & tl = blob.tl();
         const auto & br = blob.br();
 
-        detectedObjects.addDict() = {
+        yarp::os::Property dict = {
             {"tlx", yarp::os::Value(tl.x)},
             {"tly", yarp::os::Value(tl.y)},
             {"brx", yarp::os::Value(br.x)},
             {"bry", yarp::os::Value(br.y)}
         };
+
+        detectedObjects.addList().fromString(dict.toString());
     }
 
     travis.release();

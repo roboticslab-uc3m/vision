@@ -35,7 +35,7 @@ namespace
                 {"vertex_indices"},
                 tinyply::Type::INT32,
                 indices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
+                reinterpret_cast<unsigned char *>(const_cast<int *>(indices.data())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -71,7 +71,7 @@ namespace
                 {"vertex_indices"},
                 tinyply::Type::INT32,
                 indices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
+                reinterpret_cast<unsigned char *>(const_cast<int *>(indices.data())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -109,7 +109,7 @@ namespace
                 {"vertex_indices"},
                 tinyply::Type::INT32,
                 indices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
+                reinterpret_cast<unsigned char *>(const_cast<int *>(indices.data())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -158,7 +158,7 @@ namespace
                 {"vertex_indices"},
                 tinyply::Type::INT32,
                 indices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
+                reinterpret_cast<unsigned char *>(const_cast<int *>(indices.data())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -196,7 +196,7 @@ namespace
                 {"vertex_indices"},
                 tinyply::Type::INT32,
                 indices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
+                reinterpret_cast<unsigned char *>(const_cast<int *>(indices.data())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -234,7 +234,7 @@ namespace
                 {"vertex_indices"},
                 tinyply::Type::INT32,
                 indices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
+                reinterpret_cast<unsigned char *>(const_cast<int *>(indices.data())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -285,7 +285,7 @@ namespace
                 {"vertex_indices"},
                 tinyply::Type::INT32,
                 indices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
+                reinterpret_cast<unsigned char *>(const_cast<int *>(indices.data())),
                 tinyply::Type::UINT8,
                 3);
         }
@@ -349,7 +349,7 @@ namespace
                 {"vertex_indices"},
                 tinyply::Type::INT32,
                 indices.size() / 3,
-                reinterpret_cast<unsigned char *>(const_cast<char *>(indices.getMemoryBlock())),
+                reinterpret_cast<unsigned char *>(const_cast<int *>(indices.data())),
                 tinyply::Type::UINT8,
                 3);
         }

@@ -55,11 +55,11 @@ int main(int argc, char * argv[])
         return 1;
     }
 
-    const auto * detectedObject = detectedObjects.get(0).asDict();
+    const auto * detectedObject = detectedObjects.get(0).asList();
 
     yInfo() << "tlx:" << detectedObject->find("tlx").asInt32(); // 90
-    yInfo() << "brx:" << detectedObject->find("brx").asInt32(); // 168
     yInfo() << "tly:" << detectedObject->find("tly").asInt32(); // 68
+    yInfo() << "brx:" << detectedObject->find("brx").asInt32(); // 168
     yInfo() << "bry:" << detectedObject->find("bry").asInt32(); // 14
 
     const auto * landmarks = detectedObject->find("landmarks").asList();
