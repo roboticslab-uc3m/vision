@@ -34,7 +34,7 @@ namespace
         return ((count ? fnv1a_32(s, count - 1) : 2166136261u) ^ s[count]) * 16777619u;
     }
 
-    constexpr std::uint32_t operator"" _hash(const char * s, std::size_t count)
+    constexpr std::uint32_t operator""_hash(const char * s, std::size_t count)
     {
         return fnv1a_32(s, count);
     }
