@@ -147,7 +147,10 @@ void DnnDetector::preprocess(const cv::Mat & frame)
 
     if (net.getLayer(0)->outputNameToIndex("im_info") != -1) // Faster-RCNN or R-FCN
     {
-        cv::Mat imInfo = (cv::Mat_<float>(1, 3) << frame.rows, frame.cols, 1.6f);
+        cv::Mat imInfo(1, 3, CV_32F);
+        imInfo.at<float>(0, 0) = static_cast<float>(frame.rows);
+        imInfo.at<float>(0, 1) = static_cast<float>(frame.cols);
+        imInfo.at<float>(0, 2) = 1.6f;
         net.setInput(imInfo, "im_info");
     }
 }
