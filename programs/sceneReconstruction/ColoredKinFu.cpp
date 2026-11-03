@@ -16,8 +16,6 @@
 
 using namespace roboticslab;
 
-// FIXME: re-enable in OpenCV 5.x after https://github.com/opencv/opencv_contrib/pull/4184 is merged
-#if CV_VERSION_MAJOR < 5
 template <>
 void KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::getCloud(yarp::sig::PointCloudXYZNormalRGBA & cloudWithNormals) const
 {
@@ -47,7 +45,6 @@ void KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::getCloud(yarp::sig::Poin
         };
     }
 }
-#endif // CV_VERSION_MAJOR < 5
 
 template <>
 bool KinectFusionImpl<cv::colored_kinfu::ColoredKinFu>::update(const yarp::sig::ImageOf<yarp::sig::PixelFloat> & depthFrame,
